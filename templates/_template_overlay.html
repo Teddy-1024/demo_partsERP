@@ -1,0 +1,23 @@
+
+<!-- Overlay -->
+<!-- Requires
+    string overlay_id
+    string overlay_title
+-->
+
+<div id="{{ overlay_id }}" class="overlay">
+    <div class="{{ model.flag_card }}">
+        <div class="{{ model.flag_container }} {{ model.flag_row }}">
+            <div class="{{ model.flag_container }} {{ model.flag_column }}">
+                <h2>{{ overlay_title }}</h2>
+            </div>
+            <div class="{{ model.flag_container }} {{ model.flag_column }}">
+                <button class="{{ model.flag_btn_overlay_close }}">Close</button>
+            </div>
+        </div>
+        <div class="{{ model.flag_container }} {{ model.flag_row }}">
+            {% block overlay_body %}{% endblock %}
+        </div>
+    </div>
+</div>
+

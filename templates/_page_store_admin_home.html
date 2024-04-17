@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ model.title }}{% endblock %}
+
+{% block page_body %}
+    <!-- Include Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+
+    <!-- HTML content -->
+    <div class="row">
+        <div class="leftcolumn">
+            <div class="card">
+                <div class="container column">
+                    <button id="{{ model.id_btn_admin_stripe_product_new }}">Add new Stripe products</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="container column">
+                    <button id="{{ model.id_btn_admin_stripe_price_new }}">Add new Stripe prices</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="container column">
+                    <button>Admin template 1</button>
+                </div>
+            </div>
+        </div>
+        <div class="rightcolumn">
+            <div class="card">
+                <div class="container">
+                    <h3 class="label-title">About Us</h3>
+                    <img class="img-featured" src="{{ url_for('static', filename='images/Tag_Molly1.jpg')}}" alt="Molly tag image">
+                    <p>We are open for business!</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="container">
+                    <h3 class="label-title">Promoted content</h3>
+                    <div class="card">
+                        <div class="container">
+                            <img class="img-featured" src="{{ url_for('static', filename='images/Braille_Translator_Demo.png')}}" alt="Braille translator demo image">
+                        </div>
+                        <div class="container">
+                            <p>Braille Keyboard Learning Tool</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="container">
+                            <img class="img-featured" src="{{ url_for('static', filename='images/Prosthetics_Demo.gif')}}" alt="Prosthetics demo gif">
+                        </div>
+                        <div class="container">
+                            <p>FREE Prosthetic Hands by e-NABLE</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="container">
+                    <h3 class="label-title">Where to find us</h3>
+                    <a href="{{ model.url_LinkedIn }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_LinkedIn.png') }}"/><h4>LinkedIn</h4></a>
+                    <a href="{{ model.url_GitHub }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}"/><h4>GitHub</h4></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include JavaScript -->
+    <script src="{{ url_for('static', filename='js/store_admin.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/store_shared.js') }}"></script>
+    
+    <script>
+        var hashPageCurrent = "{{ model.hash_page_home }}";
+
+        $(document).ready(function() {
+            hookupPageStoreAdminHome();
+        });
+    </script>
+{% endblock %}

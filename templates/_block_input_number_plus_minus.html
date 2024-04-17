@@ -1,0 +1,17 @@
+<!-- Input Number with +/- buttons -->
+<!-- requires: 
+    Product product
+    Form_Product form - with product id attribute for accessing input element attribute
+    int tmp_quantity - placeholder
+-->
+<div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+    <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}" style="flex: none;">
+        <div class="btn-decrement" {{ model.ATTR_ID_PRODUCT }}="{{ product.id_product }}" {{ model.ATTR_ID_PERMUTATION }}="{{ permutation.id_permutation }}" {{ model.ATTR_FORM_TYPE }}="{{ form.form_type }}">-</div>
+    </div>
+    <div class="{{ model.FLAG_CONTAINER }}-input {{ model.FLAG_COLUMN }}" style="flex: none;">
+        {{ form.quantity(value=tmp_quantity) }} <!-- model.attr_id_product=product.id -->
+    </div>
+    <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}" style="flex: none;">
+        <div class="btn-increment" {{ model.ATTR_ID_PRODUCT }}="{{ product.id_product }}" {{ model.ATTR_ID_PERMUTATION }}="{{ permutation.id_permutation }}" {{ model.ATTR_FORM_TYPE }}="{{ form.form_type }}">+</div>
+    </div>
+</div>

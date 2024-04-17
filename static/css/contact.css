@@ -1,0 +1,15 @@
+/*
+.content > a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.content > a > img, .content > a > h4 {
+    flex: content;
+    margin: 0px;
+}
+*/
+

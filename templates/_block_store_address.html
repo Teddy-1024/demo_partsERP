@@ -1,0 +1,79 @@
+
+<!-- Address form 
+<div class="card"> -->
+    <form id="{{ form.output_id() }}" class="{{ model.flag_container }}">
+        {{ form.hidden_tag() }}
+
+        {% if form.form_type_billing_not_delivery %}
+            <div class="{{ model.flag_container_input }}">
+                {{ form.identical.label }}
+                {{ form.identical(checked=True) }}
+            </div>
+        {% endif %}
+
+        <div class="{{ model.flag_container_input }}">
+            {{ form.region.label }}
+            {{ form.region() }}
+            {% for error in form.region.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        
+        <div class="{{ model.flag_container_input }}">
+            {{ form.name_full.label }}
+            {{ form.name_full(size=100) }}
+            {% for error in form.name_full.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div class="{{ model.flag_container_input }}">
+            {{ form.phone_number.label }}
+            {{ form.phone_number(size=20) }}
+            {% for error in form.phone_number.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        
+        <div class="{{ model.flag_container_input }}">
+            {{ form.postcode.label }}
+            {{ form.postcode(size=10) }}
+            {% for error in form.postcode.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        
+        <div class="{{ model.flag_container_input }}">
+            {{ form.address_1.label }}
+            {{ form.address_1(size=254) }}
+            {% for error in form.address_1.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        
+        <div class="{{ model.flag_container_input }}">
+            {{ form.address_2.label }}
+            {{ form.address_2(size=254) }}
+        </div>
+        
+        <div class="{{ model.flag_container_input }}">
+            {{ form.city.label }}
+            {{ form.city(size=100) }}
+            {% for error in form.city.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        
+        <div class="{{ model.flag_container_input }}">
+            {{ form.county.label }}
+            {{ form.county(size=100) }}
+            {% for error in form.county.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        
+        <div class="{{ model.flag_container_input }}">
+            {{ form.submit() }}
+        </div>
+    </form>
+<!--</div>-->

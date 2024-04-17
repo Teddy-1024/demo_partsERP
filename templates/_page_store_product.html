@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ model.title }}{% endblock %}
+
+{% block page_body %}
+    {% set product = model.product %}
+    {% set permutation = product.get_permutation_selected() %}
+    {% set block_id = 'styles' %}
+    {% include '_shared_store.html' %}
+    <script>console.log("test 1");</script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/store_product.css') }}">
+    
+    <!-- HTML content -->
+    <div class="row">
+        <div class="leftcolumn">
+            <div class="card">
+                <div class="container">
+                    <div class="card subcard">
+                        <div class="container column">
+                            <h2>{{ product.get_name() }}</h2>
+                            <div class="container-img-gallery">
+                                <img class="img-product" src="{{ product.get_image_from_index(0).url }}" alt="Template product image"> <!-- model.get_many_product_image_src(product.id, '', True, 'FULL') -->
+                            </div>
+                        </div>
+                        {% include '_block_store_product_price.html' %}
+                    </div>
+                    <div class="card subcard">
+                        <div>{{ permutation.description }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="{{ model.id_basket_container }}" class="rightcolumn">
+            {% include '_block_store_basket.html' %}
+        </div>
+    </div>
+    
+    {% set block_id = 'scripts' %}
+    {% include '_shared_store.html' %}
+    <!-- Include JavaScript -->
+    <script src="{{ url_for('static', filename='js/store_product.js') }}"></script>
+
+    <script>
+        // pass arguments from model to JS
+        var hashPageCurrent = "{{ model.hash_page_store_product }}";
+
+        // hookup elements
+        $(document).ready(function() {
+            console.log('Hooking up store product page...');
+            hookupStorePageProduct();
+        });
+    </script>
+{% endblock %}

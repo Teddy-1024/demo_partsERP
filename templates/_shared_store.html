@@ -1,0 +1,51 @@
+{% if block_id == 'block1' %}
+    <div class="common-block" id="block1">
+        <h1>Feckin common block boi</h1>
+    </div>
+{% elif block_id == 'styles' %}
+    <!-- Include Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/store_shared.css') }}">
+{% elif block_id == 'scripts' %}
+    <!-- Include JavaScript -->
+    <script src="{{ url_for('static', filename='js/store_shared.js') }}"></script>
+    <!-- Variables from Model_View_Store + model-->
+    <script>
+        var attrFormType = "{{ model.attr_form_type }}";
+        var attrIdPermutation = "{{ model.attr_id_permutation }}";
+        var attrIdProduct = "{{ model.attr_id_product }}";
+        var attrIdProductCategory = "{{ model.attr_id_product_category }}";
+        var flagBasketItemDelete = "{{ model.flag_basket_item_delete }}";
+        var flagBtnBasketAdd = "{{ model.flag_btn_basket_add }}";
+        var flagBtnBuyNow = "{{ model.flag_btn_buy_now }}";
+        var hashStoreBasketAdd = "{{ model.hash_store_basket_add }}";
+        var hashStoreBasketDelete = "{{ model.hash_store_basket_delete }}";
+        var hashStoreBasketEdit = "{{ model.hash_store_basket_edit }}";
+        var hashStoreBasketLoad = "{{ model.hash_store_basket_load }}";
+        var hashStoreSelectCurrency = "{{ model.hash_store_select_currency }}";
+        var hashStoreSelectDeliveryRegion = "{{ model.hash_store_select_delivery_region }}";
+        var hashStoreSetIsIncludedVAT = "{{ model.hash_store_set_is_included_VAT }}";
+        var hashPageStoreBasket = "{{ model.hash_page_store_basket }}";
+        var idBasket = "#{{ model.id_basket }}";
+        var idBasketContainer = "#{{ model.id_basket_container }}";
+        var idBasketTotal = "#{{ model.id_basket_total }}";
+        var idBtnCheckout = "#{{ model.id_btn_checkout }}";
+        var idLabelBasketEmpty = "#{{ model.id_label_basket_empty }}";
+        var keyIdCurrency = "{{ model.KEY_ID_CURRENCY }}";
+        var keyIdPermutation = "{{ model.key_id_permutation }}";
+        var keyIdProduct = "{{ model.key_id_product }}";
+        var keyIdRegionDelivery = "{{ model.KEY_ID_REGION_DELIVERY }}";
+        var keyIsIncludedVAT = "{{ model.KEY_IS_INCLUDED_VAT }}";
+        var typeFormBasketAdd = "{{ model.type_form_basket_add }}";
+        var typeFormBasketEdit = "{{ model.type_form_basket_edit }}";
+
+        if (!isEmpty({{ model.basket.items }})) {
+            localStorage.setItem(keyBasket, JSON.parse(JSON.stringify({'items': "{{ model.basket.items }}"}))); 
+        }
+        
+        
+        $(document).ready(function() {
+            hookupStore();
+        });
+        
+    </script>
+{% endif %}
