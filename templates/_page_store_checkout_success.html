@@ -9,16 +9,16 @@
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/store_home.css') }}"> css/store_basket.css -->
     
     <!-- HTML content -->
-    <div class="{{ model.flag_card }}">
-        <div class="{{ model.flag_container }} {{ model.flag_column }}">
-            <div id="{{ model.id_container_info_delivery }}" class="{{ model.flag_container }} {{ model.flag_row }}" style="border-bottom: 1px black;">
+    <div class="{{ model.FLAG_CARD }}">
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div id="{{ model.ID_CONTAINER_INFO_DELIVERY }}" class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="border-bottom: 1px black;">
                 <h2>Order successful!</h2>
-                <div class="{{ model.flag_container }} {{ model.flag_row }}">
-                    <div class="{{ model.flag_label }}"><strong>Order reference: {{ model.checkout_session.id }}</strong></div>
-                    <div class="{{ model.flag_label }}">You will receive an order acknowledgement by email</div>
+                <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                    <div class="{{ model.FLAG_LABEL }}"><strong>Order reference: {{ model.CHECKOUT_SESSION.ID }}</strong></div>
+                    <div class="{{ model.FLAG_LABEL }}">You will receive an order acknowledgement by email</div>
                 </div>
-                {% if model.is_user_logged_in %}
-                    <div class="{{ model.flag_container }} {{ model.flag_row }}">
+                {% if model.IS_USER_LOGGED_IN %}
+                    <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
                         <h3>Your order:</h3>
                     </div>
                 {% endif %}
@@ -30,30 +30,10 @@
     {% set block_id = 'scripts' %}
     {% include '_shared_store.html' %}
     <script src="{{ url_for('static', filename='js/store_page_basket.js') }}"></script>
-
+    {% set block_id = 'checkout' %}
+    {% include '_shared_store.html' %}
     <script>
-        var hashPageCurrent = "{{ model.hash_page_store_basket }}";
-        var hashPageStoreCheckout = "{{ model.hash_page_store_checkout }}";
-        var hashPageStoreCheckoutSession = "{{ model.hash_page_store_checkout_session }}";
-        var hashStoreBasketInfo = "{{ model.hash_store_basket_info }}";
-        var idOverlayInfoBilling = "#{{ model.id_overlay_info_billing }}";
-        var idOverlayInfoDelivery = "#{{ model.id_overlay_info_delivery }}";
-        var idContainerInfoBilling = "#{{ model.id_container_info_billing }}";
-        var idContainerInfoDelivery = "#{{ model.id_container_info_delivery }}";
-        var keyIdCheckout = "{{ model.key_id_checkout }}";
-        var keyInfoBilling = "{{ model.key_info_billing }}";
-        var keyInfoDelivery = "{{ model.key_info_delivery }}";
-        var keyInfoIdentical = "{{ model.key_info_identical }}";
-        var keyInfoType = "{{ model.key_info_type }}";
-        var keyIsSubscription = "{{ model.key_is_subscription }}";
-        var keyAddress1 = "{{ model.key_address1 }}";
-        var keyAddress2 = "{{ model.key_address2 }}";
-        var keyCity = "{{ model.key_city }}";
-        var keyCounty = "{{ model.key_county }}";
-        var keyNameFull = "{{ model.key_name_full }}";
-        var keyPhoneNumber = "{{ model.key_phone_number }}";
-        var keyPostcode = "{{ model.key_postcode }}";
-        var keyRegion = "{{ model.key_region }}";
+        var hashPageCurrent = "{{ model.HASH_PAGE_STORE_BASKET }}";
 
         $(document).ready(function() {
             console.log('Hooking up store checkout success page...');

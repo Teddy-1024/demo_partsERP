@@ -57,6 +57,8 @@ h5 {
     border-bottom-left-radius: 2.5vh;
     border-bottom-right-radius: 2.5vh;
     flex-wrap: wrap;
+    font-weight: bold;
+    font-size: 2vh;
 }
 
 /* Style the topnav links */
@@ -80,6 +82,23 @@ h5 {
 .topnav .container {
     max-width: 20%;
     height: 100%;
+}
+
+.topnav select {
+    padding: 1vh;
+    margin: 1vh;
+    border-radius: 1vh;
+    /* background-color: var(--c_purple_light); */
+    color: var(--c_purple_dark);
+    border: 2px solid white;
+    font-weight: bold;
+    text-align: center;
+}
+.topnav select .collapsed {
+    width: 5vw;
+}
+.topnav select .expanded {
+    width: 25vw;
 }
 
 /* Create two unequal columns that floats next to each other */

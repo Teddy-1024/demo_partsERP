@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div id="{{ model.id_basket_container }}" class="rightcolumn">
+        <div id="{{ model.ID_BASKET_CONTAINER }}" class="rightcolumn">
             {% include '_block_store_basket.html' %}
         </div>
     </div>
@@ -42,7 +42,7 @@
 
     <script>
         // pass arguments from model to JS
-        var hashPageCurrent = "{{ model.hash_page_store_product }}";
+        var hashPageCurrent = "{{ model.HASH_PAGE_STORE_PRODUCT }}";
 
         // hookup elements
         $(document).ready(function() {

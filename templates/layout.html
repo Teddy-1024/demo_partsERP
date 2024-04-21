@@ -10,13 +10,17 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!-- Include jQuery from a CDN -->
     
     <script>
+        var attrTextCollapsed = "{{ model.ATTR_TEXT_COLLAPSED }}";
+        var attrTextExpanded = "{{ model.ATTR_TEXT_EXPANDED }}";
         var flagBtnOverlayClose = "{{ model.FLAG_BTN_OVERLAY_CLOSE }}";
         var flagBtnSubmit = "{{ model.FLAG_BTN_SUBMIT }}";
         var flagCard = "{{ model.FLAG_CARD }}";
+        var flagCollapsed = "{{ model.FLAG_COLLAPSED }}";
         var flagCollapsible = "{{ model.FLAG_COLLAPSIBLE }}";
         var flagColumn = "{{ model.FLAG_COLUMN }}";
         var flagContainer = "{{ model.FLAG_CONTAINER }}";
         var flagContainerInput = "{{ model.FLAG_CONTAINER_INPUT }}";
+        var flagExpanded = "{{ model.FLAG_EXPANDED }}";
         var flagRow = "{{ model.FLAG_ROW }}";
         var flagScrollable = "{{ model.FLAG_SCROLLABLE }}";
         var flagBtnOverlayClose = "{{ model.FLAG_BTN_OVERLAY_CLOSE }}";
@@ -64,18 +68,22 @@
     <div class="container column">
         <a id="{{ model.ID_NAV_HOME }}">Home</a> <!-- href="{{ url_for('home') }}" -->
     </div>
+    <!--
     <div class="container column">
         <a id="{{ model.ID_NAV_SERVICES }}">Services</a>
     </div>
     <div class="container column">
         <a id="{{ model.ID_NAV_TECHNOLOGIES }}">Technologies</a>
     </div>
+    -->
     <div class="container column">
         <a id="{{ model.ID_NAV_STORE_HOME }}">Store</a>
     </div>
+    <!--
     <div class="container column">
-        <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
+        <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" --
     </div>
+    -->
     {% if model.is_page_store %}
         <div class="container column">
             <!-- <a href="{ url_ for('create_price_dummy') }">Create template price</a> -->
@@ -83,7 +91,7 @@
                 {{ model.form_is_included_VAT.hidden_tag() }}
                 <div class="container-input">
                     {{ model.form_is_included_VAT.is_included.label }}
-                    {{ model.form_is_included_VAT.is_included() }}
+                    {{ model.form_is_included_VAT.is_included( checked = model.is_included_VAT ) }}
                     {% for error in model.form_is_included_VAT.is_included.errors %}
                         <p class="error">{{ error }}</p>
                     {% endfor %}

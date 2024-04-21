@@ -40,16 +40,16 @@ class Model_View_Store_Checkout_Success(Model_View_Store_Checkout):
     def title(self):
         return 'Store Checkout Success'
 
-    def __new__(cls, db, id_user, app, id_checkout_session, checkout_items = None):
+    def __new__(cls, db, id_user, app, id_checkout_session, checkout_items, id_currency, id_region_delivery, is_included_VAT):
         # Initialiser - validation
         _m = 'Model_View_Store_Checkout_Success.__new__'
         # av.val_list(checkout_items, 'checkout_items', _m)
         av.val_str(id_checkout_session, 'id_checkout_session', _m)
-        return super(Model_View_Store_Checkout_Success, cls).__new__(cls, db, id_user, app)
+        return super(Model_View_Store_Checkout_Success, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
     
-    def __init__(self, db, id_user, app, id_checkout_session, checkout_items = None):
+    def __init__(self, db, id_user, app, id_checkout_session, checkout_items, id_currency, id_region_delivery, is_included_VAT):
         # Constructor
-        super().__init__(db, id_user, app)
+        super().__init__(db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
         self.checkout_items = checkout_items
         self.id_checkout_session = id_checkout_session
         self.order = self.get_many_user_order('', 1, id_checkout_session)

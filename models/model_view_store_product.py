@@ -37,7 +37,7 @@ class Model_View_Store_Product(Model_View_Store):
     def title(self):
         return 'Store Home'
 
-    def __new__(cls, db, id_user, app, id_permutation, id_currency, id_region_delivery): # *args, **kwargs
+    def __new__(cls, db, id_user, app, id_permutation, id_currency, id_region_delivery, is_included_VAT): # *args, **kwargs
         # Initialiser - validation
         _m = 'Model_View_Store_Product.__new__'
         print(f'{_m}\nstarting...')
@@ -51,13 +51,13 @@ class Model_View_Store_Product(Model_View_Store):
         print(f'ending')
         
         # return super().__new__(cls, *args, **kwargs) # Model_View_Store_Product, cls # , db, id_user, id_product) # , db, id_user)
-        return super(Model_View_Store_Product, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery)
+        return super(Model_View_Store_Product, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
     
-    def __init__(self, db, id_user, app, id_permutation, id_currency, id_region_delivery):
+    def __init__(self, db, id_user, app, id_permutation, id_currency, id_region_delivery, is_included_VAT):
         # Constructor
         _m = 'Model_View_Store_Product.__init__'
         print(f'{_m}\nstarting...')
-        super().__init__(db, id_user, app, id_currency, id_region_delivery)
+        super().__init__(db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
         print('supered')
         print(f'user info: {self.info_user}')
         # print(f'user id: {self.info_user.get("sub")}')

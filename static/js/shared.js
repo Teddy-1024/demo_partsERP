@@ -81,6 +81,7 @@ function hookupOverlay(idOverlay) {
 }
 
 function hookupSelectorCurrency() {
+    /*
     let elForm = $(idFormCurrency);
     let elSelector = $(elForm.find('select')[0]);
     initialiseEventHandler(elSelector, flagInitialised, function(){
@@ -97,8 +98,43 @@ function hookupSelectorCurrency() {
         });
     });
     console.log("form currency initialised")
+    */
+   
+    let dropdownCurrency = $(idCurrency)[0];
+    // dropdownCurrency.options.map(function(option) {
+    let option, indexHyphen, textOption;
+    for (let indexOption = 0; indexOption < dropdownCurrency.options.length; indexOption++) {
+        option = $(dropdownCurrency.options[indexOption]);
+        textOption = option.text();
+        indexHyphen = textOption.indexOf('-');
+        option.attr(attrTextExpanded, textOption);
+        option.attr(attrTextCollapsed, textOption.substring(0, indexHyphen - 1));
+        option.addClass(flagCollapsed);
+    }
+    handleSelectCollapse(dropdownCurrency);
+    initialiseEventHandler(dropdownCurrency, flagInitialised, function() {
+        dropdownCurrency = $(dropdownCurrency);
+        dropdownCurrency.on("focus", function() {
+            handleSelectExpand(dropdownCurrency);
+        });
+        dropdownCurrency.on("blur", function() {
+            handleSelectCollapse(dropdownCurrency);
+        });
+        dropdownCurrency.on("change", function() {
+            let selectedCurrency = dropdownCurrency.val();
+            console.log("selected currency: ", selectedCurrency);
+            let basket = getLocalStorage(keyBasket);
+            basket[keyIdCurrency] = selectedCurrency;
+            // setLocalStorage(keyIdCurrency, selectedCurrency);
+            setLocalStorage(keyBasket, basket);
+            let ajaxData = {};
+            ajaxData[keyBasket] = basket;
+            ajaxJSONData('update currency', mapHashToController(hashPageCurrent), ajaxData, loadPageBody, false);
+        });
+    });
 }
 function hookupSelectorDeliveryRegion() {
+    /*
     let elForm = $(idFormDeliveryRegion);
     let elSelector = $(elForm.find('select')[0]);
     initialiseEventHandler(elSelector, flagInitialised, function(){
@@ -111,7 +147,62 @@ function hookupSelectorDeliveryRegion() {
         });
         console.log("form delivery region initialised")
     });
+    */
+   
+    let dropdownRegion = $(idRegionDelivery)[0];
+    
+    let option, indexHyphen, textOption;
+    for (let indexOption = 0; indexOption < dropdownRegion.options.length; indexOption++) {
+        option = $(dropdownRegion.options[indexOption]);
+        textOption = option.text();
+        indexHyphen = textOption.indexOf('-');
+        option.attr(attrTextExpanded, textOption);
+        option.attr(attrTextCollapsed, textOption.substring(0, indexHyphen - 1));
+        option.addClass(flagCollapsed);
+    }
+
+    handleSelectCollapse(dropdownRegion);
+
+    initialiseEventHandler(dropdownRegion, flagInitialised, function() {
+        dropdownRegion = $(dropdownRegion);
+        dropdownRegion.on("focus", function() {
+            console.log("dropdown region focused");
+            handleSelectExpand(dropdownRegion);
+        });
+        dropdownRegion.on("blur", function() {
+            console.log("dropdown region blurred");
+            handleSelectCollapse(dropdownRegion);
+        });
+        dropdownRegion.on("change", function() {
+            handleSelectCollapse(dropdownRegion);
+            let selectedRegion = dropdownRegion.val();
+            console.log("selected region: ", selectedRegion);
+            let basket = getLocalStorage(keyBasket);
+            basket[keyIdRegionDelivery] = selectedRegion;
+            // setLocalStorage(keyIdRegionDelivery, selectedRegion);
+            setLocalStorage(keyBasket, basket);
+            let ajaxData = {};
+            ajaxData[keyIdRegionDelivery] = selectedRegion;
+            ajaxJSONData('update region', mapHashToController(hashStoreSetRegion), ajaxData, null, false);
+        });
+    });
 }
+
+function handleSelectCollapse(elementSelect) {
+    let optionSelected = $(elementSelect).find('option:selected');
+    optionSelected.text(optionSelected.attr(attrTextCollapsed));
+    console.log('collapsed: ', optionSelected.text());
+    optionSelected.removeClass(flagExpanded);
+    optionSelected.addClass(flagCollapsed);
+}
+function handleSelectExpand(elementSelect) {
+    let optionSelected = $(elementSelect).find('option:selected');
+    optionSelected.text(optionSelected.attr(attrTextExpanded));
+    console.log('expanded: ', optionSelected.text());
+    optionSelected.removeClass(flagCollapsed);
+    optionSelected.addClass(flagExpanded);
+}
+
 function hookupCheckboxIsIncludedVAT() {
     let elForm = $(idFormIsIncludedVAT);
     let elSelector = $(elForm.find('input[type="checkbox"]')[0]);

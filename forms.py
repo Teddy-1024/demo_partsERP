@@ -96,7 +96,9 @@ class Form_Is_Included_VAT(FlaskForm):
     is_included = BooleanField('Include VAT')
 
 class Form_Delivery_Region(FlaskForm):
-    id_region_delivery = SelectField('Region')
+    id_id_region_delivery = 'id_region_delivery'
+    id_region_delivery = SelectField('Region', id='id_region_delivery')
 
 class Form_Currency(FlaskForm):
-    id_currency = SelectField('Currency')
+    id_id_currency = 'id_currency'
+    id_currency = SelectField('Currency', id='id_currency')

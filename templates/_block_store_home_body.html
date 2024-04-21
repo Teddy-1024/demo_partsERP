@@ -1,0 +1,35 @@
+
+
+{% set block_id = 'styles' %}
+{% include '_shared_store.html' %}
+<!-- Include Stylesheet -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/store_home.css') }}">
+
+<!-- HTML content -->
+<div class="model.FLAG_ROW">
+    <div class="leftcolumn">
+        {% for cat in model.category_list.categories %}
+            {% if cat.is_available() %}
+                {% include '_block_store_product_category.html' %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div id="{{ model.ID_BASKET_CONTAINER}}" class="rightcolumn">
+        {% include '_block_store_basket.html' %}
+    </div>
+</div>
+
+{% set block_id = 'scripts' %}
+{% include '_shared_store.html' %}
+<!-- Include JavaScript -->
+<script src="{{ url_for('static', filename='js/store_home.js') }}"></script>
+
+<script>
+    var hashPageCurrent = "{{ model.HASH_PAGE_STORE_HOME }}";
+
+    $(document).ready(function() {
+        console.log('Hooking up home page...');
+        hookupStorePageHome();
+        // hookupStore(); // in _shared_store.html
+    });
+</script>

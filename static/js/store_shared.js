@@ -11,7 +11,6 @@ function hookupStore() {
 function hookupBasket() {
     
     // const containerBasket = $(idContainerBasket);
-
     toggleShowBtnCheckout(); // containerBasket
     hookupBtnCheckout();
     hookupBtnsPlusMinus();
@@ -45,13 +44,19 @@ function hookupLocalStorageStore() {
         
     }
     if (createNewBasket) {
-        basket = {'items': []};
+        basket = {};
+        basket[keyItems] = [];
+        basket[keyIsIncludedVAT] = true;
+        basket[keyIdCurrency] = 1;
+        basket[keyIdRegionDelivery] = 1;
         setLocalStorage(keyBasket, basket);
         console.log("new local basket created");
     }
     let ajaxData = {}
     ajaxData[keyBasket] = basket;
-    // console.log('ajax:' + ajaxData);
+    // console.log("hookupLocalStorageStore\nhashStoreBasketLoad: " + hashStoreBasketLoad + "\n");
+    // ajaxData[keyIsIncludedVAT] = getLocalStorage(keyIsIncludedVAT);
+    console.log('ajax:' + ajaxData);
     ajaxJSONData(keyBasket, mapHashToController(hashStoreBasketLoad), ajaxData, loadBasket, false);
 }
 

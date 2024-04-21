@@ -108,9 +108,21 @@ class Basket_Item():
             '''
 
 class Basket():
+    KEY_BASKET: str = 'basket'
+    KEY_ID_CURRENCY: str = 'id_currency'
+    KEY_ID_REGION_DELIVERY: str = 'id_region_delivery'
+    KEY_IS_INCLUDED_VAT: str = 'is_included_VAT'
+    KEY_ITEMS: str = 'items'
     items: list
-    def __init__(self):
+    is_included_VAT: bool
+    id_region_delivery: int
+    id_currency: int
+    
+    def __init__(self, is_included_VAT, id_currency, id_region_delivery):
         self.items = []
+        self.is_included_VAT = is_included_VAT
+        self.id_currency = id_currency
+        self.id_region_delivery = id_region_delivery
     def add_item(self, item):
         av.val_instance(item, 'item', 'Basket.add_item', Basket_Item)
         self.items.append(item)
@@ -134,7 +146,12 @@ class Basket():
             json_list.append(item.to_json())
         return json_list
     def to_json(self):
-        return {'items': self.to_json_list()}
+        return {
+            Basket.KEY_ITEMS: self.to_json_list(),
+            Basket.KEY_IS_INCLUDED_VAT: self.is_included_VAT,
+            Basket.KEY_ID_CURRENCY: self.id_currency,
+            Basket.KEY_ID_REGION_DELIVERY: self.id_region_delivery
+        }
     def output_total(self):
         sum = 0
         for b_i in self.items:

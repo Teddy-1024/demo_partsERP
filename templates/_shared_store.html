@@ -10,33 +10,36 @@
     <script src="{{ url_for('static', filename='js/store_shared.js') }}"></script>
     <!-- Variables from Model_View_Store + model-->
     <script>
-        var attrFormType = "{{ model.attr_form_type }}";
-        var attrIdPermutation = "{{ model.attr_id_permutation }}";
-        var attrIdProduct = "{{ model.attr_id_product }}";
-        var attrIdProductCategory = "{{ model.attr_id_product_category }}";
-        var flagBasketItemDelete = "{{ model.flag_basket_item_delete }}";
-        var flagBtnBasketAdd = "{{ model.flag_btn_basket_add }}";
-        var flagBtnBuyNow = "{{ model.flag_btn_buy_now }}";
-        var hashStoreBasketAdd = "{{ model.hash_store_basket_add }}";
-        var hashStoreBasketDelete = "{{ model.hash_store_basket_delete }}";
-        var hashStoreBasketEdit = "{{ model.hash_store_basket_edit }}";
-        var hashStoreBasketLoad = "{{ model.hash_store_basket_load }}";
-        var hashStoreSelectCurrency = "{{ model.hash_store_select_currency }}";
-        var hashStoreSelectDeliveryRegion = "{{ model.hash_store_select_delivery_region }}";
-        var hashStoreSetIsIncludedVAT = "{{ model.hash_store_set_is_included_VAT }}";
-        var hashPageStoreBasket = "{{ model.hash_page_store_basket }}";
-        var idBasket = "#{{ model.id_basket }}";
-        var idBasketContainer = "#{{ model.id_basket_container }}";
-        var idBasketTotal = "#{{ model.id_basket_total }}";
-        var idBtnCheckout = "#{{ model.id_btn_checkout }}";
-        var idLabelBasketEmpty = "#{{ model.id_label_basket_empty }}";
+        var attrFormType = "{{ model.ATTR_FORM_TYPE }}";
+        var attrIdPermutation = "{{ model.ATTR_ID_PERMUTATION }}";
+        var attrIdProduct = "{{ model.ATTR_ID_PRODUCT }}";
+        var attrIdProductCategory = "{{ model.ATTR_ID_PRODUCT_CATEGORY }}";
+        var flagBasketItemDelete = "{{ model.FLAG_BASKET_ITEM_DELETE }}";
+        var flagBtnBasketAdd = "{{ model.FLAG_BTN_BASKET_ADD }}";
+        var flagBtnBuyNow = "{{ model.FLAG_BTN_BUY_NOW }}";
+        var hashStoreBasketAdd = "{{ model.HASH_STORE_BASKET_ADD }}";
+        var hashStoreBasketDelete = "{{ model.HASH_STORE_BASKET_DELETE }}";
+        var hashStoreBasketEdit = "{{ model.HASH_STORE_BASKET_EDIT }}";
+        var hashStoreBasketLoad = "{{ model.HASH_STORE_BASKET_LOAD }}";
+        var hashStoreSetCurrency = "{{ model.HASH_STORE_SET_CURRENCY }}";
+        var hashStoreSetRegion = "{{ model.HASH_STORE_SET_REGION }}";
+        var hashStoreSetIsIncludedVAT = "{{ model.HASH_STORE_SET_IS_INCLUDED_VAT }}";
+        var hashPageStoreBasket = "{{ model.HASH_PAGE_STORE_BASKET }}";
+        var idBasket = "#{{ model.ID_BASKET }}";
+        var idBasketContainer = "#{{ model.ID_BASKET_CONTAINER }}";
+        var idBasketTotal = "#{{ model.ID_BASKET_TOTAL }}";
+        var idBtnCheckout = "#{{ model.ID_BUTTON_CHECKOUT }}";
+        var idCurrency = "#{{ model.ID_CURRENCY }}";
+        var idLabelBasketEmpty = "#{{ model.ID_LABEL_BASKET_EMPTY }}";
+        var idRegionDelivery = "#{{ model.ID_REGION_DELIVERY }}";
         var keyIdCurrency = "{{ model.KEY_ID_CURRENCY }}";
-        var keyIdPermutation = "{{ model.key_id_permutation }}";
-        var keyIdProduct = "{{ model.key_id_product }}";
+        var keyItems = "{{ model.KEY_ITEMS }}";
+        var keyIdPermutation = "{{ model.KEY_ID_PERMUTATION }}";
+        var keyIdProduct = "{{ model.KEY_ID_PRODUCT }}";
         var keyIdRegionDelivery = "{{ model.KEY_ID_REGION_DELIVERY }}";
         var keyIsIncludedVAT = "{{ model.KEY_IS_INCLUDED_VAT }}";
-        var typeFormBasketAdd = "{{ model.type_form_basket_add }}";
-        var typeFormBasketEdit = "{{ model.type_form_basket_edit }}";
+        var typeFormBasketAdd = "{{ model.TYPE_FORM_BASKET_ADD }}";
+        var typeFormBasketEdit = "{{ model.TYPE_FORM_BASKET_EDIT }}";
 
         if (!isEmpty({{ model.basket.items }})) {
             localStorage.setItem(keyBasket, JSON.parse(JSON.stringify({'items': "{{ model.basket.items }}"}))); 
@@ -48,4 +51,30 @@
         });
         
     </script>
+{% elif block_id == 'checkout' %}
+<!-- Variables from Model_View_Store + model-->
+<script>
+    var hashPageStoreCheckout = "{{ model.HASH_PAGE_STORE_CHECKOUT }}";
+    var hashPageStoreCheckoutSession = "{{ model.HASH_PAGE_STORE_CHECKOUT_SESSION }}";
+    var hashStoreBasketInfo = "{{ model.HASH_STORE_BASKET_INFO }}";
+    var idOverlayInfoBilling = "#{{ model.ID_OVERLAY_INFO_BILLING }}";
+    var idOverlayInfoDelivery = "#{{ model.ID_OVERLAY_INFO_DELIVERY }}";
+    var idContainerInfoBilling = "#{{ model.ID_CONTAINER_INFO_BILLING }}";
+    var idContainerInfoDelivery = "#{{ model.ID_CONTAINER_INFO_DELIVERY }}";
+    var keyIdCheckout = "{{ model.KEY_ID_CHECKOUT }}";
+    var keyInfoBilling = "{{ model.KEY_INFO_BILLING }}";
+    var keyInfoDelivery = "{{ model.KEY_INFO_DELIVERY }}";
+    var keyInfoIdentical = "{{ model.KEY_INFO_IDENTICAL }}";
+    var keyInfoType = "{{ model.KEY_INFO_TYPE }}";
+    var keyIsSubscription = "{{ model.KEY_IS_SUBSCRIPTION }}";
+    var keyAddress1 = "{{ model.KEY_ADDRESS1 }}";
+    var keyAddress2 = "{{ model.KEY_ADDRESS2 }}";
+    var keyCity = "{{ model.KEY_CITY }}";
+    var keyCounty = "{{ model.KEY_COUNTY }}";
+    var keyNameFull = "{{ model.KEY_NAME_FULL }}";
+    var keyPhoneNumber = "{{ model.KEY_PHONE_NUMBER }}";
+    var keyPostcode = "{{ model.KEY_POSTCODE }}";
+    var keyRegion = "{{ model.KEY_REGION }}";
+    var keyUrlCheckout = "{{ model.KEY_URL_CHECKOUT }}";
+</script>
 {% endif %}

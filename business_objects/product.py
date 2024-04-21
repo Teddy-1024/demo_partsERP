@@ -317,6 +317,15 @@ class Product(db.Model):
         av.val_instance(discount, 'discount', 'Product.add_discount', Discount)
         index_permutation = self.permutation_index[discount.id_permutation] # self.get_index_permutation_from_id(discount.id_permutation)
         self.permutations[index_permutation].add_discount(discount)
+    def has_permutations(self):
+        return len(self.permutations) > 0
+    def is_available(self):
+        if len(self.permutations) == 0:
+            return False
+        for permutation in self.permutations:
+            if permutation.is_available():
+                return True
+        return False
 
 
 class Product_Permutation(db.Model):
@@ -362,7 +371,7 @@ class Product_Permutation(db.Model):
         self.form_basket_add = Form_Basket_Add()
         self.form_basket_edit = Form_Basket_Edit()
         self.is_unavailable_in_currency_or_region = False
-        self.is_available = True
+        # self.is_available = False
 
     def make_from_DB_product(query_row):
         _m = 'Product_Permutation.make_from_DB_product'
@@ -422,6 +431,8 @@ class Product_Permutation(db.Model):
         permutation.id_permutation = json_basket_item[key_id_permutation]
         return permutation
 
+    def is_available(self):
+        return len(self.prices) > 0
     def get_price(self):
         return self.prices[0]
     def get_price_local_VAT_incl(self):

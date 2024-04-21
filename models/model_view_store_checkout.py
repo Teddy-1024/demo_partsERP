@@ -41,13 +41,13 @@ class Model_View_Store_Checkout(Model_View_Store_Basket):
     def title(self):
         return 'Store Checkout'
 
-    def __new__(cls, db, id_user, app):
+    def __new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
         # Initialiser - validation
-        return super(Model_View_Store_Checkout, cls).__new__(cls, db, id_user, app)
+        return super(Model_View_Store_Checkout, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
     
-    def __init__(self, db, id_user, app):
+    def __init__(self, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
         # Constructor
-        super().__init__(db, id_user, app)
+        super().__init__(db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
         self.key_secret_stripe = os.environ.get("KEY_SECRET_STRIPE")
         self.key_public_stripe = os.environ.get("KEY_PUBLIC_STRIPE")
         

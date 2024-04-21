@@ -9,30 +9,30 @@
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/store_home.css') }}"> css/store_basket.css -->
     
     <!-- HTML content -->
-    <div class="{{ model.flag_card }}">
-        <div class="{{ model.flag_container }} {{ model.flag_column }}">
-            <div id="{{ model.id_container_info_delivery }}" class="{{ model.flag_container }} {{ model.flag_row }}" style="border-bottom: 1px black;">
+    <div class="{{ model.FLAG_CARD }}">
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div id="{{ model.ID_CONTAINER_INFO_DELIVERY }}" class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="border-bottom: 1px black;">
                 <h2>Delivery Information</h2>
-                <div class="{{ model.flag_container }} {{ model.flag_row }}">
+                <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
                     Valid delivery information not submitted
                 </div>
             </div>
-            <div id="{{ model.id_container_info_billing }}" class="{{ model.flag_container }} {{ model.flag_row }}" style="border-bottom: 1px black;">
+            <div id="{{ model.ID_CONTAINER_INFO_BILLING }}" class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="border-bottom: 1px black;">
                 <h2>Billing Information</h2>
-                <div class="{{ model.flag_container }} {{ model.flag_row }}">
+                <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
                     Valid billing information not submitted
                 </div>
             </div>
-            <div class="{{ model.flag_container }}">
-                <div id="{{ model.id_basket_container }}">
+            <div class="{{ model.FLAG_CONTAINER }}">
+                <div id="{{ model.ID_BASKET_CONTAINER }}">
                     {% include '_block_store_basket.html' %}
                 </div>
                 <!-- Comes with basket block
-                <div class="{{ model.flag_container }}">
+                <div class="{{ model.FLAG_CONTAINER }}">
                     <!-- subtotal --
-                    <h2 id="id_basket_total">Order total: £{{ model.output_basket_total() }}</h2>
+                    <h2 id="id_basket_total">Order total: £{{ model.OUTPUT_BASKET_TOTAL() }}</h2>
                     <!-- checkout button - hidden unless valid details entered everywhere above --
-                    <button type="submit" class="{{ model.flag_btn_submit }}">Complete Purchase</button>
+                    <button type="submit" class="{{ model.FLAG_BTN_SUBMIT }}">Complete Purchase</button>
                 </div>
                 -->
             </div>
@@ -54,31 +54,10 @@
     {% set block_id = 'scripts' %}
     {% include '_shared_store.html' %}
     <script src="{{ url_for('static', filename='js/store_page_basket.js') }}"></script>
-
+    {% set block_id = 'checkout' %}
+    {% include '_shared_store.html' %}
     <script>
-        var hashPageCurrent = "{{ model.hash_page_store_basket }}";
-        var hashPageStoreCheckout = "{{ model.hash_page_store_checkout }}";
-        var hashPageStoreCheckoutSession = "{{ model.hash_page_store_checkout_session }}";
-        var hashStoreBasketInfo = "{{ model.hash_store_basket_info }}";
-        var idOverlayInfoBilling = "#{{ model.id_overlay_info_billing }}";
-        var idOverlayInfoDelivery = "#{{ model.id_overlay_info_delivery }}";
-        var idContainerInfoBilling = "#{{ model.id_container_info_billing }}";
-        var idContainerInfoDelivery = "#{{ model.id_container_info_delivery }}";
-        var keyIdCheckout = "{{ model.key_id_checkout }}";
-        var keyInfoBilling = "{{ model.key_info_billing }}";
-        var keyInfoDelivery = "{{ model.key_info_delivery }}";
-        var keyInfoIdentical = "{{ model.key_info_identical }}";
-        var keyInfoType = "{{ model.key_info_type }}";
-        var keyIsSubscription = "{{ model.key_is_subscription }}";
-        var keyAddress1 = "{{ model.key_address1 }}";
-        var keyAddress2 = "{{ model.key_address2 }}";
-        var keyCity = "{{ model.key_city }}";
-        var keyCounty = "{{ model.key_county }}";
-        var keyNameFull = "{{ model.key_name_full }}";
-        var keyPhoneNumber = "{{ model.key_phone_number }}";
-        var keyPostcode = "{{ model.key_postcode }}";
-        var keyRegion = "{{ model.key_region }}";
-        var keyUrlCheckout = "{{ model.key_url_checkout }}";
+        var hashPageCurrent = "{{ model.HASH_PAGE_STORE_BASKET }}";
         
         $(document).ready(function() {
             console.log('Hooking up store basket review page...');

@@ -43,9 +43,10 @@ import os
 
 # CLASSES
 class DataStore_Store():
-    KEY_IS_INCLUDED_VAT = 'is_included_VAT'
-    KEY_ID_CURRENCY = 'id_currency'
-    KEY_ID_REGION_DELIVERY = 'id_region_delivery'
+    KEY_BASKET: str = Basket.KEY_BASKET
+    KEY_IS_INCLUDED_VAT = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
+    KEY_ID_CURRENCY = Basket.KEY_ID_CURRENCY # 'id_currency'
+    KEY_ID_REGION_DELIVERY = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
     # Attributes
     db: SQLAlchemy
     # Global constants
@@ -112,7 +113,7 @@ class DataStore_Store():
         return category_list, errors # categories, category_index
     
 
-    def edit_basket(self, ids_permutation_basket, quantities_permutation_basket, id_permutation_edit, quantity_permutation_edit, sum_not_edit, id_currency, id_region_delivery):
+    def edit_basket(self, ids_permutation_basket, quantities_permutation_basket, id_permutation_edit, quantity_permutation_edit, sum_not_edit, id_currency, id_region_delivery, is_included_VAT):
         # redundant argument validation? 
         _m = 'DataStore_Store.edit_basket'
         print(f'{_m}\nstarting...')
@@ -176,7 +177,7 @@ class DataStore_Store():
         print(f'raw basket: {result_set}')
         # print(f'variations: {result_set_3}')
         # variations = [Variation(**row) for row in result_set_3]
-        basket = Basket()
+        basket = Basket(is_included_VAT, id_currency, id_region_delivery)
         for row in result_set:
             index_category = category_list.get_index_category_from_id(row[0])
             category = category_list.categories[index_category]
@@ -732,7 +733,11 @@ class DataStore_Store():
         return regions, currencies
     
     def get_metadata_basket(json_request):
-        is_included_VAT = json_request[DataStore_Store.KEY_IS_INCLUDED_VAT]
-        id_currency = json_request[DataStore_Store.KEY_ID_CURRENCY]
-        id_region_delivery = json_request[DataStore_Store.KEY_ID_REGION_DELIVERY]
+        try:
+            basket = json_request[DataStore_Store.KEY_BASKET]
+        except KeyError:
+            basket = {DataStore_Store.KEY_IS_INCLUDED_VAT: True, DataStore_Store.KEY_ID_CURRENCY: 1, DataStore_Store.KEY_ID_REGION_DELIVERY: 1}
+        is_included_VAT = basket[DataStore_Store.KEY_IS_INCLUDED_VAT]
+        id_currency = basket[DataStore_Store.KEY_ID_CURRENCY]
+        id_region_delivery = basket[DataStore_Store.KEY_ID_REGION_DELIVERY]
         return id_currency, id_region_delivery, is_included_VAT

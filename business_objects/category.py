@@ -184,6 +184,14 @@ class Category(db.Model):
         if not (len(self.products) == 0):
             print(f'getting first permutation from product')
         return None if len(self.products) == 0 else self.products[0].get_permutation_selected()
+    
+    def is_available(self):
+        if len(self.products) == 0:
+            return False
+        for product in self.products:
+            if product.is_available():
+                return True
+        return False
 
 
 class Product_Category_Filters():

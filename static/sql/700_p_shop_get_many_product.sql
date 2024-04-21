@@ -178,6 +178,14 @@ BEGIN
 		SET a_get_inactive_discount = 0;
     END IF;
     
+    /*
+    SELECT a_id_user, a_get_all_category, a_ids_category, a_get_inactive_category, a_get_all_product, 
+    a_ids_product, a_get_inactive_product, a_get_first_product_only, a_get_all_product_permutation, a_ids_permutation, 
+    a_get_inactive_permutation, a_get_all_image, a_ids_image, a_get_inactive_image, a_get_first_image_only, 
+    a_get_all_delivery_region, a_ids_delivery_region, a_get_inactive_delivery_region, a_get_all_currency, a_ids_currency, 
+    a_get_inactive_currency, a_get_all_discount, a_ids_discount, a_get_inactive_discount
+    ;
+    */
     
     -- Temporary tables
     DROP TABLE IF EXISTS tmp_Discount;
@@ -277,7 +285,8 @@ BEGIN
 			FOREIGN KEY (id_region)
 			REFERENCES Shop_Region(id_region),
         active BIT NOT NULL,
-        display_order INT NOT NULL
+        display_order INT NOT NULL,
+        requires_delivery_option BIT NOT NULL DEFAULT 0
     );
     
     CREATE TABLE tmp_Currency (
@@ -506,18 +515,20 @@ BEGIN
     INSERT INTO tmp_Delivery_Region (
 		id_region,
         active,
-        display_order
+        display_order,
+		requires_delivery_option
     )
     WITH RECURSIVE Recursive_CTE_Delivery_Region AS (
 		SELECT 
 			DR.id_region AS id_region_parent,
-            NULL AS id_region_child
-		FROM Shop_Region DR
-		INNER JOIN Shop_Product_Delivery_Option_Link PDOL
-			ON DR.id_region = PDOL.id_region
-		INNER JOIN tmp_Shop_Product t_P
-			ON PDOL.id_product = t_P.id_product
-			AND PDOL.id_permutation <=> t_P.id_permutation
+            NULL AS id_region_child,
+            CASE WHEN FIND_IN_SET(DR.id_region, a_ids_delivery_region) > 0 THEN 1 ELSE 0 END AS requires_delivery_option
+		FROM Shop_Product_Currency_Region_Link PCRL
+		INNER JOIN Shop_Currency C ON PCRL.id_currency = C.id_currency
+		INNER JOIN tmp_Shop_Product t_P 
+			ON PCRL.id_product <=> t_P.id_product
+			AND PCRL.id_permutation <=> t_P.id_permutation
+		INNER JOIN Shop_Region DR ON PCRL.id_region_purchase = DR.id_region
 		WHERE 
 			(
 				a_get_all_delivery_region
@@ -525,39 +536,79 @@ BEGIN
 			)
 			AND (
 				a_get_inactive_delivery_region
-				OR DR.active
+				OR DR.active = 1
 			)
 		UNION
         SELECT 
 			DRB.id_region_parent,
-			DRB.id_region_child
+			DRB.id_region_child,
+            0 AS requires_delivery_option
 		FROM Shop_Region_Branch DRB
         INNER JOIN Recursive_CTE_Delivery_Region r_DR 
 			ON DRB.id_region_parent = r_DR.id_region_child
             AND (
 				a_get_inactive_delivery_region
-                OR DRB.active
+                OR DRB.active = 1
             )
 	)
     SELECT
 		DR.id_region,
         DR.active,
-        DR.display_order
+        DR.display_order,
+		requires_delivery_option
 	FROM Shop_Region DR
     INNER JOIN Recursive_CTE_Delivery_Region r_DR 
 		ON DR.id_region = r_DR.id_region_parent
 		OR DR.id_region = r_DR.id_region_child
     ;
+    /*
+    select * from tmp_delivery_region;
+    SELECT * 
+	FROM tmp_Shop_Product t_P 
+	WHERE 
+		/*(
+			a_get_all_category 
+			OR a_get_all_product
+			OR a_get_all_product_permutation
+		)*
+		FIND_IN_SET(t_P.id_category, a_ids_category) > 0
+		OR FIND_IN_SET(t_P.id_product, a_ids_product) > 0
+		OR FIND_IN_SET(t_P.id_permutation, a_ids_permutation) > 0
+	;
+    */
     
     IF v_has_filter_delivery_region THEN
 		SET v_ids_permutation_unavailable = (
 			SELECT GROUP_CONCAT(t_P.id_permutation SEPARATOR ', ')
-			FROM tmp_Shop_Product t_P 
-			INNER JOIN Shop_Product_Currency_Region_Link PCRL 
-				ON t_P.id_permutation = PCRL.id_permutation
+			FROM (
+				SELECT * 
+				FROM tmp_Shop_Product t_P 
+				WHERE
+					/*(
+						a_get_all_category 
+						OR a_get_all_produc
+						OR a_get_all_product_permutation
+					)*/
+					FIND_IN_SET(t_P.id_category, a_ids_category) > 0
+					OR FIND_IN_SET(t_P.id_product, a_ids_product) > 0
+					OR FIND_IN_SET(t_P.id_permutation, a_ids_permutation) > 0
+			) t_P
+			LEFT JOIN (
+				SELECT *
+				FROM Shop_Product_Currency_Region_Link PCRL
+				WHERE 
+					(
+						a_get_all_delivery_region
+						OR FIND_IN_SET(PCRL.id_region_purchase, a_ids_delivery_region) > 0
+					)
+			) PCRL
+				ON t_P.id_product <=> PCRL.id_product
+				AND t_P.id_permutation <=> PCRL.id_permutation
 			LEFT JOIN tmp_Delivery_Region t_DR
 				ON PCRL.id_region_purchase = t_DR.id_region
-			WHERE ISNULL(t_DR.id_region)
+				AND t_DR.requires_delivery_option = 1
+			WHERE 
+				ISNULL(t_DR.id_region)
 		);
         IF NOT ISNULL(v_ids_permutation_unavailable) THEN
 			INSERT INTO tmp_Msg_Error (
@@ -586,7 +637,7 @@ BEGIN
     -- select * from tmp_Shop_Product;
     
     # Currencies
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid) THEN
 		INSERT INTO tmp_Currency (
 			id_currency,
 			active,
@@ -625,14 +676,14 @@ BEGIN
 					SELECT * 
 					FROM tmp_Shop_Product t_P 
 					WHERE 
-						(
+						/*(
 							a_get_all_category 
 							OR a_get_all_product
 							OR a_get_all_product_permutation
-						)
-							AND FIND_IN_SET(t_P.id_category, a_ids_category) = 0
-							AND FIND_IN_SET(t_P.id_product, a_ids_product) = 0
-							AND FIND_IN_SET(t_P.id_permutation, a_ids_permutation) = 0
+						)*/
+						FIND_IN_SET(t_P.id_category, a_ids_category) > 0
+						OR FIND_IN_SET(t_P.id_product, a_ids_product) > 0
+						OR FIND_IN_SET(t_P.id_permutation, a_ids_permutation) > 0
 				) t_P
 				INNER JOIN (
 					SELECT *
@@ -674,30 +725,31 @@ BEGIN
     END IF;
     
     # Discounts
-    INSERT INTO tmp_Discount (
-		id_discount,
-        active,
-        display_order
-    )
-    SELECT
-		D.id_discount,
-        D.active,
-        D.display_order
-	FROM Shop_Discount D
-    INNER JOIN tmp_Shop_Product t_P
-		ON D.id_product = t_P.id_product
-		AND D.id_permutation <=> t_P.id_permutation
-    WHERE
-		(
-			a_get_all_discount
-			OR FIND_IN_SET(D.id_discount, a_ids_discount) > 0
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid) THEN
+		INSERT INTO tmp_Discount (
+			id_discount,
+			active,
+			display_order
 		)
-		AND (
-			a_get_inactive_discount
-            OR D.active
-		)
-    ;
-    
+		SELECT
+			D.id_discount,
+			D.active,
+			D.display_order
+		FROM Shop_Discount D
+		INNER JOIN tmp_Shop_Product t_P
+			ON D.id_product = t_P.id_product
+			AND D.id_permutation <=> t_P.id_permutation
+		WHERE
+			(
+				a_get_all_discount
+				OR FIND_IN_SET(D.id_discount, a_ids_discount) > 0
+			)
+			AND (
+				a_get_inactive_discount
+				OR D.active
+			)
+		;
+    END IF;
     # select 'pre-permission results';
     # select * from tmp_Shop_Product;
     
@@ -725,7 +777,7 @@ BEGIN
 		
         DELETE FROM tmp_Shop_Product t_P
 		WHERE 
-			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_User_Eval_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_User_Eval_Temp), '%');
+			FIND_IN_SET(t_P.id_permutation, (SELECT GROUP_CONCAT(UET.id_permutation SEPARATOR ',') FROM Shop_User_Eval_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_User_Eval_Temp), '%');
             OR (
 				ISNULL(t_P.can_view)
 				AND (
@@ -833,6 +885,13 @@ BEGIN
 		ON t_P.id_permutation = PPVL.id_permutation
 	ORDER BY t_P.display_order
 	;
+    */ 
+    -- select * from Shop_Product_Currency_Region_Link;
+    -- select * from shop_currency;
+    /*
+    select * from tmp_Currency;
+    select * from tmp_delivery_region;
+    select * from tmp_shop_product;
     */
     
     # Product Price
@@ -851,8 +910,8 @@ BEGIN
         ROW_NUMBER() OVER(ORDER BY t_P.rank_permutation, C.display_order) AS display_order
 	FROM Shop_Product_Currency_Region_Link PCRL
 	INNER JOIN tmp_Shop_Product t_P
-		ON t_P.id_product = PCRL.id_product
-		AND t_P.id_permutation <=> PCRL.id_permutation
+		ON PCRL.id_product <=> t_P.id_product
+		AND PCRL.id_permutation <=> t_P.id_permutation
 	-- INNER JOIN Shop_Product P ON PCRL.id_product = P.id_product
 	INNER JOIN tmp_Currency t_C ON PCRL.id_currency = t_C.id_currency
 	INNER JOIN Shop_Currency C ON t_C.id_currency = C.id_currency
@@ -1056,7 +1115,7 @@ CALL p_shop_get_many_product (
 	0, # a_get_inactive_product
     0, # a_get_first_product_only
     1, # a_get_all_product_permutation
-	'', # a_ids_permutation
+	'1,2,3,4,5,6', # a_ids_permutation
 	0, # a_get_inactive_permutation
     0, # a_get_all_image
 	'', # a_ids_image

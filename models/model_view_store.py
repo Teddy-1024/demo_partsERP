@@ -67,26 +67,30 @@ class Model_View_Store(Model_View_Base):
     ID_BUTTON_CHECKOUT = 'btnCheckout'
     ID_BUTTON_BASKET_ADD = 'btnBasketAdd'
     ID_BUTTON_BUY_NOW = 'btnBuyNow'
+    ID_CURRENCY = Form_Currency.id_id_currency # 'id_currency'
     ID_CURRENCY_DEFAULT = 1
     ID_LABEL_BASKET_EMPTY = 'basketEmpty'
+    ID_REGION_DELIVERY = Form_Delivery_Region.id_id_region_delivery # 'id_region_delivery'
     ID_REGION_DELIVERY_DEFAULT = 1
     IS_INCLUDED_VAT_DEFAULT = True
-    KEY_BASKET = 'basket'
+    KEY_BASKET = Basket.KEY_BASKET # 'basket'
     # KEY_CODE_CURRENCY = 'code_currency'
     KEY_FORM = 'form'
-    KEY_ID_CURRENCY = 'id_currency'
+    KEY_ID_CURRENCY = Basket.KEY_ID_CURRENCY # 'id_currency'
     KEY_ID_PRODUCT = 'product_id'
     KEY_ID_PERMUTATION = 'permutation_id'
-    KEY_ID_REGION_DELIVERY = 'id_region_delivery'
-    KEY_IS_INCLUDED_VAT = 'is_included_VAT'
+    KEY_ID_REGION_DELIVERY = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
+    KEY_IS_INCLUDED_VAT = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
+    KEY_ITEMS = Basket.KEY_ITEMS # 'items'
     KEY_PRICE = 'price'
     KEY_QUANTITY = 'quantity'
+    KEY_VALUE_DEFAULT = 'default'
     TYPE_FORM_BASKET_ADD = 'Form_Basket_Add'
     TYPE_FORM_BASKET_EDIT = 'Form_Basket_Edit'
     # development variables
     # valid_product_id_list = ['prod_PB0NUOSEs06ymG']
 
-    def __new__(cls, db, info_user, app, id_currency, id_region_delivery): # , *args, **kwargs``
+    def __new__(cls, db, info_user, app, id_currency, id_region_delivery, is_included_VAT): # , *args, **kwargs``
         # Initialiser - validation
         _m = 'Model_View_Store.__new__'
         v_arg_type = 'class attribute'
@@ -95,26 +99,27 @@ class Model_View_Store(Model_View_Base):
         # return super().__new__(cls, *args, **kwargs)
         return super().__new__(cls, db, info_user, app) # Model_View_Store, cls
     
-    def __init__(self, db, info_user, app, id_currency, id_region_delivery):
+    def __init__(self, db, info_user, app, id_currency, id_region_delivery, is_included_VAT):
         # Constructor
         _m = 'Model_View_Store.__init__'
         print(f'{_m}\nstarting')
         super().__init__(db, info_user, app)
         self.is_page_store = True
-        self.basket = Basket()
+        self.basket = Basket(id_currency, id_region_delivery, is_included_VAT)
         # self.basket_total = 0
         # self.db = db
         # if logged in:
         # else:
         self.id_currency = id_currency
         self.id_region_delivery = id_region_delivery
+        self.is_included_VAT = is_included_VAT
         self.show_delivery_option = True
         self.form_is_included_VAT = Form_Is_Included_VAT()
         regions, currencies = self.get_regions_and_currencies()
-        self.form_currency = Form_Currency()
+        self.form_currency = Form_Currency(id_currency=self.id_currency)
         self.form_currency.id_currency.choices = [(currency.id_currency, f'{currency.code} - {currency.name}') for currency in currencies]
         self.form_currency.id_currency.data = str(self.id_currency) if len(currencies) > 0 else None
-        self.form_delivery_region = Form_Delivery_Region()
+        self.form_delivery_region = Form_Delivery_Region(id_region_delivery=self.id_region_delivery)
         self.form_delivery_region.id_region_delivery.choices = [(region.id_region, f'{region.code} - {region.name}') for region in regions]
         self.form_delivery_region.id_region_delivery.data = str(self.id_region_delivery) if len(regions) > 0 else None
 
@@ -203,14 +208,14 @@ class Model_View_Store(Model_View_Base):
         # item_added = False
         print(f'basket: {self.basket}')
         ids_permutation, quantities_permutation = self.basket.to_csv()
-        self.basket = DataStore_Store(self.db, self.info_user, self.app).edit_basket(ids_permutation, quantities_permutation, permutation_id, quantity, quantity_sum_not_replace, self.app.id_currency, self.app.id_region_delivery)
+        self.basket = DataStore_Store(self.db, self.info_user, self.app).edit_basket(ids_permutation, quantities_permutation, permutation_id, quantity, quantity_sum_not_replace, self.id_currency, self.id_region_delivery, self.is_included_VAT)
         return True
     
     def get_basket(self, json_data):
         self.import_JSON_basket(json_data)
         if self.is_user_logged_in:
             ids_permutation, quantities_permutation = self.basket.to_csv()
-            self.basket = DataStore_Store(self.db, self.info_user, self.app).edit_basket(ids_permutation, quantities_permutation, None, None, None, self.app.id_currency, self.app.id_region_delivery)
+            self.basket = DataStore_Store(self.db, self.info_user, self.app).edit_basket(ids_permutation, quantities_permutation, None, None, None, self.id_currency, self.id_region_delivery, self.is_included_VAT)
             # return self.basket
     
     def _get_json_basket_id_CSVs_product_permutation(self, basket):
@@ -223,8 +228,8 @@ class Model_View_Store(Model_View_Base):
                     product_ids += ','
                     permutation_ids += ','
                 basket_item = basket[index_item]
-                id_product = basket_item[self.key_id_product]
-                id_permutation = basket_item[self.key_id_permutation]
+                id_product = basket_item[self.KEY_ID_PRODUCT]
+                id_permutation = basket_item[self.KEY_ID_PERMUTATION]
                 id_permutation = '' if (id_permutation is None or id_permutation == 'None') else str(id_permutation)
                 product_ids += str(id_product) # str(basket[b].product.id)
                 permutation_ids += id_permutation # str(basket[b].product.id)
@@ -235,7 +240,7 @@ class Model_View_Store(Model_View_Base):
         return product_ids, permutation_ids, item_index_dict
 
     def _get_basket_from_json(self, json_data):
-        basket = json_data[self.key_basket]['items']
+        basket = json_data[self.KEY_BASKET]['items']
         av.val_instance(basket, 'basket', 'Model_View_Store._get_basket_from_json', list)
         print(f'basket = {basket}')
         return basket
@@ -244,6 +249,10 @@ class Model_View_Store(Model_View_Base):
         _m = 'Model_View_Store.import_JSON_basket'
         # av.val_instance(db, 'db', _m, SQLAlchemy)
         items = self._get_basket_from_json(json_data)
+        basket = json_data[self.KEY_BASKET]
+        id_currency = basket[self.KEY_ID_CURRENCY]
+        id_region_delivery = basket[self.KEY_ID_REGION_DELIVERY]
+        is_included_VAT = basket[self.KEY_IS_INCLUDED_VAT]
         print(f'json basket items: {items}')
         product_ids, permutation_ids, item_index_dict = self._get_json_basket_id_CSVs_product_permutation(items)
         category_list, errors = DataStore_Store(self.db, self.info_user, self.app).get_many_product_category(Product_Filters(
@@ -252,12 +261,12 @@ class Model_View_Store(Model_View_Base):
             False, product_ids, False, False, # :a_get_all_product, :a_ids_product, :a_get_inactive_product, :a_get_first_product_only
             False, permutation_ids, False, # :a_get_all_permutation, :a_ids_permutation, :a_get_inactive_permutation
             False, '', False, True, # :a_get_all_image, :a_ids_image, :a_get_inactive_image, :a_get_first_image_only
-            False, str(self.app.id_region_delivery), False, # :a_get_all_delivery_region, :a_ids_delivery_region, :a_get_inactive_delivery_region
-            False, str(self.app.id_currency), False, #  :a_get_all_currency, :a_ids_currency, :a_get_inactive_currency
+            False, str(id_region_delivery), False, # :a_get_all_delivery_region, :a_ids_delivery_region, :a_get_inactive_delivery_region
+            False, str(id_currency), False, #  :a_get_all_currency, :a_ids_currency, :a_get_inactive_currency
             True, '', False # :a_get_all_discount, :a_ids_discount, :a_get_inactive_discount
         )) # product_ids=product_ids, get_all_category=False, get_all_product=False)
         # print(f'categories = {categories}')                    
-        self.basket = Basket()
+        self.basket = Basket(id_currency, id_region_delivery, is_included_VAT)
         if len(category_list.categories) > 0: # not (categories is None):
             for category in category_list.categories:
                 for product in category.products:
@@ -265,7 +274,7 @@ class Model_View_Store(Model_View_Base):
                     product.form_basket_edit = Form_Basket_Edit()
                     # key_index_product = Basket.get_key_product_index_from_ids_product_permutation(product.id_product, product.get_id_permutation())
                     permutation = product.get_permutation_selected()
-                    self.basket.add_item(Basket_Item.make_from_product_and_quantity_and_VAT_included(product, items[item_index_dict[str(permutation.id_permutation)]][self.key_quantity], self.app.is_included_VAT))
+                    self.basket.add_item(Basket_Item.make_from_product_and_quantity_and_VAT_included(product, items[item_index_dict[str(permutation.id_permutation)]][self.KEY_QUANTITY], self.is_included_VAT))
         """
         if len(items) > 0:
             for index_item in range(len(items)):
@@ -317,8 +326,8 @@ class Model_View_Store(Model_View_Base):
 
         # print(f'product id: {product_id}, type: {str(type(product_id))}')
         try:
-            permutation_id = json_data[self.key_id_permutation]
-            av.full_val_int(permutation_id, self.key_id_permutation, _m)
+            permutation_id = json_data[self.KEY_ID_PERMUTATION]
+            av.full_val_int(permutation_id, self.KEY_ID_PERMUTATION, _m)
             permutation_id = int(permutation_id)
         except:
             permutation_id = None

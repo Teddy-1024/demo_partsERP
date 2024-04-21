@@ -112,7 +112,7 @@ def contact():
 
 
 # Store
-@app.route('/store', methods=['GET'])
+@app.route('/store', methods=['GET', 'POST'])
 def store_home():
     print("store home")
     try:
@@ -120,17 +120,20 @@ def store_home():
     except:
         data = {}
     print(f'data={data}')
+    """
     try:
         id_currency = data.id_currency
     except:
         id_currency = Model_View_Store.ID_CURRENCY_DEFAULT
-    print(f"id_currency = {id_currency}")
     try:
         id_region_delivery = data.id_region_delivery
     except:
         id_region_delivery = Model_View_Store.ID_REGION_DELIVERY_DEFAULT
+    """
+    id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data)
+    print(f"id_currency = {id_currency}")
     print(f"id_region_delivery = {id_region_delivery}")
-    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery)
+    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
     # model.get_regions_and_currencies()
     # model.categories = Model_View_Store_Home.get_many_product_category(db)
     # product = categories[list(categories.keys())[0]][0]
@@ -163,9 +166,12 @@ def store_home():
         for p in cat.products:
             print(f'product: {p.name}')
             print(f'selected permutation: {p.get_permutation_selected()}')
-    return render_template('_page_store_home.html', model = model) # "<html><body><h1>Boobs</h1></html></body>"
-    # POST request
-    # return jsonify(Success=True, data={'html_block': render_template('_page_store_home.html', model = model)})
+    if request.method == 'GET':
+        return render_template('_page_store_home.html', model = model) # "<html><body><h1>Boobs</h1></html></body>"
+    else: # POST request
+        html_block = render_template('_block_store_home_body.html', model = model)
+        print(f'html_block:\n{html_block}')
+        return jsonify(Success=True, data={'html_block': html_block})
 
 # update with local basket, if not logged in- partial
 @app.route('/store/basket_load', methods=['POST'])
@@ -176,11 +182,11 @@ def basket_load():
     print(f'data={data}')
     
     # model, html_block = render_basket_from_JSON(data)
-    id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data)
-    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery)
+    id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data) # , Model_View_Store.KEY_BASKET)
+    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
     # model.import_JSON_basket(data)
     model.get_basket(data)
-    model.is_included_VAT = is_included_VAT
+    # model.is_included_VAT = is_included_VAT
 
     html_block = render_template('_block_store_basket.html', model = model)
     print(f'html_block:\n{html_block}')
@@ -192,9 +198,15 @@ def basket_add():
     data = request.json # .get('data')
     print(f'data: {data}')
     id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data)
-    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery)
-    model.is_included_VAT = is_included_VAT
+    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
+    # model.is_included_VAT = is_included_VAT
     form_data = data[Model_View_Store.key_form]
+    """
+    try:
+        form_data[Model_View_Store.KEY_VALUE_DEFAULT]
+    except KeyError:
+        form_data[Model_View_Store.KEY_VALUE_DEFAULT] = 
+    """
     print(f'form_data: {form_data}')
     form = Form_Basket_Add(**form_data)
     print('form acquired')
@@ -227,7 +239,7 @@ def basket_edit():
     data = request.json # .get('data')
     print(f'data: {data}')
     id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data)
-    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery)
+    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
     model.is_included_VAT = is_included_VAT
     form_data = data[Model_View_Store.key_form]
     print(f'form_data: {form_data}')
@@ -258,7 +270,7 @@ def basket_delete():
     data = request.json # .get('data')
     print(f'data: {data}')
     id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data)
-    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery)
+    model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
     model.is_included_VAT = is_included_VAT
     try:
         # print('importing basket')
@@ -292,7 +304,7 @@ def store_basket():
     try:
         data = request.json
         id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data)
-        model = Model_View_Store_Basket(db, get_info_user(), app, id_currency, id_region_delivery)
+        model = Model_View_Store_Basket(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
         model.is_included_VAT = is_included_VAT
     except:
         raise Exception('Bad data received by controller')
@@ -316,7 +328,8 @@ def basket_info():
     _m = 'basket_info'
     data = request.json # .get('data')
     print(f'data: {data}')
-    model = Model_View_Store_Basket(db, get_info_user(), app)
+    id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data)
+    model = Model_View_Store_Basket(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
     form_data = data[Model_View_Store.key_form]
     print(f'form_data: {form_data}')
     form = Form_Billing(**form_data)
@@ -360,8 +373,8 @@ def basket_info():
     return jsonify({'status': 'failure', 'Message': f'Invalid address information\n{form.errors}'})
 
 
-@app.route('/store/product?permutationId=<permutation_id>regionId=&<region_id>&currencyId=<currency_id>', methods=['GET']) # <product_id>&
-def store_product(permutation_id, region_id, currency_id):
+@app.route('/store/product?permutationId=<permutation_id>regionId=&<region_id>&currencyId=<currency_id>&isIncludedVAT=<is_included_VAT>', methods=['GET']) # <product_id>&
+def store_product(permutation_id, region_id, currency_id, is_included_VAT):
     _m = 'store_product'
     """
     av.full_val_int(product_id, 'product_id', _m)
@@ -379,7 +392,7 @@ def store_product(permutation_id, region_id, currency_id):
     # print(f'product id: {product_id}')
     print(f'permutation id: {permutation_id}')
     try:
-        model = Model_View_Store_Product(db, get_info_user(), app, permutation_id, currency_id, region_id)
+        model = Model_View_Store_Product(db, get_info_user(), app, permutation_id, currency_id, region_id, is_included_VAT)
         print('model reached')
         # model.id_currency, model.id_region_delivery, model.is_included_VAT = DataStore_Store.get_metadata_basket(request.json)
         # model.get_many_product_category(product_ids = str(product_id))
@@ -451,7 +464,8 @@ def get_checkout_session(session_id):
 def create_checkout_session():
     # quantity = request.form.get('quantity', 1)
     # domain_url = os.getenv('DOMAIN')
-    model = Model_View_Store_Checkout(db, get_info_user(), app)
+    id_currency, id_region_delivery, is_included_VAT = DataStore_Store.get_metadata_basket(data)
+    model = Model_View_Store_Checkout(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
     print('checkout model created')
     try:
         data = request.json # .get('data')
@@ -561,9 +575,9 @@ def set_delivery_region():
     if form.validate_on_submit():
         app.id_region_delivery = form.id_region_delivery.data
     """
-    app.id_region_delivery = form_data[Model_View_Base.KEY_ID_REGION_DELIVERY]
-    print(f'id_region_delivery: {app.id_region_delivery}')
-    return jsonify(Success=True, data={Model_View_Base.KEY_ID_REGION_DELIVERY: app.id_region_delivery})
+    id_region_delivery = form_data[Model_View_Store.KEY_BASKET][Model_View_Base.KEY_ID_REGION_DELIVERY]
+    print(f'id_region_delivery: {id_region_delivery}')
+    return jsonify(Success=True, data={Model_View_Base.KEY_ID_REGION_DELIVERY: id_region_delivery})
 
 # currency
 @app.route('/store/set_currency', methods=['POST'])

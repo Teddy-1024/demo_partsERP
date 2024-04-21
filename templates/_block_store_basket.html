@@ -1,6 +1,6 @@
 <!-- Basket -->
 {% set show_delivery_option = False %}
-<div id="{{ model.id_basket }}" class="{{ model.flag_card }} {{ model.flag_scrollable }}">
+<div id="{{ model.ID_BASKET }}" class="{{ model.FLAG_CARD }} {{ model.FLAG_SCROLLABLE }}">
     <div class="container column">
         <div class="container row">
             <h2>Basket</h2>
@@ -9,10 +9,10 @@
         {% for basket_item in model.basket.items %}
             {% include '_block_store_basket_item.html' %}
         {% endfor %}
-        <h3 id="{{ model.id_basket_total }}">Total: {{ model.output_basket_total() }}</h3>{% if not model.app.is_included_VAT %}<h4> + VAT </h4>{% endif %}
-        <p id="{{ model.id_label_basket_empty}}" style="margin: 1vh;">Buy some shit dawg!</p>
+        <h3 id="{{ model.ID_BASKET_TOTAL }}">Total: {{ model.output_basket_total() }}</h3>{% if not model.app.is_included_VAT %}<h4> + VAT </h4>{% endif %}
+        <p id="{{ model.ID_LABEL_BASKET_EMPTY }}" style="margin: 1vh;">Buy some shit dawg!</p>
         <!-- <div id="{{ model.id_basket_notices }}"> include line above
         </div> -->
-        <button id="{{ model.id_btn_checkout }}" type="submit">Checkout</button>
+        <button id="{{ model.ID_BUTTON_CHECKOUT }}" type="submit">Checkout</button>
     </div>
 </div>

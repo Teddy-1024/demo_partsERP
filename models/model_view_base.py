@@ -38,15 +38,19 @@ class Model_View_Base(ABC):
     # app: Flask
     is_page_store: bool
     # Global constants
+    ATTR_TEXT_COLLAPSED = 'textCollapsed'
+    ATTR_TEXT_EXPANDED = 'textExpanded'
     FLAG_BUTTON_MODAL_CLOSE = 'btn-overlay-close'
     FLAG_BUTTON_SUBMIT = 'btn-submit'
     FLAG_CARD = 'card'
+    FLAG_COLLAPSED = 'collapsed'
     FLAG_COLLAPSIBLE = 'collapsible'
     FLAG_COLUMN = 'column'
     FLAG_CONTAINER = 'container'
     FLAG_CONTAINER_INPUT = FLAG_CONTAINER + '-input'
+    FLAG_EXPANDED = 'expanded'
     FLAG_INITIALISED = 'initialised'
-    FLAG_ROW = 'column'
+    FLAG_ROW = 'row'
     FLAG_SCROLLABLE = 'scrollable'
     FLAG_SUBMITTED = 'submitted'
     # flagIsDatePicker = 'is-date-picker'
