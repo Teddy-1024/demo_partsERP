@@ -4,8 +4,12 @@ var _verbose = true;
 var hashPageCurrent;
 
 function hookupShared() {
-    hookupVideos();
+    // hookupVideos();
     hookupNavigation();
+    /*
+    $(idOverlayHamburger).removeClass(flagCollapsed);
+    $(idOverlayHamburger).addClass(flagExpanded);
+    */
 }
 
 function hookupVideos() {
@@ -30,6 +34,21 @@ function videoPause(elemVideo) {
 
 function hookupNavigation() {
     console.log("hooking up navigation");
+
+    let buttonHamburger = $(idButtonHamburger);
+    initialiseEventHandler(buttonHamburger, flagInitialised, function() {
+        buttonHamburger.on("click", function(event) {
+            event.stopPropagation();
+            let overlayHamburger = $(idOverlayHamburger);
+            if (overlayHamburger.hasClass(flagCollapsed)) {
+                overlayHamburger.removeClass(flagCollapsed);
+                overlayHamburger.addClass(flagExpanded);
+            } else {
+                overlayHamburger.removeClass(flagExpanded);
+                overlayHamburger.addClass(flagCollapsed);
+            }
+        });
+    });
 
     let btnNavHome = $(idNavHome);
     initialiseEventHandler(btnNavHome, flagInitialised, function() {
@@ -62,9 +81,15 @@ function hookupNavigation() {
         });
     });
 
-    hookupSelectorCurrency();
-    hookupSelectorDeliveryRegion();
-    hookupCheckboxIsIncludedVAT();
+   
+    try 
+    {
+        hookupSelectorCurrency();
+        hookupSelectorDeliveryRegion();
+        hookupCheckboxIsIncludedVAT();
+    }
+    catch {}
+    
 }
 
 function hookupOverlay(idOverlay) {
@@ -99,7 +124,7 @@ function hookupSelectorCurrency() {
     });
     console.log("form currency initialised")
     */
-   
+
     let dropdownCurrency = $(idCurrency)[0];
     // dropdownCurrency.options.map(function(option) {
     let option, indexHyphen, textOption;

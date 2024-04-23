@@ -1,139 +1,24 @@
+<!-- v2a -->
+
 {% extends 'layout.html' %}
 
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block page_body %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
 
     <!-- HTML content -->
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h1>Offering a full suite of software engineering services.</h1>
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>Web App & Database Design</h2>
-            <p>Crafting seamless digital experiences with expertly designed web applications and robust database solutions.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image 
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video --
-            <video controls class="img-demo" name="Web app and database design">
-                <source src="{{ url_for('static', filename='images/webapp_db_design.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video> 
-            -->
-            <!-- gif --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.gif')}}" alt="Web app and database design gif">
-            -->
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>Programming services (C++, Python, etc.)</h2>
-            <p>Empowering businesses with efficient automation, web manipulation, and cutting-edge AI/ML solutions for complex tasks.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video -->
-            <video controls class="img-demo" name="Programming services">
-                <source src="{{ url_for('static', filename='images/programming_services.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            <!-- gif --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.gif')}}" alt="Web app and database design gif">
-            -->
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>MS Office Data Analysis & Automation</h2>
-            <p>Unleashing the power of MS Office for streamlined data analysis, automation, and enhanced productivity across Excel, PowerPoint, and Outlook.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video -->
-            <video controls class="img-demo" name="MS Office automation">
-                <source src="{{ url_for('static', filename='images/ms_automation.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            <!-- gif --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.gif')}}" alt="Web app and database design gif">
-            -->
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>Mechatronics Design</h2>
-            <p>Integrating mechanical and electronic components seamlessly for innovative mechatronic solutions, elevating your product design.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video --
-            <video controls class="img-demo">
-                <source src="{{ url_for('static', filename='images/programming_services.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            -->
-            <!-- gif -->
-            <img class="img-demo" src="{{ url_for('static', filename='images/mechatronics_design.gif')}}" alt="Mechatronics design gif">
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>CAD, DFM, DFAM</h2>
-            <p>Transforming concepts into reality with precision CAD designs, Design for Manufacturing (DFM), and Design for Additive Manufacturing (DFAM) expertise.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video --
-            <video controls class="img-demo">
-                <source src="{{ url_for('static', filename='images/programming_services.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            -->
-            <!-- gif -->
-            <img class="img-demo" src="{{ url_for('static', filename='images/CAD.gif')}}" alt="Computer aided design gif">
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>Photopolymerisation, Materials Science, AM Advice</h2>
-            <p>Navigating the forefront of materials science and additive manufacturing, providing expert advice on photopolymerisation and innovative AM solutions.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video --
-            <video controls class="img-demo">
-                <source src="{{ url_for('static', filename='images/programming_services.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            -->
-            <!-- gif --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.gif')}}" alt="Web app and database design gif">
-            -->
-        </div>
+    <div>
+        <p>Your software engineering solution</p>
+        <button class="button-contact">Get in touch</button>
     </div>
     
     <!-- Include JavaScript -->
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
     
     <script>
-        var hashPageCurrent = "{{ model.hash_page_home }}";
+        var hashPageCurrent = "{{ model.HASH_PAGE_HOME }}";
 
         $(document).ready(function() {
             hookupPageHome();
