@@ -4,11 +4,11 @@
 
 {% block page_body %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/store_home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
     
     <!-- HTML content -->
     <div class="card">
-        <form id="{{ model.id_form_contact }}" class="container" action="{{ url_for('contact') }}" method="POST">
+        <form id="{{ model.ID_FORM_CONTACT }}" class="container" action="{{ url_for('contact') }}" method="POST">
             <h2 class="label-title">Complete the form or find our details below.</h2>
             <!--
             <div class="container-input">
@@ -75,9 +75,9 @@
             <a href="{{ model.url_GitHub }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}"/><h4>GitHub</h4></a>
         </div>
         <div class="container">
-            <h4>Unit 12c, Somers Road</h4>
+            <h4>53 Alfred Green Close</h4>
             <h4>Rugby, Warwickshire</h4>
-            <h4>CV22 7DH</h4>
+            <h4>CV22 6DN</h4>
         </div>
     </div>
     
@@ -85,9 +85,13 @@
     <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
 
     <script>
-        var hashPageCurrent = "{{ model.hash_page_contact }}";
-
+        var hashPageCurrent = "{{ model.HASH_PAGE_CONTACT }}";
+        var idEmail = "#{{ model.ID_EMAIL }}";
+        var idMessage = "#{{ model.ID_MESSAGE }}";
+        var idName = "#{{ model.ID_NAME }}";
+        
         $(document).ready(function() {
+            stylePageContact();
             hookupPageContact();
         });
     </script>

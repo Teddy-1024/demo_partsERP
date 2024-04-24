@@ -25,7 +25,7 @@ class Config:
     ID_AUTH0_CLIENT_SECRET = os.getenv('ID_AUTH0_CLIENT_SECRET')
     DOMAIN_AUTH0 = os.getenv('DOMAIN_AUTH0')
     ID_TOKEN_USER = 'user'
-    is_included_VAT = True
+    # is_included_VAT = True
     """
     KEY_IS_INCLUDED_VAT = 'is_included_VAT'
     code_currency = 1
@@ -35,8 +35,14 @@ class Config:
     KEY_ID_CURRENCY = 'id_currency'
     KEY_ID_REGION_DELIVERY = 'id_region_delivery'
     """
-    id_currency = 1
-    id_region_delivery = 1
+    # id_currency = 1
+    # id_region_delivery = 1
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = 'edward.middletonsmith@gmail.com'
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    MAIL_DEFAULT_SENDER = 'edward.middletonsmith@gmail.com'
 
 class DevelopmentConfig(Config):
     DEBUG = True

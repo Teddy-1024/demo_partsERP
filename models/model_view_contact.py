@@ -23,13 +23,16 @@ from lib import argument_validation as av
 from flask_wtf import FlaskForm
 from abc import abstractproperty
 
-
 # VARIABLE INSTANTIATION
 
 
 # CLASSES
 class Model_View_Contact(Model_View_Base):
     # Attributes
+    ID_EMAIL = 'email'
+    ID_MESSAGE = 'msg'
+    ID_NAME = 'name'
+
     @property
     def title(self):
         return 'Contact'

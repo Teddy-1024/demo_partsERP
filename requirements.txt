@@ -16,6 +16,7 @@ mysqlclient
 # DOMAIN_AUTH0=dev-nwak2066ef6h8ixn.us.auth0.com
 # SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/dbname'
     # Replace 'username', 'password', 'localhost', and 'dbname' with your actual database credentials
+# MAIL_PASSWORD=uifv utsy yzxy hpnm
 
 # run with:
 # python -m flask run

@@ -64,6 +64,7 @@ class Model_View_Base(ABC):
     HASH_PAGE_STORE_HOME = '/store'
     HASH_PAGE_STORE_PRODUCT = '/store/product'
     ID_BUTTON_HAMBURGER = 'btnHamburger'
+    ID_FORM_CONTACT = 'formContact'
     ID_FORM_CURRENCY = 'formCurrency'
     ID_FORM_DELIVERY_REGION = 'formDeliveryRegion'
     ID_FORM_IS_INCLUDED_VAT = 'formIsIncludedVAT'

@@ -1,3 +1,14 @@
+
+.page-body > * {
+  height: 100%;
+}
+#pageBody > * :first-child{
+  margin-top: 25vh;
+}
+#pageBody > * :last-child {
+  margin-bottom: 35vh;
+}
+
 .img-demo {
   max-width: 50%;
   min-width: 500px;

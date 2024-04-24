@@ -37,6 +37,7 @@ from business_objects.product import Product_Filters
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
 import stripe
 import json
 from dotenv import load_dotenv, find_dotenv
@@ -87,6 +88,8 @@ oauth.register(
 )
 # session[app.ID_TOKEN_USER] = {'userinfo': {'sub': ''}}
 
+mail = Mail(app)
+
 
 # METHODS
 
@@ -107,7 +110,9 @@ def contact():
         name = form.name.data
         msg = form.msg.data
         # send email
-        pass
+        mailItem = Message("PARTS Website Contact Us Message", recipients=[app.config['MAIL_DEFAULT_SENDER']])
+        mailItem.body = f"Dear Lord Edward Middleton-Smith,\n\n{msg}\n\nKind regards,\n{name}\n{email}"
+        mail.send(mailItem)
     return render_template('_page_contact.html', model=Model_View_Contact(db, get_info_user(), app, form))
 
 
@@ -651,6 +656,17 @@ def get_info_user():
     except:
         return {'sub': ''}
 
+"""
+@app.route('/send-email', methods=['GET'])
+def send_email():
+    try:
+        msg = Message("Flask Mail test", recipients=[app.config['MAIL_DEFAULT_SENDER']])
+        msg.body = "Dear Lord Edward Middleton-Smith,\n\nThis is a test email sent from Flask.\n\nKind regards,\nBot"
+        mail.send(msg)
+    except:
+        return "<html>Error</html>"
+    return "<html>Email sent</html>"
+"""
 
 # Onload
 if __name__ == '__main__':
