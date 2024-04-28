@@ -17,7 +17,7 @@ Defines Flask-WTF forms for handling user input.
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, BooleanField, IntegerField, SelectField
 from wtforms.validators import InputRequired, NumberRange, Regexp, DataRequired
-
+from flask_wtf.recaptcha import RecaptchaField
 
 
 class Form_Contact(FlaskForm):
@@ -25,6 +25,7 @@ class Form_Contact(FlaskForm):
     CC = BooleanField('Would you like to receive a copy of this email request?') # not in use
     name = StringField('Name')
     msg = TextAreaField('Message')
+    recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
 
 class Form_Register(FlaskForm):

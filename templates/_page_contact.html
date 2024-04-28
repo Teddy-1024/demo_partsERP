@@ -62,19 +62,22 @@
                 {% endfor %}
             </div>
             <div class="container-input">
+                {{ model.form.recaptcha() }}
+            </div>
+            <div class="container-input">
                 {{ model.form.submit() }}
             </div>
         </form>
     </div>
 
     <div class="card">
-        <h3 class="label-title">Contact Details</h3>
-        <div class="container">
+        <h3 class="label-title" style="padding-bottom: 0;">Contact Details</h3>
+        <div class="container" style="padding-top: 0;">
             <h4>edward.middletonsmith@gmail.com</h4>
             <a href="{{ model.url_LinkedIn }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_LinkedIn.png') }}"/><h4>LinkedIn</h4></a>
             <a href="{{ model.url_GitHub }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}"/><h4>GitHub</h4></a>
         </div>
-        <div class="container">
+        <div class="container" style="padding-top: 0;">
             <h4>53 Alfred Green Close</h4>
             <h4>Rugby, Warwickshire</h4>
             <h4>CV22 6DN</h4>

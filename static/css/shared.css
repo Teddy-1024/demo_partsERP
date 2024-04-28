@@ -51,7 +51,7 @@ h2 {
 
 h3 {
     font-size: 18px;
-    margin: 1vh;
+    margin-top: 1vh;
 }
 
 h4 {
@@ -92,7 +92,7 @@ h5 {
     width: 100%;
     max-height: 15vh;
     font-weight: normal;
-    font-size: 25px;
+    font-size: 20px;
 }
 /*
 .topnav a {
@@ -224,13 +224,14 @@ img, video {
 /* header image */
 img.header-logo {
     max-height: 15vh;
+    max-width: 20vw;
 }
 
 /* icon images */
 .img-icon {
-    max-width: 5vh;
-    max-height: 5vh;
-    border-radius: 1vh;
+    max-width: 16vh;
+    max-height: 8vh;
+    border-radius: 0;
 }
 
 .container-icon-label {
@@ -270,6 +271,7 @@ img.header-logo {
     border-radius: 4vh;
     /* min-width: fit-content; */
     position: relative;
+    height: fit-content;
 }
 
 .card.subcard {
@@ -463,4 +465,9 @@ button, .btn-submit, input[type="submit"] {
     width: 100%;
     margin-top: 4.5px;
     margin-bottom: 4.5px;
+}
+
+li {
+    text-align: left;
+    font-size: 18px;
 }

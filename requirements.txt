@@ -17,9 +17,13 @@ mysqlclient
 # SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/dbname'
     # Replace 'username', 'password', 'localhost', and 'dbname' with your actual database credentials
 # MAIL_PASSWORD=uifv utsy yzxy hpnm
+# RECAPTCHA_PUBLIC_KEY = ''
+# RECAPTCHA_PRIVATE_KEY = ''
 
 # run with:
 # python -m flask run
+# host network-wide with:
+# python -m flask run --host=0.0.0.0
 
 # not env var:
 # auth0 recovery key: S92HY59VU5J9YDVYWCRHSKJ8

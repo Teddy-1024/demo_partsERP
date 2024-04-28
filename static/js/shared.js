@@ -59,6 +59,14 @@ function hookupNavigation() {
         });
     });
     
+    let btnNavServices = $(idNavServices);
+    initialiseEventHandler(btnNavServices, flagInitialised, function() {
+        btnNavServices.on("click", function(event) {
+            event.stopPropagation();
+            goToPage(hashPageServices);
+        });
+    });
+    
     let btnNavContact = $(idNavContact);
     initialiseEventHandler(btnNavContact, flagInitialised, function() {
         btnNavContact.on("click", function(event) {

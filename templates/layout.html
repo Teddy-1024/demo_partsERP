@@ -8,6 +8,7 @@
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!-- Include jQuery from a CDN -->
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lf8Q8cpAAAAAFAawGu4-ma60bvbEixNVTVvRzKe"></script> <!-- reCaptcha Integration -->
     
     <script>
         var attrTextCollapsed = "{{ model.ATTR_TEXT_COLLAPSED }}";
@@ -59,7 +60,7 @@
 
 
 <div class="topnav">
-    <div class="{{ model.FLAG_CONTAINER }}" style="width: 18vw; min-width: 18vw; max-width: 25vw;">
+    <div class="{{ model.FLAG_CONTAINER }}" style="width: 18vw; min-width: 18vw; max-width: 20vw;">
         <img class="header-logo" src="{{ url_for('static', filename='images/Logo.png') }}" alt="PARTS logo">
     </div>
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 75vw; min-width: 65vw; max-width: 80vw;">
@@ -70,7 +71,7 @@
     </div>
 </div>
 
-<div id="{{ model.ID_OVERLAY_HAMBURGER }}" class="{{ model.FLAG_OVERLAY}} {{ model.FLAG_HAMBURGER }} {{ model.FLAG_EXPANDED}}" style="height: {{ 27 * 3 }}px"> <!-- {- { 4.5 * 3 }}vh -->
+<div id="{{ model.ID_OVERLAY_HAMBURGER }}" class="{{ model.FLAG_OVERLAY}} {{ model.FLAG_HAMBURGER }} {{ model.FLAG_COLLAPSED }}" style="height: {{ 27 * 3 }}px"> <!-- {- { 4.5 * 3 }}vh -->
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
         <a id="{{ model.ID_NAV_HOME }}">Home</a> <!-- href="{{ url_for('home') }}" -->
     </div>

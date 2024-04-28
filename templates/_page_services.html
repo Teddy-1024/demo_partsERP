@@ -6,139 +6,142 @@
 
 {% block page_body %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}" />
 
     <!-- HTML content -->
-    <div>
-        <p>Your software engineering solution</p>
-        <button class="button-contact">Get in touch</button>
+    <div class="{{ model.FLAG_CARD }}">
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <h2>Web & Desktop Application Development</h2>
+            <ul>
+                <li>Deliver custom web and desktop apps tailored to your unique business needs</li>
+                <li>Leverage the latest technologies for seamless, high-performance solutions</li>
+                <li>Intuitive UX design to delight your users and boost productivity</li>
+            </ul>
+            <h2>Cloud Migration & Architecture Design</h2>
+            <ul>
+                <li>Expertise to guide your cloud journey and optimize your architecture</li>
+                <li>Ensure scalability, security and cost-efficiency in the cloud</li>
+                <li>Unlock the power of cloud-native services to accelerate innovation</li>
+            </ul>
+        </div>
+    </div>
+    <div class="{{ model.FLAG_CARD }}">
+        <!--
+        <table>
+            <thead>
+                <!--
+                <tr>
+                    <th>Cloud / Backend</th>
+                    <th></th>
+                    <th>Web</th>
+                    <th></th>
+                </tr>
+                --
+                <tr>
+                    <th>Database</th>
+                    <th>Server / Application</th>
+                    <th>Web</th>
+                    <th>Frameworks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>MySQL</td>
+                    <td>Python</td>
+                    <td>HTML</td>
+                    <td>React</td>
+                </tr>
+                <tr>
+                    <td>MS SQL Server</td>
+                    <td>C# .NET</td>
+                    <td>CSS</td>
+                    <td>Flask</td>
+                </tr>
+                <tr>
+                    <td>Firebase</td>
+                    <td>Node.js</td>
+                    <td>JavaScript</td>
+                    <td>MVC</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Java</td>
+                    <td></td>
+                    <td>REST</td>
+                </tr>
+            </tbody>
+        </table>
+        -->
+        <table>
+            <thead>
+                <!--
+                <tr>
+                    <th>Cloud / Backend</th>
+                    <th></th>
+                    <th>Web</th>
+                    <th></th>
+                </tr>
+                -->
+                <tr>
+                    <th>Database</th>
+                    <th>Server / Application</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="https://www.mysql.com/" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/MySQL.png')}}" alt="MySQL"></img></a></td>
+                    <td><a href="https://www.python.org/" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/python.png')}}" alt="python"></img></a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.microsoft.com/en-us/sql-server/sql-server-2019" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/MS_SQL_Server.svg')}}" alt="MS SQL Server"></img></a></td>
+                    <td><a href="https://dotnet.microsoft.com/en-us/languages/csharp" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/C#_NET.png')}}" alt="C# .NET"></img></a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://firebase.google.com/" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/Firebase.png')}}" alt="Firebase"></img></a></td>
+                    <td><a href="https://nodejs.org/en" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/Node_js.png')}}" alt="Node.js"></img></a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><a href="https://www.java.com/en/" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/Java.png')}}" alt="Java"></img></a></td>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Web</th>
+                    <th>Frameworks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="https://www.w3.org/html/" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/HTML5.png')}}" alt="HTML5"></img></a></td>
+                    <td><a href="https://react.dev/" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/React.png')}}" alt="React"></img></a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.w3.org/Style/CSS/" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/CSS3.jpg')}}" alt="CSS3"></img></a></td>
+                    <td><a href="https://flask.palletsprojects.com/en/3.0.x/" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/Flask.png')}}" alt="Flask"></img></a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/JavaScript.png')}}" alt="JavaScript"></img></a></td>
+                    <td><a href="https://dotnet.microsoft.com/en-us/apps/aspnet/mvc" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/MVC.png')}}" alt="MVC"></img></a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><a href="https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm" target="_blank"><img class="img-icon" src="{{ url_for('static', filename='images/REST.png')}}" alt="REST"></img></a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     
     <!-- Include JavaScript -->
-    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/services.js') }}"></script>
     
     <script>
         var hashPageCurrent = "{{ model.HASH_PAGE_SERVICES }}";
 
         $(document).ready(function() {
-            hookupPageHome();
+            hookupPageServices();
         });
     </script>
 {% endblock %}
-
-<div class="{{ model.FLAG_CARD }}">
-    <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-        <h2>Web App & Database Design</h2>
-        <p>Crafting seamless digital experiences with expertly designed web applications and robust database solutions.</p>
-    </div>
-    <div class="{{ model.FLAG_CONTAINER }}">
-        <!-- image 
-        <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-        -->
-                <!-- MP4 video --
-            <video controls class="img-demo" name="Web app and database design">
-                <source src="{{ url_for('static', filename='images/webapp_db_design.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video> 
-            -->
-            <!-- gif --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.gif')}}" alt="Web app and database design gif">
-            -->
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>Programming services (C++, Python, etc.)</h2>
-            <p>Empowering businesses with efficient automation, web manipulation, and cutting-edge AI/ML solutions for complex tasks.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video -->
-            <video controls class="img-demo" name="Programming services">
-                <source src="{{ url_for('static', filename='images/programming_services.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            <!-- gif --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.gif')}}" alt="Web app and database design gif">
-            -->
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>MS Office Data Analysis & Automation</h2>
-            <p>Unleashing the power of MS Office for streamlined data analysis, automation, and enhanced productivity across Excel, PowerPoint, and Outlook.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video -->
-            <video controls class="img-demo" name="MS Office automation">
-                <source src="{{ url_for('static', filename='images/ms_automation.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            <!-- gif --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.gif')}}" alt="Web app and database design gif">
-            -->
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>Mechatronics Design</h2>
-            <p>Integrating mechanical and electronic components seamlessly for innovative mechatronic solutions, elevating your product design.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video --
-            <video controls class="img-demo">
-                <source src="{{ url_for('static', filename='images/programming_services.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            -->
-            <!-- gif -->
-            <img class="img-demo" src="{{ url_for('static', filename='images/mechatronics_design.gif')}}" alt="Mechatronics design gif">
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>CAD, DFM, DFAM</h2>
-            <p>Transforming concepts into reality with precision CAD designs, Design for Manufacturing (DFM), and Design for Additive Manufacturing (DFAM) expertise.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video --
-            <video controls class="img-demo">
-                <source src="{{ url_for('static', filename='images/programming_services.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            -->
-            <!-- gif -->
-            <img class="img-demo" src="{{ url_for('static', filename='images/CAD.gif')}}" alt="Computer aided design gif">
-        </div>
-    </div>
-    <div class="{{ model.FLAG_CARD }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <h2>Photopolymerisation, Materials Science, AM Advice</h2>
-            <p>Navigating the forefront of materials science and additive manufacturing, providing expert advice on photopolymerisation and innovative AM solutions.</p>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }}">
-            <!-- image --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.jpg')}}" alt="Web app and database design image">
-            -->
-            <!-- MP4 video --
-            <video controls class="img-demo">
-                <source src="{{ url_for('static', filename='images/programming_services.mp4')}}" type="video/mp4">
-                    Your browser does not support the video format mp4.
-            </video>
-            -->
-            <!-- gif --
-            <img class="img-demo" src="{{ url_for('static', filename='images/webapp_db_design.gif')}}" alt="Web app and database design gif">
-            -->
-        </div>
-    </div>

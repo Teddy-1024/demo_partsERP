@@ -100,7 +100,7 @@ def home():
     return render_template('_page_home.html', model=Model_View_Home(db, get_info_user(), app))
 
 
-@app.route('/contact', methods=['GET', 'POST'])
+@app.route('/contact', methods=['GET'])
 def contact():
     form = Form_Contact()
     if form.validate_on_submit():
@@ -114,6 +114,10 @@ def contact():
         mailItem.body = f"Dear Lord Edward Middleton-Smith,\n\n{msg}\n\nKind regards,\n{name}\n{email}"
         mail.send(mailItem)
     return render_template('_page_contact.html', model=Model_View_Contact(db, get_info_user(), app, form))
+
+@app.route('/services', methods=['GET', 'POST'])
+def services():
+    return render_template('_page_services.html', model=Model_View_Home(db, get_info_user(), app))
 
 
 # Store
