@@ -42,6 +42,7 @@ import stripe
 import json
 from dotenv import load_dotenv, find_dotenv
 import os
+import sys
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 import jwt
@@ -92,6 +93,15 @@ mail = Mail(app)
 
 
 # METHODS
+sys.path.insert(0, os.path.dirname(__file__))
+
+
+def application(environ, start_response):
+    start_response('200 OK', [('Content-Type', 'text/plain')])
+    message = 'It works!\n'
+    version = 'Python %s\n' % sys.version.split()[0]
+    response = '\n'.join([message, version])
+    return [response.encode()]
 
 
 # ROUTING
@@ -116,6 +126,7 @@ def contact():
     return render_template('_page_contact.html', model=Model_View_Contact(db, get_info_user(), app, form))
 
 @app.route('/services', methods=['GET', 'POST'])
+@app.route('/public_html/services', methods=['GET', 'POST'])
 def services():
     return render_template('_page_services.html', model=Model_View_Home(db, get_info_user(), app))
 
@@ -671,6 +682,31 @@ def send_email():
         return "<html>Error</html>"
     return "<html>Email sent</html>"
 """
+
+"""
+@app.route('/test-mysql', methods=['GET'])
+def test_mysql():
+    model = Model_View_Store(db, get_info_user(), app)
+    
+     _m = 'test_mysql'
+    proc_string = f'CALL {proc_name}('
+    if has_arguments:
+        arg_keys = list(argument_dict_list.keys())
+        for i in range(len(arg_keys)):
+            proc_string += f'{"" if i == 0 else ", "}:{arg_keys[i]}'
+    proc_string += ')'
+    proc_string = text(proc_string)
+    print(f'{_m}\nproc_string: {proc_string}\nargs: {argument_dict_list}')
+    # with self.db.session.begin() as session:
+    if has_arguments:
+        result = self.db.session.execute(proc_string, argument_dict_list)
+    else:
+        result = self.db.session.execute(proc_string)
+    print(f'result: {result}')
+
+    return "<html>MySQL test</html>"
+"""
+
 
 # Onload
 if __name__ == '__main__':
