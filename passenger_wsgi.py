@@ -10,4 +10,6 @@ def application(environ, start_response):
     message = 'It works!\n'
     version = 'Python %s\n' % sys.version.split()[0]
     response = '\n'.join([message, version])
-    return [response.encode()]
+    result = [response.encode()]
+    print(f'result = {result}')
+    return result

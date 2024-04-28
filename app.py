@@ -707,6 +707,10 @@ def test_mysql():
     return "<html>MySQL test</html>"
 """
 
+@app.route('/public_html/403.shtml', methods=['GET'])
+def error_403():
+    return "<html>Error 403</html>"
+
 
 # Onload
 if __name__ == '__main__':
