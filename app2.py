@@ -120,10 +120,11 @@ def hello():
 def goodbye():
     return "Goodbye, cruel World!"
 
+"""
 @app.route('/public_html/403.shtml', methods=['GET'])
 def forbidden():
     return send_from_directory('/home/partsltd/public_html', '403.shtml')
-
+"""
 
 def application(environ, start_response):
     start_response('200 OK', [('Content-Type', 'text/plain')])
