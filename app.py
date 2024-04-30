@@ -75,7 +75,16 @@ app.id_currency = Config.id_currency
 app.id_region_delivery = Config.id_region_delivery
 """
 
-db = SQLAlchemy(app)
+try:
+    # db = SQLAlchemy(app)
+    db = SQLAlchemy()
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+        db.engine.url = app.config.SQLALCHEMY_DATABASE_URI
+    app.errors = 'none'
+except Exception as e:
+    app.errors = str(e)
 
 oauth = OAuth(app)
 oauth.register(
