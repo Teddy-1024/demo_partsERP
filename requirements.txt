@@ -6,6 +6,9 @@ flask_cors
 authlib
 jwt
 mysqlclient
+stripe
+python_dotenv
+authlib
 
 
 # environment variables

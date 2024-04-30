@@ -10,6 +10,14 @@ function hookupShared() {
     $(idOverlayHamburger).removeClass(flagCollapsed);
     $(idOverlayHamburger).addClass(flagExpanded);
     */
+
+    let imgLogo = $($("img.header-logo")[0]);
+    initialiseEventHandler(imgLogo, flagInitialised, function() {
+        imgLogo.on("click", function(event) {
+            event.stopPropagation();
+            goToPage(hashPageHome);
+        });
+    });
 }
 
 function hookupVideos() {

@@ -70,17 +70,16 @@
         </form>
     </div>
 
-    <div class="card">
-        <h3 class="label-title" style="padding-bottom: 0;">Contact Details</h3>
-        <div class="container" style="padding-top: 0;">
-            <h4>edward.middletonsmith@gmail.com</h4>
-            <a href="{{ model.url_LinkedIn }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_LinkedIn.png') }}"/><h4>LinkedIn</h4></a>
-            <a href="{{ model.url_GitHub }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}"/><h4>GitHub</h4></a>
+    <div class="{{ model.FLAG_CARD }} {{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+            <h3 class="label-title" style="padding-bottom: 0;">Where to find us</h3>
         </div>
-        <div class="container" style="padding-top: 0;">
-            <h4>53 Alfred Green Close</h4>
-            <h4>Rugby, Warwickshire</h4>
-            <h4>CV22 6DN</h4>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+            <h4>edward.middletonsmith@gmail.com</h4>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="padding-top: 0; width: fit-content;">
+            <a href="{{ model.url_LinkedIn }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_LinkedIn.png') }}" alt="LinkedIn"></img><!--<h4>LinkedIn</h4>--></a>
+            <a href="{{ model.url_GitHub }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}" alt="GitHub"></img><!--<h4>GitHub</h4>--></a>
         </div>
     </div>
     

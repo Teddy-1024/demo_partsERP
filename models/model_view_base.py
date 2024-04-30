@@ -60,6 +60,7 @@ class Model_View_Base(ABC):
     HASH_PAGE_CONTACT = '/contact'
     HASH_PAGE_ERROR_NO_PERMISSION = '/error'
     HASH_PAGE_HOME = '/'
+    HASH_PAGE_LICENSE = '/license'
     HASH_PAGE_SERVICES = '/services'
     HASH_PAGE_STORE_HOME = '/store'
     HASH_PAGE_STORE_PRODUCT = '/store/product'
@@ -77,7 +78,7 @@ class Model_View_Base(ABC):
     ID_NAV_STORE_PRODUCT = 'navStoreProduct'
     ID_OVERLAY_HAMBURGER = 'overlayHamburger'
     ID_PAGE_BODY = 'pageBody'
-    URL_HOST = 'http://127.0.0.1:5000'
+    URL_HOST = 'https://www.partsltd.co.uk' # 'http://127.0.0.1:5000'
     URL_GITHUB = 'https://github.com/Teddy-1024'
     URL_LINKEDIN = 'https://uk.linkedin.com/in/lordteddyms'
 
