@@ -37,8 +37,8 @@ class Config:
     """
     # id_currency = 1
     # id_region_delivery = 1
-    MAIL_SERVER = 'localhost' # 'smtp.gmail.com'
-    MAIL_PORT = 25 # 587
+    MAIL_SERVER = 'mail.partsltd.co.uk' # 'smtp.gmail.com'
+    MAIL_PORT = 465 # 587
     MAIL_USE_TLS = False # True
     MAIL_USE_SSL = False
     MAIL_USERNAME = os.getenv('MAIL_DEFAULT_SENDER')
