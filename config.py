@@ -39,8 +39,8 @@ class Config:
     # id_region_delivery = 1
     MAIL_SERVER = 'mail.partsltd.co.uk' # 'smtp.gmail.com'
     MAIL_PORT = 465 # 587
-    MAIL_USE_TLS = False # True
-    MAIL_USE_SSL = False
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
     MAIL_USERNAME = os.getenv('MAIL_DEFAULT_SENDER')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER')

@@ -75,6 +75,7 @@ app.config['ID_AUTH0_CLIENT_SECRET'] = Config.ID_AUTH0_CLIENT_SECRET
 app.config['DOMAIN_AUTH0'] = Config.DOMAIN_AUTH0
 app.config['ID_TOKEN_USER'] = Config.ID_TOKEN_USER
 
+app.MAIL_DEBUG = True
 app.MAIL_SERVER = Config.MAIL_SERVER
 app.MAIL_PORT = Config.MAIL_PORT
 app.MAIL_USE_TLS = Config.MAIL_USE_TLS
@@ -83,6 +84,7 @@ app.MAIL_USERNAME = Config.MAIL_USERNAME
 app.MAIL_PASSWORD = Config.MAIL_PASSWORD
 app.MAIL_DEFAULT_SENDER = Config.MAIL_DEFAULT_SENDER
 
+app.config.MAIL_DEBUG = True
 app.config.MAIL_SERVER = Config.MAIL_SERVER
 app.config.MAIL_PORT = Config.MAIL_PORT
 app.config.MAIL_USE_TLS = Config.MAIL_USE_TLS
@@ -91,6 +93,7 @@ app.config.MAIL_USERNAME = Config.MAIL_USERNAME
 app.config.MAIL_PASSWORD = Config.MAIL_PASSWORD
 app.config.MAIL_DEFAULT_SENDER = Config.MAIL_DEFAULT_SENDER
 
+app.config['MAIL_DEBUG'] = True
 app.config['MAIL_SERVER'] = Config.MAIL_SERVER
 app.config['MAIL_PORT'] = Config.MAIL_PORT
 app.config['MAIL_USE_TLS'] = Config.MAIL_USE_TLS
