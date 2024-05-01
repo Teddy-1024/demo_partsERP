@@ -12,4 +12,4 @@ def application(environ, start_response):
     response = '\n'.join([message, version])
     return [response.encode()]
 
-from app2 import app as application  # Import the Flask application from app.py
+from app import app as application  # Import the Flask application from app.py

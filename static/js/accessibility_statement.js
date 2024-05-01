@@ -1,5 +1,5 @@
 var _loading = true; 
 
-function hookupPageLicense() {
+function hookupPageAccessibilityStatement() {
     _loading = false;
 }

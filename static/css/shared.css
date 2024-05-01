@@ -464,7 +464,7 @@ button, .btn-submit, input[type="submit"] {
     color: var(--c_purple_dark);
     font-weight: bold;
     font-size: 18px;
-    height: 27px;
+    height: 18px;
 }
 .hamburger > :hover {
     background-color: var(--c_purple_light);
@@ -472,8 +472,14 @@ button, .btn-submit, input[type="submit"] {
 }
 .hamburger > * > * {
     width: 100%;
+    /*
     margin-top: 4.5px;
     margin-bottom: 4.5px;
+    */
+}
+.hamburger > .container {
+    padding-top: 4.5px;
+    padding-bottom: 4.5px;
 }
 
 li {

@@ -24,7 +24,7 @@ class Form_Contact(FlaskForm):
     email = StringField('Email address')
     CC = BooleanField('Would you like to receive a copy of this email request?') # not in use
     name = StringField('Name')
-    msg = TextAreaField('Message')
+    message = TextAreaField('Message')
     recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
 
@@ -32,7 +32,7 @@ class Form_Register(FlaskForm):
     email = StringField('Email address')
     CC = BooleanField('Would you like to receive a copy of this email request?') # not in use
     name = StringField('Name')
-    msg = TextAreaField('Message')
+    message = TextAreaField('Message')
     submit = SubmitField('Submit')
 
 

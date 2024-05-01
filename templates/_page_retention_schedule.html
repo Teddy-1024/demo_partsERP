@@ -1,0 +1,1959 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ model.title }}{% endblock %}
+
+{% block page_body %}
+    <!-- Include Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+    
+    <!-- HTML content -->
+    <div class="{{ model.FLAG_CARD }} {{ model.FLAG_COLUMN }}">
+        <h4>Retention periods for {{ model.NAME_COMPANY }}</h4>
+        <p>Accounting records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_accounting.pdf -->
+        <table>
+            <head>
+                <tr>
+                    <th>Category</th>
+                    <th>Record type</th>
+                    <th>Description of Use</th>
+                    <th>Retention period</th>
+                </tr>
+            </head>
+            <tbody>
+                <tr>
+                    <td>Bank account records</td>
+                    <td>Cheques and associated records</td>
+                    <td>Cheque book / butts for all accounts</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Cancelled cheques </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Dishonoured cheques</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Fresh cheques</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Paid / presented cheques </td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Stoppage of cheque payment notices</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Record of cheques opened books</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Cheque registers </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Record of cheques drawn for payment</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Bank deposits</td>
+                    <td>Bank deposit books / slips / butts</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Bank deposit summary sheets
+                        Summaries of daily banking
+                        Cheques schedules
+                        </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Register of cheques lodged for collection</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Bank reconciliations</td>
+                    <td>Reconciliation files / sheets </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Daily list of paid cheques</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Unpaid cheque records</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Bank statements</td>
+                    <td>Bank statements, periodic reconciliations</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Bank certificates of balance</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Electronic banking and electronic funds transfer</td>
+                    <td>Cash transactions
+                        Payment instructions
+                        Deposits and/or withdrawals
+                        </td>
+                    <td>Disposal action in line wiht paper records</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Audit trails</td>
+                    <td>Retain for the same period as the base transaction record</td>
+                </tr>
+                <tr>
+                    <td>Expenditure records</td>
+                    <td>Cash books / sheets</td>
+                    <td>Expenditure sheets</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Cash books / sheets</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Petty cash records</td>
+                    <td>Petty cash records / books / sheets </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Petty cash receipts</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Postal cash book/sheets
+                        Postage/courier account/cash records
+                        Register of postage expenditure
+                        Postage paid record
+                        Postage books sheets
+                        </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Summary cash books </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Creditors</td>
+                    <td>Creditors’ history records
+                        Lists/reports
+                    </td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Statements</td>
+                    <td>Statements of accounts outstanding
+                        Outstanding orders
+                        </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Statements of accounts – rendered / payable</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Subsidiary records </td>
+                    <td>Copies of extracts and expenditure dissections</td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Credit note books</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Credit notes</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Debit note books</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Vouchers</td>
+                    <td>Vouchers – claims for payment, purchase orders, requisition for goods and services, accounts payable, invoices and so on</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Wages / salaries vouchers</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Copies of vouchers</td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Voucher registers</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Voucher registration cards and payment cards</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Voucher summaries</td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Advice/schedule of vouchers despatched
+                        Delivery advice</td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Costing records</td>
+                    <td>Cost cards </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Costing records, dissection sheets and so on</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td>Ledger records</td>
+                    <td>General and subsidiary ledgers</td>
+                    <td>General and subsidiary ledgers produced for the purposes of preparing certified financial statements or published information</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Cash books / sheets</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Other ledgers (such as contracts, costs, purchases)</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Related journals</td>
+                    <td>Audit sheets – ledger posting</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Journals</td>
+                    <td>Journals – prime records for the raising of charges</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Journals – routine adjustments</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Trial balances and reconciliations/td>
+                    <td>Year-end balances, reconciliations and variations to support ledger balances and published accounts</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td>Receipts and revenue records</td>
+                    <td>Books / butts</td>
+                    <td>Receipt books/butts
+                        Office copies of receipts – cashiers’, cash
+                        register, fines and costs, sale of
+                        publications, general receipt books/butts/
+                        records</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Postal remittance books/records</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Receipt books/records for imposts (such as stamp duty, VAT receipt books)</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Irregular remittance books</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Cash registers</td>
+                    <td>Copies of forms</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Reconciliation sheets</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Audit rolls</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Summaries / analysis records</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Reading books / sheets</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Cashiers’ records</td>
+                    <td>Handover books</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Revenue records </td>
+                    <td>Revenue cash books / sheets / records
+                        Receipt cash books / sheets</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Daily revenue dissections </td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Debtors’ records and invoices</td>
+                    <td>Periodical revenue dissections</td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Copies of invoices/debit notes rendered on debtors (such as invoices paid/unpaid, registers of invoices, debtors ledgers)</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Source documents/records used for raising of invoices/debit notes</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Debits and refunds</td>
+                    <td>Copies of invoices and copies of source documents</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Records relating to unrecoverable revenue, debts and overpayments (such as register of debts written off, register of refunds)</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td>Salaries and related records</td>
+                    <td>Salary records</td>
+                    <td>Employee pay histories
+                        Note that the last three years’ records must be kept for leavers, in either the personnel or finance records system, for the calculation of pension entitlement</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Salary rates register</td>
+                    <td>When superceded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Salary ledger card/records</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Copies of salaries/wages payroll sheets</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td>Stores records</td>
+                    <td>Stores records</td>
+                    <td>Goods inwards books/records</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Delivery dockets </td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Stock / stores control cards / sheets / records</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Stock / stores issue registers / records</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Stocktaking sheets/records, including inventories, stock reconciliations, stock take reports</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Purchase order records</td>
+                    <td>Purchase order books / records</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Railway / courier consignment books / records</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Travel warrants</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Requisition records</td>
+                    <td>Requisition records</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td>Other accountable financial records</td>
+                    <td>Asset registers</td>
+                    <td>Assets / equipment registers / records</td>
+                    <td>Six years after asset or last one in the register is disposed of</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Depreciation registers</td>
+                    <td>Records relating to the calculation of annual depreciation</td>
+                    <td>Six years after asset or last one in the register is disposed of</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Financial statements</td>
+                    <td>Statements/summaries prepared for inclusion in quarterly/annual reports</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Periodic financial statements prepared for management on a regular basis</td>
+                    <td>Destroy when cumulated into quarterly/annual reports</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Ad hoc statements</td>
+                    <td>1 year</td>
+                </tr>
+            </tbody>
+        </table>
+        <!--
+            MISSING: 
+            Building records retention schedule
+        -->
+        <p>Central expenditure records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_central_exp.pdf -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Record type</th>
+                    <th>Description of Use</th>
+                    <th>Retention period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Estimates records (including revised and supplementary) where detailed justification is provided and which are submitted to the Treasury</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Estimates submissions from regional or local offices</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Calculations and costings for annual estimates</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Expenditure scrutinies</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Records relating to bids from the Civil Contingencies Fund </td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Spending reviews</td>
+                    <td>One year after the cycle to which the records relate</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Records relating to dealings with the
+                        Public Accounts Committee and the Select
+                        Committee on Expenditure</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Expenditure and revenue returns</td>
+                    <td>One year after the year to which the returns relate</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Financial statements prepared for annual reports</td>
+                    <td>One year after publication of the report</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Financial statements prepared for management</td>
+                    <td>One year after completion of annual financial report</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Grant funding records </td>
+                    <td>Six years after action completed/grant made</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Financial authorities or delegations</td>
+                    <td>Six years after authority or delegation is superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Policy and strategy records (including investment policy) </td>
+                    <td>Second review</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Treasury Directives and Circulars </td>
+                    <td>Until superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Asset registers</td>
+                    <td>Six years after item / asset is disposed of</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Land registers </td>
+                    <td>Twelve years after disposal</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Depreciation records</td>
+                    <td>Six years after item / asset is disposed of</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Audit investigations (external) </td>
+                    <td>Six years after action completed</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Financial records relating to capital works projects</td>
+                    <td>Six years after action/project is completed</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Investment records</td>
+                    <td>Two years after investments are liquidated or matured</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Stocktaking records</td>
+                    <td>2 years after audit</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Unclaimed monies records</td>
+                    <td>6 years after audit</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Records relating to serious matters of:
+                        <ul>
+                            <li>theft</li>
+                            <li>fraud</li>
+                            <li>misappropriation</li>
+                            <li>irrecoverable debts and overpayments</li>
+                            <li>write-offs</li>
+                            <li>recovery of debt</li>
+                            <li>wavering of debt</li>
+                        </ul>
+                        (where external action has been taken)
+                    </td>
+                    <td>Ten years after action / investigation is completed</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Records relating to minor matters of:
+                        <ul>
+                            <li>theft</li>
+                            <li>fraud</li>
+                            <li>misappropriation</li>
+                            <li>irrecoverable debts and overpayments</li>
+                            <li>write-offs</li>
+                            <li>recovery of debt</li>
+                            <li>wavering of debt</li>
+                        </ul>
+                        (where matter was resolved internally)
+                    </td>
+                    <td>Six years after audit</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Procedure manuals </td>
+                    <td>2 years after superceded</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p> Comlaints records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_complaints.pdf -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Record type</th>
+                    <th>Description of Use</th>
+                    <th>Retention period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Policy statements</td>
+                    <td>When superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>System handbook / guide</td>
+                    <td>When superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Minutes of meetings of Complaints Committee, Service Standards Team and others</td>
+                    <td>10 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Surveys</td>
+                    <td>3 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Case records</td>
+                    <td>Enquiries</td>
+                    <td>3 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Investigations</td>
+                    <td>10 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Statistical reports</td>
+                    <td>5 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Reports on particular complaints or on categories of complaints</td>
+                    <td>3 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Precedents</td>
+                    <td>Review after 10 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Register of complaints</td>
+                    <td>10 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Reviews</td>
+                    <td>Correspondence and papers</td>
+                    <td>10 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Reports</td>
+                    <td>3 years</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Contractual records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_contractual.pdf -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Record type</th>
+                    <th>Description of Use</th>
+                    <th>Retention period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>Policy matters</td>
+                    <td>Policy on contracts, normally contained in a separate registered file series</td>
+                    <td>First and second review</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Initial proposal</td>
+                    <td>End user requirement</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>List of approved suppliers</td>
+                    <td>An active document – updated regularly</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Statements of interest</td>
+                    <td>One year from date of last paper</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Draft specification</td>
+                    <td>Destroy when specification has been agreed</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Agreed specification</td>
+                    <td>Six years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Evaluation criteria</td>
+                    <td>Six years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Invitation to tender</td>
+                    <td>Six years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Tendering</td>
+                    <td>Unsuccessful tender document</td>
+                    <td>One year after date of last paper</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Successful tender document</td>
+                    <td>Six years from award of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Background information supplied by department</td>
+                    <td>One year after date of last paper</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Interview panel – report and notes of proceedings</td>
+                    <td>One year from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Commissioning letter</td>
+                    <td>One year from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Signed contract</td>
+                    <td>6 years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Contract operation and monitoring</td>
+                    <td>Reports from contractors</td>
+                    <td>2 years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Schedules of works</td>
+                    <td>2 years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Bills of quantity (building contracts)</td>
+                    <td>16 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Surveys and inspections
+                        a. equipment and supplies
+                        b. buildings</td>
+                    <td>a. Two years from date of last
+                        paper
+                        b. Second review</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Records of complaints</td>
+                    <td>6 years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Disputes over payment</td>
+                    <td>6 years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Final accounts</td>
+                    <td>6 years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Minutes and papers of meetings</td>
+                    <td>Second review</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Amendments to contracts</td>
+                    <td>Changes to requirements</td>
+                    <td>6 years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Forms of variation</td>
+                    <td>6 years from end of contract</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Extensions to contract</td>
+                    <td>6 years from end of contract</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Employee personnel records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_personnel.pdf -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Record type</th>
+                    <th>Description of Use</th>
+                    <th>Retention period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>Employment and career</td>
+                    <td>Written particulars of employment
+                        Contracts of employment, including theCertificate of Qualification or its equivalent and including the Senior Civil Service
+                        Changes to terms and conditions, including change of hours letters</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Job History - consolidated record of whole career and location details (paper or electronic)</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Current address details</td>
+                    <td>Six years after employment has ended</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Record of location of overseas service</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Variation of hours - calculation formula for individual</td>
+                    <td>Destroy after use</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Promotion, temporary promotion and / or substitution documentation </td>
+                    <td>Destroy after summary noted</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Working Time Directive opt out forms</td>
+                    <td>Three years after the opt-out has been rescinded or has ceased to apply</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Record of previous service dates</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Previous service supporting papers</td>
+                    <td>Destroy after records noted as appropriate</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Qualifications/references</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Transfer documents (OGD E18) </td>
+                    <td>Destroy after summary noted and actioned</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Annual/Assessment reports or summary of performance marks where an open reporting system operates</td>
+                    <td>5 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Annual/Assessment reports for the last five years of service or summary of performance marks where an open reporting system operates</td>
+                    <td>Until age 72</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Training history</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Travel and subsistence - claims and authorisation</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Employment and career</td>
+                    <td>Annual leave records (dependent on departmental practice)</td>
+                    <td>2 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Job applications – internal</td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Recruitment, appointment and/or promotion board selection papers</td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Building society references</td>
+                    <td>6 months</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Health</td>
+                    <td>Health Declaration</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Health referrals, including:
+                        Medical reports from doctors and consultants
+                        Correspondence with the appointed medical
+                        adviser to the PCSPS (currently BMI Health
+                        Services and, previous to that body, the
+                        Occupational Health and Safety Agency Ltd,
+                        the Civil Service Occupational Health Service
+                        or the Medical Advisory Service (MAS))
+                        </td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Papers relating to any injury on duty</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Medical reports of those exposed to a
+                        substance hazardous to health, including:
+                        Lead (Control of Lead at Work Regulations
+                        1980) 40 years from date at which entry was
+                        made
+                        Asbestos (Control of Asbestos at Work
+                        Regulations 1996) 40 years after last record
+                        Compressed Air (Work in Compressed Air
+                        Regulations 1996) 40 years from date of last
+                        entry
+                        Radiation (Ionising Radiation Regulations
+                        1985)</td>
+                    <td>50 years from date of last entry</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Medical/Self Certificates – unrelated to industrial injury</td>
+                    <td>4 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Personal</td>
+                    <td>Welfare papers</td>
+                    <td>Destroy after minimum of six years after last
+                        action</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Security</td>
+                    <td>Security personnel files </td>
+                    <td>Five years after leaving (if at normal retirement age) or ten years after leaving (if before normal retirement age)</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Pay and pension</td>
+                    <td>Bank details - current </td>
+                    <td>Six years after employment has ended</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Death Benefit Nomination and Revocation
+                        Forms </td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Death certificates</td>
+                    <td>Return original to provider
+                        Retain copy until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Decree Absolutes</td>
+                    <td>Return original to provider
+                        Retain copy until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Housing advance</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Marriage certificate and documentation relating to civil registration</td>
+                    <td>Return original to provider
+                        Retain copy until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Unpaid leave periods (such as maternity leave)</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Statutory maternity pay documents</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Other maternity pay documentation</td>
+                    <td>18 months</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Overpayment documentation</td>
+                    <td>6 years after repayment or write-off</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Personal payroll history, including record of
+                        pay, performance pay, overtime pay,
+                        allowances, pay enhancements, other taxable
+                        allowances, payment for untaken leave,
+                        reduced pay, no pay, maternity leave</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Pensions estimates and awards</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Record of:
+                        Full name and date of birth
+                        National Insurance number
+                        Pensionable pay at leaving
+                        Reckonable service for pension purposes (and
+                        actual service where this is different, together
+                        with reasons for the difference)
+                        Reason for leaving and new employer’s name
+                        (where known)
+                        Amount and destination of any transfer value
+                        paid
+                        Amount of any refund of PCSPS contributions
+                        Amount and date of any Contributions
+                        Equivalent Premium paid
+                        All other papers relating to pensionability not
+                        listed above (such as papers about
+                        pensionability of other employment (including
+                        war service); extension of service papers;
+                        papers about widow’s, widower’s, children’s
+                        and other dependant’s pensions;
+                        correspondence with the Cabinet Office, other
+                        departments and pension administrators, or the
+                        officer and his/her representatives (MPs,
+                        unions or others) about pension matters</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Resignation, termination and/or retirement
+                        letters</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Added years</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Additional Voluntary Contributions (AVC)</td>
+                    <td>Until age 100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Payroll input forms</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Bonus nominations</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Complete sick absence record showing dates and causes of sick leave</td>
+                    <td>Until age 72</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Statutory Sick Pay (SSP) forms</td>
+                    <td>For last 4 to 6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Papers relating to disciplinary action which has resulted in any changes to terms and conditions of service, salary, performance pay or allowances</td>
+                    <td>Until age 72</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Authorisation for deputising, substitution allowance and/or overtime/travel time claim</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Advances for:
+                        Season tickets
+                        Car parking
+                        Bicycles
+                        Christmas/holidays
+                        Housing</td>
+                    <td>6 years after repayment</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!--
+        <p>Information management records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_info_management.pdf --
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Record type</th>
+                    <th>Description of Use</th>
+                    <th>Retention period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>Record keeping</td>
+                    <td>Records relating to the control of record keeping systems</td>
+                    <td>When system is superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Documentation of record
+                        series (‘zero
+                        files’)</td>
+                    <td>(a) preserve permanently for
+                        series from which records
+                        have been transferred to The
+                        National Archives or place of
+                        deposit
+                        (b) destroy when all records
+                        in the series have been
+                        destroyed</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Records relating to services provided to the rest of the department/ agency</td>
+                    <td>5 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Documentation on applications by departments for variations to the thirty year rule</td>
+                    <td>2 years after variation has lapsed</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Documentation relating to the disclosure status of records under FOI</td>
+                    <td>5 years after the record is opened</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Information surveys, record audits and registry inspections</td>
+                    <td>5 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Applications to the Lord Chancellor for the retention of records under section 3(4) of the Public Records Act 1958 and related correspondence</td>
+                    <td>1 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Internal publications</td>
+                    <td>When superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Schedules of records loaned to other organisations</td>
+                    <td>Until disposal of the records covered</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Donations of records to the department</td>
+                    <td>As long as record is held by the Department or agency</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>FOI requests:
+                        a) for documents already
+                        open
+                        b) for documents which are
+                        subsequently opened
+                        c) for documents which
+                        remain closed</td>
+                    <td>a) One year
+                        b) Two years
+                        c) Ten years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Disposal</td>
+                    <td>Disposal schedules</td>
+                    <td>Retain permanently</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Correspondence and papers relating to the compilation of disposal schedules</td>
+                    <td>10 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Review lists, including information from systems such as DRUID2</td>
+                    <td>5 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Lists, certificates, docket
+                        books or databases of
+                        records destroyed</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        -->
+
+        <p>Employee personnel records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_internal_audit.pdf -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Record type</th>
+                    <th>Description of Use</th>
+                    <th>Retention period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>Reports</td>
+                    <td>Audit reports (including interim), where these have included the examination of long-term contracts</td>
+                    <td>6 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Report papers used in the course of a fraud investigation</td>
+                    <td>6 years after legal proceedings have been completed</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Other audit reports (including interim)</td>
+                    <td>3 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Undertakings</td>
+                    <td>Terms of reference</td>
+                    <td>3 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Programmes / plans / strategies</td>
+                    <td>One year after the last date of the plan</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Correspondence</td>
+                    <td>3 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Record keeping</td>
+                    <td>Minutes of meetings and related papers, including those of the Audit Committee</td>
+                    <td>3 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Working papers</td>
+                    <td>3 years</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Other records</td>
+                    <td>Internal Audit guides</td>
+                    <td>When superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Manuals and guides relating to departmental procedures</td>
+                    <td>When superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Local auditing standards</td>
+                    <td>When superseded</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Disposal</td>
+                    <td>Annual reports to Accounting Officers</td>
+                    <td>3 years</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Project records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_projects.pdf -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Record type</th>
+                    <th>Description of Use</th>
+                    <th>Retention period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>Project proposals</td>
+                    <td>approved</td>
+                    <td>10 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>rejected or deferred</td>
+                    <td>5 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Project Initiation Documents (PIDs)</td>
+                    <td>PIDs and supporting documentation (including business cases)</td>
+                    <td>Small projects:
+                            10 years after completion of project
+                        Major projects:
+                            25 years after completion of project
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Feasibility studies</td>
+                    <td>reports</td>
+                    <td>Small projects:
+                            10 years after issue
+                        Major projects:
+                            25 years after completion of project
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>-draft reports</td>
+                    <td>Small projects:
+                            2 years after last paper
+                        Major projects:
+                            25 years after completion of project
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>working papers</td>
+                    <td>Small projects:
+                            2 years after last paper
+                        Major projects:
+                            25 years after completion of project
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>correspondence</td>
+                    <td>Small projects:
+                            2 years after last paper
+                        Major projects:
+                            25 years after completion of project
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Plans and specifications (such as statements of requirements, operational requirements, technical plans, resource plans)</td>
+                    <td>provisional / proposed</td>
+                    <td>5 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>final</td>
+                    <td>10 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>variations</td>
+                    <td>10 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Contracts and agreements</td>
+                    <td>contracts under seal</td>
+                    <td>See 'Contractual records' above.</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>other contracts</td>
+                    <td>See 'Contractual records' above.</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>title deeds</td>
+                    <td>See 'Contractual records' above.</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>correspondence</td>
+                    <td>See 'Contractual records' above.</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Contractors</td>
+                    <td>approved nominations</td>
+                    <td>1 year after issue</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>rejected nominations</td>
+                    <td>1 year after issue</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>approved list</td>
+                    <td>when new list is issued</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>removals/suspensions</td>
+                    <td>6 years after the end of the project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Tender boards</td>
+                    <td>record sets of papers</td>
+                    <td>at the end of the project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>other copies</td>
+                    <td>1 year after date of last paper</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>working papers</td>
+                    <td>2 years after date of last paper</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>minutes of meetings</td>
+                    <td>5 years after date of last paper</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Maps, plans, drawings and photographs</td>
+                    <td>master set</td>
+                    <td>SMall projects:
+                            10 years after completion of project
+                        Major projects:
+                            25 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>working copies</td>
+                    <td>Small projects:
+                            at the end of the project
+                        Major projects:
+                            25 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>other copies</td>
+                    <td>Small projects:
+                            5 years after date of last paper
+                        Major projects:
+                            25 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Financial documents</td>
+                    <td>Financial documents (including
+                        investment appraisals)</td>
+                    <td>6 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Equipment and supplies</td>
+                    <td>Equipment and supplies</td>
+                    <td>6 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Land records</td>
+                    <td>allocation</td>
+                    <td>when land released for other purposes</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>procurement / disposal</td>
+                    <td>12 years after date of disposal</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Human resources</td>
+                    <td></td>
+                    <td>See 'Personal records' above.</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Project boards, Assessment meetings, etc.</td>
+                    <td>minutes</td>
+                    <td>Small projects:
+                            5 years after date of last paper
+                        Major projects:
+                            25 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>correspondence</td>
+                    <td>Small projects:
+                            5 years after date of last paper
+                        Major projects:
+                            25 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Reports (such as stage assessments, quality reviews, highlight reports, GANTT charts)</td>
+                    <td>interim</td>
+                    <td>5 years after issue</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>final</td>
+                    <td>25 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>evaluation</td>
+                    <td>25 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>draft</td>
+                    <td>at the end of the project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Product descriptions</td>
+                    <td></td>
+                    <td>5 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Project operating manuals</td>
+                    <td>5 years after completion of project</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Miscellaneous records</td>
+                    <td>Copies of documentation from other projects; information on products, equipment or machinery; training courses; correspondence</td>
+                    <td>2 years after completion of project</td>
+                </tr>
+            </tbody>
+        </table>
+
+    <p>Inquiry records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/retention-schedule-for-records-inquiries.pdf -->
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Record type</th>
+                <th>Description of Use</th>
+                <th>Retention period</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td>Inquiries</td>
+                <td>Evidence of steps taken to secure the attendance of witnesses</td>
+                <td>7 years from the final report</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Schedules of witnesses</td>
+                <td>7 years from the final report</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Research gathered by the inquiry team </td>
+                <td>7 years from the final report</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Financial records</td>
+                <td>7 years from the final report</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Cost solicitor’s records</td>
+                <td>7 years from the final report</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Parliamentary questions</td>
+                <td>7 years from the final report</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>All other data related to the inquiry</td>
+                <td>Permanent</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Public inquiry records</p> <!-- https://cdn.nationalarchives.gov.uk/documents/information-management/sched_public_inquiry.pdf -->
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Record type</th>
+                <th>Description of Use</th>
+                <th>Retention period</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td>Customer data</td>
+                <td>Enquiries</td>
+                <td>6 years from end of contract</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Contracted services</td>
+                <td>Initial proposal</td>
+                <td>6 years from end of contract</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Signed contracts and ammendments</td>
+                <td>6 years from end of contract</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Reports from third party services contracted</td>
+                <td>6 years from end of contract</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+    <!-- Include JavaScript -->
+    <script src="{{ url_for('static', filename='js/retention_schedule.js') }}"></script>
+
+    <script>
+        var hashPageCurrent = "{{ model.HASH_PAGE_RETENTION_SCHEDULE }}";
+        
+        $(document).ready(function() {
+            hookupPageRetentionSchedule();
+        });
+    </script>
+{% endblock %}
+

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-GB">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8"/>
@@ -61,13 +61,13 @@
 
 <div class="topnav">
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 18vw; min-width: 18vw; max-width: 20vw;">
-        <img class="header-logo" src="{{ url_for('static', filename='images/Logo.png') }}" alt="PARTS logo" tabindex="0">
+        <img class="header-logo" src="{{ url_for('static', filename='images/Logo.png') }}" alt="{{ model.NAME_COMPANY }} logo" aria-label="{{ model.NAME_COMPANY }} logo" tabindex="0">
     </div>
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 75vw; min-width: 65vw; max-width: 80vw;">
         <h4 class="company-name">Precision And Research Technology Systems</h4>
     </div>
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 7vw; min-width: 7vw; max-width: 15vw; justify-content: flex-end; "> <!-- padding-left: 25%; -->
-        <button id="{{ model.ID_BUTTON_HAMBURGER }}" tabindex="1">=</button>
+        <button id="{{ model.ID_BUTTON_HAMBURGER }}" tabindex="1" alt="Hamburger menu button" aria-label="Hamburger menu button">=</button>
     </div>
 </div>
 
@@ -140,7 +140,7 @@
 
 
 <div class="footer">
-    <h4 style="padding-top: 1vh;">Copyright &copy; Precision And Research Technology Systems Limited. All rights reserved.</h4>
+    <h4 style="padding-top: 1vh;">Copyright &copy; {{ model.NAME_COMPANY }}. <a href="{{ url_for('license') }}" alt="License" aria-label="License">All rights reserved.</a></h4>
     <h5>Company number 13587499</h5>
 </div>
 
@@ -162,3 +162,4 @@
         hookupShared();
     });
 </script>
+
