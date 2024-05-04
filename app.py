@@ -189,7 +189,7 @@ def contact_post():
             name = form.name.data
             message = form.message.data
             # send email
-            mailItem = Message("PARTS Website Contact Us Message", recipients=[app.config['MAIL_DEFAULT_SENDER']])
+            mailItem = Message("PARTS Website Contact Us Message", recipients=[app.config['MAIL_CONTACT_PUBLIC']])
             mailItem.body = f"Dear Lord Edward Middleton-Smith,\n\n{message}\n\nKind regards,\n{name}\n{email}"
             mail.send(mailItem)
             return "Submitted."

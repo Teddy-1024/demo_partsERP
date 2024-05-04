@@ -195,7 +195,7 @@
             [Note: publishing the test report is optional but doing so may allow you to make your accessibility statement shorter and more focused.]
             https://www.w3.org/WAI/eval/report-tool/#/
         -->
-        <p>You can read the full accessibility test report {{ url_for('accessibility_report') }}.</p>
+        <p>You can read the full accessibility test report {{ model.URL_HOST }}{{ url_for('accessibility_report') }}.</p>
     </div>
 
     <!-- Include JavaScript -->
