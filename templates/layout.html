@@ -3,8 +3,37 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8"/>
-    <title>{% block title %}{% endblock %} - PARTS</title>
-    
+    <title>{% block title %}{% endblock %} - {{ model.NAME_COMPANY }}</title>
+    <meta name="description" content="Explore our wide range of software engineering services. We specialize in various tech stacks including MySQL, Python, Microsoft SQL Server, C#, Firebase, Node.js, Java, HTML5, React, CSS3, Flask, JavaScript, MVC, and REST." />
+    <meta name="keywords" content="software engineering, software development, software design, software testing, software maintenance, software support, software consultancy, software training, software documentation, software project management, software quality assurance, software process improvement, software configuration management, software requirements engineering, software architecture, software design patterns, software design principles, software testing principles, software testing techniques, software testing tools, software testing automation, software testing manual, software testing exploratory, software testing regression, software testing performance, software testing security, software testing usability, software testing accessibility, software testing compatibility, software testing reliability, software testing maintainability, software testing portability, software testing scalability, software testing test-driven development, software testing behaviour-driven development, software testing acceptance test-driven development, software testing continuous integration, software testing continuous deployment, software testing continuous delivery, software testing continuous monitoring, software testing continuous feedback, software testing continuous improvement, software testing agile, software testing scrum, software testing kanban, software testing lean, software testing waterfall, software testing v-model, software testing spiral, software testing incremental, software testing iterative, software testing adaptive, software testing predictive, software testing hybrid, software testing manual, software testing automated, software testing exploratory, software testing regression, software testing performance, software testing security, software testing usability, software testing accessibility, software testing compatibility, software testing reliability, software testing maintainability, software testing portability, software testing scalability, software testing test-driven development, software testing behaviour-driven development, software testing acceptance test-driven development, software testing continuous integration, software testing continuous deployment, software testing continuous delivery, software testing continuous monitoring, software testing continuous feedback, software testing continuous improvement, software testing agile, software testing scrum, software testing kanban, software testing lean, software testing waterfall, software testing v-model, software testing spiral, software testing incremental, software testing iterative, software testing adaptive, software testing predictive, software testing hybrid, software testing manual, software testing automated, software testing exploratory, software testing regression, software testing performance, software testing security, software testing usability, software testing accessibility, software testing compatibility, software testing reliability, software testing maintainability, software testing portability, software testing scalability, software testing test-driven development, software testing behaviour-driven development, software testing acceptance test-driven development, software testing continuous integration, software testing continuous deployment, software testing continuous delivery, software testing continuous monitoring, software testing continuous feedback, software testing continuous improvement, software testing agile, software testing, MySQL, Python, Microsoft SQL Server, MS SQL Server, C#, Firebase, Node.js, Java, HTML5, React, CSS3, Flask, JavaScript, MVC, REST" />
+    <link rel="canonical" href="{{ model.URL_HOST }}" />
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "ProfessionalService",
+          "name": "{{ model.NAME_COMPANY }}",
+          "url": "{{ model.URL_HOST }}",
+          "logo": "{{ model.URL_HOST }}{{ url_for('static', filename='images/Logo.png') }}",
+          "description": "Explore our wide range of software engineering services. We specialize in various tech stacks including MySQL, Python, Microsoft SQL Server, C#, Firebase, Node.js, Java, HTML5, React, CSS3, Flask, JavaScript, MVC, and REST.",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "53 Alfred Green Close",
+            "addressLocality": "Rugby",
+            "addressRegion": "Warwickshire",
+            "postalCode": "CV22 6DN",
+            "addressCountry": "United Kingdom"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "52.22",
+            "longitude": "1.16"
+          },
+          "openingHours": "Mo,Tu,We,Th,Fr 09:00-17:00",
+          "priceRange": "$$",
+        }
+    </script>
+    <meta name="yandex-verification" content="4693a824cfda082a" />
+
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!-- Include jQuery from a CDN -->
@@ -64,7 +93,7 @@
         <img class="header-logo" src="{{ url_for('static', filename='images/Logo.png') }}" alt="{{ model.NAME_COMPANY }} logo" aria-label="{{ model.NAME_COMPANY }} logo" tabindex="0">
     </div>
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 75vw; min-width: 65vw; max-width: 80vw;">
-        <h4 class="company-name">Precision And Research Technology Systems</h4>
+        <h1 class="company-name">Precision And Research Technology Systems</h1>
     </div>
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 7vw; min-width: 7vw; max-width: 15vw; justify-content: flex-end; "> <!-- padding-left: 25%; -->
         <button id="{{ model.ID_BUTTON_HAMBURGER }}" tabindex="1" alt="Hamburger menu button" aria-label="Hamburger menu button">=</button>
