@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8"/>
-    <title>{% block title %}{% endblock %} - {{ model.NAME_COMPANY }}</title>
+    <title>{{ model.title }} - {{ model.NAME_COMPANY }}</title>
     <meta name="description" content="Explore our wide range of software engineering services. We specialize in various tech stacks including MySQL, Python, Microsoft SQL Server, C#, Firebase, Node.js, Java, HTML5, React, CSS3, Flask, JavaScript, MVC, and REST." />
     <meta name="keywords" content="software engineering, software development, software design, software testing, software maintenance, software support, software consultancy, software training, software documentation, software project management, software quality assurance, software process improvement, software configuration management, software requirements engineering, software architecture, software design patterns, software design principles, software testing principles, software testing techniques, software testing tools, software testing automation, software testing manual, software testing exploratory, software testing regression, software testing performance, software testing security, software testing usability, software testing accessibility, software testing compatibility, software testing reliability, software testing maintainability, software testing portability, software testing scalability, software testing test-driven development, software testing behaviour-driven development, software testing acceptance test-driven development, software testing continuous integration, software testing continuous deployment, software testing continuous delivery, software testing continuous monitoring, software testing continuous feedback, software testing continuous improvement, software testing agile, software testing scrum, software testing kanban, software testing lean, software testing waterfall, software testing v-model, software testing spiral, software testing incremental, software testing iterative, software testing adaptive, software testing predictive, software testing hybrid, software testing manual, software testing automated, software testing exploratory, software testing regression, software testing performance, software testing security, software testing usability, software testing accessibility, software testing compatibility, software testing reliability, software testing maintainability, software testing portability, software testing scalability, software testing test-driven development, software testing behaviour-driven development, software testing acceptance test-driven development, software testing continuous integration, software testing continuous deployment, software testing continuous delivery, software testing continuous monitoring, software testing continuous feedback, software testing continuous improvement, software testing agile, software testing scrum, software testing kanban, software testing lean, software testing waterfall, software testing v-model, software testing spiral, software testing incremental, software testing iterative, software testing adaptive, software testing predictive, software testing hybrid, software testing manual, software testing automated, software testing exploratory, software testing regression, software testing performance, software testing security, software testing usability, software testing accessibility, software testing compatibility, software testing reliability, software testing maintainability, software testing portability, software testing scalability, software testing test-driven development, software testing behaviour-driven development, software testing acceptance test-driven development, software testing continuous integration, software testing continuous deployment, software testing continuous delivery, software testing continuous monitoring, software testing continuous feedback, software testing continuous improvement, software testing agile, software testing, MySQL, Python, Microsoft SQL Server, MS SQL Server, C#, Firebase, Node.js, Java, HTML5, React, CSS3, Flask, JavaScript, MVC, REST" />
     <link rel="canonical" href="{{ model.URL_HOST }}" />
@@ -53,6 +53,7 @@
         var flagExpanded = "{{ model.FLAG_EXPANDED }}";
         var flagInitialised = "{{ model.FLAG_INITIALISED }}";
         var flagRow = "{{ model.FLAG_ROW }}";
+        var flagRowNew = "{{ model.FLAG_ROW_NEW }}";
         var flagScrollable = "{{ model.FLAG_SCROLLABLE }}";
         var flagSubmitted = "{{ model.FLAG_SUBMITTED }}";
         var hashPageContact = "{{ model.HASH_PAGE_CONTACT }}";
@@ -60,6 +61,7 @@
         var hashPageHome = "{{ model.HASH_PAGE_HOME }}";
         var hashPageServices = "{{ model.HASH_PAGE_SERVICES }}";
         var hashPageStoreHome = "{{ model.HASH_PAGE_STORE_HOME }}";
+        var hashPageStorePermutations = "{{ model.HASH_PAGE_STORE_PERMUTATIONS }}";
         var hashPageStoreProduct = "{{ model.HASH_PAGE_STORE_PRODUCT }}";
         var idButtonHamburger = "#{{ model.ID_BUTTON_HAMBURGER }}";
         var idFormCurrency = "#{{ model.ID_FORM_CURRENCY }}";
@@ -69,9 +71,11 @@
         var idNavHome = "#{{ model.ID_NAV_HOME }}";
         var idNavServices = "#{{ model.ID_NAV_SERVICES }}";
         var idNavStoreHome = "#{{ model.ID_NAV_STORE_HOME }}";
+        var idNavStorePermutations = "#{{ model.ID_NAV_STORE_PERMUTATIONS }}";
         var idNavStoreProduct = "#{{ model.ID_NAV_STORE_PRODUCT }}";
         var idOverlayHamburger = "#{{ model.ID_OVERLAY_HAMBURGER }}";
         var idPageBody = "#{{ model.ID_PAGE_BODY }}";
+        var idTableMain = "#{{ model.ID_TABLE_MAIN }}";
         var isUserLoggedIn = "{{ model.output_bool(model.IS_USER_LOGGED_IN) }}";
         var keyBasket = "{{ model.KEY_BASKET }}";
         var keyForm = "{{ model.KEY_FORM }}";
@@ -93,7 +97,7 @@
         <img class="header-logo" src="{{ url_for('static', filename='images/Logo.png') }}" alt="{{ model.NAME_COMPANY }} logo" aria-label="{{ model.NAME_COMPANY }} logo" tabindex="0">
     </div>
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 75vw; min-width: 65vw; max-width: 80vw;">
-        <h1 class="company-name">Precision And Research Technology Systems</h1>
+        <h1 class="company-name">{{ model.NAME_COMPANY }} - {{ model.title }}</h1>
     </div>
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 7vw; min-width: 7vw; max-width: 15vw; justify-content: flex-end; "> <!-- padding-left: 25%; -->
         <button id="{{ model.ID_BUTTON_HAMBURGER }}" tabindex="1" alt="Hamburger menu button" aria-label="Hamburger menu button">=</button>
@@ -118,47 +122,53 @@
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
         <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
     </div>
+
+    <div class="container column">
+        <a id="{{ model.ID_NAV_STORE_PERMUTATIONS }}">Product Permutations</a>
+    </div>
     {% if model.is_page_store %}
+        <!--
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <!-- <a href="{ url_ for('create_price_dummy') }">Create template price</a> -->
-            <form id="{{ model.ID_FORM_IS_INCLUDED_VAT }}" class="{{ model.FLAG_CONTAINER }}" action="{{ url_for('set_is_included_VAT') }}" method="POST">
-                {{ model.form_is_included_VAT.hidden_tag() }}
+            <!-- <a href="{ url_ for('create_price_dummy') }">Create template price</a> --
+            <form id="{{ model.ID_FORM_IS_INCLUDED_VAT }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_is_included_VAT') } }" method="POST">
+                { { model.form_is_included_VAT.hidden_tag() }}
                 <div class="container-input">
-                    {{ model.form_is_included_VAT.is_included.label }}
-                    {{ model.form_is_included_VAT.is_included( checked = model.is_included_VAT ) }}
-                    {% for error in model.form_is_included_VAT.is_included.errors %}
+                    { { model.form_is_included_VAT.is_included.label }}
+                    { { model.form_is_included_VAT.is_included( checked = model.is_included_VAT ) }}
+                    { % for error in model.form_is_included_VAT.is_included.errors %}
                         <p class="error">{{ error }}</p>
-                    {% endfor %}
+                    { % endfor %}
                 </div>
             </form>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <form id="{{ model.ID_FORM_DELIVERY_REGION }}" class="{{ model.FLAG_CONTAINER }}" action="{{ url_for('set_delivery_region') }}" method="POST">
-                {{ model.form_delivery_region.hidden_tag() }}
+            <form id="{{ model.ID_FORM_DELIVERY_REGION }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_delivery_region') } }" method="POST">
+                { { model.form_delivery_region.hidden_tag() }}
                 <div class="container-input">
-                    {{ model.form_delivery_region.id_region_delivery.label }}
-                    {{ model.form_delivery_region.id_region_delivery() }}
-                    {% for error in model.form_delivery_region.id_region_delivery.errors %}
+                    { { model.form_delivery_region.id_region_delivery.label }}
+                    { { model.form_delivery_region.id_region_delivery() }}
+                    { % for error in model.form_delivery_region.id_region_delivery.errors %}
                         <p class="error">{{ error }}</p>
-                    {% endfor %}
+                    { % endfor %}
                 </div>
             </form>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <form id="{{ model.ID_FORM_CURRENCY }}" class="{{ model.FLAG_CONTAINER }}" action="{{ url_for('set_currency') }}" method="POST">
-                {{ model.form_currency.hidden_tag() }}
+            <form id="{{ model.ID_FORM_CURRENCY }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_currency') } }" method="POST">
+                { { model.form_currency.hidden_tag() }}
                 <div class="container-input">
-                    {{ model.form_currency.id_currency.label }}
-                    {{ model.form_currency.id_currency() }}
-                    {% for error in model.form_currency.id_currency.errors %}
+                    { { model.form_currency.id_currency.label }}
+                    { { model.form_currency.id_currency() }}
+                    { % for error in model.form_currency.id_currency.errors %}
                         <p class="error">{{ error }}</p>
-                    {% endfor %}
+                    { % endfor %}
                 </div>
             </form>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a href="{{ url_for('logout') if model.is_user_logged_in else url_for('login') }}" style="float:right">{{ 'Logout' if model.is_user_logged_in else 'Login' }}</a>
+            <a href="{ { url_for('logout') if model.is_user_logged_in else url_for('login') }}" style="float:right">{{ 'Logout' if model.is_user_logged_in else 'Login' }}</a>
         </div>
+        -->
     {% endif %}
 </div>
 

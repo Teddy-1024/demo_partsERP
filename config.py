@@ -15,16 +15,23 @@ import os
 
 # CLASSES
 class Config:
-    DEBUG = False
-    TESTING = False
     SECRET_KEY = os.getenv('KEY_SECRET_FLASK') # gen cmd: openssl rand -hex 32
     # Add other configuration variables as needed
+    # MySQL
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Auth0
     ID_AUTH0_CLIENT = os.getenv('ID_AUTH0_CLIENT')
     ID_AUTH0_CLIENT_SECRET = os.getenv('ID_AUTH0_CLIENT_SECRET')
     DOMAIN_AUTH0 = os.getenv('DOMAIN_AUTH0')
     ID_TOKEN_USER = 'user'
+    # PostgreSQL
+    DB_NAME = os.getenv('partsltd')
+    DB_USER = os.getenv('DB_USER')
+    DB_PASSWORD = os.getenv('DB_PASSWORD')
+    DB_HOST = os.getenv('DB_HOST')
+    # DB_PORT = os.getenv('DB_PORT')
+    # Store
     # is_included_VAT = True
     """
     KEY_IS_INCLUDED_VAT = 'is_included_VAT'
@@ -37,6 +44,7 @@ class Config:
     """
     # id_currency = 1
     # id_region_delivery = 1
+    # Mail
     MAIL_SERVER = 'mail.partsltd.co.uk' # 'smtp.gmail.com'
     MAIL_PORT = 465 # 587
     MAIL_USE_TLS = False
@@ -45,8 +53,12 @@ class Config:
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER')
     MAIL_CONTACT_PUBLIC = os.getenv('MAIL_CONTACT_PUBLIC')
+    # Recaptcha
     RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
     RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
+    # Miscellaneous
+    DEBUG = False
+    TESTING = False
 
 class DevelopmentConfig(Config):
     DEBUG = True

@@ -41,13 +41,14 @@
         var typeFormBasketAdd = "{{ model.TYPE_FORM_BASKET_ADD }}";
         var typeFormBasketEdit = "{{ model.TYPE_FORM_BASKET_EDIT }}";
 
-        if (!isEmpty({{ model.basket.items }})) {
-            localStorage.setItem(keyBasket, JSON.parse(JSON.stringify({'items': "{{ model.basket.items }}"}))); 
+        /*
+        if (!isEmpty({ { model.basket.items }})) {
+            localStorage.setItem(keyBasket, JSON.parse(JSON.stringify({'items': "{ { model.basket.items }}"}))); 
         }
-        
+        */
         
         $(document).ready(function() {
-            hookupStore();
+            // hookupStore();
         });
         
     </script>

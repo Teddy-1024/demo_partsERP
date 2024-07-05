@@ -1,0 +1,60 @@
+
+{% if is_blank_row %}
+    <tr class="{{ model.FLAG_ROW_NEW }}">
+        <td class="{{ model.FLAG_CATEGORY }}">
+            <select class="{{ model.FLAG_CATEGORY}}">
+                {% for cat in model.category_list.categories %}
+                    <option value="{{ cat.id_category }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td class="{{ model.FLAG_PRODUCT }}">
+            <select class="{{ model.FLAG_PRODUCT }}"></select>
+        </td>
+        <td class="{{ model.FLAG_VARIATIONS }}">
+            <textarea class="{{ model.FLAG_VARIATIONS }}"></textarea>
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_STOCK }}">
+            <input class="{{ model.FLAG_QUANTITY_STOCK }}" type="number" min="0" value="0">
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_MIN }}">
+            <input class="{{ model.FLAG_QUANTITY_MIN }}" type="number" min="0" value="0">
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_MAX }}">
+            <input class="{{ model.FLAG_QUANTITY_MAX }}" type="number" min="0" value="0">
+        </td>
+        <td class="{{ model.FLAG_COST_LOCAL }}">
+            <input class="{{ model.FLAG_COST_LOCAL }}" type="number" min="0" value="0">
+        </td>
+        <!-- <td><strong>{ { permutation.output_currency() }}</strong>{ { permutation.get_price_local() }}</td> -->
+    </tr>
+{% else %}
+    <tr {{ model.ATTR_ID_CATEGORY }}="{{ category.id_category }}" {{ model.ATTR_ID_PRODUCT }}="{{ product.id_product }}" {{ model.ATTR_ID_PERMUTATION }}="{{ permutation.id_permutation }}">
+        <td class="{{ model.FLAG_CATEGORY }}">
+            <select class="{{ model.FLAG_CATEGORY }}" {{ model.ATTR_ID_CATEGORY }}="{{ category.id_category }}"></select>
+        </td>
+        <td class="{{ model.FLAG_PRODUCT }}">
+            <select class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_ID_PRODUCT }}="{{ product.id_product }}">
+                {% for p in model.category_list.categories[model.category_list.get_index_category_from_id(category.id_category)].products %}
+                    <option value="{{ p.id_product }}">{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td class="{{ model.FLAG_VARIATIONS }}">
+            <textarea class="{{ model.FLAG_VARIATIONS }}">{{ permutation.output_variations() }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_STOCK }}">
+            <input class="{{ model.FLAG_QUANTITY_STOCK }}" type="number" min="0" value="{{ permutation.quantity_stock }}">
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_MIN }}">
+            <input class="{{ model.FLAG_QUANTITY_MIN }}" type="number" min="0" value="{{ permutation.quantity_min }}">
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_MAX }}">
+            <input class="{{ model.FLAG_QUANTITY_MAX }}" type="number" min="0" value="{{ permutation.quantity_max }}">
+        </td>
+        <td class="{{ model.FLAG_COST_LOCAL }}">
+            <strong>{{ permutation.output_currency() }}</strong>{{ permutation.cost_local }}
+        </td>
+        <!-- <td><strong>{{ permutation.output_currency() }}</strong>{ { permutation.get_price_local() }}</td> -->
+    </tr>
+{% endif %}

@@ -29,9 +29,9 @@ from abc import abstractproperty
 # CLASSES
 class Model_View_Contact(Model_View_Base):
     # Attributes
-    ID_EMAIL = 'email'
-    ID_MESSAGE = 'msg'
-    ID_NAME = 'name'
+    ID_EMAIL: str = 'email'
+    ID_MESSAGE: str = 'msg'
+    ID_NAME: str = 'name'
 
     @property
     def title(self):

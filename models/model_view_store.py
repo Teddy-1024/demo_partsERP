@@ -29,67 +29,77 @@ from business_objects.category import Category
 from flask import send_file, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import locale
-
+from typing import ClassVar
 
 # VARIABLE INSTANTIATION
 
 
 # CLASSES
 class Model_View_Store(Model_View_Base):
+    # Global constants
+    ATTR_FORM_TYPE: ClassVar[str] = 'form-type'
+    ATTR_ID_PRODUCT_CATEGORY : ClassVar[str] = 'id-product-category'
+    ATTR_ID_PRODUCT : ClassVar[str] = 'id-product'
+    ATTR_ID_PERMUTATION : ClassVar[str] = 'id-permutation'
+    FLAG_BASKET_ITEM_DELETE : ClassVar[str] = 'basket-item-delete'
+    FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_BUTTON_SUBMIT + '.btnAdd2Basket'
+    FLAG_BUTTON_BUY_NOW : ClassVar[str] = 'btnBuyNow'
+    FLAG_CATEGORY: ClassVar[str] = 'category'
+    FLAG_PRODUCT: ClassVar[str] = 'product'
+    FLAG_VARIATIONS: ClassVar[str] = 'variations'
+    FLAG_QUANTITY_STOCK: ClassVar[str] = 'quantity-stock'
+    FLAG_QUANTITY_MIN: ClassVar[str] = 'quantity-min'
+    FLAG_QUANTITY_MAX: ClassVar[str] = 'quantity-max'
+    FLAG_COST_LOCAL: ClassVar[str] = 'cost-local'
+    HASH_PAGE_STORE_BASKET : ClassVar[str] = '/store/basket'
+    HASH_STORE_BASKET_ADD : ClassVar[str] = '/store/basket_add'
+    HASH_STORE_BASKET_DELETE : ClassVar[str] = '/store/basket_delete'
+    HASH_STORE_BASKET_EDIT : ClassVar[str] = '/store/basket_edit'
+    HASH_STORE_BASKET_LOAD : ClassVar[str] = '/store/basket_load'
+    HASH_STORE_SET_CURRENCY : ClassVar[str] = '/store/set_currency'
+    HASH_STORE_SET_DELIVERY_REGION : ClassVar[str] = '/store/set_delivery_region'
+    HASH_STORE_SET_IS_INCLUDED_VAT : ClassVar[str] = '/store/set_is_included_VAT'
+    ID_BASKET : ClassVar[str] = 'basket'
+    ID_BASKET_CONTAINER : ClassVar[str] = 'basketContainer'
+    ID_BASKET_TOTAL : ClassVar[str] = 'basketTotal'
+    ID_BUTTON_CHECKOUT : ClassVar[str] = 'btnCheckout'
+    ID_BUTTON_BASKET_ADD : ClassVar[str] = 'btnBasketAdd'
+    ID_BUTTON_BUY_NOW : ClassVar[str] = 'btnBuyNow'
+    ID_CURRENCY : ClassVar[str] = Form_Currency.id_id_currency # 'id_currency'
+    ID_CURRENCY_DEFAULT : ClassVar[str] = 1
+    ID_LABEL_BASKET_EMPTY : ClassVar[str] = 'basketEmpty'
+    ID_REGION_DELIVERY : ClassVar[str] = Form_Delivery_Region.id_id_region_delivery # 'id_region_delivery'
+    ID_REGION_DELIVERY_DEFAULT : ClassVar[str] = 1
+    IS_INCLUDED_VAT_DEFAULT : ClassVar[str] = True
+    KEY_BASKET : ClassVar[str] = Basket.KEY_BASKET # 'basket'
+    # KEY_CODE_CURRENCY : ClassVar[str] = 'code_currency'
+    # KEY_FORM : ClassVar[str] = 'form'
+    KEY_ID_CURRENCY : ClassVar[str] = Basket.KEY_ID_CURRENCY # 'id_currency'
+    KEY_ID_PRODUCT : ClassVar[str] = 'product_id'
+    KEY_ID_PERMUTATION : ClassVar[str] = 'permutation_id'
+    KEY_ID_REGION_DELIVERY : ClassVar[str] = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
+    KEY_IS_INCLUDED_VAT : ClassVar[str] = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
+    KEY_ITEMS : ClassVar[str] = Basket.KEY_ITEMS # 'items'
+    KEY_PRICE : ClassVar[str] = 'price'
+    KEY_QUANTITY : ClassVar[str] = 'quantity'
+    KEY_VALUE_DEFAULT : ClassVar[str] = 'default'
+    TYPE_FORM_BASKET_ADD : ClassVar[str] = 'Form_Basket_Add'
+    TYPE_FORM_BASKET_EDIT : ClassVar[str] = 'Form_Basket_Edit'
+    # development variables
+    # valid_product_id_list = ['prod_PB0NUOSEs06ymG']
+
     # Attributes
     # id_user: str
-    db: SQLAlchemy
-    basket: Basket # list # dict
+    # db: SQLAlchemy
+    # basket: Basket # list # dict
     # basket_total: float
+    """
     id_currency: bool
     id_region_delivery: bool
     is_included_VAT: bool
     show_delivery_option: bool # for checkout page
-    # Global constants
-    ATTR_FORM_TYPE = 'form-type'
-    ATTR_ID_PRODUCT_CATEGORY = 'id-product-category'
-    ATTR_ID_PRODUCT = 'id-product'
-    ATTR_ID_PERMUTATION = 'id-permutation'
-    FLAG_BASKET_ITEM_DELETE = 'basket-item-delete'
-    FLAG_BUTTON_BASKET_ADD = Model_View_Base.FLAG_BUTTON_SUBMIT + '.btnAdd2Basket'
-    FLAG_BUTTON_BUY_NOW = 'btnBuyNow'
-    HASH_PAGE_STORE_BASKET = '/store/basket'
-    HASH_STORE_BASKET_ADD = '/store/basket_add'
-    HASH_STORE_BASKET_DELETE = '/store/basket_delete'
-    HASH_STORE_BASKET_EDIT = '/store/basket_edit'
-    HASH_STORE_BASKET_LOAD = '/store/basket_load'
-    HASH_STORE_SET_CURRENCY = '/store/set_currency'
-    HASH_STORE_SET_DELIVERY_REGION = '/store/set_delivery_region'
-    HASH_STORE_SET_IS_INCLUDED_VAT = '/store/set_is_included_VAT'
-    ID_BASKET = 'basket'
-    ID_BASKET_CONTAINER = 'basketContainer'
-    ID_BASKET_TOTAL = 'basketTotal'
-    ID_BUTTON_CHECKOUT = 'btnCheckout'
-    ID_BUTTON_BASKET_ADD = 'btnBasketAdd'
-    ID_BUTTON_BUY_NOW = 'btnBuyNow'
-    ID_CURRENCY = Form_Currency.id_id_currency # 'id_currency'
-    ID_CURRENCY_DEFAULT = 1
-    ID_LABEL_BASKET_EMPTY = 'basketEmpty'
-    ID_REGION_DELIVERY = Form_Delivery_Region.id_id_region_delivery # 'id_region_delivery'
-    ID_REGION_DELIVERY_DEFAULT = 1
-    IS_INCLUDED_VAT_DEFAULT = True
-    KEY_BASKET = Basket.KEY_BASKET # 'basket'
-    # KEY_CODE_CURRENCY = 'code_currency'
-    KEY_FORM = 'form'
-    KEY_ID_CURRENCY = Basket.KEY_ID_CURRENCY # 'id_currency'
-    KEY_ID_PRODUCT = 'product_id'
-    KEY_ID_PERMUTATION = 'permutation_id'
-    KEY_ID_REGION_DELIVERY = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
-    KEY_IS_INCLUDED_VAT = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
-    KEY_ITEMS = Basket.KEY_ITEMS # 'items'
-    KEY_PRICE = 'price'
-    KEY_QUANTITY = 'quantity'
-    KEY_VALUE_DEFAULT = 'default'
-    TYPE_FORM_BASKET_ADD = 'Form_Basket_Add'
-    TYPE_FORM_BASKET_EDIT = 'Form_Basket_Edit'
-    # development variables
-    # valid_product_id_list = ['prod_PB0NUOSEs06ymG']
-
+    """
+    """
     def __new__(cls, db, info_user, app, id_currency, id_region_delivery, is_included_VAT): # , *args, **kwargs``
         # Initialiser - validation
         _m = 'Model_View_Store.__new__'
@@ -97,14 +107,17 @@ class Model_View_Store(Model_View_Base):
         print(f'{_m}\nstarting')
         # av.val_str(id_user, 'id_user', _m)
         # return super().__new__(cls, *args, **kwargs)
+        # cls.FLAG_BUTTON_BASKET_ADD = cls.FLAG_BUTTON_SUBMIT + '.btnAdd2Basket'
         return super().__new__(cls, db, info_user, app) # Model_View_Store, cls
-    
-    def __init__(self, db, info_user, app, id_currency, id_region_delivery, is_included_VAT):
+    """
+
+    def __init__(self, app, db, **kwargs): # , id_currency, id_region_delivery, is_included_VAT):
         # Constructor
         _m = 'Model_View_Store.__init__'
         print(f'{_m}\nstarting')
-        super().__init__(db, info_user, app)
+        super().__init__(app=app, db=db, **kwargs)
         self.is_page_store = True
+        """
         self.basket = Basket(id_currency, id_region_delivery, is_included_VAT)
         # self.basket_total = 0
         # self.db = db
@@ -122,6 +135,7 @@ class Model_View_Store(Model_View_Base):
         self.form_delivery_region = Form_Delivery_Region(id_region_delivery=self.id_region_delivery)
         self.form_delivery_region.id_region_delivery.choices = [(region.id_region, f'{region.code} - {region.name}') for region in regions]
         self.form_delivery_region.id_region_delivery.data = str(self.id_region_delivery) if len(regions) > 0 else None
+        """
 
     def get_many_product_category(self, product_filters): # category_ids = '', product_ids = '', get_all_category = True, get_all_product = True, max_products_per_category = -1):
         _m = 'Model_View_Store.get_many_product_category'

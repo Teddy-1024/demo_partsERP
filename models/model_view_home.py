@@ -31,11 +31,13 @@ class Model_View_Home(Model_View_Base):
     def title(self):
         return 'Home'
 
+    """
     def __new__(cls, db, info_user, app):
         # Initialiser - validation
         print(f'info_user: {info_user}')
         return super(Model_View_Home, cls).__new__(cls, db, info_user, app)
-    
-    def __init__(self, db, info_user, app):
+    """
+    def __init__(self, app):
         # Constructor
-        super().__init__(db, info_user, app)
+        super().__init__(app)
+    

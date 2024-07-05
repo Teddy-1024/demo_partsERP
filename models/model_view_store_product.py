@@ -35,7 +35,7 @@ class Model_View_Store_Product(Model_View_Store):
     # Attributes
     @property
     def title(self):
-        return 'Store Home'
+        return 'Store Product'
 
     def __new__(cls, db, id_user, app, id_permutation, id_currency, id_region_delivery, is_included_VAT): # *args, **kwargs
         # Initialiser - validation

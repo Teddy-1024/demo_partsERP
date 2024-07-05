@@ -84,6 +84,7 @@ function hookupNavigation() {
         });
     });
     
+    
     let btnNavStoreHome = $(idNavStoreHome);
     console.log("hooking up store home");
     console.log("btn: ", btnNavStoreHome, "\nHash: ", hashPageStoreHome, "\nflag: ", flagInitialised);
@@ -94,6 +95,15 @@ function hookupNavigation() {
             event.stopPropagation();
             // setupPageLocalStorageNext(hashPageStoreHome);
             goToPage(hashPageStoreHome);
+        });
+    });
+
+    let btnNavStorePermutations = $(idNavStorePermutations);
+    initialiseEventHandler(btnNavStorePermutations, flagInitialised, function() {
+        btnNavStorePermutations.on("click", function(event) {
+            event.stopPropagation();
+            // setupPageLocalStorageNext(hashPageStoreHome);
+            goToPage(hashPageStorePermutations);
         });
     });
 

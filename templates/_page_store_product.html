@@ -1,39 +1,95 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ model.title }}{% endblock %}
-
 {% block page_body %}
-    {% set product = model.product %}
-    {% set permutation = product.get_permutation_selected() %}
+    <!--
+    { % set product = model.product %}
+    { % set permutation = product.get_permutation_selected() %}
+    -->
     {% set block_id = 'styles' %}
     {% include '_shared_store.html' %}
     <script>console.log("test 1");</script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/store_product.css') }}">
     
     <!-- HTML content -->
-    <div class="row">
-        <div class="leftcolumn">
-            <div class="card">
-                <div class="container">
-                    <div class="card subcard">
-                        <div class="container column">
-                            <h2>{{ product.get_name() }}</h2>
-                            <div class="container-img-gallery">
-                                <img class="img-product" src="{{ product.get_image_from_index(0).url }}" alt="Template product image"> <!-- model.get_many_product_image_src(product.id, '', True, 'FULL') -->
-                            </div>
-                        </div>
-                        {% include '_block_store_product_price.html' %}
-                    </div>
-                    <div class="card subcard">
-                        <div>{{ permutation.description }}</div>
-                    </div>
+    <div class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
+        <form id="{{ model.ID_FORM_CONTACT }}" class="container" action="{{ url_for('contact') }}" method="POST">
+            {{ model.form_filters.hidden_tag() }}
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                    {{ model.form_filters.id_category.label }}
+                    {{ model.form_filters.id_category() }}
+                    {% for error in model.form_filters.id_category.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
                 </div>
             </div>
-        </div>
-        <div id="{{ model.ID_BASKET_CONTAINER }}" class="rightcolumn">
-            {% include '_block_store_basket.html' %}
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                    {{ model.form_filters.id_product.label }}
+                    {{ model.form_filters.id_product() }}
+                    {% for error in model.form_filters.id_product.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                    {{ model.form_filters.is_out_of_stock.label }}
+                    {{ model.form_filters.is_out_of_stock() }}
+                    {% for error in model.form_filters.is_out_of_stock.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                    {{ model.form_filters.quantity_min.label }}
+                    {{ model.form_filters.quantity_min() }}
+                    {% for error in model.form_filters.quantity_min.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                    {{ model.form_filters.quantity_max.label }}
+                    {{ model.form_filters.quantity_max() }}
+                    {% for error in model.form_filters.quantity_max.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--
+    <div class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
         </div>
     </div>
+    -->
+    <table id="{{ model.ID_TABLE_MAIN }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
+        <head>
+            <tr>
+                <th class="{{ model.FLAG_CATEGORY }}">Category</th>
+                <th class="{{ model.FLAG_PRODUCT }}">Product</th>
+                <th class="{{ model.FLAG_VARIATIONS }}">Variations</th>
+                <th class="{{ model.FLAG_QUANTITY_STOCK }}">Quantity Stock</th>
+                <th class="{{ model.FLAG_QUANTITY_MIN }}">Quantity Min</th>
+                <th class="{{ model.FLAG_QUANTITY_MAX }}">Quantity Max</th>
+                <th class="{{ model.FLAG_COST_LOCAL }}">Cost</th>
+                <!-- <th>Price</th> -->
+            </tr>
+        </head>
+        <tbody>
+            {% set is_blank_row = False %}
+            {% for category in model.category_list.categories %}
+                {% for product in category.products %}
+                    {% for permutation in product.permutations %}
+                        {% include '_block_store_permutation.html' %}
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+
+            {% set is_blank_row = True %}
+            {% include '_block_store_permutation.html' %}
+        </tbody>
+    </table>
     
     {% set block_id = 'scripts' %}
     {% include '_shared_store.html' %}
@@ -42,7 +98,25 @@
 
     <script>
         // pass arguments from model to JS
+        var attrIdCategory = "{{ model.ATTR_ID_CATEGORY }}";
+        var attrIdProduct = "{{ model.ATTR_ID_PRODUCT }}";
+        var attrIdPermutation = "{{ model.ATTR_ID_PERMUTATION }}";
+        var flagCategory = "{{ model.FLAG_CATEGORY }}";
+        var flagProduct = "{{ model.FLAG_PRODUCT }}";
+        var flagVariations = "{{ model.FLAG_VARIATIONS }}";
+        var flagQuantityStock = "{{ model.FLAG_QUANTITY_STOCK }}";
+        var flagQuantityMin = "{{ model.FLAG_QUANTITY_MIN }}";
+        var flagQuantityMax = "{{ model.FLAG_QUANTITY_MAX }}";
+        var flagCostLocal = "{{ model.FLAG_COST_LOCAL }}";
         var hashPageCurrent = "{{ model.HASH_PAGE_STORE_PRODUCT }}";
+        var idFilterCategory = "{{ model.ID_FILTER_CATEGORY }}";
+        var idFilterProduct = "{{ model.ID_FILTER_PRODUCT }}";
+        var idFilterOutOfStock = "{{ model.ID_FILTER_OUT_OF_STOCK }}";
+        var idFilterQuantityMin = "{{ model.ID_FILTER_QUANTITY_MIN }}";
+        var idFilterQuantityMax = "{{ model.ID_FILTER_QUANTITY_MAX }}";
+        var dictListsProducts = {{ model.category_list.to_dict_lists_products() }};
+        var listCategories = {{ model.category_list.to_list_categories() }};
+        var listProducts = {{ model.category_list.to_list_products() }};
 
         // hookup elements
         $(document).ready(function() {

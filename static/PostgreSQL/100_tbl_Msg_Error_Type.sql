@@ -1,0 +1,13 @@
+
+-- Error Message Type
+
+
+
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Msg_Error_Type';
+
+CREATE TABLE IF NOT EXISTS Shop_Msg_Error_Type (
+	id_type INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	code VARCHAR(50) NOT NULL,
+	name VARCHAR(200) NOT NULL,
+	description VARCHAR(1000)
+);

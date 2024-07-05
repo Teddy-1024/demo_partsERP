@@ -19,75 +19,97 @@ Base data model for views
 # from routes import bp_home
 import lib.argument_validation as av
 from forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
+
 # external
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+from flask import Flask, session
+from pydantic import BaseModel, ConfigDict
+from typing import ClassVar
 
 # VARIABLE INSTANTIATION
 
 
 # CLASSES
-class Model_View_Base(ABC):
+class Model_View_Base(BaseModel, ABC):
+    # Global constants
+    ATTR_TEXT_COLLAPSED: ClassVar[str] = 'textCollapsed'
+    ATTR_TEXT_EXPANDED: ClassVar[str] = 'textExpanded'
+    FLAG_BUTTON_MODAL_CLOSE: ClassVar[str] = 'btn-overlay-close'
+    FLAG_BUTTON_SUBMIT: ClassVar[str] = 'btn-submit'
+    FLAG_CARD: ClassVar[str] = 'card'
+    FLAG_COLLAPSED: ClassVar[str] = 'collapsed'
+    FLAG_COLLAPSIBLE: ClassVar[str] = 'collapsible'
+    FLAG_COLUMN: ClassVar[str] = 'column'
+    FLAG_CONTAINER: ClassVar[str] = 'container'
+    FLAG_CONTAINER_INPUT: ClassVar[str] = FLAG_CONTAINER + '-input'
+    FLAG_ERROR: ClassVar[str] = 'error'
+    FLAG_EXPANDED: ClassVar[str] = 'expanded'
+    FLAG_HAMBURGER: ClassVar[str] = 'hamburger'
+    FLAG_INITIALISED: ClassVar[str] = 'initialised'
+    FLAG_OVERLAY: ClassVar[str] = 'overlay'
+    FLAG_PAGE_BODY: ClassVar[str] = 'page-body'
+    FLAG_ROW: ClassVar[str] = 'row'
+    FLAG_ROW_NEW: ClassVar[str] = 'row-new'
+    FLAG_SCROLLABLE: ClassVar[str] = 'scrollable'
+    FLAG_SUBMITTED: ClassVar[str] = 'submitted'
+    # flagIsDatePicker: ClassVar[str] = 'is-date-picker'
+    HASH_PAGE_ACCESSIBILITY_STATEMENT: ClassVar[str] = '/accessibility-statement'
+    HASH_PAGE_CONTACT: ClassVar[str] = '/contact'
+    HASH_PAGE_ERROR_NO_PERMISSION: ClassVar[str] = '/error'
+    HASH_PAGE_HOME: ClassVar[str] = '/'
+    HASH_PAGE_LICENSE: ClassVar[str] = '/license'
+    HASH_PAGE_SERVICES: ClassVar[str] = '/services'
+    HASH_PAGE_STORE_HOME: ClassVar[str] = '/store'
+    HASH_PAGE_STORE_PERMUTATIONS: ClassVar[str] = '/store/permutations'
+    HASH_PAGE_STORE_PRODUCT: ClassVar[str] = '/store/product'
+    ID_BUTTON_HAMBURGER: ClassVar[str] = 'btnHamburger'
+    ID_FORM_CONTACT: ClassVar[str] = 'formContact'
+    ID_FORM_CURRENCY: ClassVar[str] = 'formCurrency'
+    ID_FORM_DELIVERY_REGION: ClassVar[str] = 'formDeliveryRegion'
+    ID_FORM_IS_INCLUDED_VAT: ClassVar[str] = 'formIsIncludedVAT'
+    ID_MODAL_SERVICES: ClassVar[str] = 'modalServices'
+    ID_MODAL_TECHNOLOGIES: ClassVar[str] = 'modalTechnologies'
+    ID_NAV_CONTACT: ClassVar[str] = 'navContact'
+    ID_NAV_HOME: ClassVar[str] = 'navHome'
+    ID_NAV_SERVICES: ClassVar[str] = 'navServices'
+    ID_NAV_STORE_HOME: ClassVar[str] = 'navStoreHome'
+    ID_NAV_STORE_PERMUTATIONS: ClassVar[str] = 'navStorePermutations'
+    ID_NAV_STORE_PRODUCT: ClassVar[str] = 'navStoreProduct'
+    ID_OVERLAY_HAMBURGER: ClassVar[str] = 'overlayHamburger'
+    ID_PAGE_BODY: ClassVar[str] = 'pageBody'
+    ID_TABLE_MAIN: ClassVar[str] = 'tableMain'
+    KEY_FORM: ClassVar[str] = 'form'
+    KEY_FORM_FILTERS: ClassVar[str] = KEY_FORM + 'Filters'
+    NAME_COMPANY: ClassVar[str] = 'Precision And Research Technology Systems Limited'
+    URL_HOST: ClassVar[str] = 'http://127.0.0.1:5000' # 'https://www.partsltd.co.uk'
+    URL_GITHUB: ClassVar[str] = 'https://github.com/Teddy-1024'
+    URL_LINKEDIN: ClassVar[str] = 'https://uk.linkedin.com/in/lordteddyms'
+
     # Attributes
+    """
     is_user_logged_in: bool
     id_user: str
     form_is_included_VAT: Form_Is_Included_VAT
     form_delivery_region: Form_Delivery_Region
     form_currency: Form_Currency
     # app: Flask
-    is_page_store: bool
-    # Global constants
-    ATTR_TEXT_COLLAPSED = 'textCollapsed'
-    ATTR_TEXT_EXPANDED = 'textExpanded'
-    FLAG_BUTTON_MODAL_CLOSE = 'btn-overlay-close'
-    FLAG_BUTTON_SUBMIT = 'btn-submit'
-    FLAG_CARD = 'card'
-    FLAG_COLLAPSED = 'collapsed'
-    FLAG_COLLAPSIBLE = 'collapsible'
-    FLAG_COLUMN = 'column'
-    FLAG_CONTAINER = 'container'
-    FLAG_CONTAINER_INPUT = FLAG_CONTAINER + '-input'
-    FLAG_EXPANDED = 'expanded'
-    FLAG_HAMBURGER = 'hamburger'
-    FLAG_INITIALISED = 'initialised'
-    FLAG_OVERLAY = 'overlay'
-    FLAG_PAGE_BODY = 'page-body'
-    FLAG_ROW = 'row'
-    FLAG_SCROLLABLE = 'scrollable'
-    FLAG_SUBMITTED = 'submitted'
-    # flagIsDatePicker = 'is-date-picker'
-    HASH_PAGE_ACCESSIBILITY_STATEMENT = '/accessibility-statement'
-    HASH_PAGE_CONTACT = '/contact'
-    HASH_PAGE_ERROR_NO_PERMISSION = '/error'
-    HASH_PAGE_HOME = '/'
-    HASH_PAGE_LICENSE = '/license'
-    HASH_PAGE_SERVICES = '/services'
-    HASH_PAGE_STORE_HOME = '/store'
-    HASH_PAGE_STORE_PRODUCT = '/store/product'
-    ID_BUTTON_HAMBURGER = 'btnHamburger'
-    ID_FORM_CONTACT = 'formContact'
-    ID_FORM_CURRENCY = 'formCurrency'
-    ID_FORM_DELIVERY_REGION = 'formDeliveryRegion'
-    ID_FORM_IS_INCLUDED_VAT = 'formIsIncludedVAT'
-    ID_MODAL_SERVICES = 'modalServices'
-    ID_MODAL_TECHNOLOGIES = 'modalTechnologies'
-    ID_NAV_CONTACT = 'navContact'
-    ID_NAV_HOME = 'navHome'
-    ID_NAV_SERVICES = 'navServices'
-    ID_NAV_STORE_HOME = 'navStoreHome'
-    ID_NAV_STORE_PRODUCT = 'navStoreProduct'
-    ID_OVERLAY_HAMBURGER = 'overlayHamburger'
-    ID_PAGE_BODY = 'pageBody'
-    NAME_COMPANY = 'Precision And Research Technology Systems Limited'
-    URL_HOST = 'https://www.partsltd.co.uk' # 'http://127.0.0.1:5000'
-    URL_GITHUB = 'https://github.com/Teddy-1024'
-    URL_LINKEDIN = 'https://uk.linkedin.com/in/lordteddyms'
+    """
+    # """
+    app: Flask
+    db: SQLAlchemy
+    # """
+    session: None = None
+    is_page_store: bool = None
 
-    @abstractproperty
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    @property
+    @abstractmethod
     def title(self):
         pass
-
+    
+    """
     def __new__(cls, db, info_user, app): # , *args, **kwargs
         # Initialiser - validation
         _m = 'Model_View_Base.__new__'
@@ -96,23 +118,31 @@ class Model_View_Base(ABC):
         # return super().__new__(cls, *args, **kwargs)
         av.val_instance(db, 'db', _m, SQLAlchemy, v_arg_type=v_arg_type)
         return super(Model_View_Base, cls).__new__(cls)
-    
-    def __init__(self, db, info_user, app):
+    """
+    def __init__(self, app, db, **kwargs):
         # Constructor
+        """
         _m = 'Model_View_Base.__init__'
         v_arg_type = 'class attribute'
         print(f'{_m}\nstarting')
         av.val_instance(db, 'db', _m, SQLAlchemy, v_arg_type=v_arg_type)
+        """
+        BaseModel.__init__(self, app=app, db=db, **kwargs)
+        """
         self.db = db
-        self.info_user = info_user
+        self.session = session
+        info_user = self.get_info_user()
         print(f'info_user: {info_user}\ntype: {str(type(info_user))}')
         self.is_user_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
         print(f'is_user_logged_in: {self.is_user_logged_in}')
         self.id_user = info_user['sub'] if self.is_user_logged_in else ''
-        self.form_is_included_VAT = Form_Is_Included_VAT()
-        self.form_delivery_region = Form_Delivery_Region()
-        self.form_currency = Form_Currency()
         self.app = app
+        """
+        with app.app_context():
+            self.session = session
+        # self.form_is_included_VAT = Form_Is_Included_VAT()
+        # self.form_delivery_region = Form_Delivery_Region()
+        # self.form_currency = Form_Currency()
         self.is_page_store = False
         
     def output_bool(self, boolean):

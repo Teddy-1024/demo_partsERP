@@ -1,0 +1,34 @@
+
+th, td {
+    min-width: fit-content;
+}
+
+.category {
+    width: 20%;
+}
+.product {
+    width: 20%;
+}
+.variations {
+    width: 20%;
+}
+.quantity-stock {
+    width: 8%;
+}
+.quantity-min {
+    width: 8%;
+}
+.quantity-max {
+    width: 8%;
+}
+.cost-local {
+    width: 16%;
+}
+
+.row-new {
+    visibility: hidden;
+}
+
+textarea, select, input {
+    width: 100%;
+}

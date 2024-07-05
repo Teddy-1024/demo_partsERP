@@ -19,7 +19,7 @@ Business object for product
 # internal
 import lib.argument_validation as av
 from lib import data_types
-from forms import Form_Basket_Add, Form_Basket_Edit # Form_Product
+from forms import Form_Basket_Add, Form_Basket_Edit, Form_Filters_Permutations
 from business_objects.discount import Discount
 from business_objects.variation import Variation
 from business_objects.image import Image
@@ -112,6 +112,10 @@ class Variation_Tree:
         return Variation_Tree.make_from_node_root(node_root)
 
 class Product(db.Model):
+    FLAG_CATEGORY = 'id_category'
+    FLAG_PRODUCT = 'id_product'
+    FLAG_VARIATIONS = 'has_variations'
+
     id_product = db.Column(db.Integer, primary_key=True)
     id_category = db.Column(db.Integer)
     name = db.Column(db.String(255))
@@ -142,10 +146,10 @@ class Product(db.Model):
         product.id_category = query_row[5]
         product.name = query_row[2]
         product.has_variations = av.input_bool(query_row[4], "has_variations", _m, v_arg_type=v_arg_type)
-        product.display_order = query_row[17]
-        product.can_view = av.input_bool(query_row[19], "can_view", _m, v_arg_type=v_arg_type)
-        product.can_edit = av.input_bool(query_row[20], "can_edit", _m, v_arg_type=v_arg_type)
-        product.can_admin = av.input_bool(query_row[21], "can_admin", _m, v_arg_type=v_arg_type)
+        product.display_order = query_row[22]
+        product.can_view = av.input_bool(query_row[24], "can_view", _m, v_arg_type=v_arg_type)
+        product.can_edit = av.input_bool(query_row[25], "can_edit", _m, v_arg_type=v_arg_type)
+        product.can_admin = av.input_bool(query_row[26], "can_admin", _m, v_arg_type=v_arg_type)
         return product
     """
     def make_from_permutation(permutation, has_variations = False):
@@ -326,15 +330,30 @@ class Product(db.Model):
             if permutation.is_available():
                 return True
         return False
+    
+    def to_list_rows_permutation(self):
+        list_rows = []
+        for permutation in self.permutations:
+            list_rows += permutation.to_row_permutation()
+        return list_rows
 
 
 class Product_Permutation(db.Model):
+    FLAG_QUANTITY_STOCK = 'quantity_stock'
+    FLAG_QUANTITY_MIN = 'quantity_min'
+    FLAG_QUANTITY_MAX = 'quantity_max'
+    FLAG_COST_LOCAL = 'cost_local'
+
     id_product = db.Column(db.Integer, primary_key=True)
     id_permutation = db.Column(db.Integer, primary_key=True)
     # name = db.Column(db.String(255))
     description = db.Column(db.String(4000))
     # price_GBP_full = db.Column(db.Float)
     # price_GBP_min = db.Column(db.Float)
+    id_currency_cost = db.Column(db.Integer)
+    code_currency_cost = db.Column(db.String(3))
+    symbol_currency_cost = db.Column(db.String(3))
+    cost_local = db.Column(db.Float)
     has_variations = db.Column(db.Boolean)
     id_category = db.Column(db.Integer)
     latency_manufacture = db.Column(db.Integer)
@@ -384,22 +403,26 @@ class Product_Permutation(db.Model):
         permutation.description = query_row[3]
         # permutation.price_GBP_full = query_row[4]
         # permutation.price_GBP_min = query_row[5]
+        permutation.id_currency_cost = query_row[7]
+        permutation.code_currency_cost = query_row[8]
+        permutation.symbol_currency_cost = query_row[9]
+        permutation.cost_local = query_row[6]
         permutation.has_variations = query_row[4]
         permutation.id_category = query_row[5]
-        permutation.latency_manufacture = query_row[6]
-        permutation.quantity_min = query_row[7]
-        permutation.quantity_max = query_row[8]
-        permutation.quantity_step = query_row[9]
-        permutation.quantity_stock = query_row[10]
-        permutation.id_stripe_product = query_row[11]
-        permutation.is_subscription = av.input_bool(query_row[12], "is_subscription", _m, v_arg_type=v_arg_type)
-        permutation.name_recurrence_interval = query_row[13]
-        permutation.name_plural_recurrence_interval = query_row[14]
-        permutation.count_recurrence_interval = query_row[15]
-        permutation.display_order = query_row[18]
-        permutation.can_view = av.input_bool(query_row[19], "can_view", _m, v_arg_type=v_arg_type)
-        permutation.can_edit = av.input_bool(query_row[20], "can_edit", _m, v_arg_type=v_arg_type)
-        permutation.can_admin = av.input_bool(query_row[21], "can_admin", _m, v_arg_type=v_arg_type)
+        permutation.latency_manufacture = query_row[11]
+        permutation.quantity_min = query_row[12]
+        permutation.quantity_max = query_row[13]
+        permutation.quantity_step = query_row[14]
+        permutation.quantity_stock = query_row[15]
+        permutation.id_stripe_product = query_row[16]
+        permutation.is_subscription = av.input_bool(query_row[17], "is_subscription", _m, v_arg_type=v_arg_type)
+        permutation.name_recurrence_interval = query_row[18]
+        permutation.name_plural_recurrence_interval = query_row[19]
+        permutation.count_recurrence_interval = query_row[20]
+        permutation.display_order = query_row[23]
+        permutation.can_view = av.input_bool(query_row[24], "can_view", _m, v_arg_type=v_arg_type)
+        permutation.can_edit = av.input_bool(query_row[25], "can_edit", _m, v_arg_type=v_arg_type)
+        permutation.can_admin = av.input_bool(query_row[26], "can_admin", _m, v_arg_type=v_arg_type)
         return permutation
     
     def make_from_DB_Stripe_product(query_row):
@@ -462,8 +485,14 @@ class Product_Permutation(db.Model):
     def output_currency(self):
         if not self.is_available:
             return ''
+        """
         price = self.get_price()
         return price.code_currency
+        """
+        return self.code_currency_cost if self.symbol_currency_cost == '' else self.symbol_currency_cost
+    def output_variations(self):
+        if not self.has_variations: return ''
+        return '\n'.join([f'{variation.name_variation_type}: {variation.name_variation}' for variation in self.variations])
     """
     def output_price_VAT_incl(self):
         locale.setlocale(locale.LC_ALL, '')
@@ -563,6 +592,17 @@ class Product_Permutation(db.Model):
         for price in self.prices:
             if price.code_currency == code_currency:
                 return price
+    
+    def to_row_permutation(self):
+        return {
+            Product.FLAG_CATEGORY: self.id_category,
+            Product.FLAG_PRODUCT: self.id_product,
+            Product.FLAG_VARIATIONS: self.has_variations,
+            Product_Permutation.FLAG_QUANTITY_STOCK: self.quantity_stock,
+            Product_Permutation.FLAG_QUANTITY_MIN: self.quantity_min,
+            Product_Permutation.FLAG_QUANTITY_MAX: self.quantity_max,
+            Product_Permutation.FLAG_COST_LOCAL: self.cost_local
+        }
 
 """
 class Product_Filters():
@@ -662,54 +702,134 @@ class Permutation_Variation_Link(db.Model):
 
 @dataclass
 class Product_Filters():
-    id_user: str
+    # id_user: str
     get_all_category: bool
-    ids_category: str
     get_inactive_category: bool
+    get_first_category_only: bool
+    ids_category: str
     get_all_product: bool
-    ids_product: str
     get_inactive_product: bool
     get_first_product_only: bool
+    ids_product: str
     get_all_permutation: bool
-    ids_permutation: str
     get_inactive_permutation: bool
+    get_first_permutation_only: bool
+    ids_permutation: str
     get_all_image: bool
-    ids_image: str
     get_inactive_image: bool
     get_first_image_only: bool
+    ids_image: str
     get_all_region: bool
-    ids_region: str
     get_inactive_region: bool
+    get_first_region_only: bool
+    ids_region: str
     get_all_currency: bool
-    ids_currency: str
     get_inactive_currency: bool
+    get_first_currency_only: bool
+    ids_currency: str
     get_all_discount: bool
-    ids_discount: str
     get_inactive_discount: bool
+    ids_discount: str
+    get_products_quantity_stock_below_min: bool
+
     def to_json(self):
         return {
-            'a_id_user': self.id_user,
+            'a_id_user': None,
             'a_get_all_category': self.get_all_category,
-            'a_ids_category': self.ids_category,
             'a_get_inactive_category': self.get_inactive_category,
+            'a_get_first_category_only': self.get_first_category_only,
+            'a_ids_category': self.ids_category,
             'a_get_all_product': self.get_all_product,
-            'a_ids_product': self.ids_product,
             'a_get_inactive_product': self.get_inactive_product,
             'a_get_first_product_only': self.get_first_product_only,
+            'a_ids_product': self.ids_product,
             'a_get_all_permutation': self.get_all_permutation,
-            'a_ids_permutation': self.ids_permutation,
             'a_get_inactive_permutation': self.get_inactive_permutation,
+            'a_get_first_permutation_only': self.get_first_permutation_only,
+            'a_ids_permutation': self.ids_permutation,
             'a_get_all_image': self.get_all_image,
-            'a_ids_image': self.ids_image,
             'a_get_inactive_image': self.get_inactive_image,
             'a_get_first_image_only': self.get_first_image_only,
+            'a_ids_image': self.ids_image,
             'a_get_all_delivery_region': self.get_all_region,
-            'a_ids_delivery_region': self.ids_region,
             'a_get_inactive_delivery_region': self.get_inactive_region,
+            'a_get_first_delivery_region_only': self.get_first_region_only,
+            'a_ids_delivery_region': self.ids_region,
             'a_get_all_currency': self.get_all_currency,
-            'a_ids_currency': self.ids_currency,
             'a_get_inactive_currency': self.get_inactive_currency,
+            'a_get_first_currency_only': self.get_first_currency_only,
+            'a_ids_currency': self.ids_currency,
             'a_get_all_discount': self.get_all_discount,
+            'a_get_inactive_discount': self.get_inactive_discount,
             'a_ids_discount': self.ids_discount,
-            'a_get_inactive_discount': self.get_inactive_discount
+            'a_get_products_quantity_stock_below_min': self.get_products_quantity_stock_below_min
         }
+    
+    @staticmethod
+    def from_form(form):
+        if not (form is Form_Filters_Permutations): raise ValueError(f'Invalid form type: {type(form)}')
+        has_category_filter = (form.id_category.data != '')
+        has_product_filter = (form.id_product.data != '')
+        return Product_Filters(
+            get_all_category = not has_category_filter,
+            get_inactive_category = False,
+            get_first_category_only = False,
+            ids_category = form.id_category.data,
+            get_all_product = not has_product_filter,
+            get_inactive_product = False,
+            get_first_product_only = False,
+            ids_product = form.id_product.data,
+            get_all_permutation = True,
+            get_inactive_permutation = False,
+            get_first_permutation_only = False,
+            ids_permutation = '',
+            get_all_image = False,
+            get_inactive_image = False,
+            get_first_image_only = False,
+            ids_image = '',
+            get_all_region = False,
+            get_inactive_region = False,
+            get_first_region_only = False,
+            ids_region = '',
+            get_all_currency = False,
+            get_inactive_currency = False,
+            get_first_currency_only = False,
+            ids_currency = '',
+            get_all_discount = False,
+            get_inactive_discount = False,
+            ids_discount = '',
+            get_products_quantity_stock_below_min = form.is_in_stock.data
+        )
+    
+    @staticmethod
+    def get_default():
+        return Product_Filters(
+            get_all_category = True,
+            get_inactive_category = False,
+            get_first_category_only = False,
+            ids_category = '',
+            get_all_product = True,
+            get_inactive_product = False,
+            get_first_product_only = False,
+            ids_product = '',
+            get_all_permutation = True,
+            get_inactive_permutation = False,
+            get_first_permutation_only = False,
+            ids_permutation = '',
+            get_all_image = True,
+            get_inactive_image = False,
+            get_first_image_only = False,
+            ids_image = '',
+            get_all_region = True,
+            get_inactive_region = False,
+            get_first_region_only = False,
+            ids_region = '',
+            get_all_currency = True,
+            get_inactive_currency = False,
+            get_first_currency_only = False,
+            ids_currency = '',
+            get_all_discount = True,
+            get_inactive_discount = False,
+            ids_discount = '',
+            get_products_quantity_stock_below_min = True
+        )

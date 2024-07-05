@@ -2,7 +2,8 @@
 setlocal enabledelayedexpansion
 
 :: set "test=C:\C:\ \"
-set dir_parent=C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\sql
+set dir_parent=C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL
+:: set dir_parent=C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL
 set "f_list=file_list.txt"
 set dir_current=%cd%
 set "f_tmp=temp.txt"

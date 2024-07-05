@@ -29,6 +29,7 @@ from business_objects.discount import Discount
 from business_objects.basket import Basket, Basket_Item
 from business_objects.order import Order
 from business_objects.sql_error import SQL_Error
+from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 # external
 # from abc import ABC, abstractmethod, abstractproperty
@@ -36,33 +37,44 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 import stripe
 import os
-
+from flask import Flask
+from pydantic import BaseModel, ConfigDict
+from typing import ClassVar
 
 # VARIABLE INSTANTIATION
 
 
 # CLASSES
-class DataStore_Store():
-    KEY_BASKET: str = Basket.KEY_BASKET
-    KEY_IS_INCLUDED_VAT = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
-    KEY_ID_CURRENCY = Basket.KEY_ID_CURRENCY # 'id_currency'
-    KEY_ID_REGION_DELIVERY = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
-    # Attributes
-    db: SQLAlchemy
+class DataStore_Store(BaseModel):
     # Global constants
+    KEY_BASKET: ClassVar[str] = Basket.KEY_BASKET
+    KEY_IS_INCLUDED_VAT: ClassVar[str] = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
+    KEY_ID_CURRENCY: ClassVar[str] = Basket.KEY_ID_CURRENCY # 'id_currency'
+    KEY_ID_REGION_DELIVERY: ClassVar[str] = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
+    # Attributes
+    app: Flask
+    db: SQLAlchemy
+    key_public_stripe: str = None
+    key_secret_stripe: str = None
 
-    def __new__(cls, db, info_user, app):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    """
+    def __new__(cls, app):
         # Initialiser - validation
         _m = 'DataStore_Store.__new__'
         v_arg_type = 'class attribute'
         av.val_instance(db, 'db', _m, SQLAlchemy, v_arg_type=v_arg_type)
         return super(DataStore_Store, cls).__new__(cls)
-    
-    def __init__(self, db, info_user, app):
+    """
+    def __init__(self, app, db):
+        super().__init__(app=app, db=db)
         # Constructor
+        """
         self.db = db
         self.info_user = info_user
         self.app = app
+        """
         self.key_secret_stripe = os.environ.get("KEY_SECRET_STRIPE")
         self.key_public_stripe = os.environ.get("KEY_PUBLIC_STRIPE")
         
@@ -101,6 +113,8 @@ class DataStore_Store():
         }
         """
         argument_dict = product_filters.to_json()
+        is_user_logged_in, id_user = self.get_login_user()
+        argument_dict['a_id_user'] = 'auth0|6582b95c895d09a70ba10fef' # id_user
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_product')
         result = self.db_procedure_execute('p_shop_get_many_product', argument_dict)
@@ -252,12 +266,16 @@ class DataStore_Store():
         proc_string += ')'
         proc_string = text(proc_string)
         print(f'{_m}\nproc_string: {proc_string}\nargs: {argument_dict_list}')
+
         # with self.db.session.begin() as session:
+        # conn = Helper_DB_MySQL(self.app).get_db_connection()
+
         if has_arguments:
             result = self.db.session.execute(proc_string, argument_dict_list)
         else:
             result = self.db.session.execute(proc_string)
         print(f'result: {result}')
+        # conn.session.remove()
         return result
         cursor = result.cursor
         result_set_1 = cursor.fetchall()
@@ -741,3 +759,12 @@ class DataStore_Store():
         id_currency = basket[DataStore_Store.KEY_ID_CURRENCY]
         id_region_delivery = basket[DataStore_Store.KEY_ID_REGION_DELIVERY]
         return id_currency, id_region_delivery, is_included_VAT
+
+    def get_login_user(self):
+        try:
+            info_user = self.session[self.app.ID_TOKEN_USER].get('userinfo')
+            is_user_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
+            id_user = info_user['sub'] if self.is_user_logged_in else None
+            return is_user_logged_in, id_user
+        except:
+            return False, None

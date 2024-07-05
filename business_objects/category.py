@@ -192,6 +192,18 @@ class Category(db.Model):
             if product.is_available():
                 return True
         return False
+    
+    def to_list_rows_permutation(self):
+        list_rows = []
+        for product in self.products:
+            list_rows += product.to_list_rows_permutation()
+        return list_rows
+    
+    def to_list_products(self):
+        list_products = []
+        for product in self.products:
+            list_products.append({'value': product.id_product, 'text': product.name})
+        return list_products
 
 
 class Product_Category_Filters():
@@ -279,3 +291,29 @@ class Category_List():
     
     def get_count_categories(self):
         return len(self.categories)
+    
+    def to_list_rows_permutation(self):
+        list_rows = []
+        for category in self.categories:
+            list_rows += category.to_list_rows_permutation()
+        return list_rows
+    
+    def to_list_categories(self):
+        list_categories = []
+        for category in self.categories:
+            list_categories.append({'value': category.id_category, 'text': category.name})
+        return list_categories
+    
+    def to_list_products(self):
+        list_products = []
+        for category in self.categories:
+            # list_products.append(category.to_list_products())
+            for product in category.products:
+                list_products.append({'value': product.id_product, 'text': product.name, Product.FLAG_CATEGORY: product.id_category})
+        return list_products
+    
+    def to_dict_lists_products(self):
+        dict_lists_products = {}
+        for category in self.categories:
+            dict_lists_products[category.id_category] = category.to_list_products()
+        return dict_lists_products
