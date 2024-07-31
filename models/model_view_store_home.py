@@ -40,13 +40,13 @@ class Model_View_Store_Home(Model_View_Store):
         return 'Store Home'
     max_products_per_category = -1
 
-    def __new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
+    def __new__(cls, db, app, id_currency, id_region_delivery, is_included_VAT):
         # Initialiser - validation
-        return super(Model_View_Store_Home, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
+        return super(Model_View_Store_Home, cls).__new__(cls, db, app, id_currency, id_region_delivery, is_included_VAT)
     
-    def __init__(self, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
+    def __init__(self, db, app, id_currency, id_region_delivery, is_included_VAT):
         # Constructor
-        super().__init__(db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
+        super().__init__(db, app, id_currency, id_region_delivery, is_included_VAT)
         # self.categories = Model_View_Store_Home.get_many_product_category(self.db, get_all_category = True, get_all_product = True)
         # self.get_many_product_category(get_all_category = True, get_all_product = True)
         """

@@ -78,4 +78,12 @@
     var keyRegion = "{{ model.KEY_REGION }}";
     var keyUrlCheckout = "{{ model.KEY_URL_CHECKOUT }}";
 </script>
+{% elif block_id == 'Textarea_Product_Permutation_Variations' %}
+<textarea 
+    class="{{ model.FLAG_VARIATIONS }}" 
+    {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.output_variations_jsonify() }}" 
+    {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.output_variations_jsonify() }}"
+>{{ permutation.output_variations() }}</textarea>
+{% elif block_id == 'Textarea_Product_Permutation_Variations_Blank' %}
+<textarea class="{{ model.FLAG_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
 {% endif %}

@@ -240,6 +240,8 @@ img, video {
 img.header-logo {
     max-height: 15vh;
     max-width: 20vw;
+    cursor: pointer;
+    border-radius: 5vh !important;
 }
 
 /* icon images */
@@ -411,7 +413,7 @@ img.header-logo {
     width: 100%;
 }
 
-button, .btn-submit, input[type="submit"] {
+button, .button-submit, input[type="submit"] {
     font-size: 20px;
     font-weight: bold;
     border: 4px solid;
@@ -457,7 +459,7 @@ button, .btn-submit, input[type="submit"] {
 .overlay.expanded {
     display: block !important;
 }
-.overlay.collapsed {
+.collapsed {
     display: none !important;
 }
 
@@ -508,4 +510,13 @@ ul {
 li {
     text-align: left;
     font-size: 18px;
+}
+
+
+.dirty {
+    /* color: var(--c_purple_dark); */
+    border-color: var(--c_purple_dark);
+}
+td.dirty {
+    background-color: var(--c_purple_dark);
 }

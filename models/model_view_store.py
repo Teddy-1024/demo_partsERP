@@ -18,7 +18,7 @@ Parent data model for store views
 # internal
 # from context import models
 from models.model_view_base import Model_View_Base
-from business_objects.product import Product, Product_Filters # Product_Image_Filters, 
+from business_objects.product import Product, Product_Filters, Product_Permutation # Product_Image_Filters, 
 from business_objects.image import Resolution_Level_Enum
 import lib.argument_validation as av
 from datastores.datastore_store import DataStore_Store
@@ -38,19 +38,30 @@ from typing import ClassVar
 class Model_View_Store(Model_View_Base):
     # Global constants
     ATTR_FORM_TYPE: ClassVar[str] = 'form-type'
-    ATTR_ID_PRODUCT_CATEGORY : ClassVar[str] = 'id-product-category'
-    ATTR_ID_PRODUCT : ClassVar[str] = 'id-product'
-    ATTR_ID_PERMUTATION : ClassVar[str] = 'id-permutation'
+    ATTR_ID_CATEGORY: ClassVar[str] = Product.ATTR_ID_CATEGORY
+    # ATTR_ID_PRODUCT_CATEGORY : ClassVar[str] = 'id-product-category'
+    ATTR_ID_PRODUCT : ClassVar[str] = Product.ATTR_ID_PRODUCT # 'id-product'
+    ATTR_ID_PERMUTATION : ClassVar[str] = Product.ATTR_ID_PERMUTATION # 'id-permutation'
     FLAG_BASKET_ITEM_DELETE : ClassVar[str] = 'basket-item-delete'
-    FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_BUTTON_SUBMIT + '.btnAdd2Basket'
-    FLAG_BUTTON_BUY_NOW : ClassVar[str] = 'btnBuyNow'
+    FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_BUTTON_SUBMIT + '.buttonAdd2Basket'
+    FLAG_BUTTON_BUY_NOW : ClassVar[str] = 'buttonBuyNow'
     FLAG_CATEGORY: ClassVar[str] = 'category'
+    FLAG_COST_LOCAL_VAT_INCL: ClassVar[str] = 'cost-local-VAT-incl'
+    FLAG_CURRENCY: ClassVar[str] = 'currency'
+    FLAG_DATE_CONSUMED: ClassVar[str] = 'date-consumed'
+    FLAG_DATE_EXPIRATION: ClassVar[str] = 'date-expiration'
+    FLAG_DATE_PURCHASED: ClassVar[str] = 'date-purchased'
+    FLAG_DATE_RECEIVED: ClassVar[str] = 'date-received'
+    FLAG_DATE_UNSEALED: ClassVar[str] = 'date-unsealed'
+    FLAG_IS_OUT_OF_STOCK: ClassVar[str] = 'is-out-of-stock'
+    FLAG_LOCATION_STORAGE: ClassVar[str] = 'storage-location'
     FLAG_PRODUCT: ClassVar[str] = 'product'
-    FLAG_VARIATIONS: ClassVar[str] = 'variations'
-    FLAG_QUANTITY_STOCK: ClassVar[str] = 'quantity-stock'
-    FLAG_QUANTITY_MIN: ClassVar[str] = 'quantity-min'
-    FLAG_QUANTITY_MAX: ClassVar[str] = 'quantity-max'
-    FLAG_COST_LOCAL: ClassVar[str] = 'cost-local'
+    FLAG_QUANTITY_MAX: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_MAX # 'quantity-max'
+    FLAG_QUANTITY_MIN: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_MIN # 'quantity-min'
+    FLAG_QUANTITY_STOCK: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_STOCK # 'quantity-stock'
+    FLAG_PLANT_STORAGE: ClassVar[str] = 'plant-storage'
+    FLAG_REGION_STORAGE: ClassVar[str] = 'region-storage'
+    FLAG_VARIATIONS: ClassVar[str] = Product.FLAG_VARIATIONS # 'variations'
     HASH_PAGE_STORE_BASKET : ClassVar[str] = '/store/basket'
     HASH_STORE_BASKET_ADD : ClassVar[str] = '/store/basket_add'
     HASH_STORE_BASKET_DELETE : ClassVar[str] = '/store/basket_delete'
@@ -62,9 +73,9 @@ class Model_View_Store(Model_View_Base):
     ID_BASKET : ClassVar[str] = 'basket'
     ID_BASKET_CONTAINER : ClassVar[str] = 'basketContainer'
     ID_BASKET_TOTAL : ClassVar[str] = 'basketTotal'
-    ID_BUTTON_CHECKOUT : ClassVar[str] = 'btnCheckout'
-    ID_BUTTON_BASKET_ADD : ClassVar[str] = 'btnBasketAdd'
-    ID_BUTTON_BUY_NOW : ClassVar[str] = 'btnBuyNow'
+    ID_BUTTON_CHECKOUT : ClassVar[str] = 'buttonCheckout'
+    ID_BUTTON_BASKET_ADD : ClassVar[str] = 'buttonBasketAdd'
+    ID_BUTTON_BUY_NOW : ClassVar[str] = 'buttonBuyNow'
     ID_CURRENCY : ClassVar[str] = Form_Currency.id_id_currency # 'id_currency'
     ID_CURRENCY_DEFAULT : ClassVar[str] = 1
     ID_LABEL_BASKET_EMPTY : ClassVar[str] = 'basketEmpty'
@@ -107,7 +118,7 @@ class Model_View_Store(Model_View_Base):
         print(f'{_m}\nstarting')
         # av.val_str(id_user, 'id_user', _m)
         # return super().__new__(cls, *args, **kwargs)
-        # cls.FLAG_BUTTON_BASKET_ADD = cls.FLAG_BUTTON_SUBMIT + '.btnAdd2Basket'
+        # cls.FLAG_BUTTON_BASKET_ADD = cls.FLAG_BUTTON_SUBMIT + '.buttonAdd2Basket'
         return super().__new__(cls, db, info_user, app) # Model_View_Store, cls
     """
 

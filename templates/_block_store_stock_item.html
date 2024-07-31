@@ -1,0 +1,109 @@
+
+{% if is_blank_row %}
+    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_STOCK_ITEM }}>
+        <td class="{{ model.FLAG_CATEGORY }}">
+            <select class="{{ model.FLAG_CATEGORY}}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
+                {% for cat in model.category_list.categories %}
+                    <option value="{{ cat.id_category }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td class="{{ model.FLAG_PRODUCT }}">
+            <select class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></select>
+        </td>
+        <td class="{{ model.FLAG_VARIATIONS }}">
+            <textarea class="{{ model.FLAG_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}">
+            <input class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}" type="number" min="0" value="0" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}>
+        </td>
+        <td class="{{ model.FLAG_DATE_PURCHASED }}">
+            <input class="{{ model.FLAG_DATE_PURCHASED }}" type="date" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }} />
+        </td>
+        <td class="{{ model.FLAG_DATE_RECEIVED }}">
+            <input type="date" class="{{ model.FLAG_DATE_RECEIVED }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }} />
+        </td>
+        <!--
+        <td class="{{ model.FLAG_IS_SEALED }}">
+            <input type="checkbox" class="{{ model.FLAG_IS_SEALED }}" "checked" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }} />
+        </td>
+        -->
+        <td class="{{ model.FLAG_DATE_UNSEALED }}">
+            <input type="date" class="{{ model.FLAG_DATE_UNSEALED }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }} />
+        </td>
+        <td class="{{ model.FLAG_DATE_EXPIRATION }}">
+            <input type="date" class="{{ model.FLAG_DATE_EXPIRATION }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }} />
+        </td>
+        <!--
+        <td class="{{ model.FLAG_IS_CONSUMED }}">
+            <input type="checkbox" class="{{ model.FLAG_IS_CONSUMED }}" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_FALSE }}" {{ model.ATTR_VALUE_PREVIOUS }} />
+        </td>
+        -->
+        <td class="{{ model.FLAG_DATE_CONSUMED }}">
+            <input type="date" class="{{ model.FLAG_DATE_CONSUMED }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }} />
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input type="checkbox" class="{{ model.FLAG_ACTIVE }}" "checked" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }} />
+        </td>
+    </tr>
+{% else %}
+    <tr {{ model.ATTR_ID_STOCK_ITEM }}="{{ stock_item.id_stock_item }}">
+        <td class="{{ model.FLAG_CATEGORY }}">
+            <select class="{{ model.FLAG_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ category.id_category }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.id_category }}"> <!-- {{ model.ATTR_ID_CATEGORY }}="{{ category.id_category }}" -->
+                {% for c in model.category_list.categories %}
+                    <option value="{{ c.id_category }}" {{ "selected" if c.id_category == category.id_category else "" }}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td class="{{ model.FLAG_PRODUCT }}">
+            <select class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.id_product }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.id_product }}"> <!-- {{ model.ATTR_ID_PRODUCT }}="{{ product.id_product }} -->
+                {% for p in model.category_list.categories[model.category_list.get_index_category_from_id(category.id_category)].products %}
+                    <option value="{{ p.id_product }}" {{ "selected" if p.id_product == product.id_product else "" }}>{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td class="{{ model.FLAG_VARIATIONS }}">
+            {% set block_id = 'Textarea_Product_Permutation_Variations' %}
+            {% include '_shared_store.html' %}
+        </td>
+        <td class="{{ model.FLAG_CURRENCY }}">
+            {{ permutation.output_currency() }}
+            <select class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_currency }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_currency }}">
+                {% for currency in model.currency_list.currencies %}
+                    <option value="{{ currency.id_currency }}" {{ "selected" if currency.id_currency == permutation.id_currency else "" }}>{{ currency.name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}">
+            <input type="number" step="0.001" value="{{ stock_item.cost_local_VAT_incl }}" {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.cost_local_VAT_incl }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.cost_local_VAT_incl }}" >
+        </td>
+        <td class="{{ model.FLAG_DATE_PURCHASED }}">
+            <input type="date" value="{{ stock_item.date_purchased }}" {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.date_purchased }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.date_purchased }}" />
+        </td>
+        <td class="{{ model.FLAG_DATE_RECEIVED }}">
+            <input type="date" value="{{ stock_item.date_received }}" {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.date_received }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.date_received }}" />
+        </td>
+        <!--
+        <td class="{{ model.FLAG_IS_SEALED }}">
+            <input type="checkbox" {{ "checked" if stock_item.is_sealed else "" }} {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.is_sealed }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.is_sealed }}" />
+        </td>
+        -->
+        <td class="{{ model.FLAG_DATE_UNSEALED }}">
+            <input type="date" value="{{ stock_item.date_unsealed }}" {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.date_unsealed }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.date_unsealed }}" />
+        </td>
+        <td class="{{ model.FLAG_DATE_EXPIRATION }}">
+            <input type="date" value="{{ stock_item.date_expiration }}" {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.date_expiration }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.date_expiration }}" />
+        </td>
+        <!--
+        <td class="{{ model.FLAG_IS_CONSUMED }}">
+            <input type="checkbox" {{ "checked" if stock_item.is_consumed else "" }} {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.is_consumed }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.is_consumed }}" />
+        </td>
+        -->
+        <td class="{{ model.FLAG_DATE_CONSUMED }}">
+            <input type="date" value="{{ stock_item.date_consumed }}" {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.date_consumed }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.date_consumed }}" />
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input type="checkbox" {{ "checked" if stock_item.active else "" }} {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.active }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.active }}" />
+        </td>
+    </tr>
+{% endif %}

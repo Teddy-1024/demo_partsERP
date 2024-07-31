@@ -25,7 +25,7 @@ from enum import Enum
 from datetime import datetime, timedelta
 import locale
 from flask_sqlalchemy import SQLAlchemy
-
+from typing import ClassVar
 
 # VARIABLE INSTANTIATION
 db = SQLAlchemy()
@@ -33,6 +33,13 @@ db = SQLAlchemy()
 
 # CLASSES
 class Variation(db.Model):
+    ATTR_ID_CATEGORY: ClassVar[str] = 'id_category'
+    ATTR_ID_PERMUTATION: ClassVar[str] = 'id_permutation'
+    ATTR_ID_PRODUCT: ClassVar[str] = 'id_product'
+    KEY_ID_VARIATION: ClassVar[str] = 'id_variation'
+    KEY_NAME_VARIATION: ClassVar[str] = 'name_variation'
+    KEY_NAME_VARIATION_TYPE: ClassVar[str] = 'name_variation_type'
+    
     id_variation = db.Column(db.Integer, primary_key=True)
     id_product = db.Column(db.Integer)
     id_permutation = db.Column(db.Integer)
@@ -80,6 +87,17 @@ class Variation(db.Model):
         variation.name_variation = query_row[7]
         variation.display_order = query_row[8]
         return variation
+    
+    def from_json(json):
+        variation = Variation()
+        variation.id_variation = json[Variation.KEY_ID_VARIATION]
+        variation.id_product = json[Variation.ATTR_ID_PRODUCT]
+        variation.id_permutation = json[Variation.ATTR_ID_PERMUTATION]
+        variation.id_category = json[Variation.ATTR_ID_CATEGORY]
+        variation.name_variation_type = json[Variation.KEY_NAME_VARIATION_TYPE]
+        variation.name_variation = json[Variation.KEY_NAME_VARIATION]
+        return variation
+
     def __repr__(self):
         return f'''
             id: {self.id_variation}

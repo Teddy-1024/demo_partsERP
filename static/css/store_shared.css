@@ -12,19 +12,19 @@
     justify-self: left;
 }
 
-.btnAdd2Basket {
+.buttonAdd2Basket {
     background-color: var(--c_blue_pastel);
     color: var(--c_blue_dark);
     border-color: var(--c_blue_dark);
 }
 
-#btnCheckout, .btnBuyNow {
+#buttonCheckout, .buttonBuyNow {
     background-color: var(--c_purple_pastel);
     color: var(--c_purple_dark);
     border-color: var(--c_purple_dark);
 }
 
-.btn-increment, .btn-decrement {
+.button-increment, .button-decrement {
     border: 2px solid darkgrey;
     background-color: lightgray;
     margin: 1vh 1vh;

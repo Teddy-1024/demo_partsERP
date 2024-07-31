@@ -37,7 +37,7 @@ class Model_View_Home(Model_View_Base):
         print(f'info_user: {info_user}')
         return super(Model_View_Home, cls).__new__(cls, db, info_user, app)
     """
-    def __init__(self, app):
+    def __init__(self, app, db):
         # Constructor
-        super().__init__(app)
+        super().__init__(app=app, db=db)
     

@@ -14,15 +14,15 @@ pydantic
 psycopg2
 
 # environment variables
-# KEY_SECRET_FLASK = 'random secret key'
-# ID_AUTH0_CLIENT = ''
-# ID_AUTH0_CLIENT_SECRET = ''
-# DOMAIN_AUTH0 = ''
-# DB_USER = ''
-# DB_PASSWORD = ''
-# DB_HOST=localhost
-# SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/dbname'
+"""
+SET KEY_SECRET_FLASK=nips
+SET ID_AUTH0_CLIENT=
+SET ID_AUTH0_CLIENT_SECRET=
+SET DOMAIN_AUTH0=
+SET MAIL_PASSWORD=
+SET RECAPTCHA_PUBLIC_KEY=
+SET RECAPTCHA_PRIVATE_KEY=
+SET SQLALCHEMY_DATABASE_URI=
+"""
+# SET SQLALCHEMY_DATABASE_URI = mysql://username:password@localhost/dbname
     # Replace 'username', 'password', 'localhost', and 'dbname' with your actual database credentials
-# MAIL_PASSWORD = ''
-# RECAPTCHA_PUBLIC_KEY = ''
-# RECAPTCHA_PRIVATE_KEY = ''

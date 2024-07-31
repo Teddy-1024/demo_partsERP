@@ -25,6 +25,7 @@ from business_objects.variation import Variation
 from business_objects.image import Image
 from business_objects.delivery_option import Delivery_Option
 from business_objects.discount import Discount
+from business_objects.stock_item import Stock_Item
 # external
 from enum import Enum
 from datetime import datetime, timedelta
@@ -155,6 +156,11 @@ class Category(db.Model):
         index_product = self.get_index_product_from_id(discount.id_product)
         self.products[index_product].add_discount(discount)
     
+    def add_stock_item(self, stock_item):
+        av.val_instance(stock_item, 'stock_item', 'Category.add_stock_item', Stock_Item)
+        index_product = self.get_index_product_from_id(stock_item.id_product)
+        self.products[index_product].add_stock_item(stock_item)
+
     def get_all_variation_trees(self):
         for product in self.products:
             if product.has_variations:
@@ -276,6 +282,11 @@ class Category_List():
         index_category = self.get_index_category_from_id(discount.id_category)
         self.categories[index_category].add_discount(discount)
 
+    def add_stock_item(self, stock_item):
+        av.val_instance(stock_item, 'stock_item', 'Category.add_stock_item', Stock_Item)
+        index_category = self.get_index_category_from_id(stock_item.id_category)
+        self.categories[index_category].add_stock_item(stock_item)
+
     def get_all_variation_trees(self):
         for category in self.categories:
             category.get_all_variation_trees()
@@ -309,7 +320,7 @@ class Category_List():
         for category in self.categories:
             # list_products.append(category.to_list_products())
             for product in category.products:
-                list_products.append({'value': product.id_product, 'text': product.name, Product.FLAG_CATEGORY: product.id_category})
+                list_products.append({'value': product.id_product, 'text': product.name, Product.ATTR_ID_CATEGORY: product.id_category})
         return list_products
     
     def to_dict_lists_products(self):

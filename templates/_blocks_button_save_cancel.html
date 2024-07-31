@@ -1,0 +1,9 @@
+{% if block_id == 'button_save' %}
+<button id="{{ model.ID_BUTTON_SAVE }}" type="submit" class="{{ model.FLAG_BUTTON_SUBMIT }}">Save</button>
+{% elif block_id == 'button_cancel' %}
+<button id="{{ model.ID_BUTTON_CANCEL }}" class="{{ model.FLAG_BUTTON_CANCEL }}">Cancel</button>
+{% elif block_id == 'button_add' %}
+<button id="{{ model.ID_BUTTON_ADD }}" class="{{ model.FLAG_BUTTON_ADD }}">Add new</button>
+{% elif block_id == 'button_confirm' %}
+<button id="{{ model.ID_BUTTON_CONFIRM }}" class="{{ model.FLAG_BUTTON_SUBMIT }}">Confirm</button>
+{% endif %}

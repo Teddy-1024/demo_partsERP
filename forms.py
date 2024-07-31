@@ -16,7 +16,7 @@ Defines Flask-WTF forms for handling user input.
 # external
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, BooleanField, IntegerField, SelectField, FloatField
-from wtforms.validators import InputRequired, NumberRange, Regexp, DataRequired
+from wtforms.validators import InputRequired, NumberRange, Regexp, DataRequired, Optional
 from flask_wtf.recaptcha import RecaptchaField
 
 
@@ -122,9 +122,18 @@ class Form_Supplier(FlaskForm):
 
 # class Form_Supplier_Purchase_Order(FlaskForm):
 
-class Form_Filters_Permutations(FlaskForm):
-    id_category = SelectField('Category')
-    id_product = SelectField('Product')
+class Form_Filters_Permutation(FlaskForm):
+    id_category = SelectField('Category', validators=[Optional()], choices=[])
+    id_product = SelectField('Product', validators=[Optional()], choices=[])
     is_out_of_stock = BooleanField('Out of stock only?')
     quantity_min = FloatField('Min stock')
     quantity_max = FloatField('Max stock')
+    # submit = SubmitField('Submit')
+
+class Form_Filters_Stock_Item(FlaskForm):
+    id_category = SelectField('Category', validators=[Optional()], choices=[])
+    id_product = SelectField('Product', validators=[Optional()], choices=[])
+    is_out_of_stock = BooleanField('Out of stock only?')
+    quantity_min = FloatField('Min stock')
+    quantity_max = FloatField('Max stock')
+    # submit = SubmitField('Submit')

@@ -419,7 +419,7 @@ function xmlJSONData(methodName, objJSON) {
     xhr.send();
 }
 
-function ajaxJSONData(dataName, url, postData, successCallback, async) {
+function ajaxJSONData(dataName, url, postData, successCallback, async, headers = {}) {
 
     if (isEmpty(async)) async = true;
     let formattedParams = getDataContentType(postData);
@@ -429,6 +429,7 @@ function ajaxJSONData(dataName, url, postData, successCallback, async) {
         type: 'POST',
         cache: false,
         url: url,
+        headers: headers,
         data: formattedParams.Data,
         dataType: 'json',
         contentType: formattedParams.ContentType,
@@ -573,6 +574,7 @@ function setPageToLoading(isLoading) {
     }
 }
 
+/*
 function displayOverlay(message, show, force) {
 
     if (show) {
@@ -603,6 +605,7 @@ function displayOverlay(message, show, force) {
         overlay.show();
     }
 }
+*/
 
 function setBackgroundToLoading(elId, isLoading) {
 
@@ -709,6 +712,14 @@ function isElementInContainer(container, element) {
         ((elementBounds.top + elementBounds.height) <= (containerBounds.top + containerBounds.height)) &&
         ((elementBounds.left + elementBounds.width) <= (containerBounds.left + containerBounds.width))
     );
+}
+
+function getRowFromElement(element) {
+    return $(element).closest('tr');
+}
+
+function getCellFromElement(element) {
+    return $(element).closest('td');
 }
 
 // Date picker inputs

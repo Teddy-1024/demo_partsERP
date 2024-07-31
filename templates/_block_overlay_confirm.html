@@ -1,0 +1,37 @@
+<div class="{{ model.FLAG_OVERLAY }} {{ model.FLAG_COLLAPSED }} {{ model.FLAG_CARD }}" id="{{ model.ID_OVERLAY_CONFIRM }}" style="visibility: hidden;" z-index="2">
+    <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+        <h2>Are you sure?</h2>
+    </div>
+    <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+        <textarea id="{{ model.ID_TEXTAREA_CONFIRM }}" rows="4" cols="50"></textarea>
+    </div>
+    <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+        {% set block_id = 'button_cancel' %}
+        {% include '_blocks_button_save_cancel.html' %}
+        {% set block_id = 'button_confirm' %}
+        {% include '_blocks_button_save_cancel.html' %}
+    </div>
+</div>
+
+<script>
+    function hookupOverlayConfirm(callbackSuccess) {
+        let overlay = $("#{{ model.ID_OVERLAY_CONFIRM }}");
+        let textarea = overlay.find('#{{ model.ID_TEXTAREA_CONFIRM }}');
+        let buttonCancel = overlay.find('#{{ model.ID_BUTTON_CANCEL }}');
+        let buttonConfirm = overlay.find('#{{ model.ID_BUTTON_CONFIRM }}');
+
+        buttonCancel.onclick = function() {
+            overlay.style.visibility = 'hidden';
+        };
+
+        buttonConfirm.onclick = function() {
+            overlay.style.visibility = 'hidden';
+            callbackSuccess(textarea.value);
+        };
+    }
+
+    function showOverlayConfirm() {
+        let overlay = $("#{{ model.ID_OVERLAY_CONFIRM }}");
+        overlay.style.visibility = 'visible';
+    }
+</script>

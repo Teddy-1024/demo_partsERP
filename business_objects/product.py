@@ -19,17 +19,19 @@ Business object for product
 # internal
 import lib.argument_validation as av
 from lib import data_types
-from forms import Form_Basket_Add, Form_Basket_Edit, Form_Filters_Permutations
+from forms import Form_Basket_Add, Form_Basket_Edit, Form_Filters_Permutation
 from business_objects.discount import Discount
 from business_objects.variation import Variation
 from business_objects.image import Image
 from business_objects.delivery_option import Delivery_Option
+from business_objects.stock_item import Stock_Item
 # external
 from enum import Enum
 from datetime import datetime, timedelta
 import locale
 from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
+from typing import ClassVar
 
 # VARIABLE INSTANTIATION
 db = SQLAlchemy()
@@ -112,9 +114,10 @@ class Variation_Tree:
         return Variation_Tree.make_from_node_root(node_root)
 
 class Product(db.Model):
-    FLAG_CATEGORY = 'id_category'
-    FLAG_PRODUCT = 'id_product'
-    FLAG_VARIATIONS = 'has_variations'
+    ATTR_ID_CATEGORY: ClassVar[str] = Variation.ATTR_ID_CATEGORY # 'id-category'
+    ATTR_ID_PRODUCT: ClassVar[str] = Variation.ATTR_ID_PRODUCT # 'id-product'
+    ATTR_ID_PERMUTATION: ClassVar[str] = Variation.ATTR_ID_PERMUTATION # 'id-permutation'
+    FLAG_VARIATIONS: ClassVar[str] = 'variations'
 
     id_product = db.Column(db.Integer, primary_key=True)
     id_category = db.Column(db.Integer)
@@ -321,6 +324,12 @@ class Product(db.Model):
         av.val_instance(discount, 'discount', 'Product.add_discount', Discount)
         index_permutation = self.permutation_index[discount.id_permutation] # self.get_index_permutation_from_id(discount.id_permutation)
         self.permutations[index_permutation].add_discount(discount)
+
+    def add_stock_item(self, stock_item):
+        av.val_instance(stock_item, 'stock_item', 'Product.add_stock_item', Stock_Item)
+        index_permutation = self.permutation_index[stock_item.id_permutation]
+        self.permutations[index_permutation].add_stock_item(stock_item)
+
     def has_permutations(self):
         return len(self.permutations) > 0
     def is_available(self):
@@ -334,15 +343,15 @@ class Product(db.Model):
     def to_list_rows_permutation(self):
         list_rows = []
         for permutation in self.permutations:
-            list_rows += permutation.to_row_permutation()
+            list_rows.append(permutation.to_row_permutation())
         return list_rows
 
 
 class Product_Permutation(db.Model):
-    FLAG_QUANTITY_STOCK = 'quantity_stock'
-    FLAG_QUANTITY_MIN = 'quantity_min'
-    FLAG_QUANTITY_MAX = 'quantity_max'
-    FLAG_COST_LOCAL = 'cost_local'
+    FLAG_QUANTITY_STOCK = 'quantity-stock'
+    FLAG_QUANTITY_MIN = 'quantity-min'
+    FLAG_QUANTITY_MAX = 'quantity-max'
+    FLAG_COST_LOCAL = 'cost-local'
 
     id_product = db.Column(db.Integer, primary_key=True)
     id_permutation = db.Column(db.Integer, primary_key=True)
@@ -386,6 +395,8 @@ class Product_Permutation(db.Model):
         self.delivery_option_index = {}
         self.discounts = []
         self.discount_index = {}
+        self.stock_items = []
+        self.stock_item_index = {}
         super().__init__()
         self.form_basket_add = Form_Basket_Add()
         self.form_basket_edit = Form_Basket_Edit()
@@ -453,6 +464,21 @@ class Product_Permutation(db.Model):
         permutation.id_product = json_basket_item[key_id_product]
         permutation.id_permutation = json_basket_item[key_id_permutation]
         return permutation
+    
+    def from_json(jsonPermutation):
+        permutation = Product_Permutation()
+        permutation.id_category = jsonPermutation[Product.ATTR_ID_CATEGORY]
+        permutation.id_product = jsonPermutation[Product.ATTR_ID_PRODUCT]
+        permutation.id_permutation = jsonPermutation[Product.ATTR_ID_PERMUTATION]
+        permutation.has_variations = len(jsonPermutation[Product.FLAG_VARIATIONS]) > 0
+        if permutation.has_variations:
+            for jsonVariation in jsonPermutation[Product.FLAG_VARIATIONS]:
+                variation = Variation.from_json(jsonVariation)
+                permutation.add_variation(variation)
+        permutation.quantity_stock = jsonPermutation[Product_Permutation.FLAG_QUANTITY_STOCK]
+        permutation.quantity_min = jsonPermutation[Product_Permutation.FLAG_QUANTITY_MIN]
+        permutation.quantity_max = jsonPermutation[Product_Permutation.FLAG_QUANTITY_MAX]
+        return permutation
 
     def is_available(self):
         return len(self.prices) > 0
@@ -493,6 +519,9 @@ class Product_Permutation(db.Model):
     def output_variations(self):
         if not self.has_variations: return ''
         return '\n'.join([f'{variation.name_variation_type}: {variation.name_variation}' for variation in self.variations])
+    def output_variations_jsonify(self):
+        if not self.has_variations: return ''
+        return ','.join([f'{variation.name_variation_type}: {variation.name_variation}' for variation in self.variations])
     """
     def output_price_VAT_incl(self):
         locale.setlocale(locale.LC_ALL, '')
@@ -581,6 +610,10 @@ class Product_Permutation(db.Model):
         except KeyError:
             self.discount_index[discount.display_order] = len(self.discounts)
             self.discounts.append(discount)
+
+    def add_stock_item(self, stock_item):
+        av.val_instance(stock_item, 'stock_item', 'Product_Permutation.add_stock_item', Stock_Item)
+        self.stock_items.append(stock_item)
     
     def get_image_from_index(self, index_image):
         try:
@@ -594,15 +627,17 @@ class Product_Permutation(db.Model):
                 return price
     
     def to_row_permutation(self):
-        return {
-            Product.FLAG_CATEGORY: self.id_category,
-            Product.FLAG_PRODUCT: self.id_product,
-            Product.FLAG_VARIATIONS: self.has_variations,
+        a = {
+            Product.ATTR_ID_CATEGORY: self.id_category,
+            Product.ATTR_ID_PRODUCT: self.id_product,
+            Product.FLAG_VARIATIONS: self.output_variations(),
             Product_Permutation.FLAG_QUANTITY_STOCK: self.quantity_stock,
             Product_Permutation.FLAG_QUANTITY_MIN: self.quantity_min,
             Product_Permutation.FLAG_QUANTITY_MAX: self.quantity_max,
-            Product_Permutation.FLAG_COST_LOCAL: self.cost_local
+            Product_Permutation.FLAG_COST_LOCAL: f"<strong>{self.symbol_currency_cost}</strong>{self.cost_local}"
         }
+        print('permutation row: ', a)
+        return a
 
 """
 class Product_Filters():
@@ -767,9 +802,12 @@ class Product_Filters():
     
     @staticmethod
     def from_form(form):
-        if not (form is Form_Filters_Permutations): raise ValueError(f'Invalid form type: {type(form)}')
-        has_category_filter = (form.id_category.data != '')
-        has_product_filter = (form.id_product.data != '')
+        # if not (form is Form_Filters_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
+        av.val_instance(form, 'form', 'Product_Filters.from_form', Form_Filters_Permutation)
+        has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
+        has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
+        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Product_Filters.from_form")
+        print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
         return Product_Filters(
             get_all_category = not has_category_filter,
             get_inactive_category = False,
@@ -779,7 +817,7 @@ class Product_Filters():
             get_inactive_product = False,
             get_first_product_only = False,
             ids_product = form.id_product.data,
-            get_all_permutation = True,
+            get_all_permutation = not get_permutations_stock_below_min,
             get_inactive_permutation = False,
             get_first_permutation_only = False,
             ids_permutation = '',
@@ -798,7 +836,7 @@ class Product_Filters():
             get_all_discount = False,
             get_inactive_discount = False,
             ids_discount = '',
-            get_products_quantity_stock_below_min = form.is_in_stock.data
+            get_products_quantity_stock_below_min = get_permutations_stock_below_min
         )
     
     @staticmethod

@@ -15,7 +15,7 @@ Notes: This architecture does not work with Flask-SQLAlchemy - db connection mus
 from pydantic import BaseModel, ConfigDict
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-
+import uuid
 
 class Helper_DB_MySQL(BaseModel):
     app: Flask
@@ -33,3 +33,7 @@ class Helper_DB_MySQL(BaseModel):
             db.create_all()
             db.engine.url = self.app.config.SQLALCHEMY_DATABASE_URI
         return db
+    
+    @staticmethod
+    def create_guid():
+        return str(uuid.uuid4())
