@@ -37,6 +37,9 @@ BEGIN
 END //
 DELIMITER ;
 
+
+/*
 CALL p_shop_get_many_region (
 	0 # a_get_inactive_region
 );
+*/

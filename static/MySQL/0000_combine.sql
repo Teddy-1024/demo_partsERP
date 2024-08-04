@@ -962,7 +962,6 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion_Audit (
 # Categories
 
 
-
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Category';
 
 CREATE TABLE IF NOT EXISTS Shop_Category (
@@ -6697,9 +6696,12 @@ BEGIN
 END //
 DELIMITER ;
 
+
+/*
 CALL p_shop_get_many_region (
 	0 # a_get_inactive_region
 );
+*/
 
 
 
@@ -6741,9 +6743,11 @@ END //
 DELIMITER ;
 
 
+/*
 CALL p_shop_get_many_currency (
 	0 # a_get_inactive_currency
 );
+*/
 
 
 
@@ -10334,6 +10338,7 @@ DROP PROCEDURE IF EXISTS p_get_many_user;
 DELIMITER //
 CREATE PROCEDURE p_get_many_user (
 	IN a_id_user INT
+    , IN a_id_user_auth0 VARCHAR(200)
 	, IN a_get_all_user BIT
 	, IN a_get_inactive_user BIT
     , IN a_get_first_user_only BIT
@@ -10379,6 +10384,25 @@ BEGIN
         msg VARCHAR(4000) NOT NULL
 	);
     
+    IF ISNULL(a_id_user) AND NOT ISNULL(a_id_user_auth0) THEN
+		SET a_id_user := (SELECT U.id_user FROM Shop_User U WHERE U.id_user_auth0 LIKE CONCAT('%', a_id_user_auth0, '%') LIMIT 1);
+    END IF;
+    
+    IF ISNULL(a_id_user) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid,
+			id_type,
+			code,
+			msg
+		)
+		VALUES (
+			v_guid,
+			v_id_type_error_data,
+			v_code_error_data, 
+			CONCAT('User ID required for authorisation.')
+		)
+		;
+    END IF;
     
     SET v_has_filter_user := CASE WHEN a_ids_user = '' AND a_ids_user_auth0= '' THEN 0 ELSE 1 END;
     
@@ -10547,11 +10571,12 @@ DELIMITER ;
 
 CALL p_get_many_user (
 	NULL # a_id_user
+    , 'auth0|6582b95c895d09a70ba10fef' # a_id_user_auth0
     , 0 # a_get_all_user
 	, 0 # a_get_inactive_user
     , 0 # a_get_first_user_only
 	, NULL # a_ids_user
-	, '' -- auth0|6582b95c895d09a70ba10fef' # a_ids_user_auth0
+	, 'auth0|6582b95c895d09a70ba10fef' # a_ids_user_auth0 # ' -- 
 );
 
 */

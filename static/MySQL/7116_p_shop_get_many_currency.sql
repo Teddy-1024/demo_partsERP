@@ -39,6 +39,8 @@ END //
 DELIMITER ;
 
 
+/*
 CALL p_shop_get_many_currency (
 	0 # a_get_inactive_currency
 );
+*/

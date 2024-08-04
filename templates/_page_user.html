@@ -8,7 +8,8 @@
 
     <!-- HTML content -->
     <div>
-        <h2 style="font-size: 24px; color: white; font-weight: normal;">Welcome, {{ 'new user' if user.firstname is None else user.firstname }}</h2>
+        {% set firstname = 'new user' if user.firstname is none else user.firstname %}
+        <h2 style="font-size: 24px; color: white; font-weight: normal;">Welcome, {{ firstname }}</h2>
         {% set block_id = 'button_get_in_touch' %}
         {% include '_shared.html' %}
     </div>
