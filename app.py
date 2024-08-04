@@ -416,54 +416,57 @@ def login():
 
 @app.route("/login_callback") # <path:subpath>/<code>
 def login_callback():
-    # print(f'code: {code}')
-    token = None
     try:
-        token = oauth.auth0.authorize_access_token()
+        # print(f'code: {code}')
+        token = None
+        try:
+            token = oauth.auth0.authorize_access_token()
+        except Exception as e:
+            # Log the error for debugging
+            print(f"Error: {str(e)}")
+        session[app.ID_TOKEN_USER] = token
+        # import user id
+        print(f'str(type(token)) = {str(type(token))}')
+        print(f'token = {token}')
+        userinfo = token.get('userinfo')
+        print(f'user info: {userinfo}')
+        # id_user = token.get('sub')
+        id_user = userinfo.get('sub')
+        print(f'user ID: {id_user}')
+
+        datastore_store = DataStore_Store(app, db)
+        user = datastore_store.get_user_auth0()
+        user_filters = User_Filters.from_user(user)
+        users, errors = datastore_store.get_many_user(user_filters, user)
+        try:
+            user = users[0]
+            print('User logged in')
+            print(f'user ({str(type(user))}): {user}')
+            print(f'user key: {Model_View_Base.KEY_USER}')
+            user_json = user.to_json()
+            session[Model_View_Base.KEY_USER] = user_json
+            print(f'user stored on session')
+        except:
+            print(f'User not found: {user_filters}')
+        
+        try:
+            hash_callback = token.get('hash_callback')
+            if hash_callback is None:
+                print('hash is none')
+                state = request.args.get('state')
+                print(f'state: {state}')
+                hash_callback = state # .get('hash_callback')
+            print(f'hash_callback: {hash_callback}')
+        except:
+            print("get hash callback failed")
+        # id_user = get_id_user()
+        # add user to database
+        # DataStore_Store(db, userinfo).add_new_user(id_user) # this is part of get basket - should occur on page load
+
+        print(f'user session: {session[Model_View_Base.KEY_USER]}')
+        return redirect(f'{app.URL_HOST}{hash_callback}')
     except Exception as e:
-        # Log the error for debugging
-        print(f"Error: {str(e)}")
-    session[app.ID_TOKEN_USER] = token
-    # import user id
-    print(f'str(type(token)) = {str(type(token))}')
-    print(f'token = {token}')
-    userinfo = token.get('userinfo')
-    print(f'user info: {userinfo}')
-    # id_user = token.get('sub')
-    id_user = userinfo.get('sub')
-    print(f'user ID: {id_user}')
-
-    datastore_store = DataStore_Store(app, db)
-    user = datastore_store.get_user_auth0()
-    user_filters = User_Filters.from_user(user)
-    users, errors = datastore_store.get_many_user(user_filters, user)
-    try:
-        user = users[0]
-        print('User logged in')
-        print(f'user ({str(type(user))}): {user}')
-        print(f'user key: {Model_View_Base.KEY_USER}')
-        user_json = user.to_json()
-        session[Model_View_Base.KEY_USER] = user_json
-        print(f'user stored on session')
-    except:
-        print(f'User not found: {user_filters}')
-    
-    try:
-        hash_callback = token.get('hash_callback')
-        if hash_callback is None:
-            print('hash is none')
-            state = request.args.get('state')
-            print(f'state: {state}')
-            hash_callback = state # .get('hash_callback')
-        print(f'hash_callback: {hash_callback}')
-    except:
-        print("get hash callback failed")
-    # id_user = get_id_user()
-    # add user to database
-    # DataStore_Store(db, userinfo).add_new_user(id_user) # this is part of get basket - should occur on page load
-
-    print(f'user session: {session[Model_View_Base.KEY_USER]}')
-    return redirect(f'{app.URL_HOST}{hash_callback}')
+        return jsonify({'status': 'failure', 'Message': f'Controller error.\n{e}'})
 
 @app.route("/logout")
 def logout():
