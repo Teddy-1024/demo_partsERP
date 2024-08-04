@@ -1,6 +1,6 @@
 
 /* Clear Store DataBase */
-USE PARTSLTD_PROD;
+
 
 
 # Drop dependencies
@@ -112,6 +112,8 @@ DROP TABLE IF EXISTS Shop_Delivery_Option;
 
 DROP TABLE IF EXISTS Shop_Product_Image_Audit;
 DROP TABLE IF EXISTS Shop_Product_Image;
+DROP TABLE IF EXISTS Shop_Image_Audit;
+DROP TABLE IF EXISTS Shop_Image;
 
 DROP TABLE IF EXISTS Shop_Product_Price_Temp;
 DROP TABLE IF EXISTS Shop_Product_Price_Audit;
@@ -139,12 +141,12 @@ DROP TABLE IF EXISTS Shop_Product_Variation_Type_Link;
 DROP TABLE IF EXISTS Shop_Variation_Type_Audit;
 DROP TABLE IF EXISTS Shop_Variation_Type;
 
-DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
-DROP TABLE IF EXISTS Shop_Recurrence_Interval;
-
 DROP TABLE IF EXISTS Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Audit;
 DROP TABLE IF EXISTS Shop_Product_Permutation;
+
+DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
+DROP TABLE IF EXISTS Shop_Recurrence_Interval;
 
 DROP TABLE IF EXISTS Shop_Product_Audit;
 DROP TABLE IF EXISTS Shop_Product;

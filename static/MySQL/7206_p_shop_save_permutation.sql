@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -229,7 +229,8 @@ BEGIN
         -- GROUP BY id_link, P.id_product, PP.id_permutation
         -- GROUP BY name_error, ID_LINK, cost_total_local, value_produced_total_local
         ;
-        DELETE FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
+        DELETE MPOPL_T
+		FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
 		WHERE MPOPL_T.GUID = a_guid
         ;
     END IF;

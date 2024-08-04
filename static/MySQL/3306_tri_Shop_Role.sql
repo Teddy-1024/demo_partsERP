@@ -1,7 +1,7 @@
 
 # Shop Role
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Role;
 DROP TRIGGER IF EXISTS before_update_Shop_Role;

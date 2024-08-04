@@ -1,7 +1,7 @@
 
 # Shop Variation Type
 
-USE PARTSLTD_PROD;
+
 
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Variation_Type;

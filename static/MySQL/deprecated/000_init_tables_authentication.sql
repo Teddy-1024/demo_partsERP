@@ -1,5 +1,5 @@
 /* Store */
-USE PARTSLTD_PROD;
+
 
 # Drop dependencies
 # DROP PROCEDURE IF EXISTS p_shop_user_eval;

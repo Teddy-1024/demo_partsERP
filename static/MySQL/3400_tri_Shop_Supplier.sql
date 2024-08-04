@@ -1,7 +1,7 @@
 
 # Shop Supplier
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Supplier;
 DROP TRIGGER IF EXISTS before_update_Shop_Supplier;

@@ -20,28 +20,13 @@ function hookupShared() {
     });
 }
 
-function hookupVideos() {
-    let videos = document.querySelectorAll('video');
-    videos.forEach(function(video) {
-        video.addEventListener('mouseover', videoPlay(video));
-        video.addEventListener('mouseout', videoPause(video));
-    });
-}
-
-function videoPlay(elemVideo) {
-    if (!_loading) { // elemVideo.paused && 
-        elemVideo.play();
-        if (_verbose) { console.log("Playing video element: " + elemVideo.name)};
-    }
-}
-
-function videoPause(elemVideo) {
-    elemVideo.pause();
-    if (_verbose) { console.log("Pausing video element: " + elemVideo.name)};
-}
-
 function hookupNavigation() {
     console.log("hooking up navigation");
+
+    let overlayHamburger = $(idOverlayHamburger);
+    countOptions = overlayHamburger.find('div.' + flagRow).length;
+    console.log('count nav options: ', countOptions);
+    overlayHamburger.css('height', (countOptions * 27) + 'px');
 
     let buttonHamburger = $(idButtonHamburger);
     initialiseEventHandler(buttonHamburger, flagInitialised, function() {
@@ -81,6 +66,40 @@ function hookupNavigation() {
             event.stopPropagation();
             // setupPageLocalStorageNext(hashPageStoreHome);
             goToPage(hashPageContact);
+        });
+    });
+    
+    let btnNavUserAccount = $(idNavUserAccount);
+    initialiseEventHandler(btnNavUserAccount, flagInitialised, function() {
+        btnNavUserAccount.on("click", function(event) {
+            event.stopPropagation();
+            goToPage(hashPageUserAccount);
+        });
+    });
+    
+    let btnNavUserLogout = $(idNavUserLogout);
+    initialiseEventHandler(btnNavUserLogout, flagInitialised, function() {
+        btnNavUserLogout.on("click", function(event) {
+            event.stopPropagation();
+            goToPage(hashPageUserLogout);
+        });
+    });
+    
+    let btnNavUserLogin = $(idNavUserLogin);
+    initialiseEventHandler(btnNavUserLogin, flagInitialised, function() {
+        btnNavUserLogin.on("click", function(event) {
+            event.stopPropagation();
+            // goToPage(hashPageUserLogin);
+            ajaxData = {};
+            ajaxData[keyCallback] = hashPageCurrent;
+            console.log('sending data to user login controller: '); console.log(ajaxData);
+            ajaxJSONData('Login user', mapHashToController(hashPageUserLogin), ajaxData, function(response) {
+                if (response.Success) {
+                    goToUrl(response[keyCallback]);
+                } else {
+                    alertError("Error", response.Message);
+                }
+            }, false);
         });
     });
     
@@ -184,6 +203,7 @@ function hookupSelectorCurrency() {
         });
     });
 }
+
 function hookupSelectorDeliveryRegion() {
     /*
     let elForm = $(idFormDeliveryRegion);
@@ -268,6 +288,38 @@ function hookupCheckboxIsIncludedVAT() {
         console.log("form is included VAT initialised")
     });
 }
+
+// shared hookup methods
+function hookupButtonsContactUs() {
+    let btnContact = $($("button.button-contact")[0]);
+    initialiseEventHandler(btnContact, flagInitialised, function() {
+        btnContact.on("click", function(event) {
+            event.stopPropagation();
+            goToPage(hashPageContact);
+        });
+    });
+}
+
+function hookupVideos() {
+    let videos = document.querySelectorAll('video');
+    videos.forEach(function(video) {
+        video.addEventListener('mouseover', videoPlay(video));
+        video.addEventListener('mouseout', videoPause(video));
+    });
+}
+
+function videoPlay(elemVideo) {
+    if (!_loading) { // elemVideo.paused && 
+        elemVideo.play();
+        if (_verbose) { console.log("Playing video element: " + elemVideo.name)};
+    }
+}
+
+function videoPause(elemVideo) {
+    elemVideo.pause();
+    if (_verbose) { console.log("Pausing video element: " + elemVideo.name)};
+}
+
 
 // Argument validation
 /*
@@ -424,6 +476,8 @@ function ajaxJSONData(dataName, url, postData, successCallback, async, headers =
     if (isEmpty(async)) async = true;
     let formattedParams = getDataContentType(postData);
 
+    headers[keyCSRFToken] = getCSRFToken();
+    console.log("headers: ", headers);
     $.ajax({
         async: async,
         type: 'POST',
@@ -446,6 +500,11 @@ function ajaxJSONData(dataName, url, postData, successCallback, async, headers =
             alertError("Error", errorMessage);
         }
     })
+}
+
+function getCSRFToken() {
+    // return $('meta[name=' + nameCSRFToken + ']').attr('content');
+    return $(idCSRFToken).attr('content');
 }
 
 function mapHashToController(hash) {
@@ -503,9 +562,18 @@ function goToPage(pageHash, parametersJSON) {
         }
     }
     
+    leavePage();
 
     window.location.href = url;
     // ajaxJSONData(pageHash, url, parametersJSON, loadPageBody, false);
+}
+function leavePage() {}
+
+function goToUrl(parameterisedUrl) {
+    
+    leavePage();
+
+    window.location.href = parameterisedUrl;
 }
 
 function htmlEncode(value) {

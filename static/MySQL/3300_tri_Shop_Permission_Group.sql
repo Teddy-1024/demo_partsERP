@@ -1,7 +1,7 @@
 
 # Shop Permission Group
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Permission_Group;
 DROP TRIGGER IF EXISTS before_update_Shop_Permission_Group;

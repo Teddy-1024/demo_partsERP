@@ -33,6 +33,7 @@
         }
     </script>
     <meta name="yandex-verification" content="4693a824cfda082a" />
+    <meta id="{{ model.ID_CSRF_TOKEN }}" name="{{ model.NAME_CSRF_TOKEN }}" content="{{ csrf_token() }}" />
 
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
@@ -64,30 +65,41 @@
         var hashApplyFiltersStoreProductPermutation = "{{ model.HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION }}";
         var hashPageContact = "{{ model.HASH_PAGE_CONTACT }}";
         var hashPageErrorNoPermission = "{{ model.HASH_PAGE_ERROR_NO_PERMISSION }}";
-        var hashPageAdmin = "{{ model.HASH_PAGE_ADMIN }}";
+        var hashPageAdminHome = "{{ model.HASH_PAGE_ADMIN_HOME }}";
         var hashPageHome = "{{ model.HASH_PAGE_HOME }}";
         var hashPageServices = "{{ model.HASH_PAGE_SERVICES }}";
+        var hashPageStoreAdmin = "{{ model.HASH_PAGE_STORE_ADMIN }}";
         var hashPageStoreHome = "{{ model.HASH_PAGE_STORE_HOME }}";
         var hashPageStoreProducts = "{{ model.HASH_PAGE_STORE_PRODUCTS }}";
         var hashPageStoreProductPermutations = "{{ model.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS }}";
+        var hashPageUserAccount = "{{ model.HASH_PAGE_USER_ACCOUNT }}";
+        var hashPageUserAdmin = "{{ model.HASH_PAGE_USER_ADMIN }}";
+        var hashPageUserLogin = "{{ model.HASH_PAGE_USER_LOGIN }}";
+        var hashPageUserLogout = "{{ model.HASH_PAGE_USER_LOGOUT }}";
         var hashSaveStoreProductPermutation = "{{ model.HASH_SAVE_STORE_PRODUCT_PERMUTATION }}";
         var idButtonAdd = "#{{ model.ID_BUTTON_ADD }}";
         var idButtonCancel = "#{{ model.ID_BUTTON_CANCEL }}";
         var idButtonConfirm = "#{{ model.ID_BUTTON_CONFIRM }}";
         var idButtonHamburger = "#{{ model.ID_BUTTON_HAMBURGER }}";
         var idButtonSave = "#{{ model.ID_BUTTON_SAVE }}";
+        var idCSRFToken = "#{{ model.ID_CSRF_TOKEN }}";
         var idFormCurrency = "#{{ model.ID_FORM_CURRENCY }}";
         var idFormDeliveryRegion = "#{{ model.ID_FORM_DELIVERY_REGION }}";
         var idFormIsIncludedVAT = "#{{ model.ID_FORM_IS_INCLUDED_VAT }}";
         var idLabelError = "#{{ model.ID_LABEL_ERROR }}";
-        var idNavAdmin = "#{{ model.ID_NAV_ADMIN }}";
+        var idNavAdminHome = "#{{ model.ID_NAV_ADMIN_HOME }}";
         var idNavContact = "#{{ model.ID_NAV_CONTACT }}";
         var idNavHome = "#{{ model.ID_NAV_HOME }}";
         var idNavServices = "#{{ model.ID_NAV_SERVICES }}";
+        var idNavStoreAdmin = "#{{ model.ID_NAV_STORE_ADMIN }}";
         var idNavStoreHome = "#{{ model.ID_NAV_STORE_HOME }}";
         var idNavStorePermutations = "#{{ model.ID_NAV_STORE_PERMUTATIONS }}";
         var idNavStoreProduct = "#{{ model.ID_NAV_STORE_PRODUCT }}";
         var idNavStoreStockItems = "#{{ model.ID_NAV_STORE_STOCK_ITEMS }}";
+        var idNavUserAccount = "#{{ model.ID_NAV_USER_ACCOUNT }}";
+        var idNavUserAdmin = "#{{ model.ID_NAV_USER_ADMIN }}";
+        var idNavUserLogin = "#{{ model.ID_NAV_USER_LOGIN }}";
+        var idNavUserLogout = "#{{ model.ID_NAV_USER_LOGOUT }}";
         var idOverlayConfirm = "#{{ model.ID_OVERLAY_CONFIRM }}";
         var idOverlayError = "#{{ model.ID_OVERLAY_ERROR }}";
         var idOverlayHamburger = "#{{ model.ID_OVERLAY_HAMBURGER }}";
@@ -95,10 +107,13 @@
         var idTableMain = "#{{ model.ID_TABLE_MAIN }}";
         var isUserLoggedIn = "{{ model.output_bool(model.IS_USER_LOGGED_IN) }}";
         var keyBasket = "{{ model.KEY_BASKET }}";
+        var keyCallback = "{{ model.KEY_CALLBACK }}";
+        var keyCSRFToken = "{{ model.ID_CSRF_TOKEN }}";
         var keyForm = "{{ model.KEY_FORM }}";
         var keyPrice = "{{ model.KEY_PRICE }}";
         var keyQuantity = "{{ model.KEY_QUANTITY }}";
         var keyShared = "shared";
+        var nameCSRFToken = "{{ model.NAME_CSRF_TOKEN }}";
         var _pathHost = "{{ model.get_url_host() }}";
     </script>
 
@@ -107,10 +122,11 @@
     <link href="{{ url_for('static', filename='css/shared.css') }}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-
-{% set is_admin_store_user = model.get_is_admin_store_user() %}
-{% set is_admin_user_user = model.get_is_admin_user_user() %}
-
+{% set user = model.get_user_session() %}
+<!--
+{ % set is_admin_store_user = model.get_is_admin_store_user() % }
+{ % set is_admin_user_user = model.get_is_admin_user_user() % }
+-->
 <div class="topnav">
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 18vw; min-width: 18vw; max-width: 20vw;">
         <img class="header-logo" src="{{ url_for('static', filename='images/Logo.png') }}" alt="{{ model.NAME_COMPANY }} logo" aria-label="{{ model.NAME_COMPANY }} logo" tabindex="0">
@@ -123,7 +139,7 @@
     </div>
 </div>
 
-<div id="{{ model.ID_OVERLAY_HAMBURGER }}" class="{{ model.FLAG_OVERLAY}} {{ model.FLAG_HAMBURGER }} {{ model.FLAG_COLLAPSED }}" style="height: {{ 27 * 3 }}px"> <!-- {- { 4.5 * 3 }}vh -->
+<div id="{{ model.ID_OVERLAY_HAMBURGER }}" class="{{ model.FLAG_OVERLAY}} {{ model.FLAG_HAMBURGER }} {{ model.FLAG_COLLAPSED }}"> <!-- style="height: {{ 27 * 3 }}px" {- { 4.5 * 3 }}vh -->
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
         <a id="{{ model.ID_NAV_HOME }}">Home</a>
     </div>
@@ -134,17 +150,12 @@
         <a id="{{ model.ID_NAV_CONTACT }}">Contact</a>
     </div>
 
-    {% if is_admin_store_user %}
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <a id="{{ model.ID_NAV_ADMIN }}">Admin</a>
-        </div>
-    {% endif %}
-    {% if model.is_page_store %}
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+    {% if model.is_page_store and user.can_admin_store %}
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
             <a id="{{ model.ID_NAV_STORE_PERMUTATIONS }}">Product Permutations</a>
         </div>
-        {% if is_admin_store_user %}
-            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+        {% if user.can_admin_store %}
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
                 <a id="{{ model.ID_NAV_STORE_STOCK_ITEMS }}">Stock Items</a>
             </div>
         {% endif %}
@@ -191,11 +202,28 @@
         </div>
         -->
     {% else %}
-        <!--
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <a id="{{ model.ID_NAV_STORE_HOME }}">Shop</a>
+        {% if user.can_admin_store %}
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <a id="{{ model.ID_NAV_STORE_HOME }}">Shop</a>
+            </div>
+        {% endif %}
+    {% endif %}
+    {% if user.can_admin_store %}
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+            <a id="{{ model.ID_NAV_ADMIN }}">Admin</a>
         </div>
-        -->
+    {% endif %}
+    {% if user.is_logged_in %}
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+            <a id="{{ model.ID_NAV_USER_ACCOUNT }}">Account</a>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+            <a id="{{ model.ID_NAV_USER_LOGOUT }}">Logout</a>
+        </div>
+    {% else %}
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+            <a id="{{ model.ID_NAV_USER_LOGIN }}">Login</a>
+        </div>
     {% endif %}
 </div>
 

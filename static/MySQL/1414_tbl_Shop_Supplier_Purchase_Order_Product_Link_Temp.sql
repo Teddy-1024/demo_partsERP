@@ -1,7 +1,7 @@
 
 # Supplier Purchase Order Product Link Temp
 
-USE PARTSLTD_PROD;
+
 
 -- drop table Shop_Supplier_Purchase_Order_Product_Link_Temp;
 

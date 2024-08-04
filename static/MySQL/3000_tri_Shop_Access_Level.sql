@@ -1,7 +1,7 @@
 
 # Shop Access Level
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Access_Level;
 DROP TRIGGER IF EXISTS before_update_Shop_Access_Level;

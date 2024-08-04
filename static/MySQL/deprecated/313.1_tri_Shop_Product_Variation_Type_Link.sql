@@ -1,7 +1,7 @@
 
 # Shop Product Variation Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Variation_Type_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Product_Variation_Type_Link;

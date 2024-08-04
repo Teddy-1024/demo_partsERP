@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -449,7 +449,8 @@ BEGIN
 		) 
     ;
     IF a_get_first_stock_item_only THEN
-		DELETE FROM tmp_Stock_Item t_SI
+		DELETE t_SI
+		FROM tmp_Stock_Item t_SI
 		WHERE t_SI.rank_stock_item > 1
 		;
 	END IF;
@@ -465,8 +466,9 @@ BEGIN
 	FROM tmp_Stock_Item t_SI
 	;
     IF a_get_first_product_only THEN
-		DELETE FROM tmp_Product t_P
-			WHERE t_P.rank_permutation > 1
+		DELETE t_P
+		FROM tmp_Product t_P
+		WHERE t_P.rank_permutation > 1
 		;
     END IF;
     
@@ -482,7 +484,8 @@ BEGIN
 	FROM tmp_Stock_Item t_SI
 	;
     IF a_get_first_product_only THEN
-		DELETE FROM tmp_Product t_P
+		DELETE t_P
+		FROM tmp_Product t_P
 		WHERE t_P.rank_product > 1
 		;
     END IF;
@@ -499,7 +502,13 @@ BEGIN
 	FROM tmp_Stock_Item t_SI
 	;
 	IF a_get_first_category_only THEN
-		DELETE FROM tmp_Category t_C
+		DELETE t_P
+		FROM tmp_Product t_P
+		INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
+		WHERE t_C.rank_category > 1
+		;
+		DELETE t_C
+		FROM tmp_Category t_C
 		WHERE t_C.rank_category > 1
 		;
 	END IF;
@@ -549,7 +558,8 @@ BEGIN
 		OR R.id_region = r_RS.id_region_child
     ;
 	IF a_get_first_region_storage_only THEN
-		DELETE FROM tmp_Region_Storage t_RS
+		DELETE t_RS
+		FROM tmp_Region_Storage t_RS
 		WHERE t_RS.rank_region > 1
 		;
 	END IF;
@@ -570,7 +580,8 @@ BEGIN
     INNER JOIN Shop_Address A ON P.id_address = A.id_address
 	;
     IF a_get_first_plant_storage_only THEN
-		DELETE FROM tmp_Plant_Storage t_P
+		DELETE t_P
+		FROM tmp_Plant_Storage t_P
 		WHERE t_P.rank_plant > 1
 		;
     END IF;
@@ -619,7 +630,8 @@ BEGIN
 		OR SL.id_location = r_LS.id_location_child
     ;
 	IF a_get_first_location_storage_only THEN
-		DELETE FROM tmp_Location_Storage t_LS
+		DELETE t_LS
+		FROM tmp_Location_Storage t_LS
 		WHERE t_LS.rank_location > 1
 		;
 	END IF;
@@ -647,7 +659,8 @@ BEGIN
             t_SI.can_admin = UE_T.can_admin
 		;
         
-        DELETE FROM tmp_Stock_Item t_SI
+        DELETE t_SI
+		FROM tmp_Stock_Item t_SI
         /*
 		LEFT JOIN Shop_User_Eval_Temp UE_T
 			ON t_SI.id_product = UE_T.id_product

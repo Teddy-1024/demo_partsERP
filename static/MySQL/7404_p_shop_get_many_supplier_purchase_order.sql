@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -279,11 +279,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_supplier_only THEN
-			DELETE FROM tmp_Shop_Supplier t_S
-				WHERE t_S.rank_supplier > (
-					SELECT MIN(t_S.rank_supplier)
-                    FROM tmp_Shop_Supplier t_S
-				)
+			DELETE t_S
+			FROM tmp_Shop_Supplier t_S
+			WHERE t_S.rank_supplier > (
+				SELECT MIN(t_S.rank_supplier)
+				FROM tmp_Shop_Supplier t_S
+			)
 			;
 		END IF;
     END IF;
@@ -563,11 +564,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_order_only THEN
-			DELETE FROM tmp_Shop_Supplier_Purchase_Order t_SPO
-				WHERE t_SPO.rank_order > (
-					SELECT MIN(t_SPO.rank_order)
-                    FROM tmp_Shop_Supplier_Purchase_Order t_SPO
-				)
+			DELETE t_SPO
+            FROM tmp_Shop_Supplier_Purchase_Order t_SPO
+			WHERE t_SPO.rank_order > (
+				SELECT MIN(t_SPO.rank_order)
+				FROM tmp_Shop_Supplier_Purchase_Order t_SPO
+			)
 			;
 		END IF;
     END IF;

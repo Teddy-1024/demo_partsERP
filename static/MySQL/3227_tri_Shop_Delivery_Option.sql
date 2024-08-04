@@ -1,7 +1,7 @@
 
 # Shop Delivery Option Type
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Delivery_Option;
 DROP TRIGGER IF EXISTS before_update_Shop_Delivery_Option;

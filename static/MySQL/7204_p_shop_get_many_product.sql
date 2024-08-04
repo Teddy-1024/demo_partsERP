@@ -1,9 +1,8 @@
 
-USE PARTSLTD_PROD;
+-- 
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product;
-
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_product (
@@ -66,21 +65,13 @@ BEGIN
     
     
 	-- Argument validation + default values
-	IF a_id_user IS NULL THEN
-		SET a_id_user = '';
-	ELSE
-		SET a_id_user = TRIM(a_id_user);
-    END IF;
-	IF a_get_all_category IS NULL THEN
-		SET a_get_all_category = 0;
-    END IF;
+    SET a_id_user := TRIM(IFNULL(a_id_user, ''));
+    SET a_get_all_category := IFNULL(a_get_all_category, 0);
+    SET a_get_inactive_category := IFNULL(a_get_inactive_category, 0);
 	IF a_ids_category IS NULL THEN
 		SET a_ids_category = '';
 	ELSE
 		SET a_ids_category = REPLACE(TRIM(a_ids_category), '|', ',');
-    END IF;
-	IF a_get_inactive_category IS NULL THEN
-		SET a_get_inactive_category = 0;
     END IF;
 	IF a_ids_product IS NULL THEN
 		SET a_ids_product = '';
@@ -168,19 +159,16 @@ BEGIN
     */
     
     -- Temporary tables
-    DROP TABLE IF EXISTS tmp_Discount;
-    DROP TABLE IF EXISTS tmp_Currency;
-    DROP TABLE IF EXISTS tmp_Delivery_Region;
-    DROP TABLE IF EXISTS tmp_Shop_Image;
-    DROP TABLE IF EXISTS tmp_Shop_Variation;
-    DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Discount;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Currency;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Delivery_Region;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Category;
     
-    CREATE TABLE tmp_Shop_Category (
+    CREATE TEMPORARY TABLE tmp_Shop_Category (
 		id_category INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Category_id_category
-			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
         active BIT NOT NULL,
         display_order INT NOT NULL, 
         can_view BIT, 
@@ -188,20 +176,11 @@ BEGIN
         can_admin BIT
     );
     
-    CREATE TABLE tmp_Shop_Product (
+    CREATE TEMPORARY TABLE tmp_Shop_Product (
 		id_category INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Product_id_category
-			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
 		id_product INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Product_id_product
-			FOREIGN KEY (id_product)
-			REFERENCES Shop_Product(id_product),
 		-- product_has_variations BIT NOT NULL,
 		id_permutation INT NULL,
-        CONSTRAINT FK_tmp_Shop_Product_id_permutation
-			FOREIGN KEY (id_permutation)
-			REFERENCES Shop_Product_Permutation(id_permutation),
         active_category BIT NOT NULL,
         active_product BIT NOT NULL,
         active_permutation BIT NULL,
@@ -222,9 +201,6 @@ BEGIN
 		quantity_stock FLOAT NOT NULL,
 		is_subscription BIT NOT NULL,
 		id_recurrence_interval INT,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 		count_recurrence_interval INT,
         id_stripe_product VARCHAR(100),
         product_has_variations INT NOT NULL,
@@ -241,59 +217,38 @@ BEGIN
     );
     */
     
-    CREATE TABLE tmp_Shop_Image (
+    CREATE TEMPORARY TABLE tmp_Shop_Image (
 		id_image INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Image_id_image
-			FOREIGN KEY (id_image)
-			REFERENCES Shop_Image(id_image),
 		id_product INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Image_id_product
-			FOREIGN KEY (id_product)
-			REFERENCES Shop_Product(id_product),
 		id_permutation INT NULL,
-        CONSTRAINT FK_tmp_Shop_Image_id_permutation
-			FOREIGN KEY (id_permutation)
-			REFERENCES Shop_Product_Permutation(id_permutation),
         active BIT NOT NULL,
         display_order INT NOT NULL,
         rank_in_product_permutation INT NOT NULL
     );
     
-    CREATE TABLE tmp_Delivery_Region (
+    CREATE TEMPORARY TABLE tmp_Delivery_Region (
 		id_region INT NOT NULL,
-        CONSTRAINT FK_tmp_Delivery_Region_id_region
-			FOREIGN KEY (id_region)
-			REFERENCES Shop_Region(id_region),
         active BIT NOT NULL,
         display_order INT NOT NULL,
         requires_delivery_option BIT NOT NULL DEFAULT 0
     );
     
-    CREATE TABLE tmp_Currency (
+    CREATE TEMPORARY TABLE tmp_Currency (
 		id_currency INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Currency_id_currency
-			FOREIGN KEY (id_currency)
-			REFERENCES Shop_Currency(id_currency),
         active BIT NOT NULL,
         display_order INT NOT NULL
     );
     
-    CREATE TABLE tmp_Discount (
+    CREATE TEMPORARY TABLE tmp_Discount (
 		id_discount INT NOT NULL,
-        CONSTRAINT FK_tmp_Discount_id_discount
-			FOREIGN KEY (id_discount)
-			REFERENCES Shop_Discount(id_discount),
         active BIT NOT NULL,
         display_order INT NOT NULL
     );
     
-	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
-		CONSTRAINT FK_tmp_Msg_Error_id_type 
-			FOREIGN KEY (id_type)
-			REFERENCES Shop_Msg_Error_Type (id_type),
         code VARCHAR(50) NOT NULL,
         msg VARCHAR(4000) NOT NULL
 	);
@@ -424,9 +379,10 @@ BEGIN
     
     -- select * from tmp_Shop_Product;
     
-    IF a_get_first_product_only THEN
-		DELETE FROM tmp_Shop_Product t_P
-			WHERE t_P.rank_permutation > 1
+    IF a_get_first_product_only = 1 THEN
+		DELETE t_P
+        FROM tmp_Shop_Product t_P
+		WHERE t_P.rank_permutation > 1
 		;
     END IF;
     
@@ -499,7 +455,7 @@ BEGIN
     
     IF a_get_first_image_only THEN
 		DELETE FROM tmp_Shop_Image
-			WHERE rank_in_product_permutation > 1
+		WHERE rank_in_product_permutation > 1
 		;
     END IF;
     
@@ -783,7 +739,8 @@ BEGIN
 		-- select * from Shop_User_Eval_Temp;
 		-- select * from tmp_Shop_Product;
         
-        DELETE FROM tmp_Shop_Product t_P
+        DELETE t_P
+        FROM tmp_Shop_Product t_P
 		WHERE 
 			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_User_Eval_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_User_Eval_Temp), '%');
             OR (
@@ -897,7 +854,7 @@ BEGIN
 		ON t_P.id_permutation = PPVL.id_permutation
 	ORDER BY t_P.display_order
 	;
-    */ 
+    */
     -- select * from Shop_Product_Currency_Region_Link;
     -- select * from shop_currency;
     /*
@@ -1112,6 +1069,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
     DROP TABLE IF EXISTS tmp_Shop_Category;
+    
 END //
 DELIMITER ;
 

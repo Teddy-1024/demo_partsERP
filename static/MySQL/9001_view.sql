@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 # Product Change Sets
 SELECT * FROM Shop_Product_Change_Set;

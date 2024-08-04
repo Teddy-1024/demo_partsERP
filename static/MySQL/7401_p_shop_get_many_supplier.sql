@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -138,8 +138,9 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_supplier_only THEN
-			DELETE FROM tmp_Shop_Supplier t_S
-				WHERE t_S.rank_supplier > 1 /*(
+			DELETE t_S
+			FROM tmp_Shop_Supplier t_S
+			WHERE t_S.rank_supplier > 1 /*(
 					SELECT MIN(t_S.rank_supplier)
                     FROM tmp_Shop_Supplier t_S
 				) */

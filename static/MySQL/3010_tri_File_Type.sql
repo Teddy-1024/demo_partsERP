@@ -1,7 +1,7 @@
 
 # File Type
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_File_Type;
 DROP TRIGGER IF EXISTS before_update_File_Type;

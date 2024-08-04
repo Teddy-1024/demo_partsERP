@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -206,7 +206,8 @@ BEGIN
         INNER JOIN Shop_Product_Permutation PP ON SPOPL_T.id_permutation = PP.id_permutation
 		WHERE SPOPL_T.GUID = a_guid
         ;
-        DELETE FROM Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
+        DELETE SPOPL_T
+		FROM Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
 		WHERE SPOPL_T.GUID = a_guid
         ;
         

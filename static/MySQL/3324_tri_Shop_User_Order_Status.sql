@@ -1,7 +1,7 @@
 
 # Shop User Order Type
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_User_Order_Status;
 DROP TRIGGER IF EXISTS before_update_Shop_User_Order_Status;

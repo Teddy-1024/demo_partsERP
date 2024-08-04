@@ -1,7 +1,7 @@
 
 # Shop Delivery Region
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Region;
 DROP TRIGGER IF EXISTS before_update_Shop_Region;

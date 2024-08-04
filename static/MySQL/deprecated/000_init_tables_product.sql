@@ -1,5 +1,5 @@
 /* Store */
-USE PARTSLTD_PROD;
+
 
 
 # Delete old tables

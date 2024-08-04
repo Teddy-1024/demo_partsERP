@@ -1,7 +1,7 @@
 
 # Shop Tax_Or_Surcharge
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Tax_Or_Surcharge;
 DROP TRIGGER IF EXISTS before_update_Shop_Tax_Or_Surcharge;

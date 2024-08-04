@@ -20,7 +20,7 @@ Base data model for views
 import lib.argument_validation as av
 from forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
 from datastores.datastore_store import DataStore_Store
-from business_objects.user import User_Filters
+from business_objects.user import User, User_Filters
 # external
 from abc import ABC, abstractmethod
 from flask_sqlalchemy import SQLAlchemy
@@ -72,11 +72,16 @@ class Model_View_Base(BaseModel, ABC):
     HASH_PAGE_STORE_PRODUCTS: ClassVar[str] = '/store/product'
     HASH_PAGE_STORE_PRODUCT_PERMUTATIONS: ClassVar[str] = '/store/permutation'
     HASH_PAGE_STORE_STOCK_ITEMS: ClassVar[str] = '/store/stock_items'
+    HASH_PAGE_USER_ACCOUNT: ClassVar[str] = '/user'
+    HASH_PAGE_USER_ADMIN: ClassVar[str] = '/user/admin'
+    HASH_PAGE_USER_LOGIN: ClassVar[str] = '/login'
+    HASH_PAGE_USER_LOGOUT: ClassVar[str] = '/logout'
     HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_save'
     ID_BUTTON_ADD: ClassVar[str] = 'buttonAdd'
     ID_BUTTON_CANCEL: ClassVar[str] = 'buttonCancel'
     ID_BUTTON_HAMBURGER: ClassVar[str] = 'buttonHamburger'
     ID_BUTTON_SAVE: ClassVar[str] = 'buttonSave'
+    ID_CSRF_TOKEN: ClassVar[str] = 'X-CSRFToken'
     ID_FORM_CONTACT: ClassVar[str] = 'formContact'
     ID_FORM_CURRENCY: ClassVar[str] = 'formCurrency'
     ID_FORM_DELIVERY_REGION: ClassVar[str] = 'formDeliveryRegion'
@@ -84,23 +89,31 @@ class Model_View_Base(BaseModel, ABC):
     ID_LABEL_ERROR: ClassVar[str] = 'labelError'
     ID_MODAL_SERVICES: ClassVar[str] = 'modalServices'
     ID_MODAL_TECHNOLOGIES: ClassVar[str] = 'modalTechnologies'
-    ID_NAV_ADMIN: ClassVar[str] = 'navAdmin'
+    ID_NAV_ADMIN_HOME: ClassVar[str] = 'navAdminHome'
     ID_NAV_CONTACT: ClassVar[str] = 'navContact'
     ID_NAV_HOME: ClassVar[str] = 'navHome'
     ID_NAV_SERVICES: ClassVar[str] = 'navServices'
+    ID_NAV_STORE_ADMIN: ClassVar[str] = 'navStoreAdmin'
     ID_NAV_STORE_HOME: ClassVar[str] = 'navStoreHome'
     ID_NAV_STORE_PERMUTATIONS: ClassVar[str] = 'navStorePermutations'
     ID_NAV_STORE_PRODUCT: ClassVar[str] = 'navStoreProduct'
     ID_NAV_STORE_STOCK_ITEMS: ClassVar[str] = 'navStoreStockItems'
+    ID_NAV_USER_ACCOUNT: ClassVar[str] = 'navUserAccount'
+    ID_NAV_USER_ADMIN: ClassVar[str] = 'navUserAdmin'
+    ID_NAV_USER_LOGIN: ClassVar[str] = 'navUserLogin'
+    ID_NAV_USER_LOGOUT: ClassVar[str] = 'navUserLogout'
     ID_OVERLAY_CONFIRM: ClassVar[str] = 'overlayConfirm'
     ID_OVERLAY_HAMBURGER: ClassVar[str] = 'overlayHamburger'
     ID_PAGE_BODY: ClassVar[str] = 'pageBody'
     ID_TABLE_MAIN: ClassVar[str] = 'tableMain'
     ID_TEXTAREA_CONFIRM: ClassVar[str] = 'textareaConfirm'
     KEY_CALLBACK: ClassVar[str] = 'callback'
+    # KEY_CSRF_TOKEN: ClassVar[str] = 'X-CSRFToken'
     KEY_FORM: ClassVar[str] = 'form'
     KEY_FORM_FILTERS: ClassVar[str] = KEY_FORM + 'Filters'
+    KEY_USER: ClassVar[str] = User.KEY_USER
     NAME_COMPANY: ClassVar[str] = 'Precision And Research Technology Systems Limited'
+    NAME_CSRF_TOKEN: ClassVar[str] = 'csrf-token'
     # URL_HOST: ClassVar[str] = os.env() 'http://127.0.0.1:5000' # 'https://www.partsltd.co.uk'
     URL_GITHUB: ClassVar[str] = 'https://github.com/Teddy-1024'
     URL_LINKEDIN: ClassVar[str] = 'https://uk.linkedin.com/in/lordteddyms'
@@ -120,6 +133,7 @@ class Model_View_Base(BaseModel, ABC):
     # """
     session: None = None
     is_page_store: bool = None
+    is_user_logged_in: bool = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -164,24 +178,47 @@ class Model_View_Base(BaseModel, ABC):
         # self.form_currency = Form_Currency()
         self.is_page_store = False
         print(f'session: {self.session}')
-        # self.is_user_logged_in = 
+        
+        datastore_store = DataStore_Store(self.app, self.db)
+        user = datastore_store.get_user_session()
+        self.is_user_logged_in = user.is_logged_in
         
     def output_bool(self, boolean):
         return str(boolean).lower()
     
     def get_url_host(self):
         return self.app.config.URL_HOST
+
+    def get_user_session(self):
+        datastore_store = DataStore_Store(self.app, self.db)
+        return datastore_store.get_user_session()
     
+    """
     def get_is_admin_store_user(self):
         datastore_store = DataStore_Store(self.app, self.db)
-        filters_user = User_Filters.get_default(datastore_store)
+        user = datastore_store.get_user_session()
+        if not user.is_logged_in: return False
+        filters_user = User_Filters.from_user(user) # get_default(datastore_store)
         users, errors = datastore_store.get_many_user(filters_user)
-        user = users[0]
-        return av.input_bool(user.can_admin_store, 'can_admin_store', 'Model_View_Base.get_is_admin_store_user')
+        try:
+            user = users[0]
+            return av.input_bool(user.can_admin_store, 'can_admin_store', 'Model_View_Base.get_is_admin_store_user')
+        except:
+            return False
+        user = self.get_user_session()
+        return user.can_admin_store
 
     def get_is_admin_user_user(self):
         datastore_store = DataStore_Store(self.app, self.db)
-        filters_user = User_Filters.get_default(datastore_store)
+        user = datastore_store.get_user_session()
+        if not user.is_logged_in: return False
+        filters_user = User_Filters.from_user(user) # .get_default(datastore_store)
         users, errors = datastore_store.get_many_user(filters_user)
-        user = users[0]
-        return av.input_bool(user.can_admin_user, 'can_admin_user', 'Model_View_Base.get_is_admin_user_user')
+        try:
+            user = users[0]
+            return av.input_bool(user.can_admin_user, 'can_admin_user', 'Model_View_Base.get_is_admin_user_user')
+        except:
+            return False
+    """
+
+    # def get_csrf_token(self):

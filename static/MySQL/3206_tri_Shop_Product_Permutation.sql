@@ -1,7 +1,7 @@
 
 # Shop Product Permutation
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Permutation;
 DROP TRIGGER IF EXISTS before_update_Shop_Product_Permutation;
@@ -33,16 +33,16 @@ BEGIN
     END IF;
 
 	IF (NOT (
-		id_interval_recurrence IS NULL
-		OR id_interval_recurrence NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
+		NEW.id_interval_recurrence IS NULL
+		OR NEW.id_interval_recurrence NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Recurrence interval ID must be a unit of time.';
     END IF;
 
 	IF (NOT (
-		id_interval_expiration_unsealed IS NULL
-		OR id_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
+		NEW.id_interval_expiration_unsealed IS NULL
+		OR NEW.id_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Unsealed expiration interval ID must be a unit of time.';

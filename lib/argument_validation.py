@@ -494,7 +494,7 @@ def input_bool(v_input, v_name, method, suppress_errors = False, suppress_consol
         else:
             return False if v_input == 0 else True
 # RETURNS
-    return v_input
+    return bool(v_input)
 
 def full_val_bool(v_input, v_name, method, suppress_errors = False, suppress_console_outputs = False, v_arg_type = 'argument'):
 # FUNCTION

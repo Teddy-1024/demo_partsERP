@@ -1,7 +1,7 @@
 
 # Shop Recurrence Interval
 
-USE PARTSLTD_PROD;
+
 
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Recurrence_Interval;

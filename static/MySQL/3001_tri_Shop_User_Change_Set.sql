@@ -1,7 +1,7 @@
 
 # Shop User Change Set
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_User_Change_Set;
 

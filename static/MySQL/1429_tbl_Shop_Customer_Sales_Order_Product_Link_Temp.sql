@@ -1,7 +1,7 @@
 
 # Customer Sales Order Product Link Temp
 
-USE PARTSLTD_PROD;
+
 
 -- DROP TABLE Shop_Customer_Sales_Order_Product_Link_Temp;
 

@@ -1,7 +1,7 @@
 
 # Shop Product Delivery Option Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Delivery_Option_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Product_Delivery_Option_Link;

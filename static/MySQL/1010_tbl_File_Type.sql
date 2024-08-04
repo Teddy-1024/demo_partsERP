@@ -1,7 +1,7 @@
 
 # File Types
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'File_Type';
 	

@@ -39,7 +39,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 import stripe
 import os
-from flask import Flask
+from flask import Flask, session
 from pydantic import BaseModel, ConfigDict
 from typing import ClassVar
 from datetime import datetime
@@ -57,6 +57,7 @@ class DataStore_Store(BaseModel):
     # Attributes
     app: Flask
     db: SQLAlchemy
+    session: object = None
     key_public_stripe: str = None
     key_secret_stripe: str = None
 
@@ -89,6 +90,8 @@ class DataStore_Store(BaseModel):
 
         stripe.api_key = self.key_secret_stripe
     
+        with self.app.app_context():
+            self.session = session
 
     def get_many_product_category(self, product_filters):
         # redundant argument validation? 
@@ -116,7 +119,7 @@ class DataStore_Store(BaseModel):
         }
         """
         argument_dict = product_filters.to_json()
-        user = self.get_login_user()
+        user = self.get_user_session()
         argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_product')
@@ -537,7 +540,7 @@ class DataStore_Store(BaseModel):
         _m = 'DataStore_Store.get_many_stock_item'
         av.val_instance(stock_item_filters, 'stock_item_filters', _m, Stock_Item_Filters)
         argument_dict = stock_item_filters.to_json()
-        user = self.get_login_user()
+        user = self.get_user_session()
         argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_stock_item')
@@ -886,15 +889,22 @@ class DataStore_Store(BaseModel):
         id_region_delivery = basket[DataStore_Store.KEY_ID_REGION_DELIVERY]
         return id_currency, id_region_delivery, is_included_VAT
 
-    def get_login_user(self):
+    def get_user_session(self):
+        return User.from_json(self.session.get(User.KEY_USER))
         user = User.get_default()
         try:
-            info_user = self.session[self.app.ID_TOKEN_USER].get('userinfo')
+            print(f'user session: {session[self.app.ID_TOKEN_USER]}')
+            info_user = session[self.app.ID_TOKEN_USER].get('userinfo')
+            print(f'info_user: {info_user}')
             user.is_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
-            user.id_user = info_user['sub'] if self.is_user_logged_in else None
+            user.id_user_auth0 = info_user['sub'] if user.is_logged_in else None
+            print(f'user.id_user_auth0: {user.id_user_auth0}')
         except:
-            pass
+            print('get user login failed')
         return user
+    
+    def get_user_auth0(self):
+        return User.from_json_auth0(self.session.get(self.app.ID_TOKEN_USER))
         
     def save_permutations(self, comment, permutations):
         _m = 'DataStore_Store.save_permutations'
@@ -903,7 +913,7 @@ class DataStore_Store(BaseModel):
 
         guid = Helper_DB_MySQL.create_guid()
         now = datetime.now()
-        user = self.get_login_user()
+        user = self.get_user_session()
         for permutation in permutations:
             setattr(permutation, 'guid', guid)
             setattr(permutation, 'created_on', now)
@@ -925,15 +935,16 @@ class DataStore_Store(BaseModel):
         
         cursor.close()
 
-    def get_many_user(self, user_filters):
+    def get_many_user(self, user_filters, user=None):
         _m = 'DataStore_Store.get_many_user'
+        print(_m)
         # av.val_str(user_filters, 'user_filters', _m)
         # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
         av.val_instance(user_filters, 'user_filters', _m, User_Filters)
 
         guid = Helper_DB_MySQL.create_guid()
         # now = datetime.now()
-        # user = self.get_login_user()
+        # user = self.get_user_session()
         
         """
         argument_dict_list = {
@@ -942,10 +953,12 @@ class DataStore_Store(BaseModel):
             'a_guid': guid
         }
         """
-        user = self.get_login_user()
+        if user is None:
+            user = self.get_user_session()
         argument_dict_list = {
             # 'a_guid': guid
             'a_id_user': user.id_user
+            , 'a_id_user_auth0': user.id_user_auth0
             , **user_filters.to_json()
         }
         # argument_dict_list['a_guid'] = guid
@@ -968,8 +981,8 @@ class DataStore_Store(BaseModel):
             print(f'row: {row}')
             user = User.make_from_DB_user(row)
             users.append(user)
-            print(f'user: {user}')
-        
+            print(f'user {str(type(user))}: {user}')
+        print(f'type users: {str(type(users))}\n type user 0: {str(type(users[0]))}')
         # error_list, cursor = self.get_error_list_from_cursor(cursor)
         errors = []
         cursor.nextset()

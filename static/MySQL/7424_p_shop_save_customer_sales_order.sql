@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -205,7 +205,8 @@ BEGIN
         INNER JOIN Shop_Product P ON PP.id_product = P.id_product
 		WHERE CSOPL_T.GUID = a_guid
         ;
-        DELETE FROM Shop_Customer_Sales_Order_Product_Link_Temp CSOPL_T
+        DELETE CSOPL_T
+		FROM Shop_Customer_Sales_Order_Product_Link_Temp CSOPL_T
 		WHERE CSOPL_T.GUID = a_guid
         ;
         

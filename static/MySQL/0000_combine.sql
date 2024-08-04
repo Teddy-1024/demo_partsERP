@@ -1,6 +1,6 @@
 
 /* Clear Store DataBase */
-USE PARTSLTD_PROD;
+
 
 
 # Drop dependencies
@@ -112,6 +112,8 @@ DROP TABLE IF EXISTS Shop_Delivery_Option;
 
 DROP TABLE IF EXISTS Shop_Product_Image_Audit;
 DROP TABLE IF EXISTS Shop_Product_Image;
+DROP TABLE IF EXISTS Shop_Image_Audit;
+DROP TABLE IF EXISTS Shop_Image;
 
 DROP TABLE IF EXISTS Shop_Product_Price_Temp;
 DROP TABLE IF EXISTS Shop_Product_Price_Audit;
@@ -139,12 +141,12 @@ DROP TABLE IF EXISTS Shop_Product_Variation_Type_Link;
 DROP TABLE IF EXISTS Shop_Variation_Type_Audit;
 DROP TABLE IF EXISTS Shop_Variation_Type;
 
-DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
-DROP TABLE IF EXISTS Shop_Recurrence_Interval;
-
 DROP TABLE IF EXISTS Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Audit;
 DROP TABLE IF EXISTS Shop_Product_Permutation;
+
+DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
+DROP TABLE IF EXISTS Shop_Recurrence_Interval;
 
 DROP TABLE IF EXISTS Shop_Product_Audit;
 DROP TABLE IF EXISTS Shop_Product;
@@ -212,7 +214,7 @@ DROP TABLE IF EXISTS Shop_Product_Change_Set;
 
 # Product Change Sets
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Change_Set';
 
@@ -224,7 +226,7 @@ CREATE TABLE Shop_Product_Change_Set (
 );
 # User Change Sets
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Change_Set';
 
@@ -236,7 +238,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Change_Set (
 );
 # Sales And Purchasing Change Sets
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Sales_And_Purchasing_Change_Set';
 
@@ -248,7 +250,7 @@ CREATE TABLE Shop_Sales_And_Purchasing_Change_Set (
 );
 # Access Levels
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Access_Level';
 
@@ -268,7 +270,7 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level (
 );
 # Access Level Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Access_Level_Audit';
 
@@ -289,7 +291,7 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level_Audit (
 );
 # Error Message Type
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Msg_Error_Type';
 
@@ -302,7 +304,7 @@ CREATE TABLE IF NOT EXISTS Shop_Msg_Error_Type (
 
 # File Types
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'File_Type';
 	
@@ -319,7 +321,7 @@ CREATE TABLE IF NOT EXISTS File_Type (
 
 # File Type Audit
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'File_Type_Audit';
 
@@ -340,7 +342,7 @@ CREATE TABLE IF NOT EXISTS File_Type_Audit (
 );
 # Generic / shared properties
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_General';
 
@@ -356,7 +358,7 @@ CREATE TABLE IF NOT EXISTS Shop_General (
 );
 # Shop General Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_General_Audit';
 
@@ -377,7 +379,7 @@ CREATE TABLE IF NOT EXISTS Shop_General_Audit (
 );
 # Image Types
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Image_Type';
 
@@ -404,7 +406,7 @@ CREATE TABLE IF NOT EXISTS Shop_Image_Type (
 
 # Image Type Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Image_Type_Audit';
 
@@ -425,7 +427,7 @@ CREATE TABLE IF NOT EXISTS Shop_Image_Type_Audit (
 );
 # Regions
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Region';
 
@@ -444,7 +446,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region (
 );
 # Region Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Region_Audit';
 
@@ -465,7 +467,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Audit (
 );
 # Region Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Region_Temp';
 
@@ -484,7 +486,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Temp (
 );
 # Region Branchs
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Region_Branch';
 
@@ -512,7 +514,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch (
 );
 # Region Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Region_Branch_Audit';
 
@@ -533,7 +535,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch_Audit (
 );
 # Region Branch Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Region_Branch_Temp';
 
@@ -547,7 +549,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch_Temp (
 );
 # Plant
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Plant';
 
@@ -568,7 +570,7 @@ CREATE TABLE IF NOT EXISTS Shop_Plant (
 
 # Plant Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Plant_Audit';
 
@@ -590,7 +592,7 @@ CREATE TABLE IF NOT EXISTS Shop_Plant_Audit (
 
 # Plant Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Plant_Temp';
 
@@ -605,7 +607,7 @@ CREATE TABLE IF NOT EXISTS Shop_Plant_Temp (
 
 # Storage Location
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Storage_Location';
 
@@ -628,7 +630,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location (
 
 # Storage Location Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Storage_Location_Audit';
 
@@ -650,7 +652,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Audit (
 
 # Storage Location Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Storage_Location_Temp';
 
@@ -663,7 +665,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location (
 
 # Storage Location Branch
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Storage_Location_Branch';
 
@@ -691,7 +693,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch (
 );
 # Storage Location Branch Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Storage_Location_Branch_Audit';
 
@@ -713,7 +715,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch_Audit (
 
 # Storage Location Branch Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Storage_Location_Branch_Temp';
 
@@ -727,7 +729,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch_Temp (
 );
 # Currencies
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Currency';
 
@@ -749,7 +751,7 @@ CREATE TABLE IF NOT EXISTS Shop_Currency (
 );
 # Currency Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Currency_Audit';
 
@@ -771,7 +773,7 @@ CREATE TABLE IF NOT EXISTS Shop_Currency_Audit (
 );
 # Currency Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Currency_Temp';
 
@@ -786,7 +788,7 @@ CREATE TABLE IF NOT EXISTS Shop_Currency_Temp (
 );
 # Taxes and Surcharges
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Tax_Or_Surcharge';
 
@@ -824,7 +826,7 @@ CREATE TABLE Shop_Tax_Or_Surcharge (
 
 # Tax Or Surcharge Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Tax_Or_Surcharge_Audit';
 
@@ -846,7 +848,7 @@ CREATE TABLE IF NOT EXISTS Shop_Tax_Or_Surcharge_Audit (
 );
 # Taxes and Surcharges Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Tax_Or_Surcharge_Temp';
 
@@ -868,7 +870,7 @@ CREATE TABLE Shop_Tax_Or_Surcharge_Temp (
 
 # Unit of Measurement
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Unit_Measurement';
 
@@ -893,7 +895,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement (
 
 # Unit of Measurement Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Unit_Measurement_Audit';
 
@@ -915,7 +917,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Audit (
 
 # Unit of Measurement Conversion
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Unit_Measurement_Conversion';
 
@@ -937,7 +939,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion (
 
 # Unit of Measurement Conversion Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Unit_Measurement_Conversion_Audit';
 
@@ -959,7 +961,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion_Audit (
 
 # Categories
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Category';
 
@@ -980,7 +982,7 @@ CREATE TABLE IF NOT EXISTS Shop_Category (
 
 # Category Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Category_Audit';
 
@@ -1002,7 +1004,7 @@ CREATE TABLE IF NOT EXISTS Shop_Category_Audit (
 
 # Products
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product';
 
@@ -1050,7 +1052,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 
 # Products
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Audit';
 
@@ -1071,7 +1073,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Audit (
 );
 # Products Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Temp';
 
@@ -1087,7 +1089,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Temp (
 
 # Product Permutation
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation';
 
@@ -1142,7 +1144,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
 
 # Product Permutation Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation_Audit';
 
@@ -1165,7 +1167,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Audit (
 
 # Product Permutation Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation_Temp';
 
@@ -1207,7 +1209,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
 
 # Variation Types
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation_Type';
 
@@ -1227,7 +1229,7 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type (
 );
 # Variation Type Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation_Type_Audit';
 
@@ -1249,7 +1251,7 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type_Audit (
 
 # Variations
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation';
 
@@ -1274,7 +1276,7 @@ CREATE TABLE Shop_Variation (
 
 # Variation Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation_Audit';
 
@@ -1296,7 +1298,7 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Audit (
 
 # Product Permutation Variation Link
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation_Variation_Link';
 
@@ -1324,7 +1326,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link (
 
 # Product Permutation Variation Link Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation_Variation_Link_Audit';
 
@@ -1346,7 +1348,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link_Audit (
 );
 # Stock Stock Item
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Stock_Item';
 
@@ -1384,7 +1386,7 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item (
 
 # Stock Item Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Stock_Item_Audit';
 
@@ -1407,7 +1409,7 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item_Audit (
 
 # Stock Stock Item Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Stock_Item_Temp';
 
@@ -1429,7 +1431,7 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item_Temp (
 
 # Product Price
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Price';
 
@@ -1460,7 +1462,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price (
 );
 # Product Price Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Price_Audit';
 
@@ -1482,7 +1484,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price_Audit (
 
 # Product Price Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Price_Temp';
 
@@ -1498,7 +1500,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price_Temp (
 );
 # Product Permutation Images
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Image';
 
@@ -1524,7 +1526,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Image (
 );
 # Product Image Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Image_Audit';
 
@@ -1544,7 +1546,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Image_Audit (
 );
 # Delivery Options
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Delivery_Option';
 
@@ -1569,7 +1571,7 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option (
 
 # Delivery Option Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Delivery_Option_Audit';
 
@@ -1590,7 +1592,7 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option_Audit (
 );
 # Delivery Option
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Delivery_Option_Link';
 
@@ -1633,7 +1635,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Delivery_Option_Link (
 );
 # Delivery Option Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Delivery_Option_Link_Audit';
 
@@ -1654,7 +1656,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Delivery_Option_Link_Audit (
 );
 # Discounts
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Discount';
 
@@ -1702,7 +1704,7 @@ CREATE TABLE Shop_Discount (
 
 # Discount Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Discount_Audit';
 
@@ -1724,7 +1726,7 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Audit (
 );
 # Discount Region Currency Link
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Discount_Region_Currency_Link';
 
@@ -1755,7 +1757,7 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Region_Currency_Link (
 );
 # Product Currency Region link
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Currency_Region_Link';
 
@@ -1794,7 +1796,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Currency_Region_Link (
 );
 # Discount Region Currency Link Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Discount_Region_Currency_Link_Audit';
 
@@ -1816,7 +1818,7 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Region_Currency_Link_Audit (
 );
 # Product Currency Region Link Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Currency_Region_Link_Audit';
 
@@ -1838,7 +1840,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Currency_Region_Link_Audit (
 
 # Permission Groups
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Permission_Group';
 
@@ -1858,7 +1860,7 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Group (
 );
 # Permission Group Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Permission_Group_Audit';
 
@@ -1880,7 +1882,7 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Group_Audit (
 );
 # Permissions
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Permission';
 
@@ -1908,7 +1910,7 @@ CREATE TABLE IF NOT EXISTS Shop_Permission (
 );
 # Permission Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Permission_Audit';
 
@@ -1930,7 +1932,7 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Audit (
 );
 # Roles
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Role';
 
@@ -1949,7 +1951,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role (
 );
 # Role Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Role_Audit';
 
@@ -1971,7 +1973,7 @@ CREATE TABLE Shop_Role_Audit (
 );
 # Role Permission link
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Role_Permission_Link';
 
@@ -2001,7 +2003,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link (
 );
 # Role Permission link Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Role_Permission_Link_Audit';
 
@@ -2022,7 +2024,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link_Audit (
 );
 # Users
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User';
 
@@ -2048,7 +2050,7 @@ CREATE TABLE IF NOT EXISTS Shop_User (
 
 # User Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Audit';
 
@@ -2070,7 +2072,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Audit (
 );
 # User Role link
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Role_Link';
 
@@ -2095,7 +2097,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
 );
 # User Role Link Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Role_Link_Audit';
 
@@ -2117,7 +2119,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link_Audit (
 
 # Addresses
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Address';
 
@@ -2147,7 +2149,7 @@ CREATE TABLE Shop_Address (
 );
 # Address Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Address_Audit';
 
@@ -2169,7 +2171,7 @@ CREATE TABLE IF NOT EXISTS Shop_Address_Audit (
 );
 # User Basket (Product Link)
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Basket';
 
@@ -2207,7 +2209,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket (
 );
 
 # Product Basket Audits
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Basket_Audit';
 
@@ -2235,7 +2237,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket_Audit (
 
 # User Order Types
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Order_Status';
 
@@ -2256,7 +2258,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order_Status (
 
 # Order Type Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Order_Status_Audit';
 
@@ -2277,7 +2279,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order_Status_Audit (
 );
 # Supplier
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier';
 
@@ -2309,7 +2311,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier (
 
 # Supplier Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Audit';
 
@@ -2331,7 +2333,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Audit (
 
 # Supplier Purchase Order
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Purchase_Order';
 
@@ -2372,7 +2374,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order (
 
 # Supplier Purchase Order Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Purchase_Order_Audit';
 
@@ -2394,7 +2396,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Audit (
 
 # Supplier Purchase Order Product Link
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Purchase_Order_Product_Link';
 
@@ -2431,7 +2433,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link (
 
 # Supplier Purchase Order Product Link Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Purchase_Order_Product_Link_Audit';
 
@@ -2453,7 +2455,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link_Audit (
 
 # Supplier Purchase Order Product Link Temp
 
-USE PARTSLTD_PROD;
+
 
 -- drop table Shop_Supplier_Purchase_Order_Product_Link_Temp;
 
@@ -2488,7 +2490,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link_Temp (
 
 # Manufacturing Purchase Order
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order';
 
@@ -2520,7 +2522,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order (
 
 # Manufacturing Purchase Order Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order_Audit';
 
@@ -2542,7 +2544,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Audit (
 
 # Manufacturing Purchase Order Product Link
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order_Product_Link';
 
@@ -2580,7 +2582,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
 
 # Manufacturing Purchase Order Product Link Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order_Product_Link_Audit';
 
@@ -2602,7 +2604,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Audit 
 
 # Manufacturing Purchase Order Product Link Temp
 
-USE PARTSLTD_PROD;
+
 
 -- DROP TABLE Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
 -- SELECT * FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
@@ -2636,7 +2638,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
 );
 # Customer
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Customer';
 
@@ -2666,7 +2668,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer (
 
 # Customer Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Customer_Audit';
 
@@ -2688,7 +2690,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Audit (
 
 # Customer Sales Purchase Order
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Customer_Sales_Order';
 
@@ -2723,7 +2725,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order (
 
 # Customer Sales Order Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Customer_Sales_Order_Audit';
 
@@ -2745,7 +2747,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Audit (
 
 # Customer Sales Order Product Link
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Customer_Sales_Order_Product_Link';
 
@@ -2783,7 +2785,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link (
 
 # Customer Sales Order Product Link Audits
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Customer_Sales_Order_Product_Link_Audit';
 
@@ -2805,7 +2807,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link_Audit (
 
 # Customer Sales Order Product Link Temp
 
-USE PARTSLTD_PROD;
+
 
 -- DROP TABLE Shop_Customer_Sales_Order_Product_Link_Temp;
 
@@ -2839,7 +2841,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link_Temp (
 
 # Shop Access Level
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Access_Level;
 DROP TRIGGER IF EXISTS before_update_Shop_Access_Level;
@@ -2902,7 +2904,7 @@ DELIMITER ;
 
 # Product Change Set
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Change_Set;
 
@@ -2922,7 +2924,7 @@ DELIMITER ;
 
 # Shop User Change Set
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_User_Change_Set;
 
@@ -2942,7 +2944,7 @@ END //
 DELIMITER ;
 # Product Change Set
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Sales_And_Purchasing_Change_Set;
 
@@ -2962,7 +2964,7 @@ DELIMITER ;
 
 # File Type
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_File_Type;
 DROP TRIGGER IF EXISTS before_update_File_Type;
@@ -3005,7 +3007,7 @@ DELIMITER ;
 
 # File Type Audits
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_File_Type_Audit;
 DROP TRIGGER IF EXISTS before_update_File_Type_Audit;
@@ -3032,7 +3034,7 @@ END //
 DELIMITER ;
 # Shop General
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_General;
 DROP TRIGGER IF EXISTS before_update_Shop_General;
@@ -3072,7 +3074,7 @@ END //
 DELIMITER ;
 # Shop Image Type
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Image_Type;
 DROP TRIGGER IF EXISTS before_update_Shop_Image_Type;
@@ -3136,7 +3138,7 @@ END //
 DELIMITER ;
 # Shop Delivery Region
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Region;
 DROP TRIGGER IF EXISTS before_update_Shop_Region;
@@ -3191,7 +3193,7 @@ DELIMITER ;
 
 # Shop Region Branch
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Region_Branch;
 DROP TRIGGER IF EXISTS before_update_Shop_Region_Branch;
@@ -3244,7 +3246,7 @@ DELIMITER ;
 
 # Shop Storage Location
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Storage_Location;
 DROP TRIGGER IF EXISTS before_update_Shop_Storage_Location;
@@ -3299,7 +3301,7 @@ DELIMITER ;
 
 # Shop Currency
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Currency;
 DROP TRIGGER IF EXISTS before_update_Shop_Currency;
@@ -3365,7 +3367,7 @@ END //
 DELIMITER ;
 # Shop Tax_Or_Surcharge
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Tax_Or_Surcharge;
 DROP TRIGGER IF EXISTS before_update_Shop_Tax_Or_Surcharge;
@@ -3440,7 +3442,7 @@ DELIMITER ;
 
 # Shop Category
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Category;
 DROP TRIGGER IF EXISTS before_update_Shop_Category;
@@ -3497,7 +3499,7 @@ DELIMITER ;
 
 # Shop Product
 
-USE PARTSLTD_PROD;
+
 
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product;
@@ -3667,7 +3669,7 @@ DELIMITER ;
 
 # Shop Product Permutation
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Permutation;
 DROP TRIGGER IF EXISTS before_update_Shop_Product_Permutation;
@@ -3699,16 +3701,16 @@ BEGIN
     END IF;
 
 	IF (NOT (
-		id_interval_recurrence IS NULL
-		OR id_interval_recurrence NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
+		NEW.id_interval_recurrence IS NULL
+		OR NEW.id_interval_recurrence NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Recurrence interval ID must be a unit of time.';
     END IF;
 
 	IF (NOT (
-		id_interval_expiration_unsealed IS NULL
-		OR id_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
+		NEW.id_interval_expiration_unsealed IS NULL
+		OR NEW.id_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Unsealed expiration interval ID must be a unit of time.';
@@ -3824,7 +3826,7 @@ DELIMITER ;
 
 # Shop Variation Type
 
-USE PARTSLTD_PROD;
+
 
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Variation_Type;
@@ -3884,7 +3886,7 @@ DELIMITER ;
 
 # Shop Variation
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Variation;
 DROP TRIGGER IF EXISTS before_update_Shop_Variation;
@@ -3939,7 +3941,7 @@ DELIMITER ;
 
 # Shop Product Permutation Variation Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Permutation_Variation_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Product_Permutation_Variation_Link;
@@ -3999,7 +4001,7 @@ END //
 DELIMITER ;
 # Shop Product Permutation
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Stock_Item;
 DROP TRIGGER IF EXISTS before_update_Shop_Stock_Item;
@@ -4094,7 +4096,7 @@ DELIMITER ;
 
 # Shop Product Currency Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Price;
 DROP TRIGGER IF EXISTS before_update_Shop_Product_Price;
@@ -4185,7 +4187,7 @@ DELIMITER ;
 
 # Shop Image
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Image;
 DROP TRIGGER IF EXISTS before_update_Shop_Product_Image;
@@ -4257,7 +4259,7 @@ END //
 DELIMITER ;
 # Shop Delivery Option Type
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Delivery_Option;
 DROP TRIGGER IF EXISTS before_update_Shop_Delivery_Option;
@@ -4327,7 +4329,7 @@ END //
 DELIMITER ;
 # Shop Product Delivery Option Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Product_Delivery_Option_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Product_Delivery_Option_Link;
@@ -4399,7 +4401,7 @@ END //
 DELIMITER ;
 # Shop Discount
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Discount;
 DROP TRIGGER IF EXISTS before_update_Shop_Discount;
@@ -4482,7 +4484,7 @@ DELIMITER ;
 
 # Shop Discount Region Currency Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Discount_Region_Currency_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Discount_Region_Currency_Link;
@@ -4538,7 +4540,7 @@ END //
 DELIMITER ;
 # Shop Permission Group
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Permission_Group;
 DROP TRIGGER IF EXISTS before_update_Shop_Permission_Group;
@@ -4596,7 +4598,7 @@ END //
 DELIMITER ;
 # Shop Permission
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Permission;
 DROP TRIGGER IF EXISTS before_update_Shop_Permission;
@@ -4662,7 +4664,7 @@ END //
 DELIMITER ;
 # Shop Role
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Role;
 DROP TRIGGER IF EXISTS before_update_Shop_Role;
@@ -4721,7 +4723,7 @@ DELIMITER ;
 
 # Shop Role Permission Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Role_Permission_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Role_Permission_Link;
@@ -4782,7 +4784,7 @@ DELIMITER ;
 
 # Shop User
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_User;
 DROP TRIGGER IF EXISTS before_update_Shop_User;
@@ -4864,7 +4866,7 @@ END //
 DELIMITER ;
 # Shop User Role Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_User_Role_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_User_Role_Link;
@@ -4910,7 +4912,7 @@ END //
 DELIMITER ;
 # Shop Address
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Address;
 DROP TRIGGER IF EXISTS before_update_Shop_Address;
@@ -4988,7 +4990,7 @@ END //
 DELIMITER ;
 # Shop Product Variation Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_User_Basket;
 DROP TRIGGER IF EXISTS before_update_Shop_User_Basket;
@@ -5046,7 +5048,7 @@ END //
 DELIMITER ;
 # Shop User Order Type
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_User_Order_Status;
 DROP TRIGGER IF EXISTS before_update_Shop_User_Order_Status;
@@ -5104,7 +5106,7 @@ END //
 DELIMITER ;
 # Shop Supplier
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Supplier;
 DROP TRIGGER IF EXISTS before_update_Shop_Supplier;
@@ -5183,7 +5185,7 @@ DELIMITER ;
 
 # Shop Unit of Measurement
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Unit_Measurement;
 DROP TRIGGER IF EXISTS before_update_Shop_Unit_Measurement;
@@ -5263,7 +5265,7 @@ DELIMITER ;
 
 # Shop Unit of Measurement Conversion
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Unit_Measurement_Conversion;
 DROP TRIGGER IF EXISTS before_update_Shop_Unit_Measurement_Conversion;
@@ -5331,7 +5333,7 @@ DELIMITER ;
 
 # Shop Supplier Purchase Order
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Supplier_Purchase_Order;
 DROP TRIGGER IF EXISTS before_update_Shop_Supplier_Purchase_Order;
@@ -5405,7 +5407,7 @@ DELIMITER ;
 
 # Shop Supplier Purchase Order Product Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Supplier_Purchase_Order_Product_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Supplier_Purchase_Order_Product_Link;
@@ -5488,7 +5490,7 @@ DELIMITER ;
 
 # Shop Manufacturing Purchase Order
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Manufacturing_Purchase_Order;
 DROP TRIGGER IF EXISTS before_update_Shop_Manufacturing_Purchase_Order;
@@ -5547,7 +5549,7 @@ DELIMITER ;
 
 # Shop Manufacturing Purchase Order Product Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Manufacturing_Purchase_Order_Product_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Manufacturing_Purchase_Order_Product_Link;
@@ -5631,7 +5633,7 @@ DELIMITER ;
 
 # Shop Customer
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Customer;
 DROP TRIGGER IF EXISTS before_update_Shop_Customer;
@@ -5707,7 +5709,7 @@ DELIMITER ;
 
 # Shop Customer Sales Order
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Customer_Sales_Order;
 DROP TRIGGER IF EXISTS before_update_Shop_Customer_Sales_Order;
@@ -5766,7 +5768,7 @@ DELIMITER ;
 
 # Shop Customer Sales Order Product Link
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Customer_Sales_Order_Product_Link;
 DROP TRIGGER IF EXISTS before_update_Shop_Customer_Sales_Order_Product_Link;
@@ -5847,7 +5849,7 @@ BEGIN
 END //
 DELIMITER ;
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -5943,7 +5945,7 @@ FROM SPLIT_TEMP;
 
 */
 
-USE PARTSLTD_PROD;
+
 
 
 /*
@@ -6657,7 +6659,7 @@ WHERE U.id_user = 'auth0|6582b95c895d09a70ba10fef'
 
 */
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -6699,7 +6701,7 @@ CALL p_shop_get_many_region (
 	0 # a_get_inactive_region
 );
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -6743,7 +6745,7 @@ CALL p_shop_get_many_currency (
 	0 # a_get_inactive_currency
 );
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -6988,11 +6990,10 @@ END //
 DELIMITER ;
 
 
-USE PARTSLTD_PROD;
+-- 
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product;
-
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_product (
@@ -7055,21 +7056,13 @@ BEGIN
     
     
 	-- Argument validation + default values
-	IF a_id_user IS NULL THEN
-		SET a_id_user = '';
-	ELSE
-		SET a_id_user = TRIM(a_id_user);
-    END IF;
-	IF a_get_all_category IS NULL THEN
-		SET a_get_all_category = 0;
-    END IF;
+    SET a_id_user := TRIM(IFNULL(a_id_user, ''));
+    SET a_get_all_category := IFNULL(a_get_all_category, 0);
+    SET a_get_inactive_category := IFNULL(a_get_inactive_category, 0);
 	IF a_ids_category IS NULL THEN
 		SET a_ids_category = '';
 	ELSE
 		SET a_ids_category = REPLACE(TRIM(a_ids_category), '|', ',');
-    END IF;
-	IF a_get_inactive_category IS NULL THEN
-		SET a_get_inactive_category = 0;
     END IF;
 	IF a_ids_product IS NULL THEN
 		SET a_ids_product = '';
@@ -7157,19 +7150,16 @@ BEGIN
     */
     
     -- Temporary tables
-    DROP TABLE IF EXISTS tmp_Discount;
-    DROP TABLE IF EXISTS tmp_Currency;
-    DROP TABLE IF EXISTS tmp_Delivery_Region;
-    DROP TABLE IF EXISTS tmp_Shop_Image;
-    DROP TABLE IF EXISTS tmp_Shop_Variation;
-    DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Discount;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Currency;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Delivery_Region;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Category;
     
-    CREATE TABLE tmp_Shop_Category (
+    CREATE TEMPORARY TABLE tmp_Shop_Category (
 		id_category INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Category_id_category
-			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
         active BIT NOT NULL,
         display_order INT NOT NULL, 
         can_view BIT, 
@@ -7177,20 +7167,11 @@ BEGIN
         can_admin BIT
     );
     
-    CREATE TABLE tmp_Shop_Product (
+    CREATE TEMPORARY TABLE tmp_Shop_Product (
 		id_category INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Product_id_category
-			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
 		id_product INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Product_id_product
-			FOREIGN KEY (id_product)
-			REFERENCES Shop_Product(id_product),
 		-- product_has_variations BIT NOT NULL,
 		id_permutation INT NULL,
-        CONSTRAINT FK_tmp_Shop_Product_id_permutation
-			FOREIGN KEY (id_permutation)
-			REFERENCES Shop_Product_Permutation(id_permutation),
         active_category BIT NOT NULL,
         active_product BIT NOT NULL,
         active_permutation BIT NULL,
@@ -7211,9 +7192,6 @@ BEGIN
 		quantity_stock FLOAT NOT NULL,
 		is_subscription BIT NOT NULL,
 		id_recurrence_interval INT,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 		count_recurrence_interval INT,
         id_stripe_product VARCHAR(100),
         product_has_variations INT NOT NULL,
@@ -7230,59 +7208,38 @@ BEGIN
     );
     */
     
-    CREATE TABLE tmp_Shop_Image (
+    CREATE TEMPORARY TABLE tmp_Shop_Image (
 		id_image INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Image_id_image
-			FOREIGN KEY (id_image)
-			REFERENCES Shop_Image(id_image),
 		id_product INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Image_id_product
-			FOREIGN KEY (id_product)
-			REFERENCES Shop_Product(id_product),
 		id_permutation INT NULL,
-        CONSTRAINT FK_tmp_Shop_Image_id_permutation
-			FOREIGN KEY (id_permutation)
-			REFERENCES Shop_Product_Permutation(id_permutation),
         active BIT NOT NULL,
         display_order INT NOT NULL,
         rank_in_product_permutation INT NOT NULL
     );
     
-    CREATE TABLE tmp_Delivery_Region (
+    CREATE TEMPORARY TABLE tmp_Delivery_Region (
 		id_region INT NOT NULL,
-        CONSTRAINT FK_tmp_Delivery_Region_id_region
-			FOREIGN KEY (id_region)
-			REFERENCES Shop_Region(id_region),
         active BIT NOT NULL,
         display_order INT NOT NULL,
         requires_delivery_option BIT NOT NULL DEFAULT 0
     );
     
-    CREATE TABLE tmp_Currency (
+    CREATE TEMPORARY TABLE tmp_Currency (
 		id_currency INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Currency_id_currency
-			FOREIGN KEY (id_currency)
-			REFERENCES Shop_Currency(id_currency),
         active BIT NOT NULL,
         display_order INT NOT NULL
     );
     
-    CREATE TABLE tmp_Discount (
+    CREATE TEMPORARY TABLE tmp_Discount (
 		id_discount INT NOT NULL,
-        CONSTRAINT FK_tmp_Discount_id_discount
-			FOREIGN KEY (id_discount)
-			REFERENCES Shop_Discount(id_discount),
         active BIT NOT NULL,
         display_order INT NOT NULL
     );
     
-	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
-		CONSTRAINT FK_tmp_Msg_Error_id_type 
-			FOREIGN KEY (id_type)
-			REFERENCES Shop_Msg_Error_Type (id_type),
         code VARCHAR(50) NOT NULL,
         msg VARCHAR(4000) NOT NULL
 	);
@@ -7413,9 +7370,10 @@ BEGIN
     
     -- select * from tmp_Shop_Product;
     
-    IF a_get_first_product_only THEN
-		DELETE FROM tmp_Shop_Product t_P
-			WHERE t_P.rank_permutation > 1
+    IF a_get_first_product_only = 1 THEN
+		DELETE t_P
+        FROM tmp_Shop_Product t_P
+		WHERE t_P.rank_permutation > 1
 		;
     END IF;
     
@@ -7488,7 +7446,7 @@ BEGIN
     
     IF a_get_first_image_only THEN
 		DELETE FROM tmp_Shop_Image
-			WHERE rank_in_product_permutation > 1
+		WHERE rank_in_product_permutation > 1
 		;
     END IF;
     
@@ -7772,7 +7730,8 @@ BEGIN
 		-- select * from Shop_User_Eval_Temp;
 		-- select * from tmp_Shop_Product;
         
-        DELETE FROM tmp_Shop_Product t_P
+        DELETE t_P
+        FROM tmp_Shop_Product t_P
 		WHERE 
 			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_User_Eval_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_User_Eval_Temp), '%');
             OR (
@@ -7886,7 +7845,7 @@ BEGIN
 		ON t_P.id_permutation = PPVL.id_permutation
 	ORDER BY t_P.display_order
 	;
-    */ 
+    */
     -- select * from Shop_Product_Currency_Region_Link;
     -- select * from shop_currency;
     /*
@@ -8101,6 +8060,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
     DROP TABLE IF EXISTS tmp_Shop_Category;
+    
 END //
 DELIMITER ;
 
@@ -8161,7 +8121,7 @@ insert into shop_product_change_set (comment)
     where id_product = 1
 */
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -8468,7 +8428,7 @@ CALL p_shop_user_eval (
         
 */
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -8698,7 +8658,8 @@ BEGIN
         -- GROUP BY id_link, P.id_product, PP.id_permutation
         -- GROUP BY name_error, ID_LINK, cost_total_local, value_produced_total_local
         ;
-        DELETE FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
+        DELETE MPOPL_T
+		FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
 		WHERE MPOPL_T.GUID = a_guid
         ;
     END IF;
@@ -9072,7 +9033,7 @@ DELETE FROM Shop_Manufacturing_Purchase_Order;
 */
 
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -9522,7 +9483,8 @@ BEGIN
 		) 
     ;
     IF a_get_first_stock_item_only THEN
-		DELETE FROM tmp_Stock_Item t_SI
+		DELETE t_SI
+		FROM tmp_Stock_Item t_SI
 		WHERE t_SI.rank_stock_item > 1
 		;
 	END IF;
@@ -9538,8 +9500,9 @@ BEGIN
 	FROM tmp_Stock_Item t_SI
 	;
     IF a_get_first_product_only THEN
-		DELETE FROM tmp_Product t_P
-			WHERE t_P.rank_permutation > 1
+		DELETE t_P
+		FROM tmp_Product t_P
+		WHERE t_P.rank_permutation > 1
 		;
     END IF;
     
@@ -9555,7 +9518,8 @@ BEGIN
 	FROM tmp_Stock_Item t_SI
 	;
     IF a_get_first_product_only THEN
-		DELETE FROM tmp_Product t_P
+		DELETE t_P
+		FROM tmp_Product t_P
 		WHERE t_P.rank_product > 1
 		;
     END IF;
@@ -9572,7 +9536,13 @@ BEGIN
 	FROM tmp_Stock_Item t_SI
 	;
 	IF a_get_first_category_only THEN
-		DELETE FROM tmp_Category t_C
+		DELETE t_P
+		FROM tmp_Product t_P
+		INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
+		WHERE t_C.rank_category > 1
+		;
+		DELETE t_C
+		FROM tmp_Category t_C
 		WHERE t_C.rank_category > 1
 		;
 	END IF;
@@ -9622,7 +9592,8 @@ BEGIN
 		OR R.id_region = r_RS.id_region_child
     ;
 	IF a_get_first_region_storage_only THEN
-		DELETE FROM tmp_Region_Storage t_RS
+		DELETE t_RS
+		FROM tmp_Region_Storage t_RS
 		WHERE t_RS.rank_region > 1
 		;
 	END IF;
@@ -9643,7 +9614,8 @@ BEGIN
     INNER JOIN Shop_Address A ON P.id_address = A.id_address
 	;
     IF a_get_first_plant_storage_only THEN
-		DELETE FROM tmp_Plant_Storage t_P
+		DELETE t_P
+		FROM tmp_Plant_Storage t_P
 		WHERE t_P.rank_plant > 1
 		;
     END IF;
@@ -9692,7 +9664,8 @@ BEGIN
 		OR SL.id_location = r_LS.id_location_child
     ;
 	IF a_get_first_location_storage_only THEN
-		DELETE FROM tmp_Location_Storage t_LS
+		DELETE t_LS
+		FROM tmp_Location_Storage t_LS
 		WHERE t_LS.rank_location > 1
 		;
 	END IF;
@@ -9720,7 +9693,8 @@ BEGIN
             t_SI.can_admin = UE_T.can_admin
 		;
         
-        DELETE FROM tmp_Stock_Item t_SI
+        DELETE t_SI
+		FROM tmp_Stock_Item t_SI
         /*
 		LEFT JOIN Shop_User_Eval_Temp UE_T
 			ON t_SI.id_product = UE_T.id_product
@@ -9927,7 +9901,7 @@ insert into shop_product_change_set (comment)
     where id_product = 1
 */
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -10170,7 +10144,7 @@ CALL p_shop_get_many_stripe_price_new (
 
 */
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -10350,7 +10324,7 @@ CALL p_shop_edit_user (
 
 */
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -10436,7 +10410,8 @@ BEGIN
 		;
         
         IF a_get_first_user_only THEN
-			DELETE FROM tmp_User t_U
+			DELETE t_U
+			FROM tmp_User t_U
             WHERE t_U.rank_user > 1
             ;
 		END IF;
@@ -10483,58 +10458,73 @@ BEGIN
     
     
     -- Returns
+    /* NULL record required for flask sql_alchemy to detect result set
     IF EXISTS (SELECT * FROM tmp_Msg_Error WHERE GUID = v_guid) THEN
 		DELETE FROM tmp_User;
     END IF;
+    */
     
-	SELECT 
-		U.id_user
-		, U.firstname
-		, U.surname
-		, U.email
-        , U.is_email_verified
-		, U.id_currency_default
-		, U.id_region_default
-		, U.is_included_VAT_default
-        , U.is_super_user
-		, UE_T_STORE.can_admin_store AS can_admin_store
-		, UE_T_USER.can_admin_user AS can_admin_user
-	FROM tmp_User t_U
-	INNER JOIN Shop_User U ON t_U.id_user = U.id_user
-    INNER JOIN (
-		SELECT
-			id_user
-            , id_permission_required
-            , can_admin AS can_admin_store
-        FROM Shop_User_Eval_Temp UE_T_STORE
-        WHERE 1=1
-			AND UE_T_STORE.guid = v_guid
-            AND UE_T_STORE.id_permission_required = v_id_permission_store_admin
-	) UE_T_STORE ON t_U.id_user = UE_T_STORE.id_user
-    INNER JOIN (
-		SELECT
-			id_user
-            , id_permission_required
-            , can_admin AS can_admin_user
-        FROM Shop_User_Eval_Temp UE_T_USER
-        WHERE 1=1
-			AND UE_T_USER.guid = v_guid
-            AND UE_T_USER.id_permission_required = v_id_permission_user_admin
-	) UE_T_USER ON t_U.id_user = UE_T_USER.id_user
-    ;
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE GUID = v_guid) THEN
+		SELECT 
+			U.id_user
+			, U.id_user_auth0
+			, U.firstname
+			, U.surname
+			, U.email
+			, U.is_email_verified
+			, U.id_currency_default
+			, U.id_region_default
+			, U.is_included_VAT_default
+			, U.is_super_user
+			, UE_T_STORE.can_admin_store AS can_admin_store
+			, UE_T_USER.can_admin_user AS can_admin_user
+		FROM tmp_User t_U
+		INNER JOIN Shop_User U ON t_U.id_user = U.id_user
+		INNER JOIN (
+			SELECT
+				id_user
+				, id_permission_required
+				, can_admin AS can_admin_store
+			FROM Shop_User_Eval_Temp UE_T_STORE
+			WHERE 1=1
+				AND UE_T_STORE.guid = v_guid
+				AND UE_T_STORE.id_permission_required = v_id_permission_store_admin
+		) UE_T_STORE ON t_U.id_user = UE_T_STORE.id_user
+		INNER JOIN (
+			SELECT
+				id_user
+				, id_permission_required
+				, can_admin AS can_admin_user
+			FROM Shop_User_Eval_Temp UE_T_USER
+			WHERE 1=1
+				AND UE_T_USER.guid = v_guid
+				AND UE_T_USER.id_permission_required = v_id_permission_user_admin
+		) UE_T_USER ON t_U.id_user = UE_T_USER.id_user
+		;
+    ELSE
+		SELECT 
+			NULL AS id_user
+			, NULL AS id_user_auth0
+			, NULL AS firstname
+			, NULL AS surname
+			, NULL AS email
+			, NULL AS is_email_verified
+			, NULL AS id_currency_default
+			, NULL AS id_region_default
+			, NULL AS is_included_VAT_default
+			, NULL AS is_super_user
+			, NULL AS can_admin_store
+			, NULL AS can_admin_user
+		;
+	END IF;
     
     # Errors
     SELECT 
-		/*
         t_ME.display_order,
-		t_ME.guid,
-        t_ME.id_type,
-        t_ME.msg,
         MET.code, 
+        t_ME.msg,
         MET.name,
         MET.description
-        */
-        *
     FROM tmp_Msg_Error t_ME
     INNER JOIN Shop_Msg_Error_Type MET
 		ON t_ME.id_type = MET.id_type
@@ -10566,7 +10556,7 @@ CALL p_get_many_user (
 
 */
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -11396,7 +11386,7 @@ CALL p_shop_edit_user_basket (
  select * from shop_user_basket;
 */
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -11679,7 +11669,7 @@ DELIMITER ;
 -- SELECT * FROM Shop_Supplier;
 
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -11818,8 +11808,9 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_supplier_only THEN
-			DELETE FROM tmp_Shop_Supplier t_S
-				WHERE t_S.rank_supplier > 1 /*(
+			DELETE t_S
+			FROM tmp_Shop_Supplier t_S
+			WHERE t_S.rank_supplier > 1 /*(
 					SELECT MIN(t_S.rank_supplier)
                     FROM tmp_Shop_Supplier t_S
 				) */
@@ -11947,7 +11938,7 @@ insert into shop_product_change_set (comment)
 		id_change_set = (select id_change_set from shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
 */
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -12154,7 +12145,8 @@ BEGIN
         INNER JOIN Shop_Product_Permutation PP ON SPOPL_T.id_permutation = PP.id_permutation
 		WHERE SPOPL_T.GUID = a_guid
         ;
-        DELETE FROM Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
+        DELETE SPOPL_T
+		FROM Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
 		WHERE SPOPL_T.GUID = a_guid
         ;
         
@@ -12502,7 +12494,7 @@ DELETE FROM Shop_Supplier_Purchase_Order;
 */
 
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -12782,11 +12774,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_supplier_only THEN
-			DELETE FROM tmp_Shop_Supplier t_S
-				WHERE t_S.rank_supplier > (
-					SELECT MIN(t_S.rank_supplier)
-                    FROM tmp_Shop_Supplier t_S
-				)
+			DELETE t_S
+			FROM tmp_Shop_Supplier t_S
+			WHERE t_S.rank_supplier > (
+				SELECT MIN(t_S.rank_supplier)
+				FROM tmp_Shop_Supplier t_S
+			)
 			;
 		END IF;
     END IF;
@@ -13066,11 +13059,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_order_only THEN
-			DELETE FROM tmp_Shop_Supplier_Purchase_Order t_SPO
-				WHERE t_SPO.rank_order > (
-					SELECT MIN(t_SPO.rank_order)
-                    FROM tmp_Shop_Supplier_Purchase_Order t_SPO
-				)
+			DELETE t_SPO
+            FROM tmp_Shop_Supplier_Purchase_Order t_SPO
+			WHERE t_SPO.rank_order > (
+				SELECT MIN(t_SPO.rank_order)
+				FROM tmp_Shop_Supplier_Purchase_Order t_SPO
+			)
 			;
 		END IF;
     END IF;
@@ -13265,7 +13259,7 @@ insert into shop_product_change_set (comment)
     where id_product = 1
 */
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -13495,7 +13489,8 @@ BEGIN
         -- GROUP BY id_link, P.id_product, PP.id_permutation
         -- GROUP BY name_error, ID_LINK, cost_total_local, value_produced_total_local
         ;
-        DELETE FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
+        DELETE MPOPL_T
+		FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
 		WHERE MPOPL_T.GUID = a_guid
         ;
     END IF;
@@ -13869,7 +13864,7 @@ DELETE FROM Shop_Manufacturing_Purchase_Order;
 */
 
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -14347,11 +14342,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_order_only THEN
-			DELETE FROM tmp_Shop_Manufacturing_Purchase_Order t_MPO
-				WHERE t_MPO.rank_order > (
-					SELECT MIN(t_MPO.rank_order)
-                    FROM tmp_Shop_Manufacturing_Purchase_Order t_MPO
-				)
+			DELETE t_MPO
+            FROM tmp_Shop_Manufacturing_Purchase_Order t_MPO
+			WHERE t_MPO.rank_order > (
+				SELECT MIN(t_MPO.rank_order)
+				FROM tmp_Shop_Manufacturing_Purchase_Order t_MPO
+			)
 			;
 		END IF;
     END IF;
@@ -14526,7 +14522,7 @@ insert into shop_product_change_set (comment)
 
 */
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -14826,7 +14822,7 @@ DELETE FROM Shop_Customer
 
 */
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -14976,11 +14972,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_customer_only = 1 THEN
-			DELETE FROM tmp_Shop_Customer t_C
-				WHERE t_C.rank_customer > (
-					SELECT MIN(t_C.rank_customer)
-                    FROM tmp_Shop_Customer t_C
-				)
+			DELETE t_C
+			FROM tmp_Shop_Customer t_C
+			WHERE t_C.rank_customer > (
+				SELECT MIN(t_C.rank_customer)
+				FROM tmp_Shop_Customer t_C
+			)
 			;
 		END IF;
     END IF;
@@ -15096,7 +15093,7 @@ FROM Shop_Customer;
 
 */
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -15302,7 +15299,8 @@ BEGIN
         INNER JOIN Shop_Product P ON PP.id_product = P.id_product
 		WHERE CSOPL_T.GUID = a_guid
         ;
-        DELETE FROM Shop_Customer_Sales_Order_Product_Link_Temp CSOPL_T
+        DELETE CSOPL_T
+		FROM Shop_Customer_Sales_Order_Product_Link_Temp CSOPL_T
 		WHERE CSOPL_T.GUID = a_guid
         ;
         
@@ -15652,7 +15650,7 @@ DELETE FROM Shop_Customer_Sales_Order;
 */
 
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -15942,11 +15940,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_customer_only THEN
-			DELETE FROM tmp_Shop_Customer t_C
-				WHERE t_C.rank_customer > (
-					SELECT MIN(t_C.rank_customer)
-                    FROM tmp_Shop_Customer t_C
-				)
+			DELETE t_C
+			FROM tmp_Shop_Customer t_C
+			WHERE t_C.rank_customer > (
+				SELECT MIN(t_C.rank_customer)
+				FROM tmp_Shop_Customer t_C
+			)
 			;
 		END IF;
     END IF;
@@ -16228,11 +16227,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_order_only THEN
-			DELETE FROM tmp_Shop_Customer_Sales_Order t_CSO
-				WHERE t_CSO.rank_order > (
-					SELECT MIN(t_CSO.rank_order)
-                    FROM tmp_Shop_Customer_Sales_Order t_CSO
-				)
+			DELETE t_CSO
+			FROM tmp_Shop_Customer_Sales_Order t_CSO
+			WHERE t_CSO.rank_order > (
+				SELECT MIN(t_CSO.rank_order)
+				FROM tmp_Shop_Customer_Sales_Order t_CSO
+			)
 			;
 		END IF;
     END IF;
@@ -16426,7 +16426,7 @@ insert into shop_product_change_set (comment)
     where id_product = 1
 */
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -17003,6 +17003,12 @@ VALUES
 	(1, 3, 3),
 	(1, 4, 3),
 	(1, 5, 3),
+	(1, 6, 3),
+	(1, 7, 3),
+	(1, 8, 3),
+	(1, 9, 3),
+	(1, 10, 3),
+	(1, 11, 3),
 	(2, 1, 1),
 	(2, 2, 1),
 	(2, 3, 1),
@@ -17178,7 +17184,7 @@ CALL p_populate_database();
 -- Remove proc
 DROP PROCEDURE IF EXISTS p_populate_database;
 */
-USE PARTSLTD_PROD;
+
 
 # Product Change Sets
 SELECT * FROM Shop_Product_Change_Set;
@@ -17385,7 +17391,7 @@ SELECT * FROM Shop_Customer_Sales_Order_Product_Link;
 SELECT * FROM Shop_Customer_Sales_Order_Product_Link_Audit;
 
 
-USE PARTSLTD_PROD;
+
 
 
 SELECT TABLE_NAME

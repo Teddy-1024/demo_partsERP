@@ -30,6 +30,8 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
+    KEY_USER: ClassVar[str] = 'authorisedUser' # 'user' already used
+
     id_user = db.Column(db.Integer, primary_key=True)
     id_user_auth0 = db.Column(db.String(255))
     firstname = db.Column(db.String(255))
@@ -43,24 +45,91 @@ class User(db.Model):
     can_admin_store = db.Column(db.Boolean)
     can_admin_user = db.Column(db.Boolean)
 
-    is_user_logged_in: bool = False
+    # is_logged_in: bool
+
+    def __init__(self):
+        self.is_logged_in = False
         
     def make_from_DB_user(query_row):
+        _m = 'User.make_from_DB_user'
         user = User()
         user.id_user = query_row[0]
         user.id_user_auth0 = query_row[1]
         user.firstname = query_row[2]
         user.surname = query_row[3]
         user.email = query_row[4]
-        user.is_email_verified = query_row[5]
-        user.is_super_user = query_row[6]
-        user.id_currency_default = query_row[7]
-        user.id_region_default = query_row[8]
-        user.is_included_VAT_default = query_row[9]
-        user.can_admin_store = query_row[10]
-        user.can_admin_user = query_row[11]
+        user.is_email_verified = av.input_bool(query_row[5], 'is_email_verified', _m)
+        user.id_currency_default = query_row[6]
+        user.id_region_default = query_row[7]
+        user.is_included_VAT_default = av.input_bool(query_row[8], 'is_included_VAT_default', _m)
+        user.is_super_user = av.input_bool(query_row[9], 'is_super_user', _m)
+        user.can_admin_store = av.input_bool(query_row[10], 'can_admin_store', _m)
+        user.can_admin_user = av.input_bool(query_row[11], 'can_admin_user', _m)
         return user
     
+    @staticmethod
+    def from_json(json):
+        _m = 'User.from_json'
+        user = User()
+        if json is None: return user
+        print(f'json: {json}')
+        user.id_user = json['id_user']
+        user.id_user_auth0 = json['id_user_auth0']
+        user.firstname = json['firstname']
+        user.surname = json['surname']
+        user.email = json['email']
+        user.is_email_verified = av.input_bool(json['is_email_verified'], 'is_email_verified', _m)
+        user.is_super_user = av.input_bool(json['is_super_user'], 'is_super_user', _m)
+        user.id_currency_default = json['id_currency_default']
+        user.id_region_default = json['id_region_default']
+        user.is_included_VAT_default = av.input_bool(json['is_included_VAT_default'], 'is_included_VAT_default', _m)
+        user.can_admin_store = av.input_bool(json['can_admin_store'], 'can_admin_store', _m)
+        user.can_admin_user = av.input_bool(json['can_admin_user'], 'can_admin_user', _m)
+        user.is_logged_in = (user.id_user_auth0 is not None)
+        print(f'user: {user}')
+        return user
+    
+    # print(f'user: {user}')
+    @staticmethod
+    def from_json_auth0(json):
+        _m = 'User.from_json_auth0'
+        user = User()
+        if json is None: return user
+        print(f'json: {json}')
+        user_info = json['userinfo']
+        user.id_user = None
+        user.id_user_auth0 = user_info['sub']
+        user.firstname = None
+        user.surname = None
+        user.email = user_info['email']
+        user.is_email_verified = av.input_bool(user_info['email_verified'], 'is_email_verified', _m)
+        user.is_super_user = None
+        user.id_currency_default = None
+        user.id_region_default = None
+        user.is_included_VAT_default = None
+        user.can_admin_store = None
+        user.can_admin_user = None
+        print(f'user: {user}')
+        return user
+    
+    def to_json(self):
+        as_json = {
+            'id_user': self.id_user,
+            'id_user_auth0': self.id_user_auth0,
+            'firstname': self.firstname,
+            'surname': self.surname,
+            'email': self.email,
+            'is_email_verified': self.is_email_verified,
+            'is_super_user': self.is_super_user,
+            'id_currency_default': self.id_currency_default,
+            'id_region_default': self.id_region_default,
+            'is_included_VAT_default': self.is_included_VAT_default,
+            'can_admin_store': self.can_admin_store,
+            'can_admin_user': self.can_admin_user
+        }
+        print(f'as_json: {as_json}')
+        return as_json
+        
     def __repr__(self):
         return f'''
             id_user: {self.id_user}
@@ -82,6 +151,7 @@ class User(db.Model):
         user = User()
         user.id_user = None
         return user
+    
     
 @dataclass
 class User_Filters():
@@ -111,6 +181,17 @@ class User_Filters():
             get_first_user_only = False,
             ids_user = id_user,
             ids_user_auth0 = '',
+        )
+    
+    @staticmethod
+    def from_user(user):
+        av.val_instance(user, 'user', 'User_Filters.from_user', User)
+        return User_Filters(
+            get_all_user = (user.id_user is None and user.id_user_auth0 is None),
+            get_inactive_user = False,
+            get_first_user_only = False,
+            ids_user = user.id_user,
+            ids_user_auth0 = user.id_user_auth0,
         )
     
     @staticmethod

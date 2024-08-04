@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 /*
 
@@ -149,11 +149,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_customer_only = 1 THEN
-			DELETE FROM tmp_Shop_Customer t_C
-				WHERE t_C.rank_customer > (
-					SELECT MIN(t_C.rank_customer)
-                    FROM tmp_Shop_Customer t_C
-				)
+			DELETE t_C
+			FROM tmp_Shop_Customer t_C
+			WHERE t_C.rank_customer > (
+				SELECT MIN(t_C.rank_customer)
+				FROM tmp_Shop_Customer t_C
+			)
 			;
 		END IF;
     END IF;

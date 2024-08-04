@@ -1,7 +1,7 @@
 
 # Shop Category
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Category;
 DROP TRIGGER IF EXISTS before_update_Shop_Category;

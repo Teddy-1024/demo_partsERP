@@ -1,0 +1,26 @@
+<!-- v2a -->
+
+{% extends 'layout.html' %}
+
+{% block page_body %}
+    <!-- Include Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+
+    <!-- HTML content -->
+    <div>
+        <h2 style="font-size: 24px; color: white; font-weight: normal;">Welcome, {{ user.firstname }}</h2>
+        {% set block_id = 'button_get_in_touch' %}
+        {% include '_shared.html' %}
+    </div>
+    
+    <!-- Include JavaScript -->
+    <script src="{{ url_for('static', filename='js/user.js') }}"></script>
+    
+    <script>
+        var hashPageCurrent = "{{ model.HASH_PAGE_USER_ACCOUNT }}";
+
+        $(document).ready(function() {
+            hookupPageUserAccount();
+        });
+    </script>
+{% endblock %}

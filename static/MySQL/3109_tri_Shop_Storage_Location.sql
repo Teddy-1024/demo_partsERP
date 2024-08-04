@@ -1,7 +1,7 @@
 
 # Shop Storage Location
 
-USE PARTSLTD_PROD;
+
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Storage_Location;
 DROP TRIGGER IF EXISTS before_update_Shop_Storage_Location;

@@ -1,7 +1,7 @@
 
 # Stock Stock Item Temp
 
-USE PARTSLTD_PROD;
+
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Stock_Item_Temp';
 

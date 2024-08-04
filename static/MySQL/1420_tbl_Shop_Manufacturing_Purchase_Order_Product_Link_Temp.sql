@@ -1,7 +1,7 @@
 
 # Manufacturing Purchase Order Product Link Temp
 
-USE PARTSLTD_PROD;
+
 
 -- DROP TABLE Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
 -- SELECT * FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp;

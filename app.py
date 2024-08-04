@@ -22,11 +22,14 @@ from forms import Form_Contact, Form_Supplier, Form_Filters_Permutation, Form_Fi
 from models.model_view_base import Model_View_Base
 from models.model_view_home import Model_View_Home
 from models.model_view_contact import Model_View_Contact
+from models.model_view_services import Model_View_Services
 from models.model_view_store_stock_item import Model_View_Store_Stock_Item
 from models.model_view_supplier import Model_View_Supplier
 from models.model_view_store_permutation import Model_View_Store_Permutation
+from models.model_view_user import Model_View_User
 from business_objects.product import Product, Product_Filters, Product_Permutation # , Product_Image_Filters, Resolution_Level_Enum
 from business_objects.stock_item import Stock_Item, Stock_Item_Filters
+from business_objects.user import User, User_Filters
 from datastores.datastore_store import DataStore_Store
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
@@ -43,7 +46,9 @@ import os
 import sys
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
+from authlib.integrations.base_client import OAuthError
 import jwt
+from urllib.parse import quote, urlparse, parse_qs
 
 
 # VARIABLE INSTANTIATION
@@ -131,8 +136,11 @@ oauth.register(
     client_secret = app.ID_AUTH0_CLIENT_SECRET, # =env.get("AUTH0_CLIENT_SECRET"),
     client_kwargs={
         "scope": "openid profile email",
-    }
-    # server_metadata_url=f'https://{app.DOMAIN_AUTH0}/.well-known/openid-configuration'
+    },
+    server_metadata_url=f'https://{app.DOMAIN_AUTH0}/.well-known/openid-configuration',
+    api_base_url = f'https://{app.DOMAIN_AUTH0}',
+    authorize_url = f'https://{app.DOMAIN_AUTH0}/authorize',
+    access_token_url = f'https://{app.DOMAIN_AUTH0}/oauth/token',
 )
 # session[app.ID_TOKEN_USER] = {'userinfo': {'sub': ''}}
 
@@ -179,7 +187,7 @@ def home():
         print('nips')
         html_body = render_template('_page_home.html', model = model)
     except Exception as e:
-        return str(e)
+        return jsonify(error=str(e)), 403
     return html_body
     
 @app.route('/contact', methods=['GET'])
@@ -216,11 +224,12 @@ def contact_post():
 # @app.route('/public_html/services', methods=['GET', 'POST'])
 def services():
     try:
-        model = Model_View_Home(app, db)
+        model = Model_View_Services(app, db)
         html_body =  render_template('_page_services.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403
     return html_body
+
 
 # shop management
 @app.route('/supplier', methods=['GET'])
@@ -369,24 +378,52 @@ def stock_save():
 
 
 # User authentication
-@app.route("/login")
+@app.route("/login", methods=['POST'])
 def login():
     try:
         data = request.json
     except:
         data = {}
-    callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}/{data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
-    uri_redirect = url_for(callback_login, _external=True)
+    print(f'data={data}')
+    # callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}{data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
+    
+    # encoded_path = quote(data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME))
+    uri_redirect = url_for('login_callback', _external=True) # , subpath=encoded_path
+    
+    # uri_redirect = f'{app.URL_HOST}/login_callback?subpath={data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
     print(f'redirect uri: {uri_redirect}')
-    return oauth.auth0.authorize_redirect(
-        redirect_uri = uri_redirect
+    hash_callback = data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME)
+    print(f'hash_callback: {hash_callback}')
+
+    red = oauth.auth0.authorize_redirect(
+        redirect_uri = uri_redirect,
+        state = quote(hash_callback)
     )
+    print(f'redirect: {red}')
+    headers = red.headers['Location']
+    print(f'headers: {headers}')
+    parsed_url = urlparse(headers)
+    query_params = parse_qs(parsed_url.query)
+    print(f"""
+    OAuth Authorize Redirect URL:
+    
+    Base URL: {parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}
+    {parsed_url}
+    
+    Query Parameters: {query_params}
+    """)
+    return jsonify({'Success': True, 'status': 'success', f'{Model_View_Base.KEY_CALLBACK}': headers})
 
-@app.route("/login_callback/<path:subpath>")
-def login_callback(subpath):
-    token = oauth.auth0.authorize_access_token()
+@app.route("/login_callback") # <path:subpath>/<code>
+def login_callback():
+    # print(f'code: {code}')
+    token = None
+    try:
+        token = oauth.auth0.authorize_access_token()
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error: {str(e)}")
     session[app.ID_TOKEN_USER] = token
-
     # import user id
     print(f'str(type(token)) = {str(type(token))}')
     print(f'token = {token}')
@@ -396,11 +433,37 @@ def login_callback(subpath):
     id_user = userinfo.get('sub')
     print(f'user ID: {id_user}')
 
+    datastore_store = DataStore_Store(app, db)
+    user = datastore_store.get_user_auth0()
+    user_filters = User_Filters.from_user(user)
+    users, errors = datastore_store.get_many_user(user_filters, user)
+    try:
+        user = users[0]
+        print('User logged in')
+        print(f'user ({str(type(user))}): {user}')
+        print(f'user key: {Model_View_Base.KEY_USER}')
+        user_json = user.to_json()
+        session[Model_View_Base.KEY_USER] = user_json
+        print(f'user stored on session')
+    except:
+        print(f'User not found: {user_filters}')
+    
+    try:
+        hash_callback = token.get('hash_callback')
+        if hash_callback is None:
+            print('hash is none')
+            state = request.args.get('state')
+            print(f'state: {state}')
+            hash_callback = state # .get('hash_callback')
+        print(f'hash_callback: {hash_callback}')
+    except:
+        print("get hash callback failed")
     # id_user = get_id_user()
     # add user to database
     # DataStore_Store(db, userinfo).add_new_user(id_user) # this is part of get basket - should occur on page load
 
-    return redirect(subpath)
+    print(f'user session: {session[Model_View_Base.KEY_USER]}')
+    return redirect(f'{app.URL_HOST}{hash_callback}')
 
 @app.route("/logout")
 def logout():
@@ -416,6 +479,16 @@ def logout():
             quote_via=quote_plus,
         )
     )
+
+
+@app.route("/user")
+def user():
+    try:
+        model = Model_View_User(app, db)
+        html_body = render_template('_page_user.html', model = model)
+    except Exception as e:
+        return str(e)
+    return html_body
 
 
 # snore

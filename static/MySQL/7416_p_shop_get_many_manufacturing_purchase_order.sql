@@ -1,5 +1,5 @@
 
-USE PARTSLTD_PROD;
+
 
 
 -- Clear previous proc
@@ -477,11 +477,12 @@ BEGIN
         DROP TABLE Split_Temp;
 		
 		IF a_get_first_order_only THEN
-			DELETE FROM tmp_Shop_Manufacturing_Purchase_Order t_MPO
-				WHERE t_MPO.rank_order > (
-					SELECT MIN(t_MPO.rank_order)
-                    FROM tmp_Shop_Manufacturing_Purchase_Order t_MPO
-				)
+			DELETE t_MPO
+            FROM tmp_Shop_Manufacturing_Purchase_Order t_MPO
+			WHERE t_MPO.rank_order > (
+				SELECT MIN(t_MPO.rank_order)
+				FROM tmp_Shop_Manufacturing_Purchase_Order t_MPO
+			)
 			;
 		END IF;
     END IF;
