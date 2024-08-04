@@ -545,6 +545,7 @@ VALUES
 	(1, 'HOME', 'Home Page', 2, 1),
 	(2, 'STORE_PRODUCT', 'Store Product Page', 3, 1),
 	(3, 'STORE_USER', 'Store User Account Page', 4, 2),
+    (10, 'STORE_USER_ADMIN', 'Store User Admin Page', 4, 3),
 	(4, 'STORE_ADMIN', 'Store Admin Page', 1, 3),
     (5, 'STORE_SUPPLIER', 'Store Supplier Page', 4, 2),
     (6, 'STORE_SUPPLIER_PURCHASE_ORDER', 'Store Supplier Purchase Order Page', 4, 2),
@@ -584,15 +585,16 @@ VALUES
 
 # Users
 INSERT INTO Shop_User (
-	id_user,
-	name,
-	email,
-	# email_verified,
-	is_super_user
+	id_user_auth0
+	, firstname
+    , surname
+	, email
+	# email_verified
+	, is_super_user
 )
 VALUES 
-	('auth0|6582b95c895d09a70ba10fef', 'Teddy', 'edward.middletonsmith@gmail.com', 1),
-	('parts_guest', 'Guest', '', 0)
+	('auth0|6582b95c895d09a70ba10fef', 'Teddy', 'Middleton-Smith', 'edward.middletonsmith@gmail.com', 1),
+	('parts_guest', 'Guest', '', '', 0)
 ;
 
 # User Role link
@@ -600,14 +602,14 @@ INSERT INTO Shop_User_Role_Link (
 	id_user, id_role
 )
 VALUES 
-	('auth0|6582b95c895d09a70ba10fef', 1)
+	(1, 1)
 ;
 
 # Addresses
 INSERT INTO Shop_Address (
 	id_user, id_region, name_full, phone_number, postcode, address_line_1, address_line_2, city, county
 )
-SELECT U.id_user, 1, U.name, '07375 571430', 'CV22 6DN', '53 Alfred Green Close', '', 'Rugby', 'Warwickshire'
+SELECT U.id_user, 1, CONCAT(U.firstname, ' ', U.surname), '07375 571430', 'CV22 6DN', '53 Alfred Green Close', '', 'Rugby', 'Warwickshire'
 	FROM Shop_User U
 ;
 
@@ -619,7 +621,7 @@ INSERT INTO Shop_User_Basket (
 	quantity
 )
 VALUES
-	('auth0|6582b95c895d09a70ba10fef', 1, 1, 69)
+	(1, 1, 1, 69)
 ;
 
 # User Order Status
@@ -637,8 +639,8 @@ INSERT INTO Shop_User_Order (
 	id_user, value_total, id_order_status, id_checkout_session, id_currency
 )
 VALUES
-	('auth0|6582b95c895d09a70ba10fef', 25, 1, 'noods', 1),
-	('auth0|6582b95c895d09a70ba10fef', 25, 1, 'noods', 1)
+	(1, 25, 1, 'noods', 1),
+	(1, 25, 1, 'noods', 1)
 ;
 
 # User Order Product Link

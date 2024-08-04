@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS tmp_Msg_Error;
 DELIMITER //
 CREATE PROCEDURE p_shop_save_supplier_purchase_order (
 	IN a_guid VARCHAR(500),
-    IN a_id_user VARCHAR(200),
+    IN a_id_user INT,
     IN a_comment VARCHAR(500),
     IN a_id_order INT,
     IN a_id_supplier_ordered INT,
@@ -23,7 +23,7 @@ BEGIN
     DECLARE v_code_error_type_bad_data VARCHAR(50);
     DECLARE v_id_error_type_no_permission INT;
     DECLARE v_code_error_type_no_permission VARCHAR(50);
-    DECLARE v_guid_permission VARCHAR(36);
+    DECLARE v_guid_permission BINARY(36);
     -- DECLARE v_id_user VARCHAR(100);
     DECLARE v_id_permission_supplier_purchase_order INT;
 	DECLARE v_id_access_level_EDIT INT;
@@ -95,7 +95,7 @@ BEGIN
     
 	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
 		CONSTRAINT FK_tmp_Msg_Error_id_type 
 			FOREIGN KEY (id_type)

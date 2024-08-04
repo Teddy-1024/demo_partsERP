@@ -31,22 +31,11 @@ BEGIN
     DECLARE v_i_end INT;
     DECLARE v_current_item VARCHAR(4000);
     
+    
 	-- Argument validation + default values
-	IF a_string IS NULL THEN
-		SET a_string = '';
-	ELSE
-		SET a_string = TRIM(a_string);
-    END IF;
-	IF a_separator IS NULL THEN
-		SET a_separator = '';
-	ELSE
-		SET a_separator = TRIM(a_separator);
-    END IF;
-    /*
-	IF a_allow_empty IS NULL THEN
-		SET a_allow_empty = 0;
-    END IF;
-    */
+    SET a_string := IFNULL(a_string, '');
+    SET a_separator := IFNULL(a_separator, '');
+    
     
     -- Temporary tables
     DROP TABLE IF EXISTS Split_Temp;
@@ -61,7 +50,7 @@ BEGIN
     SET v_has_string = CASE WHEN a_string = '' THEN 0 ELSE 1 END;
     SET v_has_separator = CASE WHEN a_separator = '' THEN 0 ELSE 1 END;
     
-    IF (v_has_string AND v_has_separator) THEN
+    IF v_has_string THEN
 
 		SET v_i_start = 1;
 		SET v_i_end = LOCATE(',', a_string);

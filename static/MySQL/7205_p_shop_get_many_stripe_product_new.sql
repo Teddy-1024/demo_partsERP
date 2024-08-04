@@ -16,13 +16,13 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_stripe_product_new;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_stripe_product_new (
-	IN a_id_user VARCHAR(200)
+	IN a_id_user INT
 )
 BEGIN
     DECLARE v_has_filter_user BIT;
     DECLARE v_code_error_data VARCHAR(200);
     DECLARE v_code_error_permission VARCHAR(200);
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     
     SET v_code_error_data := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 1);
     SET v_code_error_permission := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 2);
@@ -42,7 +42,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     
     CREATE TABLE tmp_Shop_User(
-		id_user VARCHAR(200) NOT NULL PRIMARY KEY,
+		id_user INT NOT NULL PRIMARY KEY,
         CONSTRAINT FK_tmp_Shop_User_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User(id_user),
@@ -67,7 +67,7 @@ BEGIN
     
     CREATE TABLE IF NOT EXISTS tmp_Msg_Error ( # IF NOT EXISTS 
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		code VARCHAR(50) NOT NULL,
         # CONSTRAINT chk_tmp_Msg_Error_code CHECK (code IN (SELECT code FROM Shop_Msg_Error_Type)),
 		/*

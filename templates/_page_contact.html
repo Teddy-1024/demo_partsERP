@@ -30,42 +30,42 @@
             </div>
             <button type="submit" id="submit_form_email">Submit request</button>
             -->
-            {{ model.form.hidden_tag() }}
+            {{ model.form_contact.hidden_tag() }}
             <div class="container-input">
-                {{ model.form.email.label }}
-                {{ model.form.email(size=254) }}
-                {% for error in model.form.email.errors %}
+                {{ model.form_contact.email.label }}
+                {{ model.form_contact.email(size=254) }}
+                {% for error in model.form_contact.email.errors %}
                     <p class="error">{{ error }}</p>
                 {% endfor %}
             </div>
             <!--
             <div class="container-input">
-                {{ model.form.CC.label }}
-                {{ model.form.CC(checked=True) }}
-                {% for error in model.form.name.errors %}
+                {{ model.form_contact.CC.label }}
+                {{ model.form_contact.CC(checked=True) }}
+                {% for error in model.form_contact.name.errors %}
                     <p class="error">{{ error }}</p>
                 {% endfor %}
             </div>
             -->
             <div class="container-input">
-                {{ model.form.name.label }}
-                {{ model.form.name(size=50) }}
-                {% for error in model.form.name.errors %}
+                {{ model.form_contact.name.label }}
+                {{ model.form_contact.name(size=50) }}
+                {% for error in model.form_contact.name.errors %}
                     <p class="error">{{ error }}</p>
                 {% endfor %}
             </div>
             <div class="container-input">
-                {{ model.form.message.label }}
-                {{ model.form.message(rows=4, cols=80) }}
-                {% for error in model.form.name.errors %}
+                {{ model.form_contact.message.label }}
+                {{ model.form_contact.message(rows=4, cols=80) }}
+                {% for error in model.form_contact.name.errors %}
                     <p class="error">{{ error }}</p>
                 {% endfor %}
             </div>
             <div class="container-input">
-                {{ model.form.recaptcha() }}
+                {{ model.form_contact.recaptcha() }}
             </div>
             <div class="container-input">
-                {{ model.form.submit() }}
+                {{ model.form_contact.submit() }}
             </div>
         </form>
     </div>

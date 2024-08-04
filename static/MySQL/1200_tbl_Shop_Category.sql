@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Shop_Category (
 	description VARCHAR(4000),
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on DATETIME,
+	created_on TIMESTAMP,
 	created_by VARCHAR(100),
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Category_id_change_set

@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link (
     latency_delivery_days INT NOT NULL,
 	display_order INT NOT NULL,
     active BIT NOT NULL,
-	created_on DATETIME,
+	created_on TIMESTAMP,
 	created_by VARCHAR(100),
-	updated_last_on DATETIME NULL,
+	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Supplier_Purchase_Order_Product_Link_id_change_set

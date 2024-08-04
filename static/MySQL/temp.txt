@@ -40,6 +40,7 @@
 1201_tbl_Shop_Category_Audit.sql
 1203_tbl_Shop_Product.sql
 1204_tbl_Shop_Product_Audit.sql
+1205_tbl_Shop_Product_Temp.sql
 1206_tbl_Shop_Product_Permutation.sql
 1207_tbl_Shop_Product_Permutation_Audit.sql
 1208_tbl_Shop_Product_Permutation_Temp.sql
@@ -160,6 +161,7 @@
 7219_p_shop_get_many_stock_item.sql
 7223_p_shop_get_many_stripe_price_new.sql
 7312_p_shop_save_user.sql
+7313_p_get_many_user.sql
 7321_p_shop_save_user_basket.sql
 7400_p_shop_save_supplier.sql
 7401_p_shop_get_many_supplier.sql

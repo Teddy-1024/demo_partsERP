@@ -7,7 +7,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 
 CREATE TABLE Shop_Address (
     id_address INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    id_user VARCHAR(200) NOT NULL,
+    id_user INT NOT NULL,
     CONSTRAINT FK_Shop_Address_id_user
 		FOREIGN KEY (id_user)
         REFERENCES Shop_User(id_user)
@@ -22,7 +22,7 @@ CREATE TABLE Shop_Address (
     city VARCHAR(50) NOT NULL,
     county VARCHAR(100) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
-    created_on DATETIME,
+    created_on TIMESTAMP,
     created_by VARCHAR(100),
     id_change_set INT,
     CONSTRAINT FK_Shop_Address_id_change_set

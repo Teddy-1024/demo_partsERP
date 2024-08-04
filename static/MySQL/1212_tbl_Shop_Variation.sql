@@ -16,7 +16,7 @@ CREATE TABLE Shop_Variation (
 	name VARCHAR(255),
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on DATETIME,
+	created_on TIMESTAMP,
 	created_by VARCHAR(100),
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Variation_id_change_set

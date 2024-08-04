@@ -7,7 +7,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 
 CREATE TABLE IF NOT EXISTS Shop_User_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    id_user VARCHAR(200) NOT NULL,
+    id_user INT NOT NULL,
     CONSTRAINT FK_Shop_User_Audit_id_user
 		FOREIGN KEY (id_user)
         REFERENCES Shop_User(id_user)

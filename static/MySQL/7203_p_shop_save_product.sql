@@ -4,15 +4,22 @@ USE PARTSLTD_PROD;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_save_product;
+DROP PROCEDURE IF EXISTS p_shop_save_product;
 
 
 DELIMITER //
-CREATE PROCEDURE p_save_product (
+CREATE PROCEDURE p_shop_save_product (
 	IN a_guid BINARY(36),
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
 	IN a_comment VARCHAR(500)
 )
 BEGIN
+	DECLARE v_code_type_error_bad_data VARCHAR(100);
+    DECLARE v_id_type_error_bad_data INT;
+    DECLARE v_id_permission_product INT;
+    DECLARE v_ids_product_permission LONGTEXT;
+    DECLARE v_id_change_set INT;
+    
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
         -- Get diagnostic information
@@ -40,13 +47,9 @@ BEGIN
             , @text
 		;
     END;
-	DECLARE v_code_type_error_bad_data VARCHAR(100);
-    DECLARE v_id_type_error_bad_data INT;
-    DECLARE v_ids_product_permission LONGTEXT;
     
     SET v_code_type_error_bad_data := 'BAD_DATA';
     SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_now := NOW();
     
     SET a_guid := IFNULL(a_guid, UUID());
     
@@ -165,23 +168,21 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN -- (SELECT * FROM tmp_Product WHERE is_new = 0 LIMIT 1) THEN
         SET v_ids_product_permission := (SELECT GROUP_CONCAT(item SEPARATOR ',') FROM tmp_Shop_Product WHERE is_new = 0);
         IF NOT ISNULL(v_ids_product_permission) THEN
-			SET v_guid_permission = UUID();
-			SET v_id_user = CURRENT_USER();
 			SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
 			
-			CALL p_shop_user_eval(v_guid_permission, v_id_user, v_id_permission_product, v_ids_product_permission);
+			CALL p_shop_user_eval(a_guid, a_id_user, v_id_permission_product, v_ids_product_permission);
 			
 			UPDATE tmp_Product t_P
 			INNER JOIN Shop_User_Eval_Temp UE_T
 				ON t_P.id_product = UE_T.id_product
-				AND UE_T.GUID = v_guid_permission
+				AND UE_T.GUID = a_guid
 			SET 
 				t_P.can_view = UE_T.can_view
 				, t_P.can_edit = UE_T.can_edit
 				, t_P.can_admin = UE_T.can_admin
 			;
 			
-			CALL p_shop_user_eval_clear_temp(v_guid_permission);
+			CALL p_shop_user_eval_clear_temp(a_guid);
 		END IF;
     END IF;
     

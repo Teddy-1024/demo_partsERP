@@ -137,3 +137,8 @@ class Form_Filters_Stock_Item(FlaskForm):
     quantity_min = FloatField('Min stock')
     quantity_max = FloatField('Max stock')
     # submit = SubmitField('Submit')
+
+
+class Form_Filters_User(FlaskForm):
+    active_only = BooleanField('Active only?')
+    id_user = SelectField('User ID', validators=[Optional()], choices=[])

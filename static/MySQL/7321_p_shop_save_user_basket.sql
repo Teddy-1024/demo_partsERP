@@ -23,7 +23,7 @@ DROP PROCEDURE IF EXISTS p_shop_edit_user_basket;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_edit_user_basket (
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
 	IN a_ids_permutation_basket VARCHAR(4000),
 	IN a_quantities_permutation_basket VARCHAR(4000),
 	IN a_id_permutation_edit INT,
@@ -43,11 +43,11 @@ BEGIN
     DECLARE v_n_id_permutation_basket INT;
     DECLARE v_n_quantity_permutation_basket INT;
     DECLARE v_row_number INT;
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     # DECLARE v_id_user VARCHAR(100);
     DECLARE v_id_permission_product INT;
     DECLARE v_ids_permutation_permission VARCHAR(4000);
-    DECLARE v_now DATETIME;
+    DECLARE v_now TIMESTAMP;
     # DECLARE v_quantity_new INT;
     DECLARE v_change_set_used BIT;
     DECLARE v_id_change_set INT;
@@ -82,7 +82,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     
     CREATE TABLE tmp_Shop_User (
-		id_user VARCHAR(200) NOT NULL,
+		id_user INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_User_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User(id_user),
@@ -139,7 +139,7 @@ BEGIN
     
     CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
         # code VARCHAR(50) NOT NULL,
         # CONSTRAINT chk_tmp_Msg_Error_code CHECK (code IN (SELECT code FROM Shop_Msg_Error_Type)),

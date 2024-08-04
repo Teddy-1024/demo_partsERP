@@ -4952,7 +4952,7 @@ UNLOCK TABLES;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_edit_user`(
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
     IN a_name VARCHAR(255),
 	IN a_email VARCHAR(254),
     IN a_email_verified BIT
@@ -4961,7 +4961,7 @@ BEGIN
 	-- Argument redeclaration
 	-- Variable declaration
     DECLARE v_has_filter_user BIT;
-    -- DECLARE v_now DATETIME;
+    -- DECLARE v_now TIMESTAMP;
     
     
 	-- Argument validation + default values
@@ -4989,7 +4989,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     
     CREATE TABLE tmp_Shop_User (
-		id_user VARCHAR(200) NOT NULL,
+		id_user INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_User_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User(id_user),
@@ -5113,7 +5113,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_edit_user_basket`(
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
 	IN a_ids_permutation_basket VARCHAR(4000),
 	IN a_quantities_permutation_basket VARCHAR(4000),
 	IN a_id_permutation_edit INT,
@@ -5133,11 +5133,11 @@ BEGIN
     DECLARE v_n_id_permutation_basket INT;
     DECLARE v_n_quantity_permutation_basket INT;
     DECLARE v_row_number INT;
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     # DECLARE v_id_user VARCHAR(100);
     DECLARE v_id_permission_product INT;
     DECLARE v_ids_permutation_permission VARCHAR(4000);
-    DECLARE v_now DATETIME;
+    DECLARE v_now TIMESTAMP;
     # DECLARE v_quantity_new INT;
     DECLARE v_change_set_used BIT;
     DECLARE v_id_change_set INT;
@@ -5172,7 +5172,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     
     CREATE TABLE tmp_Shop_User (
-		id_user VARCHAR(200) NOT NULL,
+		id_user INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_User_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User(id_user),
@@ -5229,7 +5229,7 @@ BEGIN
     
     CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
         # code VARCHAR(50) NOT NULL,
         # CONSTRAINT chk_tmp_Msg_Error_code CHECK (code IN (SELECT code FROM Shop_Msg_Error_Type)),
@@ -5914,7 +5914,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_product`(
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
     IN a_get_all_category BIT,
 	IN a_ids_category VARCHAR(500),
 	IN a_get_inactive_category BIT,
@@ -5949,14 +5949,14 @@ BEGIN
     DECLARE v_has_filter_delivery_region BIT;
     DECLARE v_has_filter_currency BIT;
     DECLARE v_has_filter_discount BIT;
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     # DECLARE v_id_user VARCHAR(100);
     DECLARE v_ids_permutation_unavailable VARCHAR(4000);
     DECLARE v_id_permission_product INT;
     DECLARE v_ids_product_permission VARCHAR(4000);
     DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    DECLARE v_now DATETIME;
+    DECLARE v_now TIMESTAMP;
     DECLARE v_id_minimum INT;
     
     SET v_guid := UUID();
@@ -6184,7 +6184,7 @@ BEGIN
     
     CREATE TABLE IF NOT EXISTS tmp_Msg_Error ( # IF NOT EXISTS 
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		# code VARCHAR(50) NOT NULL,
         # CONSTRAINT chk_tmp_Msg_Error_code CHECK (code IN (SELECT code FROM Shop_Msg_Error_Type)),
 		id_type INT NOT NULL,
@@ -7027,13 +7027,13 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_stripe_price_new`(
-	IN a_id_user VARCHAR(200)
+	IN a_id_user INT
 )
 BEGIN
     DECLARE v_has_filter_user BIT;
     DECLARE v_code_error_data VARCHAR(200);
     DECLARE v_code_error_permission VARCHAR(200);
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     
     SET v_code_error_data := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 1);
     SET v_code_error_permission := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 2);
@@ -7054,7 +7054,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     
     CREATE TABLE tmp_Shop_User(
-		id_user VARCHAR(200) NOT NULL PRIMARY KEY,
+		id_user INT NOT NULL PRIMARY KEY,
         CONSTRAINT FK_tmp_Shop_User_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User(id_user),
@@ -7083,7 +7083,7 @@ BEGIN
     
     CREATE TABLE IF NOT EXISTS tmp_Msg_Error ( # IF NOT EXISTS 
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		code VARCHAR(50) NOT NULL,
         # CONSTRAINT chk_tmp_Msg_Error_code CHECK (code IN (SELECT code FROM Shop_Msg_Error_Type)),
 		/*
@@ -7255,13 +7255,13 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_stripe_product_new`(
-	IN a_id_user VARCHAR(200)
+	IN a_id_user INT
 )
 BEGIN
     DECLARE v_has_filter_user BIT;
     DECLARE v_code_error_data VARCHAR(200);
     DECLARE v_code_error_permission VARCHAR(200);
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     
     SET v_code_error_data := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 1);
     SET v_code_error_permission := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 2);
@@ -7281,7 +7281,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     
     CREATE TABLE tmp_Shop_User(
-		id_user VARCHAR(200) NOT NULL PRIMARY KEY,
+		id_user INT NOT NULL PRIMARY KEY,
         CONSTRAINT FK_tmp_Shop_User_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User(id_user),
@@ -7306,7 +7306,7 @@ BEGIN
     
     CREATE TABLE IF NOT EXISTS tmp_Msg_Error ( # IF NOT EXISTS 
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		code VARCHAR(50) NOT NULL,
         # CONSTRAINT chk_tmp_Msg_Error_code CHECK (code IN (SELECT code FROM Shop_Msg_Error_Type)),
 		/*
@@ -7532,7 +7532,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_user_order`(
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
     IN a_ids_order VARCHAR(4000),
     IN a_n_order_max INT,
 	IN a_id_checkout_session VARCHAR(200)
@@ -7545,7 +7545,7 @@ BEGIN
     DECLARE v_has_filter_session BIT;
     DECLARE v_code_error_data VARCHAR(200);
     DECLARE v_code_error_permission VARCHAR(200);
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     
     SET v_code_error_data := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 1);
     SET v_code_error_permission := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 2);
@@ -7578,7 +7578,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Order;
     
     CREATE TABLE tmp_Shop_User(
-		id_user VARCHAR(200) NOT NULL PRIMARY KEY,
+		id_user INT NOT NULL PRIMARY KEY,
         CONSTRAINT FK_tmp_Shop_User_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User(id_user),
@@ -7595,7 +7595,7 @@ BEGIN
     
 	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		# id_type INT NOT NULL,
 		# CONSTRAINT FK_tmp_Msg_Error_id_type FOREIGN KEY (id_type)
 		# 	REFERENCES Shop_Msg_Error_Type (id_type),
@@ -7784,8 +7784,8 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_user_eval`(
-	IN a_guid VARCHAR(36),
-    IN a_id_user VARCHAR(200),
+	IN a_guid BINARY(36),
+    IN a_id_user INT,
     IN a_get_inactive_users BIT,
     IN a_ids_permission VARCHAR(500),
     IN a_ids_access_level VARCHAR(100),
@@ -7807,7 +7807,7 @@ BEGIN
     DECLARE v_priority_access_level_admin INT;
     DECLARE v_id_access_level INT;
     DECLARE v_priority_access_level INT;
-    DECLARE v_now DATETIME;
+    DECLARE v_now TIMESTAMP;
 	DECLARE v_ids_row_delete VARCHAR(500);
     DECLARE v_code_error_data VARCHAR(200);
     DECLARE v_id_error_data INT;
@@ -7863,8 +7863,8 @@ BEGIN
     -- Permanent Table
 	CREATE TABLE IF NOT EXISTS Shop_User_Eval_Temp (
 		id_row INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-		guid VARCHAR(36) NOT NULL,
-		id_user VARCHAR(200),
+		guid BINARY(36) NOT NULL,
+		id_user INT,
 		id_permission_required INT NOT NULL,
 		CONSTRAINT FK_Shop_User_Eval_Temp_id_permission_required
 			FOREIGN KEY (id_permission_required)
@@ -7912,13 +7912,13 @@ BEGIN
 		id_access_level_required INT NOT NULL,
 		CONSTRAINT FK_tmp_Shop_Product_p_Shop_User_Eval_id_access_level_required FOREIGN KEY (id_access_level_required)
 			REFERENCES Shop_Access_Level (id_access_level),
-		guid VARCHAR(36) NOT NULL,
+		guid BINARY(36) NOT NULL,
         rank_permutation INT NOT NULL
 	);
 		
 	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
 		CONSTRAINT FK_tmp_Msg_Error_id_type 
 			FOREIGN KEY (id_type)

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Shop_Recurrence_Interval (
 	name VARCHAR(255),
 	name_plural VARCHAR(256),
     active BIT NOT NULL DEFAULT 1,
-	created_on DATETIME,
+	created_on TIMESTAMP,
 	created_by VARCHAR(100),
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Recurrence_Interval_id_change_set

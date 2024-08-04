@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link (
 		FOREIGN KEY (id_access_level)
         REFERENCES Shop_Access_Level(id_access_level),
     active BIT NOT NULL DEFAULT 1,
-    created_on DATETIME,
+    created_on TIMESTAMP,
     created_by VARCHAR(100),
     id_change_set INT,
     CONSTRAINT FK_Shop_Role_Permission_Link_id_change_set

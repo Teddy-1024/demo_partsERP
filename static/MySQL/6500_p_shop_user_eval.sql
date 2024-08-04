@@ -6,7 +6,7 @@ USE PARTSLTD_PROD;
 
 CALL p_shop_user_eval (
 	UUID(), # a_guid
-	'', 	# a_id_user
+	'', 	# a_ids_user
 	0,		# a_get_inactive_users
     '1',	# a_ids_permission
     '',		# a_ids_access_level
@@ -21,8 +21,8 @@ DROP PROCEDURE IF EXISTS p_shop_user_eval;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_user_eval (
-	IN a_guid VARCHAR(36),
-    IN a_id_user VARCHAR(200),
+	IN a_guid BINARY(36),
+    IN a_ids_user LONGTEXT,
     IN a_get_inactive_users BIT,
     IN a_ids_permission VARCHAR(500),
     IN a_ids_access_level VARCHAR(100),
@@ -45,7 +45,7 @@ BEGIN
     DECLARE v_priority_access_level_admin INT;
     DECLARE v_id_access_level INT;
     DECLARE v_priority_access_level INT;
-    DECLARE v_now DATETIME;
+    DECLARE v_now TIMESTAMP;
 	DECLARE v_ids_row_delete VARCHAR(500);
     DECLARE v_code_error_data VARCHAR(200);
     DECLARE v_id_error_data INT;
@@ -64,52 +64,18 @@ BEGIN
     
     
 	-- Parse arguments + get default values
-    /*
-	IF a_guid IS NULL THEN
-		SET a_guid = UUID();
-	END IF;
-    */
-	IF a_id_user IS NULL THEN
-		SET a_id_user = '';
-	ELSE
-		SET a_id_user = TRIM(a_id_user);
-    END IF;
-	IF a_get_inactive_users IS NULL THEN
-		SET a_get_inactive_users = 0;
-    END IF;
-    /*
-	IF a_get_user_permissions IS NULL THEN
-		SET a_get_user_permissions = 0;
-    END IF;
-    */
-	IF a_ids_permission IS NULL THEN
-		SET a_ids_permission = '';
-	ELSE
-		SET a_ids_permission = TRIM(a_ids_permission);
-    END IF;
-	IF a_ids_access_level IS NULL THEN
-		SET a_ids_access_level = '';
-	ELSE
-		SET a_ids_access_level = TRIM(a_ids_access_level);
-    END IF;
-    /*
-    IF a_ids_permutation IS NULL THEN
-		SET a_ids_permutation = '';
-	ELSE
-		SET a_ids_permutation = TRIM(a_ids_permutation);
-    END IF;
-    */
-    IF a_ids_product IS NULL THEN
-		SET a_ids_product = '';
-	ELSE
-		SET a_ids_product = TRIM(a_ids_product);
-    END IF;
+	SET a_guid := IFNULL(a_guid, UUID());
+    SET a_ids_user := TRIM(IFNULL(a_ids_user, ''));
+    SET a_get_inactive_users := IFNULL(a_get_inactive_users, 0);
+    SET a_ids_permission := TRIM(IFNULL(a_ids_permission, ''));
+    SET a_ids_access_level := TRIM(IFNULL(a_ids_access_level, ''));
+    SET a_ids_product := TRIM(IFNULL(a_ids_product, ''));
     
     -- Permanent Table
 	CREATE TABLE IF NOT EXISTS Shop_User_Eval_Temp (
 		id_row INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-		guid VARCHAR(36) NOT NULL,
-		id_user VARCHAR(200),
+		guid BINARY(36) NOT NULL,
+		id_user INT NULL,
 		id_permission_required INT NOT NULL,
 		CONSTRAINT FK_Shop_User_Eval_Temp_id_permission_required
 			FOREIGN KEY (id_permission_required)
@@ -148,30 +114,18 @@ BEGIN
 		can_admin BIT -- DEFAULT 0
 	);
 	
-	CREATE TABLE IF NOT EXISTS tmp_Shop_Product_p_Shop_User_Eval (
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Shop_Product_p_Shop_User_Eval (
 		id_row INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 		id_product INT NOT NULL,
-		CONSTRAINT FK_tmp_Shop_Product_p_Shop_User_Eval_id_product FOREIGN KEY (id_product)
-			REFERENCES Shop_Product (id_product),
-		/*
-		id_permutation INT NOT NULL,
-		CONSTRAINT FK_tmp_Shop_Product_p_Shop_User_Eval_id_permutation FOREIGN KEY (id_permutation)
-			REFERENCES Shop_Product_Permutation (id_permutation),
-		*/
         id_access_level_required INT NOT NULL,
-		CONSTRAINT FK_tmp_Shop_Product_p_Shop_User_Eval_id_access_level_required FOREIGN KEY (id_access_level_required)
-			REFERENCES Shop_Access_Level (id_access_level),
-		guid VARCHAR(36) NOT NULL,
+		guid BINARY(36) NOT NULL,
         rank_product INT NOT NULL
 	);
 		
-	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
-		CONSTRAINT FK_tmp_Msg_Error_id_type 
-			FOREIGN KEY (id_type)
-			REFERENCES Shop_Msg_Error_Type (id_type),
         code VARCHAR(50) NOT NULL,
         msg VARCHAR(4000) NOT NULL
 	);
@@ -194,7 +148,7 @@ BEGIN
 		)
         ;
 	END IF;
-    SET v_has_filter_user = CASE WHEN a_id_user = '' THEN 0 ELSE 1 END;
+    SET v_has_filter_user = CASE WHEN a_ids_user = '' THEN 0 ELSE 1 END;
 	SET a_ids_permission = REPLACE(a_ids_permission, '|', ',');
     SET v_has_filter_permission = CASE WHEN a_ids_permission = '' THEN 0 ELSE 1 END;
 	SET a_ids_access_level = REPLACE(a_ids_access_level, '|', ',');
@@ -441,10 +395,10 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE GUID = a_guid) THEN
 		IF v_has_filter_user = 1 THEN
 			/*
-			SET a_id_user := (SELECT id_user FROM Shop_User WHERE id_user LIKE a_id_user AND active);
-            SET v_has_filter_user = NOT (a_id_user <=> NULL);
+			SET a_ids_user := (SELECT id_user FROM Shop_User WHERE id_user LIKE a_ids_user AND active);
+            SET v_has_filter_user = NOT (a_ids_user <=> NULL);
             */
-            IF ISNULL((SELECT id_user FROM Shop_User WHERE id_user LIKE a_id_user AND active)) THEN -- NOT v_has_filter_user THEN
+            IF ISNULL((SELECT id_user FROM Shop_User WHERE id_user LIKE a_ids_user AND active)) THEN -- NOT v_has_filter_user THEN
                 INSERT INTO tmp_Msg_Error (
 					guid,
                     id_type,
@@ -455,10 +409,10 @@ BEGIN
 					a_guid,
                     (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_error_data LIMIT 1),
 					v_code_error_data, 
-					CONCAT('Invalid user ID: ', IFNULL(a_id_user, 'NULL'))
+					CONCAT('Invalid user ID: ', IFNULL(a_ids_user, 'NULL'))
 				)
 				;
-				SET a_id_user = NULL;
+				SET a_ids_user = NULL;
                 SET v_has_filter_user = 0;
 			ELSE
 				SET v_has_filter_user = 1;
@@ -482,13 +436,20 @@ BEGIN
             */
 		)
 		SELECT a_guid,
-			a_id_user,
+			U.id_user,
 			P.id_permission,
 			AL.priority
 		FROM Shop_Permission P
 		INNER JOIN Shop_Access_Level AL
 			ON P.id_access_level_required = AL.id_access_level
-				AND AL.active
+			AND AL.active
+		CROSS JOIN (
+			SELECT id_user
+            FROM Shop_User U
+            WHERE 1=1
+				AND FIND_IN_SET(U.id_user, a_ids_user) > 0
+                AND U.active
+        ) U 
 		WHERE FIND_IN_SET(P.id_permission, a_ids_permission) > 0
 		;
         
@@ -515,7 +476,7 @@ BEGIN
 				ON t_P.id_access_leveL_required = AL.id_access_level
 					AND AL.active
 			CROSS JOIN Shop_User_Eval_Temp UE_T
-				ON a_id_user = UE_T.id_user
+				ON a_ids_user = UE_T.id_user
 				WHERE a_guid = t_P.guid
 			;
             
@@ -546,7 +507,7 @@ BEGIN
 				ON t_P.id_access_leveL_required = AL.id_access_level
 					AND AL.active
 			CROSS JOIN Shop_User_Eval_Temp UE_T
-				ON a_id_user = UE_T.id_user
+				ON a_ids_user = UE_T.id_user
 				WHERE a_guid = t_P.guid
 			;
             
@@ -598,7 +559,7 @@ BEGIN
 		INNER JOIN Shop_Access_Level AL
 			ON RPL.id_access_level = AL.id_access_level
 				AND AL.active
-		WHERE U.id_user = a_id_user
+		WHERE U.id_user = a_ids_user
 			AND (a_get_inactive_users OR U.active)
 			AND FIND_IN_SET(P.id_permission, a_ids_permission) > 0
 			# AND v_id_permission = P.id_permission
@@ -627,7 +588,7 @@ BEGIN
 				UE_T.can_edit = CASE WHEN U.is_super_user THEN 1 ELSE CASE WHEN NOT ISNULL(AL.priority) AND AL.priority <= v_priority_access_level_edit AND AL.priority <= UE_T.priority_access_level_required THEN 1 ELSE 0 END END,
 				UE_T.can_admin = CASE WHEN U.is_super_user THEN 1 ELSE CASE WHEN NOT ISNULL(AL.priority) AND AL.priority <= v_priority_access_level_admin AND AL.priority <= UE_T.priority_access_level_required THEN 1 ELSE 0 END END
 			WHERE UE_T.guid = a_guid
-				AND UE_T.id_user = a_id_user
+				AND UE_T.id_user = a_ids_user
 				AND RPL.id_permission = UE_T.id_permission_required
 			# GROUP BY UE_T.id_user
 			;
@@ -639,7 +600,7 @@ BEGIN
 				UE_T.can_edit = 0,
 				UE_T.can_admin = 0
 			WHERE UE_T.guid = a_guid
-				AND UE_T.id_user = a_id_user
+				AND UE_T.id_user = a_ids_user
 			# GROUP BY UE_T.id_user
 			;
         END IF;
@@ -680,7 +641,7 @@ select * from shop_product;
 CALL p_shop_user_eval (
 -- '00550ef3-2bfa-11ef-b83e-b42e9986184a',		NULL, 0,	'2',	'1',	'1,2,3,4,5,6');
 	'56c9dfc1-e22f-11ee-aab4-b42e9986184a', # a_guid
-	'', 	# a_id_user # 'auth0|6582b95c895d09a70ba10fef',
+	'', 	# a_ids_user # 'auth0|6582b95c895d09a70ba10fef',
 	false,		# a_get_inactive_users
     '4,5',	# a_ids_permission
     '1',		# a_ids_access_level

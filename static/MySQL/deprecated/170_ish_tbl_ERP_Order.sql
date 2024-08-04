@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS ERP_Order (
 	code VARCHAR(50),
 	name VARCHAR(100),
 	extension VARCHAR(50),
-	created_on DATETIME,
+	created_on TIMESTAMP,
 	created_by VARCHAR(100),
     id_customer INT NOT NULL,
     CONSTRAINT FK_ERP_Order_id_customer

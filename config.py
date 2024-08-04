@@ -59,6 +59,7 @@ class Config:
     # Miscellaneous
     DEBUG = False
     TESTING = False
+    URL_HOST = os.getenv('URL_HOST')
 
 class DevelopmentConfig(Config):
     DEBUG = True

@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Shop_Currency (
     factor_from_GBP FLOAT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on DATETIME,
+    created_on TIMESTAMP,
     created_by VARCHAR(100),
     id_change_set INT,
     CONSTRAINT FK_Shop_Currency_id_change_set

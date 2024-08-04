@@ -20,7 +20,7 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_supplier;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_supplier (
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
     IN a_get_all_supplier BIT,
 	IN a_get_inactive_supplier BIT,
     IN a_get_first_supplier_only BIT,
@@ -30,14 +30,14 @@ BEGIN
 	-- Argument redeclaration
 	-- Variable declaration
     DECLARE v_has_filter_supplier BIT;
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     # DECLARE v_id_user VARCHAR(100);
     # DECLARE v_ids_permutation_unavailable VARCHAR(4000);
     DECLARE v_id_permission_supplier INT;
     # DECLARE v_ids_product_permission VARCHAR(4000);
     # DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    DECLARE v_now DATETIME;
+    DECLARE v_now TIMESTAMP;
     DECLARE v_id_minimum INT;
     DECLARE v_code_error_data VARCHAR(50);
     
@@ -81,7 +81,7 @@ BEGIN
     
 	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
 		CONSTRAINT FK_tmp_Msg_Error_id_type 
 			FOREIGN KEY (id_type)

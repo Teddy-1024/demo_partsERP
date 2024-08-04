@@ -7,7 +7,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 
 CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
     id_link INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    id_user VARCHAR(200) NOT NULL,
+    id_user INT NOT NULL,
     CONSTRAINT FK_Shop_User_Role_Link_id_user
 		FOREIGN KEY (id_user)
         REFERENCES Shop_User(id_user)
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
 		FOREIGN KEY (id_role)
         REFERENCES Shop_Role(id_role),
     active BIT NOT NULL DEFAULT 1,
-    created_on DATETIME,
+    created_on TIMESTAMP,
     created_by VARCHAR(100),
     id_change_set INT,
     CONSTRAINT FK_Shop_User_Role_Link_id_change_set

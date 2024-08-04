@@ -29,6 +29,7 @@ from business_objects.order import Order
 from business_objects.product import Product, Product_Permutation, Price, Product_Filters # Permutation_Variation_Link
 from business_objects.sql_error import SQL_Error
 from business_objects.stock_item import Stock_Item, Stock_Item_Filters
+from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.variation import Variation
 from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
@@ -115,8 +116,8 @@ class DataStore_Store(BaseModel):
         }
         """
         argument_dict = product_filters.to_json()
-        is_user_logged_in, id_user = self.get_login_user()
-        argument_dict['a_id_user'] = 'auth0|6582b95c895d09a70ba10fef' # id_user
+        user = self.get_login_user()
+        argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_product')
         result = self.db_procedure_execute('p_shop_get_many_product', argument_dict)
@@ -536,8 +537,8 @@ class DataStore_Store(BaseModel):
         _m = 'DataStore_Store.get_many_stock_item'
         av.val_instance(stock_item_filters, 'stock_item_filters', _m, Stock_Item_Filters)
         argument_dict = stock_item_filters.to_json()
-        is_user_logged_in, id_user = self.get_login_user()
-        argument_dict['a_id_user'] = 'auth0|6582b95c895d09a70ba10fef' # id_user
+        user = self.get_login_user()
+        argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_stock_item')
         result = self.db_procedure_execute('p_shop_get_many_stock_item', argument_dict)
@@ -886,13 +887,14 @@ class DataStore_Store(BaseModel):
         return id_currency, id_region_delivery, is_included_VAT
 
     def get_login_user(self):
+        user = User.get_default()
         try:
             info_user = self.session[self.app.ID_TOKEN_USER].get('userinfo')
-            is_user_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
-            id_user = info_user['sub'] if self.is_user_logged_in else None
-            return is_user_logged_in, id_user
+            user.is_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
+            user.id_user = info_user['sub'] if self.is_user_logged_in else None
         except:
-            return False, None
+            pass
+        return user
         
     def save_permutations(self, comment, permutations):
         _m = 'DataStore_Store.save_permutations'
@@ -901,11 +903,11 @@ class DataStore_Store(BaseModel):
 
         guid = Helper_DB_MySQL.create_guid()
         now = datetime.now()
-        is_user_logged_in, id_user = self.get_login_user()
+        user = self.get_login_user()
         for permutation in permutations:
             setattr(permutation, 'guid', guid)
             setattr(permutation, 'created_on', now)
-            setattr(permutation, 'created_by', id_user)
+            setattr(permutation, 'created_by', user.id_user)
         
         cursor = self.db.cursor()
         cursor.executemany(
@@ -915,10 +917,69 @@ class DataStore_Store(BaseModel):
         self.db.commit()
         
         argument_dict_list = {
-            'a_id_user': id_user,
+            'a_id_user': user.id_user,
             'a_comment': comment,
             'a_guid': guid
         }
         self.db_procedure_execute('p_shop_save_permutation', argument_dict_list)
         
         cursor.close()
+
+    def get_many_user(self, user_filters):
+        _m = 'DataStore_Store.get_many_user'
+        # av.val_str(user_filters, 'user_filters', _m)
+        # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
+        av.val_instance(user_filters, 'user_filters', _m, User_Filters)
+
+        guid = Helper_DB_MySQL.create_guid()
+        # now = datetime.now()
+        # user = self.get_login_user()
+        
+        """
+        argument_dict_list = {
+            'a_id_user': id_user,
+            'a_comment': comment,
+            'a_guid': guid
+        }
+        """
+        user = self.get_login_user()
+        argument_dict_list = {
+            # 'a_guid': guid
+            'a_id_user': user.id_user
+            , **user_filters.to_json()
+        }
+        # argument_dict_list['a_guid'] = guid
+        result = self.db_procedure_execute('p_get_many_user', argument_dict_list)
+        """
+        query = text(f"SELECT * FROM Shop_User_Eval_Temp UE_T WHERE UE_T.guid = '{guid}'")
+        result = self.db.session.execute(query)
+        """
+        cursor = result.cursor
+        result_set = cursor.fetchall()
+        """
+        user_permission_evals = []
+        for row in result_set:
+            user_permission_eval = User_Permission_Evaluation.make_from_DB_user_eval(row)
+            user_permission_evals.append(user_permission_eval)
+        print(f'user_permission_evals: {user_permission_evals}')
+        """
+        users = []
+        for row in result_set:
+            print(f'row: {row}')
+            user = User.make_from_DB_user(row)
+            users.append(user)
+            print(f'user: {user}')
+        
+        # error_list, cursor = self.get_error_list_from_cursor(cursor)
+        errors = []
+        cursor.nextset()
+        result_set_e = cursor.fetchall()
+        print(f'raw errors: {result_set_e}')
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.make_from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
+            for error in errors:
+                print(f"Error [{error.code}]: {error.msg}")
+
+        DataStore_Store.db_cursor_clear(cursor)
+
+        return users, errors

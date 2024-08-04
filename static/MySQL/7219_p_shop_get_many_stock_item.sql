@@ -8,7 +8,7 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_stock_item;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_stock_item (
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
     IN a_get_all_category BIT,
 	IN a_get_inactive_category BIT,
     IN a_get_first_category_only BIT,
@@ -37,7 +37,7 @@ CREATE PROCEDURE p_shop_get_many_stock_item (
 	IN a_get_inactive_location_storage BIT,
     IN a_get_first_location_storage_only BIT,
     IN a_ids_location_storage TEXT,
-    IN a_date_received_to DATETIME,
+    IN a_date_received_to TIMESTAMP,
 	IN a_get_sealed_stock_item_only BIT,
 	IN a_get_unsealed_stock_item_only BIT,
 	IN a_get_expired_stock_item_only BIT,
@@ -55,15 +55,15 @@ BEGIN
     DECLARE v_has_filter_region_storage BIT;
     DECLARE v_has_filter_plant_storage BIT;
     DECLARE v_has_filter_location_storage BIT;
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     -- DECLARE v_ids_permutation_unavailable LONGTEXT;
     DECLARE v_id_permission_product INT;
     DECLARE v_ids_product_permission LONGTEXT;
     -- DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now DATETIME;
+    -- DECLARE v_now TIMESTAMP;
     -- DECLARE v_id_minimum INT;
-	DECLARE v_now DATETIME;
+	DECLARE v_now TIMESTAMP;
     
     SET v_guid := UUID();
     SET v_id_access_level_view := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'VIEW');
@@ -216,8 +216,8 @@ BEGIN
 			FOREIGN KEY (id_category)
 			REFERENCES Shop_Category(id_category),
 		*/
-		, date_purchased DATETIME NOT NULL
-		, date_received DATETIME NULL
+		, date_purchased TIMESTAMP NOT NULL
+		, date_received TIMESTAMP NULL
 		, id_location_storage INT NOT NULL
         /*
 		CONSTRAINT FK_tmp_Stock_Item_id_location_storage
@@ -233,10 +233,10 @@ BEGIN
 		, cost_local_VAT_incl FLOAT NOT NULL
 		, cost_local_VAT_excl FLOAT NOT NULL
 		, is_sealed BIT NOT NULL DEFAULT 1
-		, date_unsealed DATETIME NULL
-		, date_expiration DATETIME NOT NULL
+		, date_unsealed TIMESTAMP NULL
+		, date_expiration TIMESTAMP NOT NULL
 		, is_consumed BIT NOT NULL DEFAULT 0
-		, date_consumed DATETIME NULL
+		, date_consumed TIMESTAMP NULL
 		, active_stock_item BIT NOT NULL DEFAULT 1
         , active_permutation BIT NOT NULL
         , active_product BIT NOT NULL
@@ -284,7 +284,7 @@ BEGIN
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		id_type INT NOT NULL,
         /*
 		CONSTRAINT FK_tmp_Msg_Error_id_type 
@@ -798,8 +798,9 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
 CALL p_shop_get_many_stock_item (
-	'', # a_id_user
+	0, # a_id_user
     1, # a_get_all_category
 	0, # a_get_inactive_category
 	0, # a_get_first_category_only
@@ -837,7 +838,6 @@ CALL p_shop_get_many_stock_item (
 	0 # a_get_nonconsumed_stock_item_only
 );
 
-/*
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 

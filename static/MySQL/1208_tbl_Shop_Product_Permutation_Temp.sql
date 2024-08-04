@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
 	count_interval_expiration_unsealed INT,
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on DATETIME,
+	created_on TIMESTAMP,
 	created_by VARCHAR(100),
-    guid VARCHAR(36)
+    guid BINARY(36)
 );

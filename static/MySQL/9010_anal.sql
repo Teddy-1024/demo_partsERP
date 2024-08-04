@@ -23,4 +23,5 @@ FROM
     INFORMATION_SCHEMA.TABLES
 WHERE
     TABLE_SCHEMA = 'PARTS'
-    -- AND TABLE_NAME = 'your_table_name';
+    -- AND TABLE_NAME = 'your_table_name'
+;

@@ -19,7 +19,7 @@ DROP PROCEDURE IF EXISTS p_shop_edit_user;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_edit_user (
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
     IN a_name VARCHAR(255),
 	IN a_email VARCHAR(254),
     IN a_email_verified BIT
@@ -28,7 +28,7 @@ BEGIN
 	-- Argument redeclaration
 	-- Variable declaration
     DECLARE v_has_filter_user BIT;
-    -- DECLARE v_now DATETIME;
+    -- DECLARE v_now TIMESTAMP;
     
     
 	-- Argument validation + default values
@@ -56,7 +56,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     
     CREATE TABLE tmp_Shop_User (
-		id_user VARCHAR(200) NOT NULL,
+		id_user INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_User_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User(id_user),

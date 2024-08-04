@@ -449,6 +449,7 @@ def input_bool(v_input, v_name, method, suppress_errors = False, suppress_consol
     # optional bool suppress_console_outputs
 # ARGUMENT VALIDATION
     my_f = 'input_bool'
+    if v_input is None: return False
     # suppress_errors
     val_bool(suppress_errors, 'suppress_errors', my_f)
     # suppress_console_outputs

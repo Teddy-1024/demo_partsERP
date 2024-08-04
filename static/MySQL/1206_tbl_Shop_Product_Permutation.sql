@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
 	count_interval_expiration_unsealed INT,
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on DATETIME,
+	created_on TIMESTAMP,
 	created_by VARCHAR(100),
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Product_Permutation_id_change_set

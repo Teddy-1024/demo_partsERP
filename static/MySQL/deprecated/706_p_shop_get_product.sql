@@ -20,7 +20,7 @@ DROP PROCEDURE IF EXISTS p_shop_get_product;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_product (
-	IN a_id_user VARCHAR(200),
+	IN a_id_user INT,
 	IN a_id_product INT,
     IN a_ids_permutation VARCHAR(4000),
 	IN a_ids_image VARCHAR(500),
@@ -34,13 +34,13 @@ BEGIN
     DECLARE v_id_product_search VARCHAR(10);
     DECLARE v_has_filter_permutation BIT;
     DECLARE v_has_product_permutations BIT;
-    DECLARE v_guid VARCHAR(36);
+    DECLARE v_guid BINARY(36);
     # DECLARE v_id_user VARCHAR(100);
     DECLARE v_id_permission_product INT;
     DECLARE v_ids_product_permission VARCHAR(500);
     DECLARE v_id_access_level_view INT;
     DECLARE v_has_filter_image BIT;
-    DECLARE v_now DATETIME;
+    DECLARE v_now TIMESTAMP;
     DECLARE v_id_minimum INT;
     DECLARE v_code_error_data VARCHAR(50);
     
@@ -112,7 +112,7 @@ BEGIN
     
     CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid VARCHAR(36) NOT NULL,
+        guid BINARY(36) NOT NULL,
 		# code VARCHAR(50) NOT NULL,
         # CONSTRAINT chk_tmp_Msg_Error_code CHECK (code IN (SELECT code FROM Shop_Msg_Error_Type)),
 		id_type INT NOT NULL,

@@ -24,9 +24,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order (
 	display_order INT NOT NULL,
     */
     active BIT NOT NULL DEFAULT 1,
-	created_on DATETIME,
+	created_on TIMESTAMP,
 	created_by VARCHAR(100),
-	updated_last_on DATETIME NULL,
+	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Customer_Sales_Order_id_change_set

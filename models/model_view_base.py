@@ -19,7 +19,8 @@ Base data model for views
 # from routes import bp_home
 import lib.argument_validation as av
 from forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
-
+from datastores.datastore_store import DataStore_Store
+from business_objects.user import User_Filters
 # external
 from abc import ABC, abstractmethod
 from flask_sqlalchemy import SQLAlchemy
@@ -58,17 +59,20 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_SCROLLABLE: ClassVar[str] = 'scrollable'
     FLAG_SUBMITTED: ClassVar[str] = 'submitted'
     # flagIsDatePicker: ClassVar[str] = 'is-date-picker'
+    HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_filter'
+    HASH_CALLBACK_LOGIN: ClassVar[str] = '/callback-login'
     HASH_PAGE_ACCESSIBILITY_STATEMENT: ClassVar[str] = '/accessibility-statement'
+    HASH_PAGE_ADMIN: ClassVar[str] = '/admin'
     HASH_PAGE_CONTACT: ClassVar[str] = '/contact'
     HASH_PAGE_ERROR_NO_PERMISSION: ClassVar[str] = '/error'
     HASH_PAGE_HOME: ClassVar[str] = '/'
     HASH_PAGE_LICENSE: ClassVar[str] = '/license'
     HASH_PAGE_SERVICES: ClassVar[str] = '/services'
     HASH_PAGE_STORE_HOME: ClassVar[str] = '/store'
-    HASH_PAGE_STORE_PRODUCT: ClassVar[str] = '/store/product'
-    HASH_PAGE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation'
-    HASH_PAGE_STORE_PRODUCT_PERMUTATION_FILTER: ClassVar[str] = '/store/permutation_filter'
-    HASH_PAGE_STORE_PRODUCT_PERMUTATION_SAVE: ClassVar[str] = '/store/permutation_save'
+    HASH_PAGE_STORE_PRODUCTS: ClassVar[str] = '/store/product'
+    HASH_PAGE_STORE_PRODUCT_PERMUTATIONS: ClassVar[str] = '/store/permutation'
+    HASH_PAGE_STORE_STOCK_ITEMS: ClassVar[str] = '/store/stock_items'
+    HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_save'
     ID_BUTTON_ADD: ClassVar[str] = 'buttonAdd'
     ID_BUTTON_CANCEL: ClassVar[str] = 'buttonCancel'
     ID_BUTTON_HAMBURGER: ClassVar[str] = 'buttonHamburger'
@@ -80,21 +84,24 @@ class Model_View_Base(BaseModel, ABC):
     ID_LABEL_ERROR: ClassVar[str] = 'labelError'
     ID_MODAL_SERVICES: ClassVar[str] = 'modalServices'
     ID_MODAL_TECHNOLOGIES: ClassVar[str] = 'modalTechnologies'
+    ID_NAV_ADMIN: ClassVar[str] = 'navAdmin'
     ID_NAV_CONTACT: ClassVar[str] = 'navContact'
     ID_NAV_HOME: ClassVar[str] = 'navHome'
     ID_NAV_SERVICES: ClassVar[str] = 'navServices'
     ID_NAV_STORE_HOME: ClassVar[str] = 'navStoreHome'
     ID_NAV_STORE_PERMUTATIONS: ClassVar[str] = 'navStorePermutations'
     ID_NAV_STORE_PRODUCT: ClassVar[str] = 'navStoreProduct'
+    ID_NAV_STORE_STOCK_ITEMS: ClassVar[str] = 'navStoreStockItems'
     ID_OVERLAY_CONFIRM: ClassVar[str] = 'overlayConfirm'
     ID_OVERLAY_HAMBURGER: ClassVar[str] = 'overlayHamburger'
     ID_PAGE_BODY: ClassVar[str] = 'pageBody'
     ID_TABLE_MAIN: ClassVar[str] = 'tableMain'
     ID_TEXTAREA_CONFIRM: ClassVar[str] = 'textareaConfirm'
+    KEY_CALLBACK: ClassVar[str] = 'callback'
     KEY_FORM: ClassVar[str] = 'form'
     KEY_FORM_FILTERS: ClassVar[str] = KEY_FORM + 'Filters'
     NAME_COMPANY: ClassVar[str] = 'Precision And Research Technology Systems Limited'
-    URL_HOST: ClassVar[str] = 'http://127.0.0.1:5000' # 'https://www.partsltd.co.uk'
+    # URL_HOST: ClassVar[str] = os.env() 'http://127.0.0.1:5000' # 'https://www.partsltd.co.uk'
     URL_GITHUB: ClassVar[str] = 'https://github.com/Teddy-1024'
     URL_LINKEDIN: ClassVar[str] = 'https://uk.linkedin.com/in/lordteddyms'
 
@@ -156,6 +163,25 @@ class Model_View_Base(BaseModel, ABC):
         # self.form_delivery_region = Form_Delivery_Region()
         # self.form_currency = Form_Currency()
         self.is_page_store = False
+        print(f'session: {self.session}')
+        # self.is_user_logged_in = 
         
     def output_bool(self, boolean):
         return str(boolean).lower()
+    
+    def get_url_host(self):
+        return self.app.config.URL_HOST
+    
+    def get_is_admin_store_user(self):
+        datastore_store = DataStore_Store(self.app, self.db)
+        filters_user = User_Filters.get_default(datastore_store)
+        users, errors = datastore_store.get_many_user(filters_user)
+        user = users[0]
+        return av.input_bool(user.can_admin_store, 'can_admin_store', 'Model_View_Base.get_is_admin_store_user')
+
+    def get_is_admin_user_user(self):
+        datastore_store = DataStore_Store(self.app, self.db)
+        filters_user = User_Filters.get_default(datastore_store)
+        users, errors = datastore_store.get_many_user(filters_user)
+        user = users[0]
+        return av.input_bool(user.can_admin_user, 'can_admin_user', 'Model_View_Base.get_is_admin_user_user')

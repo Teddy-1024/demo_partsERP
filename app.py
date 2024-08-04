@@ -72,6 +72,7 @@ app.ID_AUTH0_CLIENT = Config.ID_AUTH0_CLIENT
 app.ID_AUTH0_CLIENT_SECRET = Config.ID_AUTH0_CLIENT_SECRET
 app.DOMAIN_AUTH0 = Config.DOMAIN_AUTH0
 app.ID_TOKEN_USER = Config.ID_TOKEN_USER
+app.URL_HOST = Config.URL_HOST
 
 app.config.SQLALCHEMY_DATABASE_URI = Config.SQLALCHEMY_DATABASE_URI
 app.config.SQLALCHEMY_TRACK_MODIFICATIONS = Config.SQLALCHEMY_TRACK_MODIFICATIONS
@@ -79,7 +80,7 @@ app.config.ID_AUTH0_CLIENT = Config.ID_AUTH0_CLIENT
 app.config.ID_AUTH0_CLIENT_SECRET = Config.ID_AUTH0_CLIENT_SECRET
 app.config.DOMAIN_AUTH0 = Config.DOMAIN_AUTH0
 app.config.ID_TOKEN_USER = Config.ID_TOKEN_USER
-
+app.config.URL_HOST = Config.URL_HOST
 app.config['SQLALCHEMY_DATABASE_URI'] = Config.SQLALCHEMY_DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = Config.SQLALCHEMY_TRACK_MODIFICATIONS
 app.config['ID_AUTH0_CLIENT'] = Config.ID_AUTH0_CLIENT
@@ -123,7 +124,6 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = Config.RECAPTCHA_PRIVATE_KEY
 # db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = Config.SQLALCHEMY_DATABASE_URI
 
-"""
 oauth = OAuth(app)
 oauth.register(
     "auth0",
@@ -131,11 +131,11 @@ oauth.register(
     client_secret = app.ID_AUTH0_CLIENT_SECRET, # =env.get("AUTH0_CLIENT_SECRET"),
     client_kwargs={
         "scope": "openid profile email",
-    },
-    server_metadata_url=f'https://{app.DOMAIN_AUTH0}/.well-known/openid-configuration'
+    }
+    # server_metadata_url=f'https://{app.DOMAIN_AUTH0}/.well-known/openid-configuration'
 )
 # session[app.ID_TOKEN_USER] = {'userinfo': {'sub': ''}}
-"""
+
 
 db = SQLAlchemy()
 db.init_app(app)
@@ -176,6 +176,7 @@ def application(environ, start_response):
 def home():
     try:
         model = Model_View_Home(app, db)
+        print('nips')
         html_body = render_template('_page_home.html', model = model)
     except Exception as e:
         return str(e)
@@ -365,6 +366,57 @@ def stock_save():
     except Exception as e:
         return jsonify({'status': 'failure', 'Message': f'Bad data received by controller.\n{e}'})
 """
+
+
+# User authentication
+@app.route("/login")
+def login():
+    try:
+        data = request.json
+    except:
+        data = {}
+    callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}/{data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
+    uri_redirect = url_for(callback_login, _external=True)
+    print(f'redirect uri: {uri_redirect}')
+    return oauth.auth0.authorize_redirect(
+        redirect_uri = uri_redirect
+    )
+
+@app.route("/login_callback/<path:subpath>")
+def login_callback(subpath):
+    token = oauth.auth0.authorize_access_token()
+    session[app.ID_TOKEN_USER] = token
+
+    # import user id
+    print(f'str(type(token)) = {str(type(token))}')
+    print(f'token = {token}')
+    userinfo = token.get('userinfo')
+    print(f'user info: {userinfo}')
+    # id_user = token.get('sub')
+    id_user = userinfo.get('sub')
+    print(f'user ID: {id_user}')
+
+    # id_user = get_id_user()
+    # add user to database
+    # DataStore_Store(db, userinfo).add_new_user(id_user) # this is part of get basket - should occur on page load
+
+    return redirect(subpath)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(
+        "https://" + app.DOMAIN_AUTH0
+        + "/v2/logout?"
+        + urlencode(
+            {
+                "returnTo": url_for("home", _external=True),
+                "client_id": app.ID_AUTH0_CLIENT,
+            },
+            quote_via=quote_plus,
+        )
+    )
+
 
 # snore
 @app.route('/license', methods=['GET'])

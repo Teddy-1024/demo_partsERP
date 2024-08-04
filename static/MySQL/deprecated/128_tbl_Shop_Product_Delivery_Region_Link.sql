@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Delivery_Region_Link (
         REFERENCES Shop_Delivery_Region(id_region)
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
-    created_on DATETIME,
+    created_on TIMESTAMP,
     created_by VARCHAR(100),
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Delivery_Region_Link_id_change_set
