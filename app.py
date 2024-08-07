@@ -269,7 +269,7 @@ def supplier():
 def permutation():
     filters = Product_Filters.get_default()
     model = Model_View_Store_Permutation(app=app, db=db, filters_product=filters)
-    return render_template('_page_store_product.html', model = model)
+    return render_template('_page_store_product_permutation.html', model = model)
 
 @app.route('/store/permutation_filter', methods=['POST'])
 def permutation_filter():
@@ -471,17 +471,41 @@ def login_callback():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(
-        "https://" + app.DOMAIN_AUTH0
-        + "/v2/logout?"
-        + urlencode(
-            {
-                "returnTo": url_for("home", _external=True),
-                "client_id": app.ID_AUTH0_CLIENT,
-            },
-            quote_via=quote_plus,
-        )
+    url_logout = "https://" + app.DOMAIN_AUTH0 + "/v2/logout?" + urlencode(
+        {
+            "returnTo": url_for("logout_callback", _external=True),
+            "client_id": app.ID_AUTH0_CLIENT,
+        }# ,
+        # quote_via=quote_plus,
     )
+    app.logger.debug(f"Redirecting to {url_logout}")
+    print(f"Redirecting to {url_logout}")
+    return redirect(url_logout)
+
+@app.route("/logout_callback") # <path:subpath>/<code>
+def logout_callback():
+    return home()
+    try:
+        session[app.ID_TOKEN_USER] = None
+        user = User()
+        try:
+            hash_callback = token.get('hash_callback')
+            if hash_callback is None:
+                print('hash is none')
+                state = request.args.get('state')
+                print(f'state: {state}')
+                hash_callback = state # .get('hash_callback')
+            print(f'hash_callback: {hash_callback}')
+        except:
+            print("get hash callback failed")
+        # id_user = get_id_user()
+        # add user to database
+        # DataStore_Store(db, userinfo).add_new_user(id_user) # this is part of get basket - should occur on page load
+
+        print(f'user session: {session[Model_View_Base.KEY_USER]}')
+        return redirect(f'{app.URL_HOST}{hash_callback}')
+    except Exception as e:
+        return jsonify({'status': 'failure', 'Message': f'Controller error.\n{e}'})
 
 
 @app.route("/user")

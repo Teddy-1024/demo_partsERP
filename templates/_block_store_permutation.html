@@ -23,9 +23,12 @@
         <td class="{{ model.FLAG_QUANTITY_MAX }}">
             <input class="{{ model.FLAG_QUANTITY_MAX }}" type="number" min="0" value="0" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}>
         </td>
-        <td class="{{ model.FLAG_COST_LOCAL }}">
+        <td class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}">
         </td>
         <!-- <td><strong>{ { permutation.output_currency() }}</strong>{ { permutation.get_price_local() }}</td> -->
+         <td class="{{ model.FLAG_DETAIL }}">
+            <a>Detail</a>
+         </td>
     </tr>
 {% else %}
     <tr {{ model.ATTR_ID_PERMUTATION }}="{{ permutation.id_permutation }}">
@@ -56,9 +59,12 @@
         <td class="{{ model.FLAG_QUANTITY_MAX }}">
             <input class="{{ model.FLAG_QUANTITY_MAX }}" type="number" min="0" value="{{ permutation.quantity_max }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.quantity_max }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.quantity_max }}">
         </td>
-        <td class="{{ model.FLAG_COST_LOCAL }}">
+        <td class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}">
             <strong>{{ permutation.output_currency() }}</strong>{{ permutation.cost_local }}
         </td>
         <!-- <td><strong>{{ permutation.output_currency() }}</strong>{ { permutation.get_price_local() }}</td> -->
+         <td class="{{ model.FLAG_DETAIL }}">
+            <a>Detail</a>
+         </td>
     </tr>
 {% endif %}

@@ -23,7 +23,7 @@
         {% else %}
             <h3 style="white-space: nowrap;">Product not available</h3>
         {% endif %}
-        <a class="{{ model.flag_basket_item_delete }}">Delete</a>
+        <a class="{{ model.FLAG_DELETE }}">Delete</a>
         {% if show_delivery_option %}
             <div class="{{ model.flag_container_input }}">
                 {{ product.form_delivery_option.label }}

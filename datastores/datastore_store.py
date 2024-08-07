@@ -30,7 +30,7 @@ from business_objects.product import Product, Product_Permutation, Price, Produc
 from business_objects.sql_error import SQL_Error
 from business_objects.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.variation import Variation
+from business_objects.variation import Variation, Variation_Filters, Variation_List
 from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 # external
@@ -996,3 +996,50 @@ class DataStore_Store(BaseModel):
         DataStore_Store.db_cursor_clear(cursor)
 
         return users, errors
+
+    def get_many_product_variation(self, variation_filters):
+        _m = 'DataStore_Store.get_many_product_variation'
+        print(_m)
+        av.val_instance(variation_filters, 'variation_filters', _m, Variation_Filters)
+
+        guid = Helper_DB_MySQL.create_guid()
+        # now = datetime.now()
+        # user = self.get_user_session()
+        
+        """
+        argument_dict_list = {
+            'a_id_user': id_user,
+            'a_comment': comment,
+            'a_guid': guid
+        }
+        """
+        user = self.get_user_session()
+        argument_dict_list = {
+            # 'a_guid': guid
+            'a_id_user': user.id_user
+            , **variation_filters.to_json()
+        }
+        # argument_dict_list['a_guid'] = guid
+        result = self.db_procedure_execute('p_shop_get_many_product_variation', argument_dict_list)
+
+        cursor = result.cursor
+        result_set = cursor.fetchall()
+        
+        # Variations
+        variations = Variation_List()
+        for row in result_set:
+            new_variation = Variation.make_from_DB_variation(row) 
+            variations.add_variation(new_variation)
+
+        errors = []
+        cursor.nextset()
+        result_set_e = cursor.fetchall()
+        print(f'raw errors: {result_set_e}')
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.make_from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
+            for error in errors:
+                print(f"Error [{error.code}]: {error.msg}")
+
+        DataStore_Store.db_cursor_clear(cursor)
+
+        return variations, errors

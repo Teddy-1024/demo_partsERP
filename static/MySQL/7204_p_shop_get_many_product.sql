@@ -1,5 +1,4 @@
-
--- 
+-- USE partsltd_prod;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product;
@@ -165,6 +164,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_2;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Category;
     
     CREATE TEMPORARY TABLE tmp_Shop_Category (
@@ -319,8 +319,8 @@ BEGIN
 		PP.quantity_step,
 		PP.quantity_stock,
 		PP.is_subscription,
-		PP.id_recurrence_interval,
-		PP.count_recurrence_interval,
+		PP.id_interval_recurrence,
+		PP.count_interval_recurrence,
 		PP.id_stripe_product,
         P.has_variations
 	FROM Shop_Product P
@@ -380,7 +380,7 @@ BEGIN
     -- select * from tmp_Shop_Product;
     
     IF a_get_first_product_only = 1 THEN
-		DELETE t_P
+		DELETE -- t_P
         FROM tmp_Shop_Product t_P
 		WHERE t_P.rank_permutation > 1
 		;
@@ -412,7 +412,9 @@ BEGIN
     */
     
     # Product Images
-    INSERT INTO tmp_Shop_Image (
+    CREATE TEMPORARY TABLE tmp_Shop_Product_2 SELECT * FROM tmp_Shop_Product;
+    
+	INSERT INTO tmp_Shop_Image (
 		id_product, 
         id_permutation,
         id_image, 
@@ -420,34 +422,47 @@ BEGIN
         display_order,
         rank_in_product_permutation
 	)
-    SELECT id_product, 
-		id_permutation,
-		id_image, 
-		active, 
-		ROW_NUMBER() OVER (ORDER BY display_order_product_temp, display_order_image), 
-		RANK() OVER (PARTITION BY id_product, id_permutation ORDER BY display_order_product_temp, display_order_image)
+    /*
+    WITH CTE_Product AS (
+		SELECT 
+			t_P.id_product
+			, t_P.id_permutation
+			, t_P.product_has_variations
+			, t_P.rank_permutation
+		FROM tmp_Shop_Product t_P
+	)
+    */
+    SELECT 
+		IPP.id_product, 
+		IPP.id_permutation,
+		IPP.id_image, 
+		IPP.active, 
+		ROW_NUMBER() OVER (ORDER BY IPP.display_order_product_temp, IPP.display_order_image), 
+		RANK() OVER (PARTITION BY IPP.id_product, IPP.id_permutation ORDER BY IPP.display_order_product_temp, IPP.display_order_image)
 	FROM (
-		SELECT t_P.id_product, 
+		SELECT 
+			t_P.id_product, 
 			I.id_permutation,
 			I.id_image, 
 			I.active, 
 			I.display_order AS display_order_image,
             t_P.rank_permutation AS display_order_product_temp
-		FROM Shop_Image I
-		INNER JOIN tmp_Shop_Product t_P
-			ON I.id_product = t_P.id_product
-				AND NOT t_P.product_has_variations
-		UNION
-		SELECT t_P.id_product, 
-			I.id_permutation,
-			I.id_image, 
-			I.active, 
-			I.display_order AS display_order_image,
-            t_P.rank_permutation AS display_order_product_temp
-		FROM Shop_Image I
+		FROM Shop_Product_Image I
 		INNER JOIN tmp_Shop_Product t_P
 			ON I.id_permutation = t_P.id_permutation
-				AND t_P.product_has_variations
+			AND NOT t_P.product_has_variations
+		UNION
+		SELECT 
+			t_P2.id_product, 
+			I.id_permutation,
+			I.id_image, 
+			I.active, 
+			I.display_order AS display_order_image,
+            t_P2.rank_permutation AS display_order_product_temp
+		FROM Shop_Product_Image I
+		INNER JOIN tmp_Shop_Product_2 t_P2
+			ON I.id_permutation = t_P2.id_permutation
+				AND t_P2.product_has_variations
 		) IPP
 	WHERE (a_get_all_image OR a_get_first_image_only OR FIND_IN_SET(id_image, a_ids_image) > 0)
 		AND (a_get_inactive_image OR IPP.active)
@@ -460,6 +475,7 @@ BEGIN
     END IF;
     
     /*
+    select @@version;
     IF v_has_filter_image THEN
 		DELETE FROM tmp_Shop_Product
 			WHERE id_product NOT IN (SELECT DISTINCT id_product FROM tmp_Shop_Image);
@@ -739,7 +755,7 @@ BEGIN
 		-- select * from Shop_User_Eval_Temp;
 		-- select * from tmp_Shop_Product;
         
-        DELETE t_P
+        DELETE -- t_P
         FROM tmp_Shop_Product t_P
 		WHERE 
 			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_User_Eval_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_User_Eval_Temp), '%');
@@ -760,11 +776,13 @@ BEGIN
             )
         ;
         
-        # CALL p_shop_user_eval_clear_temp(v_guid);
+        CALL p_clear_shop_user_eval_temp(v_guid);
         # DROP TABLE IF EXISTS Shop_User_Eval_Temp;
-        DELETE FROM Shop_User_Eval_Temp
-        WHERE GUID = v_guid
+        /*
+        DELETE FROM Shop_User_Eval_Temp UE_T
+        WHERE UE_T.GUID = v_guid
         ;
+        */
     END IF;
     
     
@@ -807,9 +825,9 @@ BEGIN
         t_P.quantity_stock,
         t_P.id_stripe_product,
         t_P.is_subscription,
-        RI.name AS name_recurrence_interval,
-        RI.name_plural AS name_plural_recurrence_interval,
-        t_P.count_recurrence_interval,
+        UM.name_singular AS name_recurrence_interval,
+        UM.name_plural AS name_plural_recurrence_interval,
+        PP.count_interval_recurrence,
         t_P.display_order_category,
         t_P.display_order_product,
         t_P.display_order_permutation,
@@ -819,7 +837,8 @@ BEGIN
     FROM tmp_Shop_Product t_P
     INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
     INNER JOIN Shop_Product_Permutation PP ON t_P.id_permutation = PP.id_permutation
-	LEFT JOIN Shop_Recurrence_Interval RI ON t_P.id_recurrence_interval = RI.id_interval
+	-- LEFT JOIN Shop_Recurrence_Interval RI ON t_P.id_interval_recurrence = RI.id_interval
+	LEFT JOIN Shop_Unit_Measurement UM ON PP.id_interval_recurrence = UM.id_unit_measurement
     INNER JOIN Shop_Currency CURRENCY ON PP.id_currency_cost = CURRENCY.id_currency
 	ORDER BY t_P.rank_permutation
 	;
@@ -920,7 +939,7 @@ BEGIN
         I.active,
         I.display_order
     FROM tmp_Shop_Image t_I
-    INNER JOIN Shop_Image I
+    INNER JOIN Shop_Product_Image I
 		ON t_I.id_image = I.id_image
 	INNER JOIN tmp_Shop_Product t_P
 		ON t_I.id_product = t_P.id_product
@@ -1062,23 +1081,26 @@ BEGIN
     # select * from tmp_Shop_Product;
     
     -- Clean up
-    DROP TABLE IF EXISTS tmp_Discount;
-    DROP TABLE IF EXISTS tmp_Currency;
-    DROP TABLE IF EXISTS tmp_Delivery_Region;
-    DROP TABLE IF EXISTS tmp_Shop_Image;
-    DROP TABLE IF EXISTS tmp_Shop_Variation;
-    DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Discount;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Currency;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Delivery_Region;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_2;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Category;
     
 END //
 DELIMITER ;
 
 
 /*
+
 CALL partsltd_prod.p_shop_get_many_product (
-	'auth0|6582b95c895d09a70ba10fef', # a_id_user
+	1, #'auth0|6582b95c895d09a70ba10fef', # a_id_user
     1, # a_get_all_category
-	0, # a_get_inactive_category
+	1, # a_get_inactive_category
     0, # a_get_first_category_only
 	'', # a_ids_category
     1, # a_get_all_product
@@ -1089,23 +1111,25 @@ CALL partsltd_prod.p_shop_get_many_product (
 	0, # a_get_inactive_permutation
     0, # a_get_first_permutation_only
 	'', # a_ids_permutation
-    0, # a_get_all_image
+    1, # a_get_all_image
     0, # a_get_inactive_image
     0, # a_get_first_image_only
 	'', # a_ids_image
-    0, # a_get_all_delivery_region
+    1, # a_get_all_delivery_region
     0, # a_get_inactive_delivery_region
     0, # a_get_first_delivery_region_only
 	'', # a_ids_delivery_region
-    0, # a_get_all_currency
+    1, # a_get_all_currency
     0, # a_get_inactive_currency
     0, # a_get_first_currency_only
 	'', # a_ids_currency
-    0, # a_get_all_discount
+    1, # a_get_all_discount
     0, # a_get_inactive_discount
 	'', # a_ids_discount
     1 # a_get_products_quantity_stock_below_minimum
 );
+
+select * FROM Shop_User_Eval_Temp;
 
 select * from Shop_Product_Permutation;
 select * from shop_product_change_set;
@@ -1128,4 +1152,9 @@ insert into shop_product_change_set (comment)
     set is_subscription = 0,
 		id_change_set = (select id_change_set from shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
+
+select * FROM Shop_User_Eval_Temp;
+select distinct guid 
+-- DELETE
+FROM Shop_User_Eval_Temp;
 */

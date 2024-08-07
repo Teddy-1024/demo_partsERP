@@ -117,7 +117,7 @@ function callbackLoadPermutations(response) {
         row.find('td.' + flagQuantityStock + ' input').val(dataRow[flagQuantityStock]);
         row.find('td.' + flagQuantityMin + ' input').val(dataRow[flagQuantityMin]);
         row.find('td.' + flagQuantityMax + ' input').val(dataRow[flagQuantityMax]);
-        row.find('td.' + flagCostLocal).html(dataRow[flagCostLocal]);
+        row.find('td.' + flagCostLocalVATIncl).html(dataRow[flagCostLocalVATIncl]);
         row.attr(attrIdCategory, dataRow[flagCategory]);
         row.attr(attrIdProduct, dataRow[flagProduct]);
         row.attr(attrIdPermutation, dataRow[attrIdPermutation]);
@@ -135,13 +135,15 @@ function hookupButtonsSaveCancel() {
         event.stopPropagation();
         showOverlayConfirm();
     });
-    btnSave.addClass(flagCollapsed);
+    let parentSave = btnSave.closest('div.' + flagColumn);
+    // parentSave.addClass(flagCollapsed);
 
     btnCancel.on("click", function(event) {
         event.stopPropagation();
         loadPermutations();
     });
-    btnCancel.addClass(flagCollapsed);
+    let parentCancel = btnCancel.closest('div.' + flagColumn);
+    // parentCancel.addClass(flagCollapsed);
 
     btnAdd.on("click", function(event) {
         event.stopPropagation();
@@ -231,7 +233,7 @@ function hookupTableMain() {
     });
     */
 
-    let ddlCategory, ddlProduct, variations, quantityStock, quantityMin, quantityMax, costLocal;
+    let ddlCategory, ddlProduct, variations, quantityStock, quantityMin, quantityMax, costLocal, detail;
     table.find('tbody tr').each(function(index, row) {
         console.log("hooking up row ", index);
         row = $(row);
@@ -241,7 +243,8 @@ function hookupTableMain() {
         quantityStock = row.find('td.' + flagQuantityStock + ' input');
         quantityMin = row.find('td.' + flagQuantityMin + ' input');
         quantityMax = row.find('td.' + flagQuantityMax + ' input');
-        
+        detail = row.find('td.' + flagDetail + ' button');
+
         initialiseEventHandler(ddlCategory, flagInitialised, function() {
             // ddlCategory = $(ddlCategory);
             ddlCategory.on('change', function() {
@@ -273,8 +276,8 @@ function hookupTableMain() {
 
         initialiseEventHandler(variations, flagInitialised, function() {
             // variations = $(variations);
-            variations.on('change', function() {
-                handleChangeInputPermutations(this);
+            variations.on('click', function() {
+                handleClickPermutationsInputVariations(this);
             });
         });
 
@@ -300,6 +303,12 @@ function hookupTableMain() {
                 handleChangeInputPermutations(this);
             });
         });
+
+        initialiseEventHandler(detail, flagInitialised, function() {
+            detail.on('click', function() {
+                console.log("not implemented error: detail clicked");
+            });
+        });
     });
 }
 
@@ -313,7 +322,7 @@ function handleChangeInputPermutations(element) {
     let wasDirty = isElementDirty(objJQuery);
 
     if (objJQuery.hasClass(flagVariations)) {
-        objJQuery.attr(attrValueCurrent, getVariationsCurrentValue(objJQuery));
+        objJQuery.attr(attrValueCurrent, getProductVariationsText(objJQuery));
     } else {
         objJQuery.attr(attrValueCurrent, getElementCurrentValue(objJQuery));
     }
@@ -368,7 +377,9 @@ function isRowDirty(row) {
     return isDirty;
 }
 
-function getVariationsCurrentValue(element) {
+function getProductVariationsText(element) {
+    element = $(element);
+    /*
     let value = element.val();
     let variations = value.split('\n');
     variations = variations.map(function(variation) {
@@ -377,5 +388,113 @@ function getVariationsCurrentValue(element) {
     variations = variations.filter(function(variation) {
         return variation.length > 0;
     });
-    return variations.join(',');
+    */
+    let variations = dictVariations[element.attr(attrIdVariation)].map((variation, index) => {
+        return variation[keyNameVariationType] + ': ' + variation[keyNameVariation];
+    });
+    return variations.join(',\n');
+}
+
+function getElementProductVariations(element) {
+    element = $(element);
+    let variations = element.attr(attrValueCurrent);
+    let objVariations = [];
+    if (!isEmpty(variations)) {
+        variations = variations.split(',');
+        variations.forEach((variation) => {
+            let parts = variation.split(':');
+            if (parts.length == 2) {
+                objVariations.push({
+                    [attrIdVariationType]: parts[0].trim(),
+                    [attrIdVariation]: parts[1].trim(),
+                });
+            }
+        });
+    }
+    return objVariations;
+}
+
+function handleClickPermutationsInputVariations(element) {
+    element = $(element);
+    
+    let jsonVariation, jsonVariationType, tr, tdVariationType, variationType, attributesVariationType, tdNameVariation, nameVariation, attributesNameVariation, tdDelete, buttonDelete, tmpJsonVariation, tmpJsonVariationType;
+    let variations = getElementProductVariations(element);
+    let tblVariations = $("<table>");
+    tblVariations.append("<thead><tr><th>Type</th><th>Name</th></tr></thead>");
+    let tbody = $("<tbody>");
+    console.log('variations:', variations);
+    if (isEmpty(variations)) {
+        return;
+    }
+    variations.forEach((variation, index) => {
+        jsonVariationType = dictVariations[variation[attrIdVariationType]];
+        jsonVariation = dictVariations[variation[attrIdVariation]];
+        tdVariationType = $("<td>", {
+            class: attrIdVariationType,
+        });
+        attributesVariationType = {
+            class: attrIdVariationType,
+            value: variation[attrIdVariationType],
+        };
+        attributesVariationType[attrValueCurrent] = jsonVariation[attrIdVariationType];
+        attributesVariationType[attrValuePrevious] = jsonVariation[attrIdVariationType];
+        variationType = $("<select>", attributesVariationType);
+        listVariationTypes.forEach((idVariationType) => {
+            tmpJsonVariationType = dictVariationTypes[idVariationType];
+            variationType.append($('<option>', { 
+                value: jsonVariationType[attrIdVariationType],
+                text: jsonVariationType[keyNameVariationType],
+                selected: (idVariationType == jsonVariationType[attrIdVariationType]),
+            }));
+        });
+        tdNameVariation = $("<td>", {
+            class: attrIdVariation,
+        });
+        attributesNameVariation = {
+            class: attrIdVariation,
+            value: variation[attrIdVariation],
+        };
+        attributesNameVariation[attrValueCurrent] = jsonVariation[attrIdVariation];
+        attributesNameVariation[attrValuePrevious] = jsonVariation[attrIdVariation];
+        nameVariation = $("<select>", attributesNameVariation);
+        listVariations.forEach((idVariation) => {
+            tmpJsonVariation = dictVariations[idVariation];
+            console.log("id_variation: ", idVariation);
+            console.log("tmpJsonVariation: ", tmpJsonVariation);
+            nameVariation.append($('<option>', {
+                value: tmpJsonVariation[attrIdVariation],
+                text: tmpJsonVariation[keyNameVariation],
+                selected: (idVariation == jsonVariation[attrIdVariation]),
+            }));
+        });
+        tdDelete = $("<td>", {
+            class: flagDelete,
+        });
+        buttonDelete = $("<button>", {
+            class: flagDelete,
+            text: 'x',
+        });
+        tr = $("<tr>");
+        tdVariationType.append(variationType);
+        tr.append(tdVariationType);
+        tdNameVariation.append(nameVariation);
+        tr.append(tdNameVariation);
+        tdDelete.append(buttonDelete);
+        tr.append(tdDelete);
+        tbody.append(tr);
+    });
+    tr = $("<tr>");
+    let buttonAdd = $("<button>", {
+        class: flagAdd,
+        text: '+',
+    });
+    let tdAdd = $("<td>");
+    tdAdd.append(buttonAdd);
+    tr.append(tdAdd);
+    tbody.append(tr);
+    tblVariations.append(tbody);
+    let parent = element.parent();
+    parent.html('');
+    parent.append(tblVariations);
+    console.log("tblVariations: ", tblVariations);
 }

@@ -238,10 +238,6 @@ BEGIN
     
     -- Clean up
     DROP TABLE IF EXISTS tmp_Supplier;
-        
-	DELETE FROM Shop_User_Eval_Temp
-	WHERE GUID = v_guid
-	;
 END //
 DELIMITER ;
 
