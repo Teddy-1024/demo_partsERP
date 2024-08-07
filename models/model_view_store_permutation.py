@@ -17,6 +17,7 @@ from business_objects.category import Category_List
 from forms import Form_Filters_Permutation
 # from routes import bp_home
 from business_objects.product import Product, Product_Filters, Product_Permutation
+from business_objects.variation import Variation_List
 import lib.argument_validation as av
 
 # external
@@ -36,10 +37,11 @@ class Model_View_Store_Permutation(Model_View_Store):
     filters_product: Product_Filters
     form_filters: Form_Filters_Permutation = None
     permutation_blank: Product_Permutation = None
+    variations: Variation_List = None
 
     @property
     def title(self):
-        return 'Store Permutations'
+        return 'Stock Report'
     
     def __init__(self, app, db, filters_product, **kwargs):
         _m = 'Model_View_Store_Permutation.__init__'
@@ -70,6 +72,8 @@ class Model_View_Store_Permutation(Model_View_Store):
         self.form_filters.id_product.choices = [('0', 'All')] + [(str(product['value']), product['text']) for product in product_list]
         self.permutation_blank = Product_Permutation()
         print(f'category options: {self.form_filters.id_category.choices}')
+        variations, errors = self.get_many_product_variation()
+        self.variations = variations
 
     def save_permutations(self, comment, list_permutations):
         _m = 'Model_View_Store_Permutation.save_permutations'

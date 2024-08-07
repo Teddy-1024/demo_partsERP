@@ -440,6 +440,11 @@ button, .button-submit, input[type="submit"] {
     text-decoration: underline;
 }
 
+.delete {
+    text-decoration: underline;
+}
+
+
 /* Overlay modal */
 .overlay {
     /*

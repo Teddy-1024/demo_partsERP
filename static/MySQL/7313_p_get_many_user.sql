@@ -149,6 +149,12 @@ BEGIN
 			)
 			;
         END IF;
+        
+        /*
+        DELETE FROM Shop_User_Eval_Temp
+        WHERE GUID = v_guid;
+        */
+        CALL p_clear_shop_user_eval_temp(v_guid);
 	END IF;
     
     
@@ -230,16 +236,12 @@ BEGIN
     -- Clean up
     DROP TEMPORARY TABLE IF EXISTS tmp_User;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
-        
-	DELETE FROM Shop_User_Eval_Temp
-	WHERE GUID = v_guid
-	;
 END //
 DELIMITER ;
 
 
-/*
 
+/*
 CALL p_get_many_user (
 	NULL # a_id_user
     , 'auth0|6582b95c895d09a70ba10fef' # a_id_user_auth0
@@ -249,5 +251,6 @@ CALL p_get_many_user (
 	, NULL # a_ids_user
 	, 'auth0|6582b95c895d09a70ba10fef' # a_ids_user_auth0 # ' -- 
 );
-
+select * from shop_user_eval_temp;
+delete from shop_user_eval_temp;
 */

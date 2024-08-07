@@ -25,6 +25,7 @@ from datastores.datastore_store import DataStore_Store
 from forms import Form_Basket_Edit, Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
 from business_objects.basket import Basket_Item, Basket
 from business_objects.category import Category
+from business_objects.variation import Variation_Filters, Variation
 # external
 from flask import send_file, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -42,7 +43,8 @@ class Model_View_Store(Model_View_Base):
     # ATTR_ID_PRODUCT_CATEGORY : ClassVar[str] = 'id-product-category'
     ATTR_ID_PRODUCT : ClassVar[str] = Product.ATTR_ID_PRODUCT # 'id-product'
     ATTR_ID_PERMUTATION : ClassVar[str] = Product.ATTR_ID_PERMUTATION # 'id-permutation'
-    FLAG_BASKET_ITEM_DELETE : ClassVar[str] = 'basket-item-delete'
+    ATTR_ID_VARIATION : ClassVar[str] = Variation.ATTR_ID_VARIATION # 'id-variation'
+    ATTR_ID_VARIATION_TYPE : ClassVar[str] = Variation.ATTR_ID_VARIATION_TYPE # 'id-variation-type'
     FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_BUTTON_SUBMIT + '.buttonAdd2Basket'
     FLAG_BUTTON_BUY_NOW : ClassVar[str] = 'buttonBuyNow'
     FLAG_CATEGORY: ClassVar[str] = 'category'
@@ -91,6 +93,8 @@ class Model_View_Store(Model_View_Base):
     KEY_ID_REGION_DELIVERY : ClassVar[str] = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
     KEY_IS_INCLUDED_VAT : ClassVar[str] = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
     KEY_ITEMS : ClassVar[str] = Basket.KEY_ITEMS # 'items'
+    KEY_NAME_VARIATION : ClassVar[str] = Variation.KEY_NAME_VARIATION
+    KEY_NAME_VARIATION_TYPE : ClassVar[str] = Variation.KEY_NAME_VARIATION_TYPE
     KEY_PRICE : ClassVar[str] = 'price'
     KEY_QUANTITY : ClassVar[str] = 'quantity'
     KEY_VALUE_DEFAULT : ClassVar[str] = 'default'
@@ -392,3 +396,9 @@ class Model_View_Store(Model_View_Base):
     def get_regions_and_currencies(self):
         regions, currencies = DataStore_Store(self.db, self.info_user, self.app).get_regions_and_currencies()
         return regions, currencies
+    
+    def get_many_product_variation(self, variation_filters = None):
+        if variation_filters is None:
+            variation_filters = Variation_Filters.get_default()
+        variations, errors = DataStore_Store(self.app, self.db).get_many_product_variation(variation_filters)
+        return variations, errors

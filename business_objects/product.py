@@ -521,7 +521,7 @@ class Product_Permutation(db.Model):
         return '\n'.join([f'{variation.name_variation_type}: {variation.name_variation}' for variation in self.variations])
     def output_variations_jsonify(self):
         if not self.has_variations: return ''
-        return ','.join([f'{variation.name_variation_type}: {variation.name_variation}' for variation in self.variations])
+        return ','.join([f'{variation.id_type}: {variation.id_variation}' for variation in self.variations])
     """
     def output_price_VAT_incl(self):
         locale.setlocale(locale.LC_ALL, '')

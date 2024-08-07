@@ -80,3 +80,18 @@ else:
     raise ValueError("Invalid configuration environment")
 
 
+
+# environment variables
+"""
+SET KEY_SECRET_FLASK=nips
+SET ID_AUTH0_CLIENT=
+SET ID_AUTH0_CLIENT_SECRET=
+SET DOMAIN_AUTH0=
+SET MAIL_PASSWORD=
+SET RECAPTCHA_PUBLIC_KEY=
+SET RECAPTCHA_PRIVATE_KEY=
+SET SQLALCHEMY_DATABASE_URI=
+SET URL_HOST=
+"""
+# SET SQLALCHEMY_DATABASE_URI = mysql://username:password@localhost/dbname
+    # Replace 'username', 'password', 'localhost', and 'dbname' with your actual database credentials
