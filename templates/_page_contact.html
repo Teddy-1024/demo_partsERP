@@ -4,34 +4,36 @@
 
 {% block page_body %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/page_contact.css') }}">
+
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lf8Q8cpAAAAAFAawGu4-ma60bvbEixNVTVvRzKe"></script> <!-- reCaptcha Integration -->
     
     <!-- HTML content -->
     <div class="card">
-        <form id="{{ model.ID_FORM_CONTACT }}" class="container" action="{{ url_for('contact') }}" method="POST">
+        <form id="{{ model.ID_FORM_CONTACT }}" class="container" action="{{ url_for('routes_core.contact') }}" method="POST">
             <h2 class="label-title">Complete the form or find our details below.</h2>
             <!--
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 <label for="sender_email">Email address</label> <!-- class="input-label" --
                 <input type="email" id="sender_email" name="sender_email" placeholder="Please enter your email address so we can get back to you." style="width: 50%;"/>
             </div>
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 <label for="sender_CC">
                     <input type="checkbox" id="sender_CC" name="sender_CC" checked/>Uncheck this box if you do not wish to receive a copy of the email
                 </label>
             </div>
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 <label for="sender_name">Name</label> <!-- class="input-label" --
                 <input type="text" id="sender_name" name="sender_name" placeholder="Please enter your preferred name." style="width: 30%;"/>
             </div>
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 <label for="sender_message">Message</label> <!-- class="input-label" --
                 <textarea id="sender_message" name="sender_message" rows="4" cols="80" placeholder="How can we help?"></textarea>
             </div>
             <button type="submit" id="submit_form_email">Submit request</button>
             -->
             {{ model.form_contact.hidden_tag() }}
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 {{ model.form_contact.email.label }}
                 {{ model.form_contact.email(size=254) }}
                 {% for error in model.form_contact.email.errors %}
@@ -39,7 +41,7 @@
                 {% endfor %}
             </div>
             <!--
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 {{ model.form_contact.CC.label }}
                 {{ model.form_contact.CC(checked=True) }}
                 {% for error in model.form_contact.name.errors %}
@@ -47,24 +49,24 @@
                 {% endfor %}
             </div>
             -->
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 {{ model.form_contact.name.label }}
                 {{ model.form_contact.name(size=50) }}
                 {% for error in model.form_contact.name.errors %}
                     <p class="error">{{ error }}</p>
                 {% endfor %}
             </div>
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 {{ model.form_contact.message.label }}
                 {{ model.form_contact.message(rows=4, cols=80) }}
                 {% for error in model.form_contact.name.errors %}
                     <p class="error">{{ error }}</p>
                 {% endfor %}
             </div>
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 {{ model.form_contact.recaptcha() }}
             </div>
-            <div class="container-input">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 {{ model.form_contact.submit() }}
             </div>
         </form>
@@ -78,23 +80,24 @@
             <h4>{{ model.app.MAIL_CONTACT_PUBLIC }}</h4>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="padding-top: 0; width: fit-content;">
-            <a href="{{ model.url_LinkedIn }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_LinkedIn.png') }}" alt="LinkedIn"></img><!--<h4>LinkedIn</h4>--></a>
-            <a href="{{ model.url_GitHub }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}" alt="GitHub"></img><!--<h4>GitHub</h4>--></a>
+            <a href="{{ model.url_LinkedIn }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_LinkedIn.png') }}" alt="LinkedIn" aria-label="LinkedIn"></img><!--<h4>LinkedIn</h4>--></a>
+            <a href="{{ model.url_GitHub }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}" alt="GitHub" aria-label="GitHub"></img><!--<h4>GitHub</h4>--></a>
         </div>
     </div>
     
     <!-- Include JavaScript -->
-    <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/page_contact.js') }}"></script>
 
     <script>
-        var hashPageCurrent = "{{ model.HASH_PAGE_CONTACT }}";
         var idEmail = "#{{ model.ID_EMAIL }}";
         var idMessage = "#{{ model.ID_MESSAGE }}";
         var idName = "#{{ model.ID_NAME }}";
         
+        /*
         $(document).ready(function() {
             stylePageContact();
             hookupPageContact();
         });
+        */
     </script>
 {% endblock %}

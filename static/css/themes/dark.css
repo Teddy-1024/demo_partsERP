@@ -1,0 +1,45 @@
+:root {
+    --background-color: #121212;
+    --text-color: #e0e0e0;
+    --primary-color: #bb86fc;
+    --secondary-color: #03dac6;
+    --success-color: #00c853;
+    --danger-color: #cf6679;
+    --warning-color: #ffab00;
+    --info-color: #2196f3;
+    --light-color: #2c2c2c;
+    --dark-color: #1f1f1f;
+    --border-color: #333333;
+    --shadow-color: rgba(255, 255, 255, 0.1);
+    
+    /* Header */
+    --header-bg: #1f1f1f;
+    --header-text: #e0e0e0;
+    
+    /* Footer */
+    --footer-bg: #1f1f1f;
+    --footer-text: #a0a0a0;
+    
+    /* Navigation */
+    --nav-bg: #1f1f1f;
+    --nav-text: #e0e0e0;
+    --nav-hover-bg: #2c2c2c;
+    --nav-hover-text: #bb86fc;
+    
+    /* Buttons */
+    --btn-primary-bg: #bb86fc;
+    --btn-primary-text: #121212;
+    --btn-secondary-bg: #03dac6;
+    --btn-secondary-text: #121212;
+    
+    /* Forms */
+    --input-bg: #2c2c2c;
+    --input-border: #454545;
+    --input-text: #e0e0e0;
+    --input-focus-border: #bb86fc;
+    
+    /* Cards */
+    --card-bg: #1f1f1f;
+    --card-border: #333333;
+    --card-shadow: 0 0.125rem 0.25rem rgba(255, 255, 255, 0.05);
+}

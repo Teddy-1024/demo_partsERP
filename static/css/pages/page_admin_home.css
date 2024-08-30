@@ -1,0 +1,7 @@
+#pageBody > .card:first-of-type {
+    width: 80%;
+}
+
+.container.row {
+    width: auto;
+}

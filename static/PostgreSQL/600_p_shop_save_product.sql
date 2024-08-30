@@ -52,7 +52,7 @@ BEGIN
     
     
     -- Temporary tables
-    CREATE TABLE tmp_Shop_Category (
+    CREATE TABLE tmp_Shop_Product_Category (
 		id_category INTEGER NOT NULL,
         active BOOLEAN NOT NULL,
         display_order INTEGER NOT NULL, 
@@ -102,11 +102,11 @@ BEGIN
     SET v_has_filter_category = CASE WHEN a_ids_category = '' THEN FALSE ELSE TRUE END;
     SET v_has_filter_product = CASE WHEN a_ids_product = '' THEN FALSE ELSE TRUE END;
     
-    INSERT INTO tmp_Shop_Category (
+    INSERT INTO tmp_Shop_Product_Category (
 		id_category, active, display_order
 	)
     SELECT C.id_category, C.active, C.display_order
-	FROM Shop_Category C
+	FROM Shop_Product_Category C
     WHERE (NOT v_has_filter_category OR C.id_category LIKE '%' || a_ids_category || '%')
 		AND (a_get_inactive_categories OR C.active);
     
@@ -115,7 +115,7 @@ BEGIN
 	)
     SELECT P.id_category, P.id_product, P.active, P.display_order
 	FROM Shop_Product P
-    INNER JOIN tmp_Shop_Category tC
+    INNER JOIN tmp_Shop_Product_Category tC
 		ON P.id_category = tC.id_category
 		WHERE (a_get_all_products OR P.id_product LIKE '%' || a_ids_product || '%')
 			AND (a_get_inactive_products OR P.active);
@@ -126,7 +126,7 @@ BEGIN
     END IF;
 	
     IF v_has_filter_product THEN
-		DELETE FROM tmp_Shop_Category
+		DELETE FROM tmp_Shop_Product_Category
 			WHERE id_category NOT IN (SELECT DISTINCT id_category FROM tmp_Shop_Product);
     END IF;
     
@@ -157,13 +157,13 @@ BEGIN
     IF v_has_filter_image THEN
 		DELETE FROM tmp_Shop_Product
 			WHERE id_product NOT IN (SELECT DISTINCT id_product FROM tmp_Shop_Image);
-		DELETE FROM tmp_Shop_Category
+		DELETE FROM tmp_Shop_Product_Category
 			WHERE id_category NOT IN (SELECT DISTINCT id_category FROM tmp_Shop_Product);
     END IF;
     
     
     -- Permissions
-    IF EXISTS (SELECT * FROM tmp_Shop_Category LIMIT 1) THEN
+    IF EXISTS (SELECT * FROM tmp_Shop_Product_Category LIMIT 1) THEN
 		SET v_guid_permission = gen_random_uuid();
         SET v_id_user = CURRENT_USER;
         SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
@@ -195,8 +195,8 @@ BEGIN
         tC.can_edit,
         tC.can_admin
     )
-    FROM tmp_Shop_Category tC
-    INNER JOIN Shop_Category C
+    FROM tmp_Shop_Product_Category tC
+    INNER JOIN Shop_Product_Category C
 		ON tC.id_category = C.id_category
 	;
     

@@ -9,24 +9,11 @@ Feature:    User Business Object
 
 # internal
 import lib.argument_validation as av
-from lib import data_types
 from forms import Form_Filters_User
-from business_objects.product import Product, Product_Permutation, Price
-from business_objects.variation import Variation
-from business_objects.image import Image
-from business_objects.delivery_option import Delivery_Option
-from business_objects.discount import Discount
-from business_objects.stock_item import Stock_Item
+from extensions import db
 # external
-from enum import Enum
-from datetime import datetime, timedelta
-import locale
-from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
 from typing import ClassVar
-
-
-db = SQLAlchemy()
 
 
 class User(db.Model):
@@ -50,8 +37,8 @@ class User(db.Model):
     def __init__(self):
         self.is_logged_in = False
         
-    def make_from_DB_user(query_row):
-        _m = 'User.make_from_DB_user'
+    def from_DB_user(query_row):
+        _m = 'User.from_DB_user'
         user = User()
         user.id_user = query_row[0]
         user.id_user_auth0 = query_row[1]
@@ -259,7 +246,7 @@ class User_Permission_Evaluation(db.Model):
     can_edit = db.Column(db.Boolean)
     can_admin = db.Column(db.Boolean)
         
-    def make_from_DB_user_eval(query_row):
+    def from_DB_user_eval(query_row):
         user_permission_evaluation = User_Permission_Evaluation()
         user_permission_evaluation.id_evaluation = query_row[0]
         user_permission_evaluation.guid = query_row[1]

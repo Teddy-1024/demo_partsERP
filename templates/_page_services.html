@@ -6,7 +6,7 @@
 
 {% block page_body %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/page_services.css') }}" />
 
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }}">
@@ -101,8 +101,9 @@
     </div>
     
     <!-- Include JavaScript -->
-    <script src="{{ url_for('static', filename='js/services.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/page_services.js') }}"></script>
     
+    <!--
     <script>
         var hashPageCurrent = "{{ model.HASH_PAGE_SERVICES }}";
 
@@ -110,4 +111,5 @@
             hookupPageServices();
         });
     </script>
+    -->
 {% endblock %}

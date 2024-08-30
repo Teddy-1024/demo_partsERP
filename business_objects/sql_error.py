@@ -55,7 +55,7 @@ class SQL_Error(db.Model):
         super().__init__()
     """
 
-    def make_from_DB_record(record):
+    def from_DB_record(record):
         error = SQL_Error()
         error.display_order = record[0]
         error.code = record[1]

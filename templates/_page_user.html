@@ -4,7 +4,7 @@
 
 {% block page_body %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/page_user.css') }}" />
 
     <!-- HTML content -->
     <div>
@@ -15,8 +15,9 @@
     </div>
     
     <!-- Include JavaScript -->
-    <script src="{{ url_for('static', filename='js/user.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/page_user.js') }}"></script>
     
+    <!--
     <script>
         var hashPageCurrent = "{{ model.HASH_PAGE_USER_ACCOUNT }}";
 
@@ -24,4 +25,5 @@
             hookupPageUserAccount();
         });
     </script>
+    -->
 {% endblock %}

@@ -325,7 +325,7 @@ BEGIN
 					RANK() OVER (ORDER BY C.display_order, P.display_order) AS rank_product
 				FROM Split_Temp ST
                 INNER JOIN Shop_Product P ON ST.substring = P.id_product # Shop_Product_Permutation PP
-                INNER JOIN Shop_Category C ON P.id_category = C.id_category
+                INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 				INNER JOIN Shop_Access_Level AL
 					ON P.id_access_level_required = AL.id_access_level
 						AND AL.active

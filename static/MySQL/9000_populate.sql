@@ -161,7 +161,7 @@ VALUES
 
 
 # Categories
-INSERT INTO Shop_Category (
+INSERT INTO Shop_Product_Category (
 	display_order,
 	code,
 	name,

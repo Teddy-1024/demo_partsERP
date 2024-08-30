@@ -18,7 +18,7 @@ Data model for store basket view
 # internal
 from models.model_view_store import Model_View_Store
 # from routes import bp_home
-from business_objects.product import Product
+from business_objects.store.product import Product
 from forms import Form_Billing # Form_Product
 # external
 
@@ -64,15 +64,11 @@ class Model_View_Store_Basket(Model_View_Store):
     @property
     def title(self):
         return 'Store Basket'
-
-    def __new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
-        # Initialiser - validation
-        return super(Model_View_Store_Basket, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
     
-    def __init__(self, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
+    def __init__(self, id_currency, id_region_delivery, is_included_VAT, hash_page_current=Model_View_Store.HASH_PAGE_STORE_BASKET):
         # Constructor
-        super().__init__(db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
-        # self.product_categories = Model_View_Store_Basket.get_many_product_category(get_all_category = True, get_all_product = True)
+        super().__init__(hash_page_current=hash_page_current, id_currency=id_currency, id_region_delivery=id_region_delivery, is_included_VAT=is_included_VAT)
+        # self.product_categories = Model_View_Store_Basket.get_many_product(get_all_category = True, get_all_product = True)
         self.form_billing = Form_Billing()
         self.form_billing.form_type_billing_not_delivery = True
         self.form_delivery = Form_Billing()

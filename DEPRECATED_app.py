@@ -28,11 +28,11 @@ from models.model_view_store_basket import Model_View_Store_Basket
 from models.model_view_store_checkout import Model_View_Store_Checkout
 from models.model_view_store_checkout_success import Model_View_Store_Checkout_Success
 from models.model_view_contact import Model_View_Contact
-from business_objects.product import Product # , Product_Image_Filters, Resolution_Level_Enum
+from business_objects.store.product import Product # , Product_Image_Filters, Resolution_Level_Enum
 import lib.argument_validation as av
-from business_objects.basket import Basket_Item
-from datastores.datastore_store import DataStore_Store
-from business_objects.product import Product_Filters
+from business_objects.store.basket import Basket_Item
+from datastores.datastore_store_base import DataStore_Store
+from business_objects.store.product import Product_Filters
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
 from flask_cors import CORS
@@ -163,9 +163,9 @@ def store_home():
     print(f"id_region_delivery = {id_region_delivery}")
     model = Model_View_Store_Home(db, get_info_user(), app, id_currency, id_region_delivery, is_included_VAT)
     # model.get_regions_and_currencies()
-    # model.categories = Model_View_Store_Home.get_many_product_category(db)
+    # model.categories = Model_View_Store_Home.get_many_product(db)
     # product = categories[list(categories.keys())[0]][0]
-    model.get_many_product_category(Product_Filters(
+    model.get_many_product(Product_Filters(
         model.id_user,
         True, '', False,
         True, '', False, False, 
@@ -423,7 +423,7 @@ def store_product(permutation_id, region_id, currency_id, is_included_VAT):
         model = Model_View_Store_Product(db, get_info_user(), app, permutation_id, currency_id, region_id, is_included_VAT)
         print('model reached')
         # model.id_currency, model.id_region_delivery, model.is_included_VAT = DataStore_Store.get_metadata_basket(request.json)
-        # model.get_many_product_category(product_ids = str(product_id))
+        # model.get_many_product(product_ids = str(product_id))
         # print('categories reached')
         # product = model.categories[0].products[0]# [list(categories.keys())[0]][0]
         # print('product reached')
@@ -654,7 +654,7 @@ def login_callback():
 
     # id_user = get_id_user()
     # add user to database
-    # DataStore_Store(db, userinfo).add_new_user(id_user) # this is part of get basket - should occur on page load
+    # DataStore_Store().add_new_user(id_user) # this is part of get basket - should occur on page load
 
     return redirect("/")
 

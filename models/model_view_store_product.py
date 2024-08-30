@@ -17,9 +17,9 @@ Data model for store product view
 # IMPORTS
 # internal
 from models.model_view_store import Model_View_Store
-from datastores.datastore_store import DataStore_Store
+from datastores.datastore_store_base import DataStore_Store_Base
 # from routes import bp_home
-from business_objects.product import Product, Product_Filters
+from business_objects.store.product import Product, Product_Filters
 import lib.argument_validation as av
 # external
 
@@ -37,32 +37,14 @@ class Model_View_Store_Product(Model_View_Store):
     def title(self):
         return 'Store Product'
 
-    def __new__(cls, db, id_user, app, id_permutation, id_currency, id_region_delivery, is_included_VAT): # *args, **kwargs
-        # Initialiser - validation
-        _m = 'Model_View_Store_Product.__new__'
-        print(f'{_m}\nstarting...')
-        v_arg_type = 'class attribute'
-        
-        # av.val_instance(product, 'product', _m, Product, v_arg_type=v_arg_type)
-        # av.val_int(id_product, 'id_product', _m, v_arg_type=v_arg_type)
-        # av.val_int(id_permutation, 'id_permutation', _m, v_arg_type=v_arg_type)
-        
-        print(f'user id: {id_user.get("sub")}')
-        print(f'ending')
-        
-        # return super().__new__(cls, *args, **kwargs) # Model_View_Store_Product, cls # , db, id_user, id_product) # , db, id_user)
-        return super(Model_View_Store_Product, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
-    
-    def __init__(self, db, id_user, app, id_permutation, id_currency, id_region_delivery, is_included_VAT):
+    def __init__(self, id_permutation, id_currency, id_region_delivery, is_included_VAT, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCT):
         # Constructor
         _m = 'Model_View_Store_Product.__init__'
         print(f'{_m}\nstarting...')
-        super().__init__(db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
+        super().__init__(hash_page_current=hash_page_current, id_currency=id_currency, id_region_delivery=id_region_delivery, is_included_VAT=is_included_VAT)
         print('supered')
-        print(f'user info: {self.info_user}')
-        # print(f'user id: {self.info_user.get("sub")}')
         
-        category_list = DataStore_Store(self.db, self.info_user).get_many_product_category(Product_Filters(
+        category_list = DataStore_Store_Base().get_many_product(Product_Filters(
             self.info_user['sub'], 
             True, '', False,
             True, '', False, False,

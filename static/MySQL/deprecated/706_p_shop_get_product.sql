@@ -79,7 +79,7 @@ BEGIN
 		id_category INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
         display_order INT, 
         can_view BIT, 
         can_edit BIT, 
@@ -288,7 +288,7 @@ BEGIN
         C.description,
         C.display_order
     FROM tmp_Shop_Product t_P
-    INNER JOIN Shop_Category C
+    INNER JOIN Shop_Product_Category C
 		ON t_P.id_category = C.id_category
 	ORDER BY C.display_order
 	;

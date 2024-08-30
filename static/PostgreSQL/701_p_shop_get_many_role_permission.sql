@@ -3,7 +3,7 @@
 DROP TABLE IF EXISTS tmp_Shop_Image;
 DROP TABLE IF EXISTS tmp_Shop_Product;
 DROP TABLE IF EXISTS tmp_Shop_Variation;
-DROP TABLE IF EXISTS tmp_Shop_Category;
+DROP TABLE IF EXISTS tmp_Shop_Product_Category;
 
 CREATE OR REPLACE PROCEDURE p_shop_get_many_role_permission (
 	a_ids_role VARCHAR(4000),
@@ -84,7 +84,7 @@ BEGIN
     
     
     -- Clean up
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TABLE IF EXISTS tmp_Shop_Product_Category;
     DROP TABLE IF EXISTS tmp_Shop_Product;
     DROP TABLE IF EXISTS tmp_Shop_Image;
 END;

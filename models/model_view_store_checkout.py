@@ -19,10 +19,10 @@ Data model for store checkout view
 from models.model_view_store import Model_View_Store
 from models.model_view_store_basket import Model_View_Store_Basket
 # from routes import bp_home
-from business_objects.product import Product
+from business_objects.store.product import Product
 from forms import Form_Billing # Form_Product
 import lib.argument_validation as av
-from datastores.datastore_store import DataStore_Store
+# from datastores.datastore_store_base import DataStore_Store
 # external
 import os
 import stripe
@@ -41,13 +41,9 @@ class Model_View_Store_Checkout(Model_View_Store_Basket):
     def title(self):
         return 'Store Checkout'
 
-    def __new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
-        # Initialiser - validation
-        return super(Model_View_Store_Checkout, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
-    
-    def __init__(self, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
+    def __init__(self, id_currency, id_region_delivery, is_included_VAT, hash_page_current=Model_View_Store.HASH_PAGE_STORE_CHECKOUT):
         # Constructor
-        super().__init__(db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
+        super().__init__(hash_page_current=hash_page_current, id_currency=id_currency, id_region_delivery=id_region_delivery, is_included_VAT=is_included_VAT)
         self.key_secret_stripe = os.environ.get("KEY_SECRET_STRIPE")
         self.key_public_stripe = os.environ.get("KEY_PUBLIC_STRIPE")
         
@@ -60,16 +56,16 @@ class Model_View_Store_Checkout(Model_View_Store_Basket):
         stripe.api_key = self.key_secret_stripe
 
     
+    """
     def create_product(self, product): # _name, product_description):
-        return DataStore_Store(self.db, self.info_user).create_product(product) # _name, product_description)
+        return DataStore_Store().create_product(product) # _name, product_description)
     
     def create_price(self, product, currency):
-        return DataStore_Store(self.db, self.info_user).create_price(product, currency)
+        return DataStore_Store().create_price(product, currency)
     
     def get_many_product_new(self):
-        return DataStore_Store(self.db, self.info_user).get_many_product_new()
+        return DataStore_Store().get_many_product_new()
     
-    """
     def get_price_id(product_ids):
         return DataStore_Store().get_many_id_price(product_ids)
     """

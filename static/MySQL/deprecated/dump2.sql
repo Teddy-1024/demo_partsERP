@@ -476,8 +476,8 @@ CREATE TABLE `shop_category` (
   `created_by` varchar(100) DEFAULT NULL,
   `id_change_set` int DEFAULT NULL,
   PRIMARY KEY (`id_category`),
-  KEY `FK_Shop_Category_id_change_set` (`id_change_set`),
-  CONSTRAINT `FK_Shop_Category_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`)
+  KEY `FK_Shop_Product_Category_id_change_set` (`id_change_set`),
+  CONSTRAINT `FK_Shop_Product_Category_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -499,7 +499,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Category` BEFORE INSERT ON `shop_category` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product_Category` BEFORE INSERT ON `shop_category` FOR EACH ROW BEGIN
 	SET NEW.created_on = NOW();
     SET NEW.created_by = CURRENT_USER();
 END */;;
@@ -517,13 +517,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Category` BEFORE UPDATE ON `shop_category` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Product_Category` BEFORE UPDATE ON `shop_category` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'New change Set ID must be provided.';
     END IF;
     
-    INSERT INTO Shop_Category_Audit (
+    INSERT INTO Shop_Product_Category_Audit (
 		id_category,
         name_field,
         value_prev,
@@ -572,10 +572,10 @@ CREATE TABLE `shop_category_audit` (
   `value_new` varchar(500) DEFAULT NULL,
   `id_change_set` int NOT NULL,
   PRIMARY KEY (`id_audit`),
-  KEY `FK_Shop_Category_Audit_id_category` (`id_category`),
-  KEY `FK_Shop_Category_Audit_id_change_set` (`id_change_set`),
-  CONSTRAINT `FK_Shop_Category_Audit_id_category` FOREIGN KEY (`id_category`) REFERENCES `shop_category` (`id_category`) ON UPDATE RESTRICT,
-  CONSTRAINT `FK_Shop_Category_Audit_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`)
+  KEY `FK_Shop_Product_Category_Audit_id_category` (`id_category`),
+  KEY `FK_Shop_Product_Category_Audit_id_change_set` (`id_change_set`),
+  CONSTRAINT `FK_Shop_Product_Category_Audit_id_category` FOREIGN KEY (`id_category`) REFERENCES `shop_category` (`id_category`) ON UPDATE RESTRICT,
+  CONSTRAINT `FK_Shop_Product_Category_Audit_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5202,7 +5202,7 @@ BEGIN
 		id_category INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Basket_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
         id_product INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Basket_id_product
 			FOREIGN KEY (id_product)
@@ -5392,7 +5392,7 @@ BEGIN
 		INNER JOIN Shop_Product P
 			ON PP.id_product = P.id_product
 			AND P.active
-        INNER JOIN Shop_Category C
+        INNER JOIN Shop_Product_Category C
 			ON P.id_category = C.id_category
 			AND C.active
 		WHERE UB.id_user = a_id_user
@@ -5541,7 +5541,7 @@ BEGIN
 			INNER JOIN Shop_Product P
 				ON PP.id_product = P.id_product
                 AND P.active
-			INNER JOIN Shop_Category C
+			INNER JOIN Shop_Product_Category C
 				ON P.id_category = C.id_category
 				AND C.active
 			-- RIGHT JOIN tmp_Shop_Basket t_UB ON ISNULL(t_UB.id_product)
@@ -5552,7 +5552,7 @@ BEGIN
             IF EXISTS(
 				SELECT * 
                 FROM Shop_Product P 
-                INNER JOIN Shop_Category C 
+                INNER JOIN Shop_Product_Category C 
 					ON P.id_category = C.id_category 
 				INNER JOIN tmp_Shop_Basket t_B
 					ON P.id_product = t_B.id_product 
@@ -5588,7 +5588,7 @@ BEGIN
             FROM Shop_Product_Permutation PP
 			INNER JOIN Shop_Product P 
 				ON PP.id_product = P.id_product
-            INNER JOIN Shop_Category C 
+            INNER JOIN Shop_Product_Category C 
 				ON P.id_category = C.id_category 
             WHERE 
 				(
@@ -5803,7 +5803,7 @@ BEGIN
 		ON t_UB.id_permutation = PP.id_permutation
 	INNER JOIN Shop_Product P
 		ON PP.id_product = P.id_product
-	INNER JOIN Shop_Category C
+	INNER JOIN Shop_Product_Category C
 		ON P.id_category = C.id_category
 	INNER JOIN Shop_Product_Currency_Link PCL
 		ON PP.id_permutation = PCL.id_permutation
@@ -6069,13 +6069,13 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Image;
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TABLE IF EXISTS tmp_Shop_Product_Category;
     
-    CREATE TABLE tmp_Shop_Category (
+    CREATE TABLE tmp_Shop_Product_Category (
 		id_category INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_Category_id_category
+        CONSTRAINT FK_tmp_Shop_Product_Category_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
         active BIT NOT NULL,
         display_order INT NOT NULL, 
         can_view BIT, 
@@ -6087,7 +6087,7 @@ BEGIN
 		id_category INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		id_product INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_product
 			FOREIGN KEY (id_product)
@@ -6267,7 +6267,7 @@ BEGIN
 	FROM Shop_Product P
     INNER JOIN Shop_Product_Permutation PP
 		ON P.id_product = PP.id_product
-	INNER JOIN Shop_Category C
+	INNER JOIN Shop_Product_Category C
 		ON P.id_category = C.id_category
 	WHERE
 		# permutations
@@ -6304,7 +6304,7 @@ BEGIN
 		;
     END IF;
     
-    INSERT INTO tmp_Shop_Category (
+    INSERT INTO tmp_Shop_Product_Category (
 		id_category, 
         active,
         display_order
@@ -6313,7 +6313,7 @@ BEGIN
 		C.active,
 		C.display_order
 	FROM tmp_Shop_Product t_P
-    INNER JOIN Shop_Category C
+    INNER JOIN Shop_Product_Category C
 		ON t_P.id_category = C.id_category
 	ORDER BY C.display_order
 	;
@@ -6381,7 +6381,7 @@ BEGIN
     IF v_has_filter_image THEN
 		DELETE FROM tmp_Shop_Product
 			WHERE id_product NOT IN (SELECT DISTINCT id_product FROM tmp_Shop_Image);
-		DELETE FROM tmp_Shop_Category
+		DELETE FROM tmp_Shop_Product_Category
 			WHERE id_category NOT IN (SELECT DISTINCT id_category FROM tmp_Shop_Product);
     END IF;
     */
@@ -6629,7 +6629,7 @@ BEGIN
     # select * from tmp_Shop_Product;
     
     -- Permissions
-    IF EXISTS (SELECT * FROM tmp_Shop_Category LIMIT 1) THEN
+    IF EXISTS (SELECT * FROM tmp_Shop_Product_Category LIMIT 1) THEN
         # SET v_id_user := (SELECT id_user FROM Shop_User WHERE name = CURRENT_USER());
         SET v_id_permission_product := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
         -- SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Shop_Product);
@@ -6689,8 +6689,8 @@ BEGIN
         C.name,
         C.description,
         C.display_order
-    FROM tmp_Shop_Category t_C
-    INNER JOIN Shop_Category C
+    FROM tmp_Shop_Product_Category t_C
+    INNER JOIN Shop_Product_Category C
 		ON t_C.id_category = C.id_category
 	INNER JOIN tmp_Shop_Product t_P
 		ON t_C.id_category = t_P.id_category
@@ -6974,7 +6974,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Image;
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TABLE IF EXISTS tmp_Shop_Product_Category;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;

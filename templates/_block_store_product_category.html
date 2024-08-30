@@ -1,9 +1,37 @@
-<!-- Store Product Category Card -->
-<div class="card" {{ model.attr_product_category_id }}="{{ cat.id_category }}">
-    <h3 style="width: 100%; justify-self: left; margin-left: 3vh; display: inline-flex;">{{ cat.name }}</h4>
-    <div class="container">
-        {% for product in cat.products %}
-            {% include '_block_store_product.html' %}
-        {% endfor %}
-    </div>
-</div>
+{% if is_blank_row %}
+    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_CATEGORY }}>
+        <td class="{{ model.FLAG_DISPLAY_ORDER }}">
+            {% include '_block_button_slider.html' %}
+        </td>
+        <td class="{{ model.FLAG_CODE }}">
+            <textarea class="{{ model.FLAG_CODE }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></select>
+        </td>
+        <td class="{{ model.FLAG_NAME }}">
+            <textarea class="{{ model.FLAG_NAME }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_DESCRIPTION }}">
+            <textarea class="{{ model.FLAG_DESCRIPTION }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="true" {{ model.ATTR_VALUE_PREVIOUS }}="true">
+        </td>
+    </tr>
+{% else %}
+    <tr {{ model.ATTR_ID_CATEGORY }}="{{ category.id_category }}">
+        <td class="{{ model.FLAG_DISPLAY_ORDER }}">
+            {% include '_block_button_slider.html' %}
+        </td>
+        <td class="{{ model.FLAG_CODE }}">
+            <textarea class="{{ model.FLAG_CODE }}" value="{{ category.code }}" {{ model.ATTR_VALUE_CURRENT }}="{{ category.code }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.code }}"></select>
+        </td>
+        <td class="{{ model.FLAG_NAME }}">
+            <textarea class="{{ model.FLAG_NAME }}" value="{{ category.name }}" {{ model.ATTR_VALUE_CURRENT }}="{{ category.name }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.name }}"></textarea>
+        </td>
+        <td class="{{ model.FLAG_DESCRIPTION }}">
+            <textarea class="{{ model.FLAG_DESCRIPTION }}" value="{{ category.description }}" {{ model.ATTR_VALUE_CURRENT }}="{{ category.description }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.description }}">
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {% if category.active %}checked{% endif %} {{ model.ATTR_VALUE_CURRENT }}="{{ str(category.active).lower() }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ str(category.active).lower() }}">
+        </td>
+    </tr>
+{% endif %}

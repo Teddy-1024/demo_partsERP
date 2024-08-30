@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS tmp_Shop_Image;
 DROP TABLE IF EXISTS tmp_Shop_Variation;
 DROP TABLE IF EXISTS tmp_Shop_Discount;
 DROP TABLE IF EXISTS tmp_Discount;
-DROP TABLE IF EXISTS tmp_Shop_Category;
+DROP TABLE IF EXISTS tmp_Shop_Product_Category;
 DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Region_Link;
 DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Link;
 DROP TABLE IF EXISTS tmp_User_Role_Link;
@@ -160,8 +160,8 @@ DROP TABLE IF EXISTS Shop_Region;
 DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
 DROP TABLE IF EXISTS Shop_Recurrence_Interval;
 
-DROP TABLE IF EXISTS Shop_Category_Audit;
-DROP TABLE IF EXISTS Shop_Category;
+DROP TABLE IF EXISTS Shop_Product_Category_Audit;
+DROP TABLE IF EXISTS Shop_Product_Category;
 
 DROP TABLE IF EXISTS Shop_General_Audit;
 DROP TABLE IF EXISTS Shop_General;
@@ -460,9 +460,9 @@ CREATE TABLE IF NOT EXISTS Shop_General_Audit (
 
 
 
-SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Category';
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Category';
 
-CREATE TABLE IF NOT EXISTS Shop_Category (
+CREATE TABLE IF NOT EXISTS Shop_Product_Category (
 	id_category INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	code VARCHAR(50),
 	name VARCHAR(255),
@@ -472,7 +472,7 @@ CREATE TABLE IF NOT EXISTS Shop_Category (
 	created_on TIMESTAMP,
 	created_by VARCHAR(100),
 	id_change_set INTEGER,
-	CONSTRAINT FK_Shop_Category_id_change_set
+	CONSTRAINT FK_Shop_Product_Category_id_change_set
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
@@ -481,20 +481,20 @@ CREATE TABLE IF NOT EXISTS Shop_Category (
 
 
 
-SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Category_Audit';
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Category_Audit';
 
-CREATE TABLE IF NOT EXISTS Shop_Category_Audit (
+CREATE TABLE IF NOT EXISTS Shop_Product_Category_Audit (
 	id_audit INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	id_category INTEGER NOT NULL,
-	CONSTRAINT FK_Shop_Category_Audit_id_category
+	CONSTRAINT FK_Shop_Product_Category_Audit_id_category
 		FOREIGN KEY (id_category)
-		REFERENCES Shop_Category(id_category)
+		REFERENCES Shop_Product_Category(id_category)
 		ON UPDATE RESTRICT,
 	name_field VARCHAR(50),
 	value_prev VARCHAR(4000),
 	value_new VARCHAR(4000),
 	id_change_set INTEGER NOT NULL,
-	CONSTRAINT FK_Shop_Category_Audit_id_change_set
+	CONSTRAINT FK_Shop_Product_Category_Audit_id_change_set
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
@@ -752,7 +752,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
     -- ratio_discount_overall REAL NOT NULL DEFAULT 0,
 	CONSTRAINT FK_Shop_Product_id_category
 		FOREIGN KEY (id_category)
-		REFERENCES Shop_Category(id_category)
+		REFERENCES Shop_Product_Category(id_category)
 		ON UPDATE RESTRICT,
 	latency_manuf INTEGER,
 	quantity_min REAL,
@@ -2751,7 +2751,7 @@ FOR EACH ROW
 EXECUTE FUNCTION before_update_Shop_General();
 -- Shop Category
 
-CREATE OR REPLACE FUNCTION before_insert_Shop_Category()
+CREATE OR REPLACE FUNCTION before_insert_Shop_Product_Category()
 RETURNS TRIGGER AS $$
 BEGIN
 	NEW.created_on = CURRENT_TIMESTAMP;
@@ -2761,13 +2761,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Category
-BEFORE INSERT ON Shop_Category
+CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Product_Category
+BEFORE INSERT ON Shop_Product_Category
 FOR EACH ROW
-EXECUTE FUNCTION before_insert_Shop_Category();
+EXECUTE FUNCTION before_insert_Shop_Product_Category();
 
 
-CREATE OR REPLACE FUNCTION before_update_Shop_Category()
+CREATE OR REPLACE FUNCTION before_update_Shop_Product_Category()
 RETURNS TRIGGER AS $$
 BEGIN
 	IF OLD.id_change_set IS NOT DISTINCT FROM NEW.id_change_set THEN
@@ -2775,7 +2775,7 @@ BEGIN
 			USING ERRCODE = '45000';
     END IF;
     
-    INSERT INTO Shop_Category_Audit (
+    INSERT INTO Shop_Product_Category_Audit (
 		id_category,
         name_field,
         value_prev,
@@ -2807,10 +2807,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_update_Shop_Category
-BEFORE UPDATE ON Shop_Category
+CREATE OR REPLACE TRIGGER tri_before_update_Shop_Product_Category
+BEFORE UPDATE ON Shop_Product_Category
 FOR EACH ROW
-EXECUTE FUNCTION before_update_Shop_Category();
+EXECUTE FUNCTION before_update_Shop_Product_Category();
 
 -- Shop Recurrence Interval
 
@@ -5988,7 +5988,7 @@ BEGIN
 			v_guid,
 			RANK() OVER (ORDER BY C.display_order, P.display_order) AS rank_product
 		FROM Shop_Product P -- ON ST.substring = P.id_product -- Shop_Product_Permutation PP
-		INNER JOIN Shop_Category C ON P.id_category = C.id_category
+		INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 		INNER JOIN Shop_Access_Level AL
 			ON P.id_access_level_required = AL.id_access_level
 				AND AL.active
@@ -8826,7 +8826,7 @@ BEGIN
 		id_category INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Basket_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
         id_product INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Basket_id_product
 			FOREIGN KEY (id_product)
@@ -9016,7 +9016,7 @@ BEGIN
 		INNER JOIN Shop_Product P
 			ON PP.id_product = P.id_product
 			AND P.active
-        INNER JOIN Shop_Category C
+        INNER JOIN Shop_Product_Category C
 			ON P.id_category = C.id_category
 			AND C.active
 		WHERE UB.id_user = a_id_user
@@ -9165,7 +9165,7 @@ BEGIN
 			INNER JOIN Shop_Product P
 				ON PP.id_product = P.id_product
                 AND P.active
-			INNER JOIN Shop_Category C
+			INNER JOIN Shop_Product_Category C
 				ON P.id_category = C.id_category
 				AND C.active
 			-- RIGHT JOIN tmp_Shop_Basket t_UB ON ISNULL(t_UB.id_product)
@@ -9176,7 +9176,7 @@ BEGIN
             IF EXISTS(
 				SELECT * 
                 FROM Shop_Product P 
-                INNER JOIN Shop_Category C 
+                INNER JOIN Shop_Product_Category C 
 					ON P.id_category = C.id_category 
 				INNER JOIN tmp_Shop_Basket t_B
 					ON P.id_product = t_B.id_product 
@@ -9212,7 +9212,7 @@ BEGIN
             FROM Shop_Product_Permutation PP
 			INNER JOIN Shop_Product P 
 				ON PP.id_product = P.id_product
-            INNER JOIN Shop_Category C 
+            INNER JOIN Shop_Product_Category C 
 				ON P.id_category = C.id_category 
             WHERE 
 				(
@@ -9427,7 +9427,7 @@ BEGIN
 		ON t_UB.id_permutation = PP.id_permutation
 	INNER JOIN Shop_Product P
 		ON PP.id_product = P.id_product
-	INNER JOIN Shop_Category C
+	INNER JOIN Shop_Product_Category C
 		ON P.id_category = C.id_category
 	INNER JOIN Shop_Product_Currency_Link PCL
 		ON PP.id_permutation = PCL.id_permutation
@@ -9689,7 +9689,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_Category;
 	*/
     DROP TABLE IF EXISTS tmp_Discount;
     DROP TABLE IF EXISTS tmp_Currency;
@@ -9697,14 +9697,14 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Image;
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TABLE IF EXISTS tmp_Shop_Product_Category;
     
-    CREATE TEMPORARY TABLE tmp_Shop_Category (
+    CREATE TEMPORARY TABLE tmp_Shop_Product_Category (
 		id_category INTEGER NOT NULL,
 		/*
-        CONSTRAINT FK_tmp_Shop_Category_id_category
+        CONSTRAINT FK_tmp_Shop_Product_Category_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		*/
         active BOOLEAN NOT NULL,
         display_order INTEGER NOT NULL, 
@@ -9718,7 +9718,7 @@ BEGIN
 		/*
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		*/
 		id_product INTEGER NOT NULL,
 		/*
@@ -9918,7 +9918,7 @@ BEGIN
 	FROM Shop_Product P
     INNER JOIN Shop_Product_Permutation PP
 		ON P.id_product = PP.id_product
-	INNER JOIN Shop_Category C
+	INNER JOIN Shop_Product_Category C
 		ON P.id_category = C.id_category
 	WHERE
 		-- permutations
@@ -9980,7 +9980,7 @@ BEGIN
     END IF;
 
     
-    INSERT INTO tmp_Shop_Category (
+    INSERT INTO tmp_Shop_Product_Category (
 		id_category, 
         active,
         display_order
@@ -9989,7 +9989,7 @@ BEGIN
 		C.active,
 		C.display_order
 	FROM tmp_Shop_Product t_P
-    INNER JOIN Shop_Category C
+    INNER JOIN Shop_Product_Category C
 		ON t_P.id_category = C.id_category
 	ORDER BY C.display_order
 	;
@@ -10063,7 +10063,7 @@ BEGIN
     IF v_has_filter_image THEN
 		DELETE FROM tmp_Shop_Product
 			WHERE id_product NOT IN (SELECT DISTINCT id_product FROM tmp_Shop_Image);
-		DELETE FROM tmp_Shop_Category
+		DELETE FROM tmp_Shop_Product_Category
 			WHERE id_category NOT IN (SELECT DISTINCT id_category FROM tmp_Shop_Product);
     END IF;
     */
@@ -10331,7 +10331,7 @@ BEGIN
     -- select * from tmp_Shop_Product;
     
     -- Permissions
-    IF EXISTS (SELECT * FROM tmp_Shop_Category LIMIT 1) THEN
+    IF EXISTS (SELECT * FROM tmp_Shop_Product_Category LIMIT 1) THEN
         -- v_id_user := (SELECT id_user FROM Shop_User WHERE name = CURRENT_USER);
         v_id_permission_product := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
         v_ids_product_permission := (SELECT STRING_AGG(id_product, ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_product));
@@ -10389,8 +10389,8 @@ BEGIN
 			C.name,
 			C.description,
 			C.display_order
-		FROM tmp_Shop_Category t_C
-		INNER JOIN Shop_Category C
+		FROM tmp_Shop_Product_Category t_C
+		INNER JOIN Shop_Product_Category C
 			ON t_C.id_category = C.id_category
 		INNER JOIN tmp_Shop_Product t_P
 			ON t_C.id_category = t_P.id_category
@@ -10707,14 +10707,14 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_Category;
     DROP TABLE IF EXISTS tmp_Discount;
     DROP TABLE IF EXISTS tmp_Currency;
     DROP TABLE IF EXISTS tmp_Delivery_Region;
     DROP TABLE IF EXISTS tmp_Shop_Image;
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TABLE IF EXISTS tmp_Shop_Product_Category;
 	*/
 END;
 $$ LANGUAGE plpgsql;
@@ -12139,7 +12139,7 @@ BEGIN
 		id_category INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		id_product INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_product
 			FOREIGN KEY (id_product)
@@ -12246,13 +12246,13 @@ BEGIN
 		IF EXISTS (
 			SELECT * 
 			FROM UNNEST(v_ids_category) AS Category_Id
-			LEFT JOIN Shop_Category C ON Category_Id = C.id_category
+			LEFT JOIN Shop_Product_Category C ON Category_Id = C.id_category
 			WHERE ISNULL(C.id_category)
 		) THEN 
 			RAISE EXCEPTION 'Invalid category IDs: %', (
 				SELECT STRING_AGG(Category_Id, ', ')
 				FROM UNNEST(v_ids_category) AS Category_Id
-				LEFT JOIN Shop_Category C ON Category_Id = C.id_category
+				LEFT JOIN Shop_Product_Category C ON Category_Id = C.id_category
 				WHERE ISNULL(C.id_category)
 			)
 			USING ERRCODE = '22000'
@@ -12364,7 +12364,7 @@ BEGIN
 		FROM Shop_Product P
 		INNER JOIN Shop_Product_Permutation PP
 			ON P.id_product = PP.id_product
-		INNER JOIN Shop_Category C
+		INNER JOIN Shop_Product_Category C
 			ON P.id_category = C.id_category
 		WHERE
 			-- permutations
@@ -12435,7 +12435,7 @@ BEGIN
 	INNER JOIN Shop_Supplier S ON SPO.id_supplier_ordered = S.id_supplier
 	INNER JOIN Shop_Product_Permutation PP ON SPOPL.id_permutation = PP.id_permutation
 	INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-	INNER JOIN Shop_Category C ON P.id_category = C.id_category
+	INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 	LEFT JOIN tmp_Shop_Product t_P ON SPOPL.id_permutation = t_P.id_permutation
 	LEFT JOIN tmp_Shop_Supplier t_S ON SPO.id_supplier_ordered = t_S.id_supplier
 	WHERE
@@ -12591,7 +12591,7 @@ BEGIN
 		INNER JOIN tmp_Shop_Supplier_Purchase_Order t_SPO ON SPOPL.id_order = t_SPO.id_order
 		INNER JOIN Shop_Product_Permutation PP ON SPOPL.id_permutation = PP.id_permutation
 		INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-		INNER JOIN Shop_Category C ON P.id_category = C.id_category
+		INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 		ORDER BY SPOPL.id_order, C.display_order, P.display_order, PP.display_order
 		;
     RETURN NEXT result_order_product_links;
@@ -12825,7 +12825,7 @@ BEGIN
 		id_category INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		id_product INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_product
 			FOREIGN KEY (id_product)
@@ -12886,13 +12886,13 @@ BEGIN
     IF v_has_filter_category = TRUE AND EXISTS (
 		SELECT * 
 		FROM UNNEST(v_ids_category) AS Category_Id
-		LEFT JOIN Shop_Category C ON Category_Id = C.id_category
+		LEFT JOIN Shop_Product_Category C ON Category_Id = C.id_category
 		WHERE ISNULL(C.id_category)
 	) THEN 
 		RAISE EXCEPTION 'Invalid category IDs: %', (
 			SELECT COALESCE(STRING_AGG(Category_Id, ', ') ,'NULL')
 			FROM UNNEST(v_ids_category) AS Category_Id
-			LEFT JOIN Shop_Category C ON Category_Id = C.id_category
+			LEFT JOIN Shop_Product_Category C ON Category_Id = C.id_category
 			WHERE ISNULL(C.id_category)
 		)
 		USING ERRCODE = '22000'
@@ -12999,7 +12999,7 @@ BEGIN
 		FROM Shop_Product P
 		INNER JOIN Shop_Product_Permutation PP
 			ON P.id_product = PP.id_product
-		INNER JOIN Shop_Category C
+		INNER JOIN Shop_Product_Category C
 			ON P.id_category = C.id_category
 		WHERE
 			-- permutations
@@ -13070,7 +13070,7 @@ BEGIN
 	INNER JOIN Shop_manufacturing_Purchase_Order_Product_Link MPOPL ON MPO.id_order = MPOPL.id_order
 	INNER JOIN Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
 	INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-	INNER JOIN Shop_Category C ON P.id_category = C.id_category
+	INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 	LEFT JOIN tmp_Shop_Product t_P ON MPOPL.id_permutation = t_P.id_permutation
 	WHERE
 		-- order
@@ -13200,7 +13200,7 @@ BEGIN
 		INNER JOIN tmp_Shop_Manufacturing_Purchase_Order t_MPO ON MPOPL.id_order = t_MPO.id_order
 		INNER JOIN Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
 		INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-		INNER JOIN Shop_Category C ON P.id_category = C.id_category
+		INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 		ORDER BY MPOPL.id_order, C.display_order, P.display_order, PP.display_order
 		;
     RETURN NEXT result_order_product_links;
@@ -13707,7 +13707,7 @@ BEGIN
 		id_category INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		id_product INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_product
 			FOREIGN KEY (id_product)
@@ -13819,14 +13819,14 @@ BEGIN
     IF v_has_filter_category = TRUE AND EXISTS (
 		SELECT STRING_AGG(Category_Id, ', ')
 		FROM UNNEST(v_ids_category) AS Category_Id
-		LEFT JOIN Shop_Category C ON Category_Id = C.id_customer
+		LEFT JOIN Shop_Product_Category C ON Category_Id = C.id_customer
 		WHERE ISNULL(C.id_customer)
 		LIMIT 1
 	) THEN 
 		RAISE EXCEPTION 'Invalid category IDs: %', (
 			SELECT STRING_AGG(Category_Id, ', ')
 			FROM UNNEST(v_ids_category) AS Category_Id
-			LEFT JOIN Shop_Category C ON Category_Id = C.id_customer
+			LEFT JOIN Shop_Product_Category C ON Category_Id = C.id_customer
 			WHERE ISNULL(C.id_customer)
 		)
 		USING ERRCODE = '22000'
@@ -13933,7 +13933,7 @@ BEGIN
 		FROM Shop_Product P
 		INNER JOIN Shop_Product_Permutation PP
 			ON P.id_product = PP.id_product
-		INNER JOIN Shop_Category C
+		INNER JOIN Shop_Product_Category C
 			ON P.id_category = C.id_category
 		WHERE
 			-- permutations
@@ -14005,7 +14005,7 @@ BEGIN
 	INNER JOIN Shop_Customer S ON CSO.id_customer = S.id_customer
 	INNER JOIN Shop_Product_Permutation PP ON CSOPL.id_permutation = PP.id_permutation
 	INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-	INNER JOIN Shop_Category C ON P.id_category = C.id_category
+	INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 	LEFT JOIN tmp_Shop_Product t_P ON CSOPL.id_permutation = t_P.id_permutation
 	LEFT JOIN tmp_Shop_Customer t_S ON CSO.id_customer = t_S.id_customer
 	WHERE
@@ -14162,7 +14162,7 @@ BEGIN
 		INNER JOIN tmp_Shop_Customer_Sales_Order t_CSO ON CSOPL.id_order = t_CSO.id_order
 		INNER JOIN Shop_Product_Permutation PP ON CSOPL.id_permutation = PP.id_permutation
 		INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-		INNER JOIN Shop_Category C ON P.id_category = C.id_category
+		INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 		ORDER BY CSOPL.id_order, C.display_order, P.display_order, PP.display_order
 		;
     RETURN NEXT result_order_product_links;
@@ -14332,7 +14332,7 @@ VALUES (
 );
 
 -- Categories
-INSERT INTO Shop_Category (
+INSERT INTO Shop_Product_Category (
 	display_order,
 	code,
 	name,
@@ -14952,8 +14952,8 @@ SELECT * FROM Shop_General;
 SELECT * FROM Shop_General_Audit;
 
 -- Categories
-SELECT * FROM Shop_Category;
-SELECT * FROM Shop_Category_Audit;
+SELECT * FROM Shop_Product_Category;
+SELECT * FROM Shop_Product_Category_Audit;
 
 -- Recurrence Interval
 SELECT * FROM Shop_Recurrence_Interval;

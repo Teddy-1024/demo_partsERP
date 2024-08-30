@@ -4,20 +4,29 @@
     </div>
 {% elif block_id == 'styles' %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/store_shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
 {% elif block_id == 'scripts' %}
     <!-- Include JavaScript -->
     <script src="{{ url_for('static', filename='js/store_shared.js') }}"></script>
     <!-- Variables from Model_View_Store + model-->
     <script>
         var attrFormType = "{{ model.ATTR_FORM_TYPE }}";
+        var attrIdCategory = "{{ model.ATTR_ID_CATEGORY }}";
         var attrIdPermutation = "{{ model.ATTR_ID_PERMUTATION }}";
         var attrIdProduct = "{{ model.ATTR_ID_PRODUCT }}";
         var attrIdProductCategory = "{{ model.ATTR_ID_PRODUCT_CATEGORY }}";
         var attrIdVariation = "{{ model.ATTR_ID_VARIATION }}";
         var attrIdVariationType = "{{ model.ATTR_ID_VARIATION_TYPE }}";
-        var flagBtnBasketAdd = "{{ model.FLAG_BTN_BASKET_ADD }}";
-        var flagBtnBuyNow = "{{ model.FLAG_BTN_BUY_NOW }}";
+        var flagButtonBasketAdd = "{{ model.FLAG_BUTTON_BASKET_ADD }}";
+        var flagButtonBuyNow = "{{ model.FLAG_BUTTON_BUY_NOW }}";
+        var flagCategory = "{{ model.FLAG_PRODUCT_CATEGORY }}";
+        var flagCostLocal = "{{ model.FLAG_COST_LOCAL }}";
+        var flagIsOutOfStock = "{{ model.FLAG_IS_OUT_OF_STOCK }}";
+        var flagProduct = "{{ model.FLAG_PRODUCT }}";
+        var flagQuantityMin = "{{ model.FLAG_QUANTITY_MIN }}";
+        var flagQuantityMax = "{{ model.FLAG_QUANTITY_MAX }}";
+        var flagQuantityStock = "{{ model.FLAG_QUANTITY_STOCK }}";
+        var flagVariations = "{{ model.FLAG_VARIATIONS }}";
         var hashStoreBasketAdd = "{{ model.HASH_STORE_BASKET_ADD }}";
         var hashStoreBasketDelete = "{{ model.HASH_STORE_BASKET_DELETE }}";
         var hashStoreBasketEdit = "{{ model.HASH_STORE_BASKET_EDIT }}";
@@ -30,6 +39,7 @@
         var idBasketContainer = "#{{ model.ID_BASKET_CONTAINER }}";
         var idBasketTotal = "#{{ model.ID_BASKET_TOTAL }}";
         var idBtnCheckout = "#{{ model.ID_BUTTON_CHECKOUT }}";
+        var idCategoryDefault = "{{ model.ID_CATEGORY_DEFAULT }}";
         var idCurrency = "#{{ model.ID_CURRENCY }}";
         var idLabelBasketEmpty = "#{{ model.ID_LABEL_BASKET_EMPTY }}";
         var idRegionDelivery = "#{{ model.ID_REGION_DELIVERY }}";
@@ -42,18 +52,7 @@
         var keyNameVariation = "{{ model.KEY_NAME_VARIATION }}";
         var keyNameVariationType = "{{ model.KEY_NAME_VARIATION_TYPE }}";
         var typeFormBasketAdd = "{{ model.TYPE_FORM_BASKET_ADD }}";
-        var typeFormBasketEdit = "{{ model.TYPE_FORM_BASKET_EDIT }}";
-
-        /*
-        if (!isEmpty({ { model.basket.items }})) {
-            localStorage.setItem(keyBasket, JSON.parse(JSON.stringify({'items': "{ { model.basket.items }}"}))); 
-        }
-        */
-        
-        $(document).ready(function() {
-            // hookupStore();
-        });
-        
+        var typeFormBasketEdit = "{{ model.TYPE_FORM_BASKET_EDIT }}";       
     </script>
 {% elif block_id == 'checkout' %}
 <!-- Variables from Model_View_Store + model-->

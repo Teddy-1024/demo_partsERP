@@ -31,7 +31,7 @@ class Helper_DB_MySQL(BaseModel):
         db.init_app(self.app)
         with self.app.app_context():
             db.create_all()
-            db.engine.url = self.app.config.SQLALCHEMY_DATABASE_URI
+            db.engine.url = self.app.config['SQLALCHEMY_DATABASE_URI']
         return db
     
     @staticmethod

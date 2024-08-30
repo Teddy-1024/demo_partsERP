@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS tmp_Shop_Image;
 DROP TABLE IF EXISTS tmp_Shop_Variation;
 DROP TABLE IF EXISTS tmp_Shop_Discount;
 DROP TABLE IF EXISTS tmp_Discount;
-DROP TABLE IF EXISTS tmp_Shop_Category;
+DROP TABLE IF EXISTS tmp_Shop_Product_Category;
 DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Region_Link;
 DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Link;
 DROP TABLE IF EXISTS tmp_User_Role_Link;
@@ -160,8 +160,8 @@ DROP TABLE IF EXISTS Shop_Region;
 DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
 DROP TABLE IF EXISTS Shop_Recurrence_Interval;
 
-DROP TABLE IF EXISTS Shop_Category_Audit;
-DROP TABLE IF EXISTS Shop_Category;
+DROP TABLE IF EXISTS Shop_Product_Category_Audit;
+DROP TABLE IF EXISTS Shop_Product_Category;
 
 DROP TABLE IF EXISTS Shop_General_Audit;
 DROP TABLE IF EXISTS Shop_General;

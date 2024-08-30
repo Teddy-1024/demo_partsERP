@@ -1,0 +1,158 @@
+"""
+Project:    PARTS Website
+Author:     Edward Middleton-Smith
+            Precision And Research Technology Systems Limited
+
+Technology: DataStores
+Feature:    Base DataStore
+
+Description:
+Datastore for Store
+"""
+
+# internal
+# from routes import bp_home
+import lib.argument_validation as av
+from business_objects.store.basket import Basket, Basket_Item
+from business_objects.store.product_category import Container_Product_Category, Product_Category
+from business_objects.store.currency import Currency
+from business_objects.store.image import Image
+from business_objects.store.delivery_option import Delivery_Option
+from business_objects.store.delivery_region import Delivery_Region
+from business_objects.store.discount import Discount
+from business_objects.store.order import Order
+from business_objects.store.product import Product, Product_Permutation, Product_Price, Product_Filters # Permutation_Variation_Link
+from business_objects.sql_error import SQL_Error
+from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
+from business_objects.user import User, User_Filters, User_Permission_Evaluation
+from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
+from helpers.helper_db_mysql import Helper_DB_MySQL
+# from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
+from extensions import db
+# external
+# from abc import ABC, abstractmethod, abstractproperty
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
+import stripe
+import os
+from flask import Flask, session, current_app
+from pydantic import BaseModel, ConfigDict
+from typing import ClassVar
+from datetime import datetime
+
+
+class DataStore_Base(BaseModel):
+    # Global constants
+    # Attributes
+    app: Flask = None
+    db: SQLAlchemy = None
+    session: object = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Constructor
+        self.db = db
+        self.app = current_app    
+        with self.app.app_context():
+            self.session = session
+
+    def db_procedure_execute(self, proc_name, argument_dict_list = None):
+        # Argument validation
+        _m = 'DataStore_Base.db_procedure_execute'
+        av.val_str(proc_name, 'proc_name', _m)
+        has_arguments = not str(type(argument_dict_list)) == "<class 'NoneType'>"
+        if has_arguments:
+            # av.val_list_instances(argument_dict_list, 'argument_dict_list', _m, dict)
+            pass
+        # Methods
+        proc_string = f'CALL {proc_name}('
+        if has_arguments:
+            arg_keys = list(argument_dict_list.keys())
+            for i in range(len(arg_keys)):
+                proc_string += f'{"" if i == 0 else ", "}:{arg_keys[i]}'
+        proc_string += ')'
+        proc_string = text(proc_string)
+        print(f'{_m}\nproc_string: {proc_string}\nargs: {argument_dict_list}')
+
+        # with self.db.session.begin() as session:
+        # conn = Helper_DB_MySQL(self.app).get_db_connection()
+
+        if has_arguments:
+            result = self.db.session.execute(proc_string, argument_dict_list)
+        else:
+            result = self.db.session.execute(proc_string)
+        print(f'result: {result}')
+        # conn.session.remove()
+        return result
+        cursor = result.cursor
+        result_set_1 = cursor.fetchall()
+        print(f'categories: {result_set_1}')
+        cursor.nextset()
+        result_set_2 = cursor.fetchall()
+        print(f'products: {result_set_2}')
+    
+    def db_cursor_clear(cursor):
+        while cursor.nextset():
+            print(f'new result set: {cursor.fetchall()}')
+
+    def get_regions_and_currencies(self):
+        _m  = 'DataStore_Base.get_regions_and_currencies'
+        _m_db_currency = 'p_shop_get_many_currency'
+        _m_db_region = 'p_shop_get_many_region'
+
+        argument_dict_list_currency = {
+            'a_get_inactive_currency': 0
+        }
+        argument_dict_list_region = {
+            'a_get_inactive_currency': 0
+        }
+
+        print(f'executing {_m_db_currency}')
+        result = self.db_procedure_execute(_m_db_currency, argument_dict_list_currency)
+        cursor = result.cursor
+        print('data received')
+
+        # cursor.nextset()
+        result_set_1 = cursor.fetchall()
+        currencies = []
+        for row in result_set_1:
+            currency = Currency.from_DB_currency(row)
+            currencies.append(currency)
+        print(f'currencies: {currencies}')
+        DataStore_Base.db_cursor_clear(cursor)
+
+        print(f'executing {_m_db_region}')
+        result = self.db_procedure_execute(_m_db_region, argument_dict_list_region)
+        cursor = result.cursor
+        print('data received')
+
+        # cursor.nextset()
+        result_set_1 = cursor.fetchall()
+        regions = []
+        for row in result_set_1:
+            region = Delivery_Region.from_DB_region(row)
+            regions.append(region)
+        print(f'regions: {regions}')
+        DataStore_Base.db_cursor_clear(cursor)
+
+        return regions, currencies
+    
+    def get_user_session(self):
+        return User.from_json(self.session.get(User.KEY_USER))
+        user = User.get_default()
+        try:
+            print(f'user session: {session[self.app.ID_TOKEN_USER]}')
+            info_user = session[self.app.ID_TOKEN_USER].get('userinfo')
+            print(f'info_user: {info_user}')
+            user.is_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
+            user.id_user_auth0 = info_user['sub'] if user.is_logged_in else None
+            print(f'user.id_user_auth0: {user.id_user_auth0}')
+        except:
+            print('get user login failed')
+        return user
+    
+    def get_user_auth0(self):
+        return User.from_json_auth0(self.session.get(self.app.config['ID_TOKEN_USER']))
+    

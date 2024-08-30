@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Shop_Currency (
     id_currency INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    symbol VARCHAR(1) NOT NULL,
+    symbol VARCHAR(50) NOT NULL,
     factor_from_GBP FLOAT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,

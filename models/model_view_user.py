@@ -21,7 +21,7 @@ class Model_View_User(Model_View_Base):
     def title(self):
         return 'User'
     
-    def __init__(self, app, db):
+    def __init__(self, hash_page_current=Model_View_Base.HASH_PAGE_USER_ACCOUNT):
         # Constructor
-        super().__init__(app=app, db=db)
+        super().__init__(hash_page_current=hash_page_current)
     

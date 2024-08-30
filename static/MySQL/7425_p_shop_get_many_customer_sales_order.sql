@@ -179,7 +179,7 @@ BEGIN
 		id_category INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		id_product INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_product
 			FOREIGN KEY (id_product)
@@ -303,7 +303,7 @@ BEGIN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
 			CALL p_split(a_ids_category, ',');
 			
-			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Category C ON TS.substring = C.id_category WHERE ISNULL(C.id_category)) THEN 
+			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Category C ON TS.substring = C.id_category WHERE ISNULL(C.id_category)) THEN 
 				INSERT INTO tmp_Msg_Error (
 					guid,
                     id_type,
@@ -316,7 +316,7 @@ BEGIN
 					v_code_error_data, 
 					CONCAT('Invalid category IDs: ', IFNULL(GROUP_CONCAT(TS.substring SEPARATOR ', ') ,'NULL')) 
 				FROM Split_Temp TS 
-				LEFT JOIN Shop_Category C ON TS.substring = C.id_category 
+				LEFT JOIN Shop_Product_Category C ON TS.substring = C.id_category 
 				WHERE ISNULL(C.id_category)
 				;
 			END IF;
@@ -444,7 +444,7 @@ BEGIN
 			FROM Shop_Product P
 			INNER JOIN Shop_Product_Permutation PP
 				ON P.id_product = PP.id_product
-			INNER JOIN Shop_Category C
+			INNER JOIN Shop_Product_Category C
 				ON P.id_category = C.id_category
 			WHERE
 				# permutations
@@ -522,7 +522,7 @@ BEGIN
             INNER JOIN Shop_Customer S ON CSO.id_customer = S.id_customer
             INNER JOIN Shop_Product_Permutation PP ON CSOPL.id_permutation = PP.id_permutation
             INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-            INNER JOIN Shop_Category C ON P.id_category = C.id_category
+            INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
             LEFT JOIN tmp_Shop_Product t_P ON CSOPL.id_permutation = t_P.id_permutation
             LEFT JOIN tmp_Shop_Customer t_S ON CSO.id_customer = t_S.id_customer
 			WHERE
@@ -686,7 +686,7 @@ BEGIN
     INNER JOIN tmp_Shop_Customer_Sales_Order t_CSO ON CSOPL.id_order = t_CSO.id_order
     INNER JOIN Shop_Product_Permutation PP ON CSOPL.id_permutation = PP.id_permutation
     INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-    INNER JOIN Shop_Category C ON P.id_category = C.id_category
+    INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
     ORDER BY CSOPL.id_order, C.display_order, P.display_order, PP.display_order
     ;
     
