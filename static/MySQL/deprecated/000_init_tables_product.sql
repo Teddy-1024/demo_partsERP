@@ -39,8 +39,8 @@ DROP TABLE IF EXISTS Shop_Product;
 DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
 DROP TABLE IF EXISTS Shop_Recurrence_Interval;
 
-DROP TABLE IF EXISTS Shop_Category_Audit;
-DROP TABLE IF EXISTS Shop_Category;
+DROP TABLE IF EXISTS Shop_Product_Category_Audit;
+DROP TABLE IF EXISTS Shop_Product_Category;
 
 DROP TABLE IF EXISTS Shop_General_Audit;
 DROP TABLE IF EXISTS Shop_General;
@@ -247,7 +247,7 @@ SELECT * FROM Shop_General_Audit;
 
 
 # Categories
-CREATE TABLE Shop_Category (
+CREATE TABLE Shop_Product_Category (
     id_category INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50),
     name VARCHAR(255),
@@ -257,14 +257,14 @@ CREATE TABLE Shop_Category (
     created_on TIMESTAMP,
     created_by VARCHAR(100),
     id_change_set INT,
-    CONSTRAINT FK_Shop_Category_id_change_set
+    CONSTRAINT FK_Shop_Product_Category_id_change_set
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
 DELIMITER //
-CREATE TRIGGER before_insert_Shop_Category
-BEFORE INSERT ON Shop_Category
+CREATE TRIGGER before_insert_Shop_Product_Category
+BEFORE INSERT ON Shop_Product_Category
 FOR EACH ROW
 BEGIN
 	SET NEW.created_on = NOW();
@@ -272,28 +272,28 @@ BEGIN
 END //
 DELIMITER ;
 
-CREATE TABLE Shop_Category_Audit (
+CREATE TABLE Shop_Product_Category_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_category INT NOT NULL,
-    CONSTRAINT FK_Shop_Category_Audit_id_category
+    CONSTRAINT FK_Shop_Product_Category_Audit_id_category
 		FOREIGN KEY (id_category)
-        REFERENCES Shop_Category(id_category)
+        REFERENCES Shop_Product_Category(id_category)
         ON UPDATE RESTRICT,
     name_field VARCHAR(50),
     value_prev VARCHAR(500),
     value_new VARCHAR(500),
     id_change_set INT NOT NULL,
-    CONSTRAINT FK_Shop_Category_Audit_id_change_set
+    CONSTRAINT FK_Shop_Product_Category_Audit_id_change_set
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
 DELIMITER //
-CREATE TRIGGER before_update_Shop_Category
-BEFORE UPDATE ON Shop_Category
+CREATE TRIGGER before_update_Shop_Product_Category
+BEFORE UPDATE ON Shop_Product_Category
 FOR EACH ROW
 BEGIN
-    INSERT INTO Shop_Category_Audit (
+    INSERT INTO Shop_Product_Category_Audit (
 		id_category,
         name_field,
         value_prev,
@@ -323,7 +323,7 @@ BEGIN
 END //
 DELIMITER ;
 
-INSERT INTO Shop_Category (
+INSERT INTO Shop_Product_Category (
 	display_order,
     code,
 	name,
@@ -336,8 +336,8 @@ VALUES (
     'Not category allocated products'
 );
 
-SELECT * FROM Shop_Category;
-SELECT * FROM Shop_Category_Audit;
+SELECT * FROM Shop_Product_Category;
+SELECT * FROM Shop_Product_Category_Audit;
 
 
 
@@ -431,7 +431,7 @@ CREATE TABLE Shop_Product (
     id_category INT NOT NULL,
     CONSTRAINT FK_Shop_Product_id_category
 		FOREIGN KEY (id_category)
-        REFERENCES Shop_Category(id_category)
+        REFERENCES Shop_Product_Category(id_category)
         ON UPDATE RESTRICT,
     latency_manuf INT NOT NULL DEFAULT 14,
     quantity_min FLOAT NOT NULL DEFAULT 1,

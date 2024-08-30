@@ -1,7 +1,7 @@
 
 -- Shop Category
 
-CREATE OR REPLACE FUNCTION before_insert_Shop_Category()
+CREATE OR REPLACE FUNCTION before_insert_Shop_Product_Category()
 RETURNS TRIGGER AS $$
 BEGIN
 	NEW.created_on = CURRENT_TIMESTAMP;
@@ -11,13 +11,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Category
-BEFORE INSERT ON Shop_Category
+CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Product_Category
+BEFORE INSERT ON Shop_Product_Category
 FOR EACH ROW
-EXECUTE FUNCTION before_insert_Shop_Category();
+EXECUTE FUNCTION before_insert_Shop_Product_Category();
 
 
-CREATE OR REPLACE FUNCTION before_update_Shop_Category()
+CREATE OR REPLACE FUNCTION before_update_Shop_Product_Category()
 RETURNS TRIGGER AS $$
 BEGIN
 	IF OLD.id_change_set IS NOT DISTINCT FROM NEW.id_change_set THEN
@@ -25,7 +25,7 @@ BEGIN
 			USING ERRCODE = '45000';
     END IF;
     
-    INSERT INTO Shop_Category_Audit (
+    INSERT INTO Shop_Product_Category_Audit (
 		id_category,
         name_field,
         value_prev,
@@ -57,7 +57,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_update_Shop_Category
-BEFORE UPDATE ON Shop_Category
+CREATE OR REPLACE TRIGGER tri_before_update_Shop_Product_Category
+BEFORE UPDATE ON Shop_Product_Category
 FOR EACH ROW
-EXECUTE FUNCTION before_update_Shop_Category();
+EXECUTE FUNCTION before_update_Shop_Product_Category();

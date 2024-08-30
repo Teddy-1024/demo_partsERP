@@ -155,7 +155,7 @@ BEGIN
 		id_category INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		id_product INTEGER NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_product
 			FOREIGN KEY (id_product)
@@ -267,14 +267,14 @@ BEGIN
     IF v_has_filter_category = TRUE AND EXISTS (
 		SELECT STRING_AGG(Category_Id, ', ')
 		FROM UNNEST(v_ids_category) AS Category_Id
-		LEFT JOIN Shop_Category C ON Category_Id = C.id_customer
+		LEFT JOIN Shop_Product_Category C ON Category_Id = C.id_customer
 		WHERE ISNULL(C.id_customer)
 		LIMIT 1
 	) THEN 
 		RAISE EXCEPTION 'Invalid category IDs: %', (
 			SELECT STRING_AGG(Category_Id, ', ')
 			FROM UNNEST(v_ids_category) AS Category_Id
-			LEFT JOIN Shop_Category C ON Category_Id = C.id_customer
+			LEFT JOIN Shop_Product_Category C ON Category_Id = C.id_customer
 			WHERE ISNULL(C.id_customer)
 		)
 		USING ERRCODE = '22000'
@@ -381,7 +381,7 @@ BEGIN
 		FROM Shop_Product P
 		INNER JOIN Shop_Product_Permutation PP
 			ON P.id_product = PP.id_product
-		INNER JOIN Shop_Category C
+		INNER JOIN Shop_Product_Category C
 			ON P.id_category = C.id_category
 		WHERE
 			-- permutations
@@ -453,7 +453,7 @@ BEGIN
 	INNER JOIN Shop_Customer S ON CSO.id_customer = S.id_customer
 	INNER JOIN Shop_Product_Permutation PP ON CSOPL.id_permutation = PP.id_permutation
 	INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-	INNER JOIN Shop_Category C ON P.id_category = C.id_category
+	INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 	LEFT JOIN tmp_Shop_Product t_P ON CSOPL.id_permutation = t_P.id_permutation
 	LEFT JOIN tmp_Shop_Customer t_S ON CSO.id_customer = t_S.id_customer
 	WHERE
@@ -610,7 +610,7 @@ BEGIN
 		INNER JOIN tmp_Shop_Customer_Sales_Order t_CSO ON CSOPL.id_order = t_CSO.id_order
 		INNER JOIN Shop_Product_Permutation PP ON CSOPL.id_permutation = PP.id_permutation
 		INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-		INNER JOIN Shop_Category C ON P.id_category = C.id_category
+		INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 		ORDER BY CSOPL.id_order, C.display_order, P.display_order, PP.display_order
 		;
     RETURN NEXT result_order_product_links;

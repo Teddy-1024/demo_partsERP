@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
     -- ratio_discount_overall REAL NOT NULL DEFAULT 0,
 	CONSTRAINT FK_Shop_Product_id_category
 		FOREIGN KEY (id_category)
-		REFERENCES Shop_Category(id_category)
+		REFERENCES Shop_Product_Category(id_category)
 		ON UPDATE RESTRICT,
 	latency_manuf INTEGER,
 	quantity_min REAL,

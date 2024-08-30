@@ -32,6 +32,6 @@ class Model_View_Contact(Model_View_Base):
     def title(self):
         return 'Contact'
     
-    def __init__(self, app, db, form_contact, **kwargs):
-        super().__init__(app=app, db=db, form_contact=form_contact, **kwargs)
+    def __init__(self, form_contact, hash_page_current=Model_View_Base.HASH_PAGE_CONTACT, **kwargs):
+        super().__init__(hash_page_current=hash_page_current, form_contact=form_contact, **kwargs)
         # self.form = form

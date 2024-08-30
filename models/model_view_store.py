@@ -18,14 +18,16 @@ Parent data model for store views
 # internal
 # from context import models
 from models.model_view_base import Model_View_Base
-from business_objects.product import Product, Product_Filters, Product_Permutation # Product_Image_Filters, 
-from business_objects.image import Resolution_Level_Enum
+from business_objects.store.product import Product, Product_Filters, Product_Permutation # Product_Image_Filters, 
+from business_objects.store.image import Resolution_Level_Enum
 import lib.argument_validation as av
-from datastores.datastore_store import DataStore_Store
+from datastores.datastore_store_base import DataStore_Store_Base
+from datastores.datastore_user import DataStore_User
+from datastores.datastore_store_basket import DataStore_Store_Basket
 from forms import Form_Basket_Edit, Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
-from business_objects.basket import Basket_Item, Basket
-from business_objects.category import Category
-from business_objects.variation import Variation_Filters, Variation
+from business_objects.store.basket import Basket_Item, Basket
+from business_objects.store.product_category import Product_Category
+from business_objects.store.product_variation import Product_Variation_Filters, Product_Variation
 # external
 from flask import send_file, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -39,15 +41,14 @@ from typing import ClassVar
 class Model_View_Store(Model_View_Base):
     # Global constants
     ATTR_FORM_TYPE: ClassVar[str] = 'form-type'
-    ATTR_ID_CATEGORY: ClassVar[str] = Product.ATTR_ID_CATEGORY
+    ATTR_ID_CATEGORY: ClassVar[str] = Product.ATTR_ID_PRODUCT_CATEGORY
     # ATTR_ID_PRODUCT_CATEGORY : ClassVar[str] = 'id-product-category'
     ATTR_ID_PRODUCT : ClassVar[str] = Product.ATTR_ID_PRODUCT # 'id-product'
-    ATTR_ID_PERMUTATION : ClassVar[str] = Product.ATTR_ID_PERMUTATION # 'id-permutation'
-    ATTR_ID_VARIATION : ClassVar[str] = Variation.ATTR_ID_VARIATION # 'id-variation'
-    ATTR_ID_VARIATION_TYPE : ClassVar[str] = Variation.ATTR_ID_VARIATION_TYPE # 'id-variation-type'
-    FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_BUTTON_SUBMIT + '.buttonAdd2Basket'
+    ATTR_ID_PERMUTATION : ClassVar[str] = Product.ATTR_ID_PRODUCT_PERMUTATION # 'id-permutation'
+    ATTR_ID_VARIATION : ClassVar[str] = Product_Variation.ATTR_ID_PRODUCT_VARIATION # 'id-variation'
+    ATTR_ID_VARIATION_TYPE : ClassVar[str] = Product_Variation.ATTR_ID_PRODUCT_VARIATION_TYPE # 'id-variation-type'
+    FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_SUBMIT + '.buttonAdd2Basket'
     FLAG_BUTTON_BUY_NOW : ClassVar[str] = 'buttonBuyNow'
-    FLAG_CATEGORY: ClassVar[str] = 'category'
     FLAG_COST_LOCAL_VAT_INCL: ClassVar[str] = 'cost-local-VAT-incl'
     FLAG_CURRENCY: ClassVar[str] = 'currency'
     FLAG_DATE_CONSUMED: ClassVar[str] = 'date-consumed'
@@ -58,12 +59,13 @@ class Model_View_Store(Model_View_Base):
     FLAG_IS_OUT_OF_STOCK: ClassVar[str] = 'is-out-of-stock'
     FLAG_LOCATION_STORAGE: ClassVar[str] = 'storage-location'
     FLAG_PRODUCT: ClassVar[str] = 'product'
+    FLAG_PRODUCT_CATEGORY: ClassVar[str] = 'category'
     FLAG_QUANTITY_MAX: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_MAX # 'quantity-max'
     FLAG_QUANTITY_MIN: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_MIN # 'quantity-min'
     FLAG_QUANTITY_STOCK: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_STOCK # 'quantity-stock'
     FLAG_PLANT_STORAGE: ClassVar[str] = 'plant-storage'
     FLAG_REGION_STORAGE: ClassVar[str] = 'region-storage'
-    FLAG_VARIATIONS: ClassVar[str] = Product.FLAG_VARIATIONS # 'variations'
+    FLAG_VARIATIONS: ClassVar[str] = 'variations'
     HASH_PAGE_STORE_BASKET : ClassVar[str] = '/store/basket'
     HASH_STORE_BASKET_ADD : ClassVar[str] = '/store/basket_add'
     HASH_STORE_BASKET_DELETE : ClassVar[str] = '/store/basket_delete'
@@ -78,6 +80,7 @@ class Model_View_Store(Model_View_Base):
     ID_BUTTON_CHECKOUT : ClassVar[str] = 'buttonCheckout'
     ID_BUTTON_BASKET_ADD : ClassVar[str] = 'buttonBasketAdd'
     ID_BUTTON_BUY_NOW : ClassVar[str] = 'buttonBuyNow'
+    ID_CATEGORY_DEFAULT: ClassVar[str] = 1
     ID_CURRENCY : ClassVar[str] = Form_Currency.id_id_currency # 'id_currency'
     ID_CURRENCY_DEFAULT : ClassVar[str] = 1
     ID_LABEL_BASKET_EMPTY : ClassVar[str] = 'basketEmpty'
@@ -93,9 +96,10 @@ class Model_View_Store(Model_View_Base):
     KEY_ID_REGION_DELIVERY : ClassVar[str] = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
     KEY_IS_INCLUDED_VAT : ClassVar[str] = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
     KEY_ITEMS : ClassVar[str] = Basket.KEY_ITEMS # 'items'
-    KEY_NAME_VARIATION : ClassVar[str] = Variation.KEY_NAME_VARIATION
-    KEY_NAME_VARIATION_TYPE : ClassVar[str] = Variation.KEY_NAME_VARIATION_TYPE
+    KEY_NAME_VARIATION : ClassVar[str] = Product_Variation.KEY_NAME_VARIATION
+    KEY_NAME_VARIATION_TYPE : ClassVar[str] = Product_Variation.KEY_NAME_VARIATION_TYPE
     KEY_PRICE : ClassVar[str] = 'price'
+    KEY_PRODUCT_CATEGORY: ClassVar[str] = 'category'
     KEY_QUANTITY : ClassVar[str] = 'quantity'
     KEY_VALUE_DEFAULT : ClassVar[str] = 'default'
     TYPE_FORM_BASKET_ADD : ClassVar[str] = 'Form_Basket_Add'
@@ -126,11 +130,11 @@ class Model_View_Store(Model_View_Base):
         return super().__new__(cls, db, info_user, app) # Model_View_Store, cls
     """
 
-    def __init__(self, app, db, **kwargs): # , id_currency, id_region_delivery, is_included_VAT):
+    def __init__(self, hash_page_current, **kwargs): # , id_currency, id_region_delivery, is_included_VAT):
         # Constructor
         _m = 'Model_View_Store.__init__'
         print(f'{_m}\nstarting')
-        super().__init__(app=app, db=db, **kwargs)
+        super().__init__(hash_page_current=hash_page_current, **kwargs)
         self.is_page_store = True
         """
         self.basket = Basket(id_currency, id_region_delivery, is_included_VAT)
@@ -152,8 +156,8 @@ class Model_View_Store(Model_View_Base):
         self.form_delivery_region.id_region_delivery.data = str(self.id_region_delivery) if len(regions) > 0 else None
         """
 
-    def get_many_product_category(self, product_filters): # category_ids = '', product_ids = '', get_all_category = True, get_all_product = True, max_products_per_category = -1):
-        _m = 'Model_View_Store.get_many_product_category'
+    def get_many_product(self, product_filters): # category_ids = '', product_ids = '', get_all_category = True, get_all_product = True, max_products_per_category = -1):
+        _m = 'Model_View_Store.get_many_product'
         av.val_instance(product_filters, 'product_filters', _m, Product_Filters)
         """
         av.val_str(category_ids, 'category_ids', _m)
@@ -165,7 +169,7 @@ class Model_View_Store(Model_View_Base):
         # get products from database
         # call datastore method
         # return [Product.template()]
-        self.category_list, errors = DataStore_Store(self.db, self.info_user, self.app).get_many_product_category(product_filters) # category_ids, product_ids, get_all_category, get_all_product, max_products_per_category)
+        self.category_list, errors = DataStore_Store_Base().get_many_product(product_filters) # category_ids, product_ids, get_all_category, get_all_product, max_products_per_category)
         # self.categories = categories
         # self.category_index = category_index
         
@@ -203,7 +207,7 @@ class Model_View_Store(Model_View_Base):
     
     """
     def get_product_category_text(self, category):
-        return Enum_Product_Category.get_member_by_text(category).text()
+        return Enum_Product_Product_Category.get_member_by_text(category).text()
     
     def add_2_basket(product_id, quantity, basket_local):
         _m = 'Model_View_Store.add_2_basket'
@@ -237,14 +241,14 @@ class Model_View_Store(Model_View_Base):
         # item_added = False
         print(f'basket: {self.basket}')
         ids_permutation, quantities_permutation = self.basket.to_csv()
-        self.basket = DataStore_Store(self.db, self.info_user, self.app).edit_basket(ids_permutation, quantities_permutation, permutation_id, quantity, quantity_sum_not_replace, self.id_currency, self.id_region_delivery, self.is_included_VAT)
+        self.basket = DataStore_Store_Basket().edit_basket(ids_permutation, quantities_permutation, permutation_id, quantity, quantity_sum_not_replace, self.id_currency, self.id_region_delivery, self.is_included_VAT)
         return True
     
     def get_basket(self, json_data):
         self.import_JSON_basket(json_data)
         if self.is_user_logged_in:
             ids_permutation, quantities_permutation = self.basket.to_csv()
-            self.basket = DataStore_Store(self.db, self.info_user, self.app).edit_basket(ids_permutation, quantities_permutation, None, None, None, self.id_currency, self.id_region_delivery, self.is_included_VAT)
+            self.basket = DataStore_Store_Basket().edit_basket(ids_permutation, quantities_permutation, None, None, None, self.id_currency, self.id_region_delivery, self.is_included_VAT)
             # return self.basket
     
     def _get_json_basket_id_CSVs_product_permutation(self, basket):
@@ -284,7 +288,7 @@ class Model_View_Store(Model_View_Base):
         is_included_VAT = basket[self.KEY_IS_INCLUDED_VAT]
         print(f'json basket items: {items}')
         product_ids, permutation_ids, item_index_dict = self._get_json_basket_id_CSVs_product_permutation(items)
-        category_list, errors = DataStore_Store(self.db, self.info_user, self.app).get_many_product_category(Product_Filters(
+        category_list, errors = DataStore_Store_Base().get_many_product(Product_Filters(
             self.id_user, # :a_id_user
             True, '', False, # :a_get_all_category, :a_ids_category, :a_get_inactive_category
             False, product_ids, False, False, # :a_get_all_product, :a_ids_product, :a_get_inactive_product, :a_get_first_product_only
@@ -299,11 +303,11 @@ class Model_View_Store(Model_View_Base):
         if len(category_list.categories) > 0: # not (categories is None):
             for category in category_list.categories:
                 for product in category.products:
-                    # product = Product.make_from_json(items[index_item])
+                    # product = Product.from_json(items[index_item])
                     product.form_basket_edit = Form_Basket_Edit()
                     # key_index_product = Basket.get_key_product_index_from_ids_product_permutation(product.id_product, product.get_id_permutation())
                     permutation = product.get_permutation_selected()
-                    self.basket.add_item(Basket_Item.make_from_product_and_quantity_and_VAT_included(product, items[item_index_dict[str(permutation.id_permutation)]][self.KEY_QUANTITY], self.is_included_VAT))
+                    self.basket.add_item(Basket_Item.from_product_and_quantity_and_VAT_included(product, items[item_index_dict[str(permutation.id_permutation)]][self.KEY_QUANTITY], self.is_included_VAT))
         """
         if len(items) > 0:
             for index_item in range(len(items)):
@@ -316,7 +320,7 @@ class Model_View_Store(Model_View_Base):
         if len(errors) > 0:
             for error in errors:
                 if error[1] == 'PRODUCT_AVAILABILITY':
-                    ids_permutation = DataStore_Store.get_ids_permutation_from_error_availability(error[2])
+                    ids_permutation = DataStore_Store_Base.get_ids_permutation_from_error_availability(error[2])
                     for id_permutation in ids_permutation:
                         for item in self.basket.items:
                             permutation = item.product.get_permutation_selected()
@@ -331,7 +335,7 @@ class Model_View_Store(Model_View_Base):
         """
         ids_permutation_unavailable = self.basket.get_ids_permutation_unavailable()
         if len(ids_permutation_unavailable) > 0:
-            category_list_unavailable, errors_unavailable = DataStore_Store(self.db, self.info_user, self.app).get_many_product_category(Product_Filters(
+            category_list_unavailable, errors_unavailable = DataStore_Store().get_many_product(Product_Filters(
                 self.id_user, # :a_id_user
                 True, '', False, # :a_get_all_category, :a_ids_category, :a_get_inactive_category
                 False, '', False, False, # :a_get_all_product, :a_ids_product, :a_get_inactive_product, :a_get_first_product_only
@@ -391,14 +395,14 @@ class Model_View_Store(Model_View_Base):
         # _m = 'Model_View_Store.get_many_user_order'
         # av.val_str(id_user)
         # validation conducted by server
-        return DataStore_Store(self.db, self.info_user, self.app).get_many_user_order(self.info_user['sub'], ids_order, n_order_max, id_checkout_session)
+        return DataStore_User().get_many_user_order(self.info_user['sub'], ids_order, n_order_max, id_checkout_session)
     
     def get_regions_and_currencies(self):
-        regions, currencies = DataStore_Store(self.db, self.info_user, self.app).get_regions_and_currencies()
+        regions, currencies = DataStore_Store_Base().get_regions_and_currencies()
         return regions, currencies
     
     def get_many_product_variation(self, variation_filters = None):
         if variation_filters is None:
-            variation_filters = Variation_Filters.get_default()
-        variations, errors = DataStore_Store(self.app, self.db).get_many_product_variation(variation_filters)
+            variation_filters = Product_Variation_Filters.get_default()
+        variations, errors = DataStore_Store_Base().get_many_product_variation(variation_filters)
         return variations, errors

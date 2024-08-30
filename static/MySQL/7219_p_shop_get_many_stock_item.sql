@@ -123,7 +123,7 @@ BEGIN
         /*
         , CONSTRAINT FK_tmp_Category_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category)
+			REFERENCES Shop_Product_Category(id_category)
 		/
         active BIT NOT NULL,
         display_order INT NOT NULL, 
@@ -139,7 +139,7 @@ BEGIN
 		id_category INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		*/
 		id_product INT NOT NULL
         /*
@@ -214,7 +214,7 @@ BEGIN
         /*
 		CONSTRAINT FK_tmp_Stock_Item_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		*/
 		, date_purchased TIMESTAMP NOT NULL
 		, date_received TIMESTAMP NULL
@@ -367,7 +367,7 @@ BEGIN
 	FROM Shop_Stock_Item SI
 	INNER JOIN Shop_Product_Permutation PP ON SI.id_permutation = PP.id_permutation
 	INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-	INNER JOIN Shop_Category C ON P.id_category = C.id_category	
+	INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category	
 	WHERE
 		# stock items
 		(
@@ -812,6 +812,7 @@ END //
 DELIMITER ;
 
 /*
+
 CALL p_shop_get_many_stock_item (
 	0, # a_id_user
     1, # a_get_all_category
@@ -850,6 +851,7 @@ CALL p_shop_get_many_stock_item (
 	0, # a_get_consumed_stock_item_only
 	0 # a_get_nonconsumed_stock_item_only
 );
+
 
 
 DROP TABLE IF EXISTS tmp_Msg_Error;

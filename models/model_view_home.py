@@ -30,14 +30,8 @@ class Model_View_Home(Model_View_Base):
     @property
     def title(self):
         return 'Home'
-
-    """
-    def __new__(cls, db, info_user, app):
-        # Initialiser - validation
-        print(f'info_user: {info_user}')
-        return super(Model_View_Home, cls).__new__(cls, db, info_user, app)
-    """
-    def __init__(self, app, db):
+    
+    def __init__(self, hash_page_current=Model_View_Base.HASH_PAGE_HOME):
         # Constructor
-        super().__init__(app=app, db=db)
+        super().__init__(hash_page_current=hash_page_current)
     

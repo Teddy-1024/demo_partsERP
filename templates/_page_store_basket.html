@@ -53,9 +53,10 @@
     <!-- Include JavaScript -->
     {% set block_id = 'scripts' %}
     {% include '_shared_store.html' %}
-    <script src="{{ url_for('static', filename='js/store_page_basket.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/page_store_basket.js') }}"></script>
     {% set block_id = 'checkout' %}
     {% include '_shared_store.html' %}
+    <!--
     <script>
         var hashPageCurrent = "{{ model.HASH_PAGE_STORE_BASKET }}";
         
@@ -65,4 +66,5 @@
             // hookupStorePageBilling();
         });
     </script>
+    -->
 {% endblock %}

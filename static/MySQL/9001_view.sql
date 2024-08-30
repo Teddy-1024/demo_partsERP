@@ -74,8 +74,8 @@ SELECT * FROM Shop_Recurrence_Interval_Audit;
 
 
 # Categories
-SELECT * FROM Shop_Category;
-SELECT * FROM Shop_Category_Audit;
+SELECT * FROM Shop_Product_Category;
+SELECT * FROM Shop_Product_Category_Audit;
 
 # Products
 SELECT * FROM Shop_Product;

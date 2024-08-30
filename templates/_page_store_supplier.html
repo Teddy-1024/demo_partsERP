@@ -7,11 +7,11 @@
     {% set block_id = 'styles' %}
     {% include '_shared_store.html' %}
     
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/store_supplier.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/page_store_supplier.css') }}">
     
     <!-- HTML content -->
     <div class="card">
-        <form id="{{ model.ID_FORM_SUPPLIER }}" class="{{ model.FLAG_CONTAINER }}" action="{{ url_for('supplier') }}" method="POST">
+        <form id="{{ model.ID_FORM_SUPPLIER }}" class="{{ model.FLAG_CONTAINER }}" action="{{ url_for('routes_store.supplier') }}" method="POST">
             <h2 class="label-title">Supplier</h2>
             {{ model.form.hidden_tag() }}
             <div class="card subcard">
@@ -95,16 +95,20 @@
     {% set block_id = 'scripts' %}
     {% include '_shared_store.html' %}
     <!-- Include JavaScript -->
-    <script src="{{ url_for('static', filename='js/store_product.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/page_store_supplier.js') }}"></script>
 
+    <!--
     <script>
         // pass arguments from model to JS
         var hashPageCurrent = "{{ model.HASH_PAGE_STORE_SUPPLIER }}";
 
+        /*
         // hookup elements
         $(document).ready(function() {
             console.log('Hooking up store supplier page...');
             hookupStorePageSupplier();
         });
+        */
     </script>
+    -->
 {% endblock %}

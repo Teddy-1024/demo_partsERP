@@ -143,7 +143,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_Category;
 	*/
     DROP TABLE IF EXISTS tmp_Discount;
     DROP TABLE IF EXISTS tmp_Currency;
@@ -151,14 +151,14 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Image;
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TABLE IF EXISTS tmp_Shop_Product_Category;
     
-    CREATE TEMPORARY TABLE tmp_Shop_Category (
+    CREATE TEMPORARY TABLE tmp_Shop_Product_Category (
 		id_category INTEGER NOT NULL,
 		/*
-        CONSTRAINT FK_tmp_Shop_Category_id_category
+        CONSTRAINT FK_tmp_Shop_Product_Category_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		*/
         active BOOLEAN NOT NULL,
         display_order INTEGER NOT NULL, 
@@ -172,7 +172,7 @@ BEGIN
 		/*
         CONSTRAINT FK_tmp_Shop_Product_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
 		*/
 		id_product INTEGER NOT NULL,
 		/*
@@ -372,7 +372,7 @@ BEGIN
 	FROM Shop_Product P
     INNER JOIN Shop_Product_Permutation PP
 		ON P.id_product = PP.id_product
-	INNER JOIN Shop_Category C
+	INNER JOIN Shop_Product_Category C
 		ON P.id_category = C.id_category
 	WHERE
 		-- permutations
@@ -434,7 +434,7 @@ BEGIN
     END IF;
 
     
-    INSERT INTO tmp_Shop_Category (
+    INSERT INTO tmp_Shop_Product_Category (
 		id_category, 
         active,
         display_order
@@ -443,7 +443,7 @@ BEGIN
 		C.active,
 		C.display_order
 	FROM tmp_Shop_Product t_P
-    INNER JOIN Shop_Category C
+    INNER JOIN Shop_Product_Category C
 		ON t_P.id_category = C.id_category
 	ORDER BY C.display_order
 	;
@@ -517,7 +517,7 @@ BEGIN
     IF v_has_filter_image THEN
 		DELETE FROM tmp_Shop_Product
 			WHERE id_product NOT IN (SELECT DISTINCT id_product FROM tmp_Shop_Image);
-		DELETE FROM tmp_Shop_Category
+		DELETE FROM tmp_Shop_Product_Category
 			WHERE id_category NOT IN (SELECT DISTINCT id_category FROM tmp_Shop_Product);
     END IF;
     */
@@ -785,7 +785,7 @@ BEGIN
     -- select * from tmp_Shop_Product;
     
     -- Permissions
-    IF EXISTS (SELECT * FROM tmp_Shop_Category LIMIT 1) THEN
+    IF EXISTS (SELECT * FROM tmp_Shop_Product_Category LIMIT 1) THEN
         -- v_id_user := (SELECT id_user FROM Shop_User WHERE name = CURRENT_USER);
         v_id_permission_product := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
         v_ids_product_permission := (SELECT STRING_AGG(id_product, ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_product));
@@ -843,8 +843,8 @@ BEGIN
 			C.name,
 			C.description,
 			C.display_order
-		FROM tmp_Shop_Category t_C
-		INNER JOIN Shop_Category C
+		FROM tmp_Shop_Product_Category t_C
+		INNER JOIN Shop_Product_Category C
 			ON t_C.id_category = C.id_category
 		INNER JOIN tmp_Shop_Product t_P
 			ON t_C.id_category = t_P.id_category
@@ -1161,14 +1161,14 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_Category;
     DROP TABLE IF EXISTS tmp_Discount;
     DROP TABLE IF EXISTS tmp_Currency;
     DROP TABLE IF EXISTS tmp_Delivery_Region;
     DROP TABLE IF EXISTS tmp_Shop_Image;
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
-    DROP TABLE IF EXISTS tmp_Shop_Category;
+    DROP TABLE IF EXISTS tmp_Shop_Product_Category;
 	*/
 END;
 $$ LANGUAGE plpgsql;

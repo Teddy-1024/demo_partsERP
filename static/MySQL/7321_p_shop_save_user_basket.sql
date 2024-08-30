@@ -112,7 +112,7 @@ BEGIN
 		id_category INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Basket_id_category
 			FOREIGN KEY (id_category)
-			REFERENCES Shop_Category(id_category),
+			REFERENCES Shop_Product_Category(id_category),
         id_product INT NOT NULL,
         CONSTRAINT FK_tmp_Shop_Basket_id_product
 			FOREIGN KEY (id_product)
@@ -302,7 +302,7 @@ BEGIN
 		INNER JOIN Shop_Product P
 			ON PP.id_product = P.id_product
 			AND P.active
-        INNER JOIN Shop_Category C
+        INNER JOIN Shop_Product_Category C
 			ON P.id_category = C.id_category
 			AND C.active
 		WHERE UB.id_user = a_id_user
@@ -451,7 +451,7 @@ BEGIN
 			INNER JOIN Shop_Product P
 				ON PP.id_product = P.id_product
                 AND P.active
-			INNER JOIN Shop_Category C
+			INNER JOIN Shop_Product_Category C
 				ON P.id_category = C.id_category
 				AND C.active
 			-- RIGHT JOIN tmp_Shop_Basket t_UB ON ISNULL(t_UB.id_product)
@@ -462,7 +462,7 @@ BEGIN
             IF EXISTS(
 				SELECT * 
                 FROM Shop_Product P 
-                INNER JOIN Shop_Category C 
+                INNER JOIN Shop_Product_Category C 
 					ON P.id_category = C.id_category 
 				INNER JOIN tmp_Shop_Basket t_B
 					ON P.id_product = t_B.id_product 
@@ -498,7 +498,7 @@ BEGIN
             FROM Shop_Product_Permutation PP
 			INNER JOIN Shop_Product P 
 				ON PP.id_product = P.id_product
-            INNER JOIN Shop_Category C 
+            INNER JOIN Shop_Product_Category C 
 				ON P.id_category = C.id_category 
             WHERE 
 				(
@@ -713,7 +713,7 @@ BEGIN
 		ON t_UB.id_permutation = PP.id_permutation
 	INNER JOIN Shop_Product P
 		ON PP.id_product = P.id_product
-	INNER JOIN Shop_Category C
+	INNER JOIN Shop_Product_Category C
 		ON P.id_category = C.id_category
 	INNER JOIN Shop_Product_Currency_Link PCL
 		ON PP.id_permutation = PCL.id_permutation

@@ -4,7 +4,7 @@
 
 {% block page_body %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/page_license.css') }}">
     
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }} {{ model.FLAG_COLUMN }}">
@@ -21,8 +21,9 @@
     </div>
 
     <!-- Include JavaScript -->
-    <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/page_license.js') }}"></script>
 
+    <!--
     <script>
         var hashPageCurrent = "{{ model.HASH_PAGE_LICENSE }}";
         
@@ -30,4 +31,5 @@
             hookupPageLicense();
         });
     </script>
+    -->
 {% endblock %}

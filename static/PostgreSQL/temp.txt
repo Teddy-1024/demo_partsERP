@@ -9,8 +9,8 @@
 103_tbl_File_Type_Audit.sql
 104_tbl_Shop_General.sql
 105_tbl_Shop_General_Audit.sql
-106_tbl_Shop_Category.sql
-107_tbl_Shop_Category_Audit.sql
+106_tbl_Shop_Product_Category.sql
+107_tbl_Shop_Product_Category_Audit.sql
 108_tbl_Shop_Recurrence_Interval.sql
 109_tbl_Shop_Recurrence_Interval_Audit.sql
 110.0_tbl_Shop_Region.sql
@@ -93,7 +93,7 @@
 302_tri_File_Type.sql
 303_tri_File_Type_Audit.sql
 304_tri_Shop_General.sql
-306_tri_Shop_Category.sql
+306_tri_Shop_Product_Category.sql
 308_tri_Shop_Recurrence_Interval.sql
 310.0_tri_Shop_Region.sql
 310.2_tri_Shop_Region_Branch.sql

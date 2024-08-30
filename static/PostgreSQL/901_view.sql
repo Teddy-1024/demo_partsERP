@@ -27,8 +27,8 @@ SELECT * FROM Shop_General;
 SELECT * FROM Shop_General_Audit;
 
 -- Categories
-SELECT * FROM Shop_Category;
-SELECT * FROM Shop_Category_Audit;
+SELECT * FROM Shop_Product_Category;
+SELECT * FROM Shop_Product_Category_Audit;
 
 -- Recurrence Interval
 SELECT * FROM Shop_Recurrence_Interval;

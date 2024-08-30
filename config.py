@@ -12,9 +12,16 @@ Configuration variables
 
 # IMPORTS
 import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 # CLASSES
 class Config:
+    # Miscellaneous
+    DEBUG = False
+    TESTING = False
+    URL_HOST = os.getenv('URL_HOST')
     SECRET_KEY = os.getenv('KEY_SECRET_FLASK') # gen cmd: openssl rand -hex 32
     # Add other configuration variables as needed
     # MySQL
@@ -45,6 +52,7 @@ class Config:
     # id_currency = 1
     # id_region_delivery = 1
     # Mail
+    MAIL_DEBUG = True
     MAIL_SERVER = 'mail.partsltd.co.uk' # 'smtp.gmail.com'
     MAIL_PORT = 465 # 587
     MAIL_USE_TLS = False
@@ -56,10 +64,6 @@ class Config:
     # Recaptcha
     RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
     RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
-    # Miscellaneous
-    DEBUG = False
-    TESTING = False
-    URL_HOST = os.getenv('URL_HOST')
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -79,7 +83,7 @@ elif config_env == 'production':
 else:
     raise ValueError("Invalid configuration environment")
 
-
+# print(f'config: {app_config}\nid auth0 client: {app_config.ID_AUTH0_CLIENT}')
 
 # environment variables
 """

@@ -154,6 +154,14 @@ BEGIN
 						a_get_inactive_variation
 						OR V.active = 1
 					)
+                    AND (
+						a_get_all_variation_type
+                        OR FIND_IN_SET(V.id_type, a_ids_variation_type)
+                    )
+					AND (
+						a_get_inactive_variation_type
+						OR VT.active = 1
+					)
 				;
 			END IF;
 			
@@ -161,8 +169,33 @@ BEGIN
 			
 			IF a_get_first_variation_only THEN
 				DELETE t_V
-				FROM tmp_Shop_Variation t_V
+				FROM tmp_Variation t_V
 				WHERE t_V.rank_variation > 1
+				;
+			END IF;
+            
+            INSERT INTO tmp_Variation_Type (
+				id_type
+                , active
+                , rank_type
+			)
+            SELECT
+				DISTINCT t_V.id_type
+                , VT.active
+                , RANK() OVER(ORDER BY t_V.id_type) AS rank_type
+			FROM tmp_Variation t_V
+            INNER JOIN Shop_Variation_Type VT ON t_V.id_type = VT.id_type
+            ;
+			
+			IF a_get_first_variation_type_only THEN
+				DELETE t_V
+				FROM tmp_Variation t_V
+                INNER JOIN tmp_Variation_Type t_VT ON t_V.id_variation = t_VT.id_variation
+				WHERE t_VT.rank_type > 1
+				;
+				DELETE t_VT
+				FROM tmp_Variation_Type t_VT
+				WHERE t_VT.rank_type > 1
 				;
 			END IF;
 		END IF;
@@ -193,6 +226,8 @@ BEGIN
 			)
 			;
         END IF;
+        
+        CALL p_clear_shop_user_eval_temp(v_guid);
 	END IF;
     
     IF EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
@@ -201,6 +236,7 @@ BEGIN
     END IF;
     
     -- Returns
+    /*
     # Variation Types
     SELECT 
 		t_VT.id_type
@@ -211,15 +247,26 @@ BEGIN
     FROM tmp_Variation_Type t_VT
     INNER JOIN Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
 	;
+    */
     
     # Variations
     SELECT 
 		t_V.id_variation
-        , V.code
-        , V.name
-        , V.active
+        , V.code AS code_variation
+        , V.name AS name_variation
+        , V.active AS active_variation
+		, V.display_order
+        , t_V.id_type
+        , VT.code AS code_variation_type
+        , VT.name AS name_variation_type
+        , VT.name_plural AS name_plural_variation_type
+        , VT.active AS active_variation_type
+		, VT.display_order
     FROM tmp_Variation t_V
     INNER JOIN Shop_Variation V ON t_V.id_variation = V.id_variation
+    INNER JOIN tmp_Variation_Type t_VT ON V.id_type = t_VT.id_type
+    INNER JOIN Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
+    ORDER BY VT.display_order, V.display_order
 	;
     
     # Errors
@@ -239,6 +286,7 @@ END //
 DELIMITER ;
 
 
+/*
 
 CALL p_shop_get_many_product_variation (
 	1, # 'auth0|6582b95c895d09a70ba10fef', # a_id_user
@@ -252,7 +300,6 @@ CALL p_shop_get_many_product_variation (
 	'' # a_ids_variation
 );
 
-/*
 select * from shop_variation;
 select * from shop_variation_type;
 */

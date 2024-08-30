@@ -36,9 +36,15 @@
     <meta id="{{ model.ID_CSRF_TOKEN }}" name="{{ model.NAME_CSRF_TOKEN }}" content="{{ csrf_token() }}" />
 
     <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!-- Include jQuery from a CDN -->
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lf8Q8cpAAAAAFAawGu4-ma60bvbEixNVTVvRzKe"></script> <!-- reCaptcha Integration -->
+    <script src="{{ url_for('static', filename='js/lib/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/constants.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/events.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/extras.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/init.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/local_storage.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/validation.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
     
     <script>
         var attrTextCollapsed = "{{ model.ATTR_TEXT_COLLAPSED }}";
@@ -47,62 +53,98 @@
         var attrValuePrevious = "{{ model.ATTR_VALUE_PREVIOUS }}";
         var attrValueNew = "{{ model.ATTR_VALUE_NEW }}";
         var flagAdd = "{{ model.FLAG_ADD }}";
-        var flagBtnOverlayClose = "{{ model.FLAG_BTN_OVERLAY_CLOSE }}";
-        var flagBtnSubmit = "{{ model.FLAG_BTN_SUBMIT }}";
+        var flagCancel = "{{ model.FLAG_CANCEL }}";
         var flagCard = "{{ model.FLAG_CARD }}";
         var flagCollapsed = "{{ model.FLAG_COLLAPSED }}";
         var flagCollapsible = "{{ model.FLAG_COLLAPSIBLE }}";
         var flagColumn = "{{ model.FLAG_COLUMN }}";
+        // var flagContactUs = "{{ model.FLAG_CONTACT_US }}";
         var flagContainer = "{{ model.FLAG_CONTAINER }}";
         var flagContainerInput = "{{ model.FLAG_CONTAINER_INPUT }}";
         var flagDelete = "{{ model.FLAG_DELETE }}";
         var flagDetail = "{{ model.FLAG_DETAIL }}";
         var flagDirty = "{{ model.FLAG_DIRTY }}";
         var flagExpanded = "{{ model.FLAG_EXPANDED }}";
+        var flagImageLogo = "{{ model.FLAG_IMAGE_LOGO }}";
         var flagInitialised = "{{ model.FLAG_INITIALISED }}";
+        var flagNavAdminHome = "{{ model.FLAG_NAV_ADMIN_HOME }}";
+        var flagNavAdminStoreStripePrices = "{{ model.FLAG_NAV_ADMIN_STORE_STRIPE_PRICES }}";
+        var flagNavAdminStoreStripeProducts = "{{ model.FLAG_NAV_ADMIN_STORE_STRIPE_PRODUCTS }}";
+        var flagNavContact = "{{ model.FLAG_NAV_CONTACT }}";
+        var flagNavHome = "{{ model.FLAG_NAV_HOME }}";
+        var flagNavServices = "{{ model.FLAG_NAV_SERVICES }}";
+        var flagNavStoreHome = "{{ model.FLAG_NAV_STORE_HOME }}";
+        var flagNavStoreProducts = "{{ model.FLAG_NAV_STORE_PRODUCTS }}";
+        var flagNavStoreProductCategories = "{{ model.FLAG_NAV_STORE_PRODUCT_CATEGORIES }}";
+        var flagNavStoreProductPermutations = "{{ model.FLAG_NAV_STORE_PRODUCT_PERMUTATIONS }}";
+        var flagNavStoreProductPrices = "{{ model.FLAG_NAV_STORE_PRODUCT_PRICES }}";
+        var flagNavStoreProductVariations = "{{ model.FLAG_NAV_STORE_PRODUCT_VARIATIONS }}";
+        var flagNavStoreStockItems = "{{ model.FLAG_NAV_STORE_STOCK_ITEMS }}";
+        var flagNavUserAccount = "{{ model.FLAG_NAV_USER_ACCOUNT }}";
+        var flagNavUserAdmin = "{{ model.FLAG_NAV_USER_ADMIN }}";
+        var flagNavUserLogin = "{{ model.FLAG_NAV_USER_LOGIN }}";
+        var flagNavUserLogout = "{{ model.FLAG_NAV_USER_LOGOUT }}";
         var flagOverlay = "{{ model.FLAG_OVERLAY }}";
+        var flagOverlayClose = "{{ model.FLAG_OVERLAY_CLOSE }}";
         var flagRow = "{{ model.FLAG_ROW }}";
         var flagRowNew = "{{ model.FLAG_ROW_NEW }}";
         var flagScrollable = "{{ model.FLAG_SCROLLABLE }}";
+        var flagSubmit = "{{ model.FLAG_SUBMIT }}";
         var flagSubmitted = "{{ model.FLAG_SUBMITTED }}";
         var hashApplyFiltersStoreProductPermutation = "{{ model.HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION }}";
+        var hashPageAccessibilityStatement = "{{ model.HASH_PAGE_ACCESSIBILITY_STATEMENT }}";
+        var hashPageAdminHome = "{{ model.HASH_PAGE_ADMIN_HOME }}";
         var hashPageContact = "{{ model.HASH_PAGE_CONTACT }}";
+        // var hashPageCurrent = "{{ model.hash_page_current }}";
         var hashPageErrorNoPermission = "{{ model.HASH_PAGE_ERROR_NO_PERMISSION }}";
         var hashPageAdminHome = "{{ model.HASH_PAGE_ADMIN_HOME }}";
         var hashPageHome = "{{ model.HASH_PAGE_HOME }}";
+        var hashPageLicense = "{{ model.HASH_PAGE_LICENSE }}";
         var hashPageServices = "{{ model.HASH_PAGE_SERVICES }}";
-        var hashPageStoreAdmin = "{{ model.HASH_PAGE_STORE_ADMIN }}";
+        var hashPageStoreAdminStripePrices = "{{ model.HASH_PAGE_STORE_ADMIN_STRIPE_PRICES }}";
+        var hashPageStoreAdminStripeProducts = "{{ model.HASH_PAGE_STORE_ADMIN_STRIPE_PRODUCTS }}";
+        var hashPageStoreBasket = "{{ model.HASH_PAGE_STORE_BASKET }}";
         var hashPageStoreHome = "{{ model.HASH_PAGE_STORE_HOME }}";
+        var hashPageStoreProductCategories = "{{ model.HASH_PAGE_STORE_PRODUCT_CATEGORIES }}";
         var hashPageStoreProducts = "{{ model.HASH_PAGE_STORE_PRODUCTS }}";
         var hashPageStoreProductPermutations = "{{ model.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS }}";
+        var hashPageStoreProductPrices = "{{ model.HASH_PAGE_STORE_PRODUCT_PRICES }}";
+        var hashPageStoreProductVariations = "{{ model.HASH_PAGE_STORE_PRODUCT_VARIATIONS }}";
+        var hashPageStoreStockItems = "{{ model.HASH_PAGE_STORE_STOCK_ITEMS }}";
         var hashPageUserAccount = "{{ model.HASH_PAGE_USER_ACCOUNT }}";
         var hashPageUserAdmin = "{{ model.HASH_PAGE_USER_ADMIN }}";
         var hashPageUserLogin = "{{ model.HASH_PAGE_USER_LOGIN }}";
         var hashPageUserLogout = "{{ model.HASH_PAGE_USER_LOGOUT }}";
         var hashSaveStoreProductPermutation = "{{ model.HASH_SAVE_STORE_PRODUCT_PERMUTATION }}";
+        /*
         var idButtonAdd = "#{{ model.ID_BUTTON_ADD }}";
         var idButtonCancel = "#{{ model.ID_BUTTON_CANCEL }}";
         var idButtonConfirm = "#{{ model.ID_BUTTON_CONFIRM }}";
+        */
         var idButtonHamburger = "#{{ model.ID_BUTTON_HAMBURGER }}";
+        /*
+        var idButtonNavAdminHome = "#{{ model.ID_NAV_ADMIN_HOME }}";
+        // var idButtonNavContact = "#{{ model.ID_NAV_CONTACT }}";
+        var idButtonNavHome = "#{{ model.ID_NAV_HOME }}";
+        var idButtonNavServices = "#{{ model.ID_NAV_SERVICES }}";
+        var idButtonNavStoreHome = "#{{ model.ID_NAV_STORE_HOME }}";
+        var idButtonNavStoreProduct = "#{{ model.ID_NAV_STORE_PRODUCT }}";
+        var idButtonNavStoreProductCategories = "#{{ model.ID_NAV_STORE_PRODUCT_CATEGORIES }}";
+        var idButtonNavStoreProductPermutations = "#{{ model.ID_NAV_STORE_PRODUCT_PERMUTATIONS }}";
+        var idButtonNavStoreProductPrices = "#{{ model.ID_NAV_STORE_PRODUCT_PRICES }}";
+        var idButtonNavStoreProductVariations = "#{{ model.ID_NAV_STORE_PRODUCT_VARIATIONS }}";
+        var idButtonNavStoreStockItems = "#{{ model.ID_NAV_STORE_STOCK_ITEMS }}";
+        var idButtonNavUserAccount = "#{{ model.ID_NAV_USER_ACCOUNT }}";
+        var idButtonNavUserAdmin = "#{{ model.ID_NAV_USER_ADMIN }}";
+        var idButtonNavUserLogin = "#{{ model.ID_NAV_USER_LOGIN }}";
+        var idButtonNavUserLogout = "#{{ model.ID_NAV_USER_LOGOUT }}";
         var idButtonSave = "#{{ model.ID_BUTTON_SAVE }}";
+        */
         var idCSRFToken = "#{{ model.ID_CSRF_TOKEN }}";
         var idFormCurrency = "#{{ model.ID_FORM_CURRENCY }}";
         var idFormDeliveryRegion = "#{{ model.ID_FORM_DELIVERY_REGION }}";
         var idFormIsIncludedVAT = "#{{ model.ID_FORM_IS_INCLUDED_VAT }}";
         var idLabelError = "#{{ model.ID_LABEL_ERROR }}";
-        var idNavAdminHome = "#{{ model.ID_NAV_ADMIN_HOME }}";
-        var idNavContact = "#{{ model.ID_NAV_CONTACT }}";
-        var idNavHome = "#{{ model.ID_NAV_HOME }}";
-        var idNavServices = "#{{ model.ID_NAV_SERVICES }}";
-        var idNavStoreAdmin = "#{{ model.ID_NAV_STORE_ADMIN }}";
-        var idNavStoreHome = "#{{ model.ID_NAV_STORE_HOME }}";
-        var idNavStorePermutations = "#{{ model.ID_NAV_STORE_PERMUTATIONS }}";
-        var idNavStoreProduct = "#{{ model.ID_NAV_STORE_PRODUCT }}";
-        var idNavStoreStockItems = "#{{ model.ID_NAV_STORE_STOCK_ITEMS }}";
-        var idNavUserAccount = "#{{ model.ID_NAV_USER_ACCOUNT }}";
-        var idNavUserAdmin = "#{{ model.ID_NAV_USER_ADMIN }}";
-        var idNavUserLogin = "#{{ model.ID_NAV_USER_LOGIN }}";
-        var idNavUserLogout = "#{{ model.ID_NAV_USER_LOGOUT }}";
         var idOverlayConfirm = "#{{ model.ID_OVERLAY_CONFIRM }}";
         var idOverlayError = "#{{ model.ID_OVERLAY_ERROR }}";
         var idOverlayHamburger = "#{{ model.ID_OVERLAY_HAMBURGER }}";
@@ -118,13 +160,14 @@
         var keyShared = "shared";
         var nameCSRFToken = "{{ model.NAME_CSRF_TOKEN }}";
         var _pathHost = "{{ model.get_url_host() }}";
+        var titlePageCurrent = "{{ model.title }}";
     </script>
 
 
     <!-- Stylesheets -->
-    <link href="{{ url_for('static', filename='css/shared.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css"/>
 </head>
-<body>
+<body data-page="{{ model.hash_page_current }}">
 {% set user = model.get_user_session() %}
 <!--
 { % set is_admin_store_user = model.get_is_admin_store_user() % }
@@ -138,28 +181,28 @@
         <h1 class="company-name">{{ model.NAME_COMPANY }} - {{ model.title }}</h1>
     </div>
     <div class="{{ model.FLAG_CONTAINER }}" style="width: 7vw; min-width: 7vw; max-width: 15vw; justify-content: flex-end; "> <!-- padding-left: 25%; -->
-        <button id="{{ model.ID_BUTTON_HAMBURGER }}" tabindex="1" alt="Hamburger menu button" aria-label="Hamburger menu button">=</button>
+        <button id="{{ model.ID_BUTTON_HAMBURGER }}" tabindex="1" alt="Hamburger menu button" aria-label="Hamburger menu button">☰</button>
     </div>
 </div>
 
 <div id="{{ model.ID_OVERLAY_HAMBURGER }}" class="{{ model.FLAG_OVERLAY}} {{ model.FLAG_HAMBURGER }} {{ model.FLAG_COLLAPSED }}"> <!-- style="height: {{ 27 * 3 }}px" {- { 4.5 * 3 }}vh -->
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-        <a id="{{ model.ID_NAV_HOME }}">Home</a>
+        <a class="{{ model.FLAG_NAV_HOME }}">Home</a>
     </div>
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-        <a id="{{ model.ID_NAV_SERVICES }}">Services</a>
+        <a class="{{ model.FLAG_NAV_SERVICES }}">Services</a>
     </div>
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-        <a id="{{ model.ID_NAV_CONTACT }}">Contact</a>
+        <a class="{{ model.FLAG_NAV_CONTACT }}">Contact</a>
     </div>
 
     {% if model.is_page_store and user.can_admin_store %}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a id="{{ model.ID_NAV_STORE_PERMUTATIONS }}">Product Permutations</a>
+            <a class="{{ model.FLAG_NAV_STORE_PRODUCT_PERMUTATIONS }}">Product Permutations</a>
         </div>
         {% if user.can_admin_store %}
             <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-                <a id="{{ model.ID_NAV_STORE_STOCK_ITEMS }}">Stock Items</a>
+                <a class="{{ model.FLAG_NAV_STORE_STOCK_ITEMS }}">Stock Items</a>
             </div>
         {% endif %}
         <!--
@@ -201,31 +244,31 @@
             </form>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a href="{ { url_for('logout') if model.is_user_logged_in else url_for('login') }}" style="float:right">{{ 'Logout' if model.is_user_logged_in else 'Login' }}</a>
+            <a href="{ { url_for('routes_user.logout') if model.is_user_logged_in else url_for('routes_user.login') }}" style="float:right">{{ 'Logout' if model.is_user_logged_in else 'Login' }}</a>
         </div>
         -->
     {% else %}
         {% if user.can_admin_store %}
             <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-                <a id="{{ model.ID_NAV_STORE_HOME }}">Shop</a>
+                <a class="{{ model.FLAG_NAV_STORE_HOME }}">Shop</a>
             </div>
         {% endif %}
     {% endif %}
     {% if user.can_admin_store %}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a id="{{ model.ID_NAV_ADMIN }}">Admin</a>
+            <a class="{{ model.FLAG_NAV_ADMIN_HOME }}">Admin</a>
         </div>
     {% endif %}
     {% if user.is_logged_in %}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a id="{{ model.ID_NAV_USER_ACCOUNT }}">Account</a>
+            <a class="{{ model.FLAG_NAV_USER_ACCOUNT }}">Account</a>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a id="{{ model.ID_NAV_USER_LOGOUT }}">Logout</a>
+            <a class="{{ model.FLAG_NAV_USER_LOGOUT }}">Logout</a>
         </div>
     {% else %}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a id="{{ model.ID_NAV_USER_LOGIN }}">Login</a>
+            <a class="{{ model.FLAG_NAV_USER_LOGIN }}">Login</a>
         </div>
     {% endif %}
 </div>
@@ -237,17 +280,18 @@
 
 
 <div class="footer">
-    <h4 style="padding-top: 1vh;">Copyright &copy; {{ model.NAME_COMPANY }}. <a href="{{ url_for('license') }}" alt="License" aria-label="License">All rights reserved.</a></h4>
+    <h4 style="padding-top: 1vh;">Copyright &copy; {{ model.NAME_COMPANY }}. <a href="{{ url_for('routes_legal.license') }}" alt="License" aria-label="License">All rights reserved.</a></h4>
     <h5>Company number 13587499</h5>
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}"><p><a href="{{ url_for('accessibility_statement') }}" alt="Accessibility statement" aria-label="Accessibility statement">Accessibility statement</a></p></div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}"><p><a href="{{ url_for('privacy_notice') }}" alt="Privacy notice" aria-label="Privacy notice">Privacy notice</a></p></div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}"><p><a href="{{ url_for('routes_legal.accessibility_statement') }}" alt="Accessibility statement" aria-label="Accessibility statement">Accessibility statement</a></p></div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}"><p><a href="{{ url_for('routes_legal.privacy_notice') }}" alt="Privacy notice" aria-label="Privacy notice">Privacy notice</a></p></div>
     </div>
 </div>
 
 </body>
 </html>
 
+<!--
 <script>
     
     $(document).ready(function() {
@@ -255,4 +299,4 @@
         hookupShared();
     });
 </script>
-
+-->

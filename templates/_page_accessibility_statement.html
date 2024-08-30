@@ -4,7 +4,7 @@
 
 {% block page_body %}
     <!-- Include Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/page_services.css') }}">
     
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }} {{ model.FLAG_COLUMN }}">
@@ -198,17 +198,9 @@
             [Note: publishing the test report is optional but doing so may allow you to make your accessibility statement shorter and more focused.]
             https://www.w3.org/WAI/eval/report-tool/#/
         -->
-        <p>You can read the full accessibility test report {{ model.URL_HOST }}{{ url_for('accessibility_report') }}.</p>
+        <p>You can read the full accessibility test report {{ model.URL_HOST }}{{ url_for('routes_legal.accessibility_report') }}.</p>
     </div>
 
     <!-- Include JavaScript -->
-    <script src="{{ url_for('static', filename='js/accessibility_statement.js') }}"></script>
-
-    <script>
-        var hashPageCurrent = "{{ model.HASH_PAGE_ACCESSIBILITY_STATEMENT }}";
-        
-        $(document).ready(function() {
-            hookupPageAccessibilityStatement();
-        });
-    </script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/page_accessibility_statement.js') }}"></script>
 {% endblock %}

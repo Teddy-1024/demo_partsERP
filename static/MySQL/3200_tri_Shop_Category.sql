@@ -3,12 +3,12 @@
 
 
 
-DROP TRIGGER IF EXISTS before_insert_Shop_Category;
-DROP TRIGGER IF EXISTS before_update_Shop_Category;
+DROP TRIGGER IF EXISTS before_insert_Shop_Product_Category;
+DROP TRIGGER IF EXISTS before_update_Shop_Product_Category;
 
 DELIMITER //
-CREATE TRIGGER before_insert_Shop_Category
-BEFORE INSERT ON Shop_Category
+CREATE TRIGGER before_insert_Shop_Product_Category
+BEFORE INSERT ON Shop_Product_Category
 FOR EACH ROW
 BEGIN
 	SET NEW.created_on = NOW();
@@ -17,8 +17,8 @@ END //
 DELIMITER ;
 
 DELIMITER //
-CREATE TRIGGER before_update_Shop_Category
-BEFORE UPDATE ON Shop_Category
+CREATE TRIGGER before_update_Shop_Product_Category
+BEFORE UPDATE ON Shop_Product_Category
 FOR EACH ROW
 BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
@@ -26,7 +26,7 @@ BEGIN
         SET MESSAGE_TEXT = 'New change Set ID must be provided.';
     END IF;
     
-    INSERT INTO Shop_Category_Audit (
+    INSERT INTO Shop_Product_Category_Audit (
 		id_category,
         name_field,
         value_prev,
