@@ -1,29 +1,4 @@
 
-function getElementCurrentValue(element) {
-    let returnVal = '';
-
-    if (!isEmpty(element)) {
-
-        if (element.type === "checkbox") {
-            returnVal = element.checked;
-        }
-        /*
-        else if (element.classList.contains(flagIsDatePicker)) {
-            returnVal = getDatePickerDate(element, adjust4DayLightSavings);
-        }
-        */
-        else if (element.tagName === 'INPUT' || element.tagName === 'textarea' || element.tagName === 'select') {
-            returnVal = element.value;
-        }
-        else {
-            returnVal = element.textContent;
-        }
-    }
-
-    if (isEmpty(returnVal)) returnVal = '';
-
-    return returnVal;
-}
 
 function parseCSSPropertyToFloat(element, propertyName) {
     var propertyText = element.css(propertyName);

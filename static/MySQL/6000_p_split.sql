@@ -80,7 +80,7 @@ BEGIN
     */
     
 END //
-DELIMITER ;
+DELIMITER ;;
 
 /*
 

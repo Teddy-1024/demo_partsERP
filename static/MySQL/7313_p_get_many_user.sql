@@ -237,7 +237,7 @@ BEGIN
 	*/
 	CALL p_clear_shop_user_eval_temp(v_guid);
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 

@@ -1,4 +1,4 @@
-<div class="{{ model.FLAG_OVERLAY }} {{ model.FLAG_COLLAPSED }} {{ model.FLAG_CARD }}" id="{{ model.ID_OVERLAY_CONFIRM }}" style="visibility: hidden;" z-index="2">
+<div class="{{ model.FLAG_OVERLAY }} {{ model.FLAG_COLLAPSED }} {{ model.FLAG_CARD }}" id="{{ model.ID_OVERLAY_ERROR }}" style="visibility: hidden;" z-index="2">
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
         <h2>Error:</h2>
         <div id="{{ model.ID_LABEL_ERROR }}"></div>
@@ -10,20 +10,23 @@
 </div>
 
 <script>
-    function hookupOverlayConfirm() {
-        let overlay = $("#{{ model.ID_OVERLAY_CONFIRM }}");
-        let buttonCancel = overlay.find('#{{ model.ID_BUTTON_CANCEL }}');
+    var idOverlayError = "#{{ model.ID_OVERLAY_ERROR}}";
+    function hookupOverlayError() {
+        let overlay = document.querySelector(idOverlayError);
+        let selectorButtonCancel = idOverlayError + ' button.' + flagCancel;
 
-        buttonCancel.onclick = function() {
-            overlay.style.visibility = 'hidden';
-        };
+        initialiseEventHandler(selectorButtonCancel, flagInitialised, function(buttonCancel) {
+            buttonCancel.onclick = function() {
+                overlay.style.visibility = 'hidden';
+            };
+        });
     }
-    hookupOverlayConfirm();
+    hookupOverlayError();
 
     function showOverlayError(msgError) {
-        let overlay = $("#{{ model.ID_OVERLAY_CONFIRM }}");
-        let labelError = overlay.find('#{{ model.ID_LABEL_ERROR }}');
-        labelError.text(msgError);
+        let overlay = document.querySelector("#{{ model.ID_OVERLAY_ERROR }}");
+        let labelError = overlay.querySelector('#{{ model.ID_LABEL_ERROR }}');
+        labelError.innerText = msgError;
         overlay.style.visibility = 'visible';
     }
 </script>

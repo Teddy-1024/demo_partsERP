@@ -21,7 +21,7 @@ from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.delivery_region import Delivery_Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Product_Filters # Permutation_Variation_Link
+from business_objects.store.product import Product, Product_Permutation, Product_Price, Filters_Product # Permutation_Variation_Link
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
@@ -40,25 +40,31 @@ from pydantic import BaseModel, ConfigDict
 from typing import ClassVar
 from datetime import datetime
 
+# db = SQLAlchemy()
+
 
 class DataStore_Base(BaseModel):
     # Global constants
     # Attributes
+    """
     app: Flask = None
     db: SQLAlchemy = None
     session: object = None
+    """
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    # model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # Constructor
+        """
         self.db = db
         self.app = current_app    
         with self.app.app_context():
             self.session = session
-
-    def db_procedure_execute(self, proc_name, argument_dict_list = None):
+        """
+    @staticmethod
+    def db_procedure_execute(proc_name, argument_dict_list = None):
         # Argument validation
         _m = 'DataStore_Base.db_procedure_execute'
         av.val_str(proc_name, 'proc_name', _m)
@@ -80,9 +86,9 @@ class DataStore_Base(BaseModel):
         # conn = Helper_DB_MySQL(self.app).get_db_connection()
 
         if has_arguments:
-            result = self.db.session.execute(proc_string, argument_dict_list)
+            result = db.session.execute(proc_string, argument_dict_list)
         else:
-            result = self.db.session.execute(proc_string)
+            result = db.session.execute(proc_string)
         print(f'result: {result}')
         # conn.session.remove()
         return result
@@ -93,11 +99,12 @@ class DataStore_Base(BaseModel):
         result_set_2 = cursor.fetchall()
         print(f'products: {result_set_2}')
     
+    @staticmethod
     def db_cursor_clear(cursor):
         while cursor.nextset():
             print(f'new result set: {cursor.fetchall()}')
-
-    def get_regions_and_currencies(self):
+    @classmethod
+    def get_regions_and_currencies(cls):
         _m  = 'DataStore_Base.get_regions_and_currencies'
         _m_db_currency = 'p_shop_get_many_currency'
         _m_db_region = 'p_shop_get_many_region'
@@ -110,7 +117,7 @@ class DataStore_Base(BaseModel):
         }
 
         print(f'executing {_m_db_currency}')
-        result = self.db_procedure_execute(_m_db_currency, argument_dict_list_currency)
+        result = cls.db_procedure_execute(_m_db_currency, argument_dict_list_currency)
         cursor = result.cursor
         print('data received')
 
@@ -118,13 +125,13 @@ class DataStore_Base(BaseModel):
         result_set_1 = cursor.fetchall()
         currencies = []
         for row in result_set_1:
-            currency = Currency.from_DB_currency(row)
+            currency = Currency.make_from_DB_currency(row)
             currencies.append(currency)
         print(f'currencies: {currencies}')
         DataStore_Base.db_cursor_clear(cursor)
 
         print(f'executing {_m_db_region}')
-        result = self.db_procedure_execute(_m_db_region, argument_dict_list_region)
+        result = cls.db_procedure_execute(_m_db_region, argument_dict_list_region)
         cursor = result.cursor
         print('data received')
 
@@ -132,15 +139,16 @@ class DataStore_Base(BaseModel):
         result_set_1 = cursor.fetchall()
         regions = []
         for row in result_set_1:
-            region = Delivery_Region.from_DB_region(row)
+            region = Delivery_Region.make_from_DB_region(row)
             regions.append(region)
         print(f'regions: {regions}')
         DataStore_Base.db_cursor_clear(cursor)
+        cursor.close()
 
         return regions, currencies
-    
-    def get_user_session(self):
-        return User.from_json(self.session.get(User.KEY_USER))
+    @staticmethod
+    def get_user_session():
+        return User.from_json(session.get(User.KEY_USER))
         user = User.get_default()
         try:
             print(f'user session: {session[self.app.ID_TOKEN_USER]}')
@@ -152,7 +160,21 @@ class DataStore_Base(BaseModel):
         except:
             print('get user login failed')
         return user
-    
-    def get_user_auth0(self):
-        return User.from_json_auth0(self.session.get(self.app.config['ID_TOKEN_USER']))
-    
+    @staticmethod
+    def get_user_auth0():
+        return User.from_json_auth0(session.get(current_app.config['ID_TOKEN_USER']))
+    @staticmethod
+    def upload_bulk(objects, objectType, batch_size):
+        _m = 'DataStore_Base.upload_bulk'
+        print(f'{_m}\nstarting...')
+        try:
+            for i in range(0, len(objects), batch_size):
+                batch = objects[i:i+batch_size]
+                data = [object.to_json() for object in batch]
+                print(f'batch: {batch}\ndata: {data}')
+                db.session.bulk_insert_mappings(objectType, data)
+            db.session.commit()
+        except Exception as e:
+            print(f'{_m}\n{e}')
+            db.session.rollback()
+            raise e

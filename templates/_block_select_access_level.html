@@ -1,0 +1,5 @@
+{% if id_access_level is defined %}
+<select class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_VALUE_CURRENT }}="{{ id_access_level }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ id_access_level }}" value="{{ id_access_level }}"></select>
+{% else %}
+<select class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></select>
+{% endif %}

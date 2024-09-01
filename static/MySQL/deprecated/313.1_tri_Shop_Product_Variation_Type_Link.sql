@@ -13,13 +13,13 @@ BEFORE INSERT ON Shop_Product_Variation_Type_Link
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 DELIMITER //
@@ -58,4 +58,4 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;

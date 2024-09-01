@@ -19,7 +19,7 @@ Business object for basket
 # internal
 import lib.argument_validation as av
 # from lib import data_types
-from business_objects.store.product import Product #, Product_Filters
+from business_objects.store.product import Product #, Filters_Product
 from business_objects.store.discount import Discount
 from business_objects.store.delivery_option import Delivery_Option
 # from forms import Form_Product

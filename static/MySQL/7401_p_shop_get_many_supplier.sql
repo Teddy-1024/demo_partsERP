@@ -239,7 +239,7 @@ BEGIN
     -- Clean up
     DROP TABLE IF EXISTS tmp_Supplier;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 /*

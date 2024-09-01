@@ -22,4 +22,10 @@ class Helper_App(BaseModel):
         try:
             return request.json
         except:
-            return {}
+            try:
+                return request.data
+            except:
+                try:
+                    return request.form
+                except:
+                    return {}

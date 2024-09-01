@@ -14,9 +14,9 @@ Data model for store stock items view
 from models.model_view_store import Model_View_Store
 from datastores.datastore_store_stock_item import DataStore_Store_Stock_Item
 from business_objects.store.product_category import Container_Product_Category
-from forms import Form_Filters_Stock_Item
+from forms.forms import Form_Filters_Stock_Item
 # from routes import bp_home
-from business_objects.store.product import Product, Product_Filters, Product_Permutation
+from business_objects.store.product import Product, Filters_Product, Product_Permutation
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 import lib.argument_validation as av
 

@@ -11,9 +11,9 @@ Initializes the Flask application, sets the configuration based on the environme
 """
 
 # internal
-from business_objects.store.product import Product, Product_Filters, Product_Permutation
+from business_objects.store.product import Product, Filters_Product, Product_Permutation
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
-from forms import Form_Supplier, Form_Filters_Permutation, Form_Filters_Stock_Item
+from forms.forms import Form_Supplier, Form_Filters_Permutation, Form_Filters_Stock_Item
 from models.model_view_base import Model_View_Base
 from models.model_view_store import Model_View_Store
 from models.model_view_store_supplier import Model_View_Store_Supplier

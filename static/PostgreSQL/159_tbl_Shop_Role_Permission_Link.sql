@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link (
         REFERENCES Shop_Access_Level(id_access_level),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Role_Permission_Link_id_change_set
 		FOREIGN KEY (id_change_set)

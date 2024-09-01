@@ -23,7 +23,7 @@ CREATE TABLE Shop_Address (
     county VARCHAR(100) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Address_id_change_set
 		FOREIGN KEY (id_change_set)

@@ -165,12 +165,14 @@ INSERT INTO Shop_Product_Category (
 	display_order,
 	code,
 	name,
-	description
+	description,
+    id_access_level_required,
+    created_by
 )
 VALUES 
-	(1, 'ASS',	'Assistive Devices', 'Braille product line and other assistive devices'),
-	(99, 'MISC', 'Miscellaneous', 'Not category allocated products'),
-    (2, 'TECH', 'Technology', 'Technological devices')
+	(1, 'ASS',	'Assistive Devices', 'Braille product line and other assistive devices', 1, 1),
+	(99, 'MISC', 'Miscellaneous', 'Not category allocated products', 1, 1),
+    (2, 'TECH', 'Technology', 'Technological devices', 1, 1)
 ;
 
 /*
@@ -191,7 +193,8 @@ INSERT INTO Shop_Product (
 	id_category,
 	name,
     has_variations,
-	id_access_level_required
+	id_access_level_required,
+    created_by
 )
 VALUES 
 	(
@@ -199,35 +202,40 @@ VALUES
 		1,
 		'Braille Keyboard Translator',
         1,
-		3
+		3,
+        1
 	),
 	(
 		2,
 		2,
 		'Test product 1', 
 		0,
-        3
+        3,
+        1
 	),
     (
 		3,
 		3,
 		'Phone',
         0,
-		1
+		1,
+        1
 	),
 	(
 		4,
 		3,
 		'Laptop',
         0,
-		1
+		1,
+        1
 	),
 	(
 		5,
 		3,
 		'Smart Watch',
         0,
-		1
+		1,
+        1
 	)
 ;
 
@@ -748,7 +756,7 @@ VALUES
 /* 
     -- Clean up
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 -- Call

@@ -12,5 +12,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Temp (
     has_variations BIT NOT NULL,
     id_access_level_required INT NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
-	display_order INT NOT NULL
+	display_order INT NOT NULL,
+	created_on TIMESTAMP,
+	created_by INT
 );

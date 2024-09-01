@@ -12,14 +12,10 @@ CREATE TRIGGER before_insert_Shop_Customer_Sales_Order
 BEFORE INSERT ON Shop_Customer_Sales_Order
 FOR EACH ROW
 BEGIN
-	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
-	END IF;
-    IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
-	END IF;
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 DELIMITER //
@@ -56,4 +52,4 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;
+DELIMITER ;;

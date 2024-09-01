@@ -30,7 +30,7 @@ from models.model_view_store_stock_items import Model_View_Store_Stock_Items
 from models.model_view_store_supplier import Model_View_Store_Supplier
 from models.model_view_store_product_permutation import Model_View_Store_Product_Permutations
 from models.model_view_user import Model_View_User
-from business_objects.store.product import Product, Product_Filters, Product_Permutation # , Product_Image_Filters, Resolution_Level_Enum
+from business_objects.store.product import Product, Filters_Product, Product_Permutation # , Product_Image_Filters, Resolution_Level_Enum
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters
 from datastores.datastore_store_base import DataStore_Store
@@ -47,6 +47,11 @@ from routing.user import routes_user
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
 # from flask_appconfig import AppConfig
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
+from flask_wtf.csrf import CSRFProtect
+from authlib.integrations.flask_client import OAuth
 import os
 import sys
 
@@ -59,6 +64,14 @@ app = Flask(__name__)
 # AppConfig(app)
 app.config.from_object(app_config) # for db init with required keys
 # app.config["config"] = app_config()
+
+"""
+csrf = CSRFProtect()
+cors = CORS()
+db = SQLAlchemy()
+mail = Mail()
+oauth = OAuth()
+"""
 
 csrf.init_app(app)
 cors.init_app(app)
@@ -88,7 +101,7 @@ with app.app_context():
 app.register_blueprint(routes_core)
 app.register_blueprint(routes_legal)
 # app.register_blueprint(routes_store_product)
-# app.register_blueprint(routes_store_product_category)
+app.register_blueprint(routes_store_product_category)
 app.register_blueprint(routes_store_product_permutation)
 app.register_blueprint(routes_store_stock_item)
 app.register_blueprint(routes_store_supplier)

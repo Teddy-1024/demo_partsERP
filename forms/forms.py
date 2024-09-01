@@ -12,6 +12,7 @@ Defines Flask-WTF forms for handling user input.
 
 # IMPORTS
 # internal
+# from business_objects.store.product_category import Filters_Product_Category # circular
 # from models.model_view_store import Model_View_Store # circular
 # external
 from flask_wtf import FlaskForm

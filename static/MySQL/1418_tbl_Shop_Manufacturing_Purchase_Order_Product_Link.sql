@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
 	display_order INT NOT NULL,
     active BIT NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,

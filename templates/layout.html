@@ -44,29 +44,36 @@
     <script src="{{ url_for('static', filename='js/lib/local_storage.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/validation.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
     
     <script>
+        // var attrFor = "{{ model.ATTR_FOR }}";
         var attrTextCollapsed = "{{ model.ATTR_TEXT_COLLAPSED }}";
         var attrTextExpanded = "{{ model.ATTR_TEXT_EXPANDED }}";
         var attrValueCurrent = "{{ model.ATTR_VALUE_CURRENT }}";
         var attrValuePrevious = "{{ model.ATTR_VALUE_PREVIOUS }}";
         var attrValueNew = "{{ model.ATTR_VALUE_NEW }}";
+        var flagActive = "{{ model.FLAG_ACTIVE }}";
         var flagAdd = "{{ model.FLAG_ADD }}";
         var flagCancel = "{{ model.FLAG_CANCEL }}";
         var flagCard = "{{ model.FLAG_CARD }}";
+        var flagCode = "{{ model.FLAG_CODE }}";
         var flagCollapsed = "{{ model.FLAG_COLLAPSED }}";
         var flagCollapsible = "{{ model.FLAG_COLLAPSIBLE }}";
         var flagColumn = "{{ model.FLAG_COLUMN }}";
+        var flagComment = "{{ model.FLAG_COMMENT }}";
         // var flagContactUs = "{{ model.FLAG_CONTACT_US }}";
         var flagContainer = "{{ model.FLAG_CONTAINER }}";
         var flagContainerInput = "{{ model.FLAG_CONTAINER_INPUT }}";
         var flagDelete = "{{ model.FLAG_DELETE }}";
+        var flagDescription = "{{ model.FLAG_DESCRIPTION }}";
         var flagDetail = "{{ model.FLAG_DETAIL }}";
         var flagDirty = "{{ model.FLAG_DIRTY }}";
+        var flagDisplayOrder = "{{ model.FLAG_DISPLAY_ORDER }}";
         var flagExpanded = "{{ model.FLAG_EXPANDED }}";
+        var flagFilter = "{{ model.FLAG_FILTER }}";
         var flagImageLogo = "{{ model.FLAG_IMAGE_LOGO }}";
         var flagInitialised = "{{ model.FLAG_INITIALISED }}";
+        var flagName = "{{ model.FLAG_NAME }}";
         var flagNavAdminHome = "{{ model.FLAG_NAV_ADMIN_HOME }}";
         var flagNavAdminStoreStripePrices = "{{ model.FLAG_NAV_ADMIN_STORE_STRIPE_PRICES }}";
         var flagNavAdminStoreStripeProducts = "{{ model.FLAG_NAV_ADMIN_STORE_STRIPE_PRODUCTS }}";
@@ -88,7 +95,9 @@
         var flagOverlayClose = "{{ model.FLAG_OVERLAY_CLOSE }}";
         var flagRow = "{{ model.FLAG_ROW }}";
         var flagRowNew = "{{ model.FLAG_ROW_NEW }}";
+        var flagSave = "{{ model.FLAG_SAVE }}";
         var flagScrollable = "{{ model.FLAG_SCROLLABLE }}";
+        var flagSlider = "{{ model.FLAG_SLIDER }}";
         var flagSubmit = "{{ model.FLAG_SUBMIT }}";
         var flagSubmitted = "{{ model.FLAG_SUBMITTED }}";
         var hashApplyFiltersStoreProductPermutation = "{{ model.HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION }}";
@@ -115,7 +124,7 @@
         var hashPageUserAdmin = "{{ model.HASH_PAGE_USER_ADMIN }}";
         var hashPageUserLogin = "{{ model.HASH_PAGE_USER_LOGIN }}";
         var hashPageUserLogout = "{{ model.HASH_PAGE_USER_LOGOUT }}";
-        var hashSaveStoreProductPermutation = "{{ model.HASH_SAVE_STORE_PRODUCT_PERMUTATION }}";
+        var idButtonApplyFilters = "#{{ model.ID_BUTTON_APPLY_FILTERS }}";
         /*
         var idButtonAdd = "#{{ model.ID_BUTTON_ADD }}";
         var idButtonCancel = "#{{ model.ID_BUTTON_CANCEL }}";
@@ -150,6 +159,7 @@
         var idOverlayHamburger = "#{{ model.ID_OVERLAY_HAMBURGER }}";
         var idPageBody = "#{{ model.ID_PAGE_BODY }}";
         var idTableMain = "#{{ model.ID_TABLE_MAIN }}";
+        var idTextareaConfirm = "#{{ model.ID_TEXTAREA_CONFIRM }}";
         var isUserLoggedIn = "{{ model.output_bool(model.IS_USER_LOGGED_IN) }}";
         var keyBasket = "{{ model.KEY_BASKET }}";
         var keyCallback = "{{ model.KEY_CALLBACK }}";
@@ -287,6 +297,9 @@
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}"><p><a href="{{ url_for('routes_legal.privacy_notice') }}" alt="Privacy notice" aria-label="Privacy notice">Privacy notice</a></p></div>
     </div>
 </div>
+
+<!--<script type="module" src="{{ url_for('static', filename='js/pages/page_base.js') }}"></script>-->
+<script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
 
 </body>
 </html>

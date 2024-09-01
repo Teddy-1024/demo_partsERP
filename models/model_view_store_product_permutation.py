@@ -14,9 +14,9 @@ Data model for store permutations view
 from models.model_view_store import Model_View_Store
 from datastores.datastore_store_product_permutation import DataStore_Store_Product_Permutation
 from business_objects.store.product_category import Container_Product_Category
-from forms import Form_Filters_Permutation
+from forms.forms import Form_Filters_Permutation
 # from routes import bp_home
-from business_objects.store.product import Product, Product_Filters, Product_Permutation
+from business_objects.store.product import Product, Filters_Product, Product_Permutation
 from business_objects.store.product_variation import Product_Variation_List
 import lib.argument_validation as av
 
@@ -34,7 +34,7 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
     KEY_PERMUTATIONS: ClassVar[str] = 'permutations'
 
     category_list: Container_Product_Category = None # (str)
-    filters_product: Product_Filters
+    filters_product: Filters_Product
     form_filters: Form_Filters_Permutation = None
     permutation_blank: Product_Permutation = None
     variations: Product_Variation_List = None
@@ -52,7 +52,7 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
         datastore_store = DataStore_Store_Product_Permutation()
         self.category_list, errors = datastore_store.get_many_product(filters_product) 
         category_list_filters, errors_filters = datastore_store.get_many_product(
-            Product_Filters(
+            Filters_Product(
                 # self.info_user['sub'], 
                 True, False, '',
                 True, False, '',

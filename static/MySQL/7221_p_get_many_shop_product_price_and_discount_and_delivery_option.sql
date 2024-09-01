@@ -759,7 +759,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_Category;
     
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 /*

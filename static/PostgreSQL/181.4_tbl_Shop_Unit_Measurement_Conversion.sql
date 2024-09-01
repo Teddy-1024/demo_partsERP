@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion (
     increment_unit_base REAL NOT NULL,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Unit_Measurement_Conversion_id_change_set
 		FOREIGN KEY (id_change_set)

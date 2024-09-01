@@ -9,7 +9,7 @@ export default class API {
     }
     
     static async request(hashEndpoint, method = 'GET', data = null) {
-        const url = mapHashToController(hashEndpoint);
+        const url = API.getUrlFromHash(hashEndpoint);
         const options = {
             method,
             headers: {
@@ -18,9 +18,11 @@ export default class API {
             }
         };
 
-        if (data) { //} && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+        if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
             options.body = JSON.stringify(data);
         }
+
+        console.log('API request:', method, url, data);
 
         try {
             const response = await fetch(url, options);
@@ -32,6 +34,13 @@ export default class API {
             console.error('API request failed:', error);
             throw error;
         }
+    }
+    
+    static getUrlFromHash(hash) {
+        if (hash == null) hash = hashPageHome;
+        console.log("getUrlFromHash:");
+        console.log("base url: " + _pathHost + "\nhash: " + hash);
+        return _pathHost + hash;
     }
 
     
@@ -47,6 +56,24 @@ export default class API {
         let callback = {};
         callback[keyCallback] = DOM.getHashPageCurrent();
         return await API.request(hashPageUserLogin, 'POST', callback);
+    }
+
+    // store
+    // categories
+    static async getCategories() {
+        return await API.request(hashGetStoreProductCategory);
+    }
+    static async getCategoriesByFilters(formFilters) {
+        let dataRequest = {};
+        dataRequest[keyForm] = DOM.convertForm2JSON(formFilters);
+        return await API.request(hashGetStoreProductCategory, 'POST', dataRequest);
+    }
+    static async saveCategories(categories, formFilters, comment) {
+        let dataRequest = {};
+        dataRequest[keyForm] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagCategory] = categories;
+        dataRequest[flagComment] = comment;
+        return await API.request(hashSaveStoreProductCategory, 'POST', dataRequest);
     }
 }
 

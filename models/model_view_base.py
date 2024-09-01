@@ -18,8 +18,9 @@ Base data model for views
 # internal
 # from routes import bp_home
 import lib.argument_validation as av
-from forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
+from forms.forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
 from datastores.datastore_user import DataStore_User
+from business_objects.store.store_base import Store_Base
 from business_objects.user import User, User_Filters
 # external
 from abc import ABC, abstractmethod
@@ -28,36 +29,41 @@ from flask import Flask, session, current_app
 from pydantic import BaseModel, ConfigDict
 from typing import ClassVar
 
-# VARIABLE INSTANTIATION
 
-# CLASSES
 class Model_View_Base(BaseModel, ABC):
     # Global constants
+    # ATTR_FOR: ClassVar[str] = 'for'
     ATTR_TEXT_COLLAPSED: ClassVar[str] = 'textCollapsed'
     ATTR_TEXT_EXPANDED: ClassVar[str] = 'textExpanded'
     ATTR_VALUE_CURRENT: ClassVar[str] = 'current-value'
     ATTR_VALUE_PREVIOUS: ClassVar[str] = 'previous-value'
-    FLAG_ACTIVE: ClassVar[str] = 'active'
+    FLAG_ACTIVE: ClassVar[str] = Store_Base.FLAG_ACTIVE
     FLAG_ADD: ClassVar[str] = 'add'
     FLAG_CANCEL: ClassVar[str] = 'button-cancel'
     # FLAG_CONTACT_US: ClassVar[str] = 'button-contact'
     FLAG_CLOSE_TEMPORARY_ELEMENT: ClassVar[str] = 'button-temporary-element-close'
     FLAG_CARD: ClassVar[str] = 'card'
+    FLAG_CODE: ClassVar[str] = Store_Base.FLAG_CODE
     FLAG_COLLAPSED: ClassVar[str] = 'collapsed'
     FLAG_COLLAPSIBLE: ClassVar[str] = 'collapsible'
     FLAG_COLUMN: ClassVar[str] = 'column'
+    FLAG_COMMENT: ClassVar[str] = 'comment'
     FLAG_CONTAINER: ClassVar[str] = 'container'
     FLAG_CONTAINER_INPUT: ClassVar[str] = FLAG_CONTAINER + '-input'
     FLAG_DELETE: ClassVar[str] = 'delete'
+    FLAG_DESCRIPTION: ClassVar[str] = Store_Base.FLAG_DESCRIPTION
     FLAG_DETAIL: ClassVar[str] = 'detail'
     FLAG_DIALOG: ClassVar[str] = 'dialog' # try <dialog> element
     FLAG_DIRTY: ClassVar[str] = 'dirty'
+    FLAG_DISPLAY_ORDER: ClassVar[str] = Store_Base.FLAG_DISPLAY_ORDER
     FLAG_ERROR: ClassVar[str] = 'error'
     FLAG_EXPANDED: ClassVar[str] = 'expanded'
+    FLAG_FILTER: ClassVar[str] = 'filter'
     FLAG_HAMBURGER: ClassVar[str] = 'hamburger'
     FLAG_IMAGE_LOGO: ClassVar[str] = 'image-logo'
     FLAG_INITIALISED: ClassVar[str] = 'initialised'
     FLAG_MODAL: ClassVar[str] = 'modal'
+    FLAG_NAME: ClassVar[str] = Store_Base.FLAG_NAME
     FLAG_NAV_ADMIN_HOME: ClassVar[str] = 'navAdminHome'
     FLAG_NAV_ADMIN_STORE_STRIPE_PRICES: ClassVar[str] = 'navAdminStoreStripePrices'
     FLAG_NAV_ADMIN_STORE_STRIPE_PRODUCTS: ClassVar[str] = 'navAdminStoreStripeProducts'
@@ -80,7 +86,9 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_PAGE_BODY: ClassVar[str] = 'page-body'
     FLAG_ROW: ClassVar[str] = 'row'
     FLAG_ROW_NEW: ClassVar[str] = 'row-new'
+    FLAG_SAVE: ClassVar[str] = 'save'
     FLAG_SCROLLABLE: ClassVar[str] = 'scrollable'
+    FLAG_SLIDER: ClassVar[str] = 'slider'
     FLAG_SUBMIT: ClassVar[str] = 'submit'
     FLAG_SUBMITTED: ClassVar[str] = 'submitted'
     # flagIsDatePicker: ClassVar[str] = 'is-date-picker'
@@ -110,8 +118,8 @@ class Model_View_Base(BaseModel, ABC):
     HASH_PAGE_USER_ADMIN: ClassVar[str] = '/user/admin'
     HASH_PAGE_USER_LOGIN: ClassVar[str] = '/login'
     HASH_PAGE_USER_LOGOUT: ClassVar[str] = '/logout'
-    HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_save'
     ID_BUTTON_ADD: ClassVar[str] = 'buttonAdd'
+    ID_BUTTON_APPLY_FILTERS: ClassVar[str] = 'buttonApplyFilters'
     ID_BUTTON_CANCEL: ClassVar[str] = 'buttonCancel'
     ID_BUTTON_HAMBURGER: ClassVar[str] = 'buttonHamburger'
     ID_BUTTON_SAVE: ClassVar[str] = 'buttonSave'
@@ -143,6 +151,7 @@ class Model_View_Base(BaseModel, ABC):
     ID_BUTTON_NAV_USER_LOGOUT: ClassVar[str] = 'navUserLogout'
     """
     ID_OVERLAY_CONFIRM: ClassVar[str] = 'overlayConfirm'
+    ID_OVERLAY_ERROR: ClassVar[str] = 'overlayError'
     ID_OVERLAY_HAMBURGER: ClassVar[str] = 'overlayHamburger'
     ID_PAGE_BODY: ClassVar[str] = 'pageBody'
     ID_TABLE_MAIN: ClassVar[str] = 'tableMain'

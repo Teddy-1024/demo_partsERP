@@ -32,7 +32,7 @@ from business_objects.store.product import Product # , Product_Image_Filters, Re
 import lib.argument_validation as av
 from business_objects.store.basket import Basket_Item
 from datastores.datastore_store_base import DataStore_Store
-from business_objects.store.product import Product_Filters
+from business_objects.store.product import Filters_Product
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
 from flask_cors import CORS
@@ -165,7 +165,7 @@ def store_home():
     # model.get_regions_and_currencies()
     # model.categories = Model_View_Store_Home.get_many_product(db)
     # product = categories[list(categories.keys())[0]][0]
-    model.get_many_product(Product_Filters(
+    model.get_many_product(Filters_Product(
         model.id_user,
         True, '', False,
         True, '', False, False, 

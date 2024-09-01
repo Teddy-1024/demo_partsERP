@@ -276,7 +276,7 @@ BEGIN
     DROP TABLE tmp_Shop_Supplier;
     DROP TABLE tmp_Msg_Error;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 -- SELECT * FROM Shop_Supplier;

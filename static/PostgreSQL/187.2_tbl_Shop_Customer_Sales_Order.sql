@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order (
     */
     active BOOLEAN NOT NULL DEFAULT TRUE,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INTEGER NULL,

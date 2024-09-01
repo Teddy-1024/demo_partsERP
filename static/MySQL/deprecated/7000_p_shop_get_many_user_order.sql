@@ -255,7 +255,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     DROP TABLE IF EXISTS tmp_Shop_Order;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 /*

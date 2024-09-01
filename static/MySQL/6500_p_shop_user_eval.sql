@@ -13,8 +13,31 @@ CALL p_shop_user_eval (
 	'1'		# a_ids_product
 )
 
-*/
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `p_clear_shop_user_eval_temp`(
+	IN a_guid BINARY(36)
+)
+BEGIN
+    IF ISNULL(a_guid) THEN
+		
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'GUID is required.';
+        
+	ELSE
+    
+		START TRANSACTION; -- trans_clear
+        
+		DELETE FROM Shop_User_Eval_Temp
+        WHERE GUID = a_guid
+        ;
+        
+        COMMIT;
+	END IF;
+    
+END$$
+DELIMITER ;
 
+*/
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_user_eval;
@@ -59,7 +82,7 @@ BEGIN
 	-- Clear previous proc results
 	# DROP TABLE IF EXISTS tmp_User_Role_Link;
 	# DROP TEMPORARY TABLE IF EXISTS tmp_User_Role_Link;
-	DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_User_Eval;
+	DROP TABLE IF EXISTS tmp_Product_p_Shop_User_Eval;
 	# DROP TABLE IF EXISTS Shop_User_Eval_Temp;
     
     
@@ -114,10 +137,11 @@ BEGIN
 		can_admin BIT -- DEFAULT 0
 	);
 	
-	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Shop_Product_p_Shop_User_Eval (
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Product_p_Shop_User_Eval (
 		id_row INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 		id_product INT NOT NULL,
         id_access_level_required INT NOT NULL,
+        priority_access_level_required INT NOT NULL,
 		guid BINARY(36) NOT NULL,
         rank_product INT NOT NULL
 	);
@@ -125,7 +149,7 @@ BEGIN
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         guid BINARY(36) NOT NULL,
-		id_type INT NOT NULL,
+		id_type INT NULL,
         code VARCHAR(50) NOT NULL,
         msg VARCHAR(4000) NOT NULL
 	);
@@ -133,6 +157,8 @@ BEGIN
     # select * from Shop_Msg_Error_Type;
     
     -- Parse filters
+    SET a_guid := IFNULL(a_guid, UUID());
+    /*
 	IF a_guid IS NULL OR EXISTS (SELECT * FROM Shop_User_Eval_Temp WHERE a_guid = guid) THEN
 		INSERT INTO tmp_Msg_Error (
 			guid,
@@ -148,6 +174,7 @@ BEGIN
 		)
         ;
 	END IF;
+    */
     SET v_has_filter_user = CASE WHEN a_ids_user = '' THEN 0 ELSE 1 END;
 	SET a_ids_permission = REPLACE(a_ids_permission, '|', ',');
     SET v_has_filter_permission = CASE WHEN a_ids_permission = '' THEN 0 ELSE 1 END;
@@ -241,7 +268,7 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE GUID = a_guid) THEN
 		/*
 		IF v_has_filter_permutation THEN
-			INSERT INTO tmp_Shop_Product_p_Shop_User_Eval (
+			INSERT INTO tmp_Product_p_Shop_User_Eval (
 				id_product,
                 id_permutation,
 				id_access_level_required,
@@ -262,11 +289,11 @@ BEGIN
 				# AND P.active # not worried as we want users to be able to see their order history
 			;
             /*
-            DELETE FROM tmp_Shop_Product_p_Shop_User_Eval
+            DELETE FROM tmp_Product_p_Shop_User_Eval
             WHERE rank_permutation > 1
             ;
             *
-			SET v_has_filter_permutation = EXISTS (SELECT * FROM tmp_Shop_Product_p_Shop_User_Eval WHERE a_guid = guid);
+			SET v_has_filter_permutation = EXISTS (SELECT * FROM tmp_Product_p_Shop_User_Eval WHERE a_guid = guid);
 		END IF;
         
 		IF v_has_filter_permission THEN
@@ -310,10 +337,11 @@ BEGIN
             END IF;
             
 			IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE GUID = a_guid) THEN
-				INSERT INTO tmp_Shop_Product_p_Shop_User_Eval (
+				INSERT INTO tmp_Product_p_Shop_User_Eval (
 					id_product,
 					-- id_permutation,
 					id_access_level_required,
+					priority_access_level_required,
 					guid,
 					rank_product -- rank_permutation
 				)
@@ -321,6 +349,7 @@ BEGIN
 					DISTINCT P.id_product,
 					-- PP.id_permutation,
 					P.id_access_level_required,
+					AL.priority AS priority_access_level_required,
 					a_guid,
 					RANK() OVER (ORDER BY C.display_order, P.display_order) AS rank_product
 				FROM Split_Temp ST
@@ -328,16 +357,26 @@ BEGIN
                 INNER JOIN Shop_Product_Category C ON P.id_category = C.id_category
 				INNER JOIN Shop_Access_Level AL
 					ON P.id_access_level_required = AL.id_access_level
-						AND AL.active
+					AND AL.active
 				WHERE FIND_IN_SET(P.id_product, a_ids_product) > 0 # FIND_IN_SET(PP.id_permutation, a_ids_permutation) > 0
 					# AND P.active # not worried as we want users to be able to see their order history
 				;
 				/*
-				DELETE FROM tmp_Shop_Product_p_Shop_User_Eval
+				DELETE FROM tmp_Product_p_Shop_User_Eval
 				WHERE rank_permutation > 1
 				;
 				*/
-				SET v_has_filter_product = EXISTS (SELECT * FROM tmp_Shop_Product_p_Shop_User_Eval WHERE a_guid = guid);
+                
+				SET v_has_filter_product = EXISTS (SELECT * FROM tmp_Product_p_Shop_User_Eval WHERE a_guid = guid);
+                
+                UPDATE tmp_Product_p_Shop_User_Eval t_P
+                INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
+                INNER JOIN Shop_Product_Category PC ON P.id_category = PC.id_category
+                INNER JOIN Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
+                SET 
+					t_P.id_access_level_required = CASE WHEN t_P.priority_access_level_required <= AL.priority THEN t_P.id_access_level_required ELSE AL.id_access_level END
+					, t_P.priority_access_level_required = LEAST(t_P.priority_access_level_required, AL.priority)
+				;
 			END IF;
             
             DROP TABLE Split_Temp;
@@ -471,7 +510,7 @@ BEGIN
                 t_P.id_product, 
                 t_P.id_permutation, 
                 CASE WHEN UE_T.priority_access_level_required < AL.priority THEN UE_T.priority_access_level_required ELSE AL.priority END -- UE_T.priority_access_level_required
-			FROM tmp_Shop_Product_p_Shop_User_Eval t_P
+			FROM tmp_Product_p_Shop_User_Eval t_P
             INNER JOIN Shop_Access_Level AL
 				ON t_P.id_access_leveL_required = AL.id_access_level
 					AND AL.active
@@ -502,7 +541,7 @@ BEGIN
                 t_P.id_product, 
                 -- t_P.id_permutation, 
                 CASE WHEN UE_T.priority_access_level_required < AL.priority THEN UE_T.priority_access_level_required ELSE AL.priority END -- UE_T.priority_access_level_required
-			FROM tmp_Shop_Product_p_Shop_User_Eval t_P
+			FROM tmp_Product_p_Shop_User_Eval t_P
             INNER JOIN Shop_Access_Level AL
 				ON t_P.id_access_leveL_required = AL.id_access_level
 					AND AL.active
@@ -610,14 +649,14 @@ BEGIN
 		SELECT * FROM tmp_Msg_Error WHERE GUID = a_guid;
     END IF;
     
-    -- select * from tmp_Shop_Product_p_Shop_User_Eval;
+    -- select * from tmp_Product_p_Shop_User_Eval;
     -- Clean up
-	DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_User_Eval;
+	DROP TABLE IF EXISTS tmp_Product_p_Shop_User_Eval;
     # DROP TEMPORARY TABLE IF EXISTS tmp_User_Role_Link;
     # DROP TABLE IF EXISTS tmp_Msg_Error;
     DROP TABLE IF EXISTS Split_Temp;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 /*

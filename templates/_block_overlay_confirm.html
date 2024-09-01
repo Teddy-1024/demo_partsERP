@@ -14,24 +14,37 @@
 </div>
 
 <script>
+    var idOverlayConfirm = "#{{ model.ID_OVERLAY_CONFIRM }}";
+
     function hookupOverlayConfirm(callbackSuccess) {
-        let overlay = $("#{{ model.ID_OVERLAY_CONFIRM }}");
-        let textarea = overlay.find('#{{ model.ID_TEXTAREA_CONFIRM }}');
-        let buttonCancel = overlay.find('#{{ model.ID_BUTTON_CANCEL }}');
-        let buttonConfirm = overlay.find('#{{ model.ID_BUTTON_CONFIRM }}');
+        /*
+        let overlay = document.querySelector("#{{ model.ID_OVERLAY_CONFIRM }}");
+        let textarea = overlay.querySelector('#{{ model.ID_TEXTAREA_CONFIRM }}');
+        let buttonCancel = overlay.querySelector('#{{ model.ID_BUTTON_CANCEL }}');
+        let buttonConfirm = overlay.querySelector('#{{ model.ID_BUTTON_CONFIRM }}');
+        */
+        let selectorTextarea = idOverlayConfirm + ' textarea';
+        let selectorButtonCancel = idOverlayConfirm + ' button.' + flagCancel;
+        let selectorButtonConfirm = idOverlayConfirm + ' button.' + flagSubmit;
 
-        buttonCancel.onclick = function() {
-            overlay.style.visibility = 'hidden';
-        };
-
-        buttonConfirm.onclick = function() {
-            overlay.style.visibility = 'hidden';
-            callbackSuccess(textarea.value);
-        };
+        initialiseEventHandler(selectorButtonCancel, flagInitialised, function(buttonCancel) {
+            buttonCancel.addEventListener('click', function() {
+                let overlay = document.querySelector(idOverlayConfirm);
+                overlay.style.visibility = 'hidden';
+            });
+        });
+        initialiseEventHandler(selectorButtonConfirm, flagInitialised, function(buttonConfirm) {
+            buttonConfirm.addEventListener('click', function() {
+                let overlay = document.querySelector(idOverlayConfirm);
+                let textarea = overlay.querySelector('textarea');
+                overlay.style.visibility = 'hidden';
+                callbackSuccess(textarea.value);
+            });
+        });
     }
-
     function showOverlayConfirm() {
-        let overlay = $("#{{ model.ID_OVERLAY_CONFIRM }}");
+        let overlay = document.querySelector(idOverlayConfirm);
+        overlay.classList.remove(flagCollapsed);
         overlay.style.visibility = 'visible';
     }
 </script>

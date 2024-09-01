@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket (
 	quantity INTEGER NOT NULL,
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set_user INTEGER,
 	CONSTRAINT FK_Shop_User_Basket_id_change_set_user
 		FOREIGN KEY (id_change_set_user)

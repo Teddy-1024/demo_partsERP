@@ -13,6 +13,7 @@ import { PageStoreProductPermutations } from './pages/page_store_product_permuta
 // import { PageStoreProducts } from './pages/page_store_products.js';
 // import { PageStoreProductVariations } from './pages/page_store_product_variations.js';
 import { PageStoreStockItems } from './pages/page_store_stock_items.js';
+import API from './api.js';
 import DOM from './dom.js';
 
 export default class Router {
@@ -65,13 +66,6 @@ export default class Router {
     navigateToHash(hash, data = null) {
         const url = Router.getUrlFromHash(hash);
         this.navigateToUrl(url, data);
-    }
-    
-    static getUrlFromHash(hash) {
-        if (hash == null) hash = hashPageHome;
-        console.log("getUrlFromHash:");
-        console.log("base url: " + _pathHost + "\nhash: " + hash);
-        return _pathHost + hash;
     }
 
     navigateToUrl(url, data = null, appendHistory = true) {

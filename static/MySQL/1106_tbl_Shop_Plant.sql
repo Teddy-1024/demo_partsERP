@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Shop_Plant (
     id_user_manager INT NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Plant_id_change_set
 		FOREIGN KEY (id_change_set)
