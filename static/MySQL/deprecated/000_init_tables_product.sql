@@ -72,7 +72,7 @@ BEGIN
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 SELECT * FROM Shop_Product_Change_Set;
 
@@ -85,7 +85,7 @@ CREATE TABLE File_Type (
     name VARCHAR(100),
     extension VARCHAR(50),
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     updated_last_on TIMESTAMP,
     updated_last_by VARCHAR(100)
 );
@@ -95,10 +95,10 @@ CREATE TRIGGER before_insert_File_Type
 BEFORE INSERT ON File_Type
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE File_Type_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -111,7 +111,7 @@ CREATE TABLE File_Type_Audit (
     value_prev VARCHAR(500),
     value_new VARCHAR(500),
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     updated_last_on TIMESTAMP,
     updated_last_by VARCHAR(100)
 );
@@ -121,10 +121,10 @@ CREATE TRIGGER before_insert_File_Type_Audit
 BEFORE INSERT ON File_Type_Audit
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 DELIMITER //
 CREATE TRIGGER before_update_File_Type_Audit
@@ -134,7 +134,7 @@ BEGIN
     SET NEW.updated_last_on = NOW();
     SET NEW.updated_last_by = CURRENT_USER();
 END //
-DELIMITER ;
+DELIMITER ;;
 
 DELIMITER //
 CREATE TRIGGER before_update_File_Type
@@ -160,7 +160,7 @@ BEGIN
 		WHERE NOT OLD.extension <=> NEW.extension
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO File_Type (
 	code, name, extension
@@ -182,7 +182,7 @@ CREATE TABLE Shop_General (
 	id_general INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     quantity_max FLOAT,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_General_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -194,10 +194,10 @@ CREATE TRIGGER before_insert_Shop_General
 BEFORE INSERT ON Shop_General
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_General_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -232,7 +232,7 @@ BEGIN
 		WHERE NOT OLD.quantity_max <=> NEW.quantity_max
 	;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_General (
 	quantity_max
@@ -255,7 +255,7 @@ CREATE TABLE Shop_Product_Category (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Category_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -267,10 +267,10 @@ CREATE TRIGGER before_insert_Shop_Product_Category
 BEFORE INSERT ON Shop_Product_Category
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Product_Category_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -321,7 +321,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Product_Category (
 	display_order,
@@ -348,7 +348,7 @@ CREATE TABLE Shop_Recurrence_Interval (
     name VARCHAR(255),
     name_plural VARCHAR(256),
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Recurrence_Interval_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -360,10 +360,10 @@ CREATE TRIGGER before_insert_Shop_Recurrence_Interval
 BEFORE INSERT ON Shop_Recurrence_Interval
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Recurrence_Interval_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -406,7 +406,7 @@ BEGIN
 		WHERE NOT OLD.name_plural <=> NEW.name_plural
 	;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Recurrence_Interval (
 	code, name, name_plural
@@ -449,7 +449,7 @@ CREATE TABLE Shop_Product (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -461,10 +461,10 @@ CREATE TRIGGER before_insert_Shop_Product
 BEFORE INSERT ON Shop_Product
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Product_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -559,7 +559,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Product (
     display_order,
@@ -598,7 +598,7 @@ CREATE TABLE Shop_Variation_Type (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Variation_Type_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -610,10 +610,10 @@ CREATE TRIGGER before_insert_Shop_Variation_Type
 BEFORE INSERT ON Shop_Variation_Type
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Variation_Type_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -664,7 +664,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Variation_Type (
     display_order, code, name, name_plural
@@ -691,7 +691,7 @@ CREATE TABLE Shop_Variation (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Variation_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -703,10 +703,10 @@ CREATE TRIGGER before_insert_Shop_Variation
 BEFORE INSERT ON Shop_Variation
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Variation_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -753,7 +753,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Variation (
     display_order, id_type, code, name
@@ -783,7 +783,7 @@ CREATE TABLE Shop_Product_Variation_Link (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Variation_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -796,13 +796,13 @@ BEFORE INSERT ON Shop_Product_Variation_Link
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Product_Variation_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -850,7 +850,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Product_Variation_Link (
     display_order, id_product, id_variation
@@ -873,7 +873,7 @@ CREATE TABLE Shop_Image_Type (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Image_Type_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -885,10 +885,10 @@ CREATE TRIGGER before_insert_Shop_Image_Type
 BEFORE INSERT ON Shop_Image_Type
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Image_Type_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -939,7 +939,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Image_Type (
     display_order, code, name, name_plural
@@ -970,7 +970,7 @@ CREATE TABLE Shop_Image (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Image_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -982,10 +982,10 @@ CREATE TRIGGER before_insert_Shop_Image
 BEFORE INSERT ON Shop_Image
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Image_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1035,7 +1035,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Image (
     display_order, id_product, id_type, url
@@ -1064,7 +1064,7 @@ CREATE TABLE Shop_Product_Image_Link (
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Image_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1077,13 +1077,13 @@ BEFORE INSERT ON Shop_Product_Image_Link
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Product_Image_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1129,7 +1129,7 @@ BEGIN
         )
     );
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Product_Image_Link (
     id_product, id_image
@@ -1155,7 +1155,7 @@ CREATE TABLE Shop_Delivery_Option_Type (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Delivery_Option_Type_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1167,10 +1167,10 @@ CREATE TRIGGER before_insert_Shop_Delivery_Option_Type
 BEFORE INSERT ON Shop_Delivery_Option_Type
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Delivery_Option_Type_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1233,7 +1233,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Delivery_Option_Type (
 	display_order, code, name, latency_delivery_min, latency_delivery_max, quantity_min, quantity_max
@@ -1264,7 +1264,7 @@ CREATE TABLE Shop_Delivery_Option (
 	price_GBP FLOAT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Delivery_Option_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1277,13 +1277,13 @@ BEFORE INSERT ON Shop_Delivery_Option
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Delivery_Option_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1331,7 +1331,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Delivery_Option (
     id_product, id_delivery_type, price_GBP
@@ -1353,7 +1353,7 @@ CREATE TABLE Shop_Delivery_Region (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Delivery_Region_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1365,10 +1365,10 @@ CREATE TRIGGER before_insert_Shop_Delivery_Region
 BEFORE INSERT ON Shop_Delivery_Region
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Delivery_Region_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1415,7 +1415,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Delivery_Region (
 	display_order, code, name
@@ -1444,7 +1444,7 @@ CREATE TABLE Shop_Product_Delivery_Region_Link (
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Delivery_Region_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1457,13 +1457,13 @@ BEFORE INSERT ON Shop_Product_Delivery_Region_Link
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Product_Delivery_Region_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1507,7 +1507,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Product_Delivery_Region_Link (
     id_product, id_region

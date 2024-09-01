@@ -13,7 +13,7 @@ BEGIN
 	
 	COMMIT;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 /*
 

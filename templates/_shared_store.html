@@ -6,8 +6,9 @@
     <!-- Include Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
 {% elif block_id == 'scripts' %}
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript 
     <script src="{{ url_for('static', filename='js/store_shared.js') }}"></script>
+    -->
     <!-- Variables from Model_View_Store + model-->
     <script>
         var attrFormType = "{{ model.ATTR_FORM_TYPE }}";
@@ -27,6 +28,10 @@
         var flagQuantityMax = "{{ model.FLAG_QUANTITY_MAX }}";
         var flagQuantityStock = "{{ model.FLAG_QUANTITY_STOCK }}";
         var flagVariations = "{{ model.FLAG_VARIATIONS }}";
+        var hashGetStoreProductCategory = "{{ model.HASH_GET_STORE_PRODUCT_CATEGORY }}";
+        var hashGetStoreProductPermutation = "{{ model.HASH_GET_STORE_PRODUCT_PERMUTATION }}";
+        var hashSaveStoreProductCategory = "{{ model.HASH_SAVE_STORE_PRODUCT_CATEGORY }}";
+        var hashSaveStoreProductPermutation = "{{ model.HASH_SAVE_STORE_PRODUCT_PERMUTATION }}";
         var hashStoreBasketAdd = "{{ model.HASH_STORE_BASKET_ADD }}";
         var hashStoreBasketDelete = "{{ model.HASH_STORE_BASKET_DELETE }}";
         var hashStoreBasketEdit = "{{ model.HASH_STORE_BASKET_EDIT }}";

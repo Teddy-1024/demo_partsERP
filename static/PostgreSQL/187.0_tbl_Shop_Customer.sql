@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer (
         REFERENCES Shop_Currency(id_currency),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Customer_id_change_set
 		FOREIGN KEY (id_change_set)

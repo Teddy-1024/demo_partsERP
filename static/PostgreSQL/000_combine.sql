@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Access_Level_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -393,7 +393,7 @@ CREATE TABLE IF NOT EXISTS File_Type (
 	name VARCHAR(100),
 	extension VARCHAR(50),
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP,
 	updated_last_by VARCHAR(100)
 );
@@ -415,7 +415,7 @@ CREATE TABLE IF NOT EXISTS File_Type_Audit (
 	value_prev VARCHAR(100),
 	value_new VARCHAR(100),
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP,
 	updated_last_by VARCHAR(100)
 );
@@ -429,7 +429,7 @@ CREATE TABLE IF NOT EXISTS Shop_General (
 	id_general INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	quantity_max REAL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT CHK_Shop_General_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -470,7 +470,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Product_Category_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -512,7 +512,7 @@ CREATE TABLE IF NOT EXISTS Shop_Recurrence_Interval (
 	name_plural VARCHAR(256),
     active BOOLEAN NOT NULL DEFAULT TRUE,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Recurrence_Interval_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -554,7 +554,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Region_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -603,7 +603,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Region_Branch_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -645,7 +645,7 @@ CREATE TABLE IF NOT EXISTS Shop_Currency (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Currency_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -705,7 +705,7 @@ CREATE TABLE Shop_Tax_Or_Surcharge (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Tax_Or_Surcharge_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -775,7 +775,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Product_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -817,7 +817,7 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Variation_Type_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -863,7 +863,7 @@ CREATE TABLE Shop_Variation (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Variation_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -932,7 +932,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Product_Variation_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -983,7 +983,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Product_Permutation_Variation_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1045,7 +1045,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Currency_Region_Link (
 	id_stripe_price VARCHAR(200),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Product_Currency_Region_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1087,7 +1087,7 @@ CREATE TABLE IF NOT EXISTS Shop_Image_Type (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Image_Type_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1143,7 +1143,7 @@ CREATE TABLE IF NOT EXISTS Shop_Image (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Image_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1187,7 +1187,7 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Delivery_Option_Type_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1252,7 +1252,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Delivery_Option_Link (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Product_Delivery_Option_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1320,7 +1320,7 @@ CREATE TABLE Shop_Discount (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Discount_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1374,7 +1374,7 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Region_Currency_Link (
         ON UPDATE RESTRICT,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Discount_Region_Currency_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1415,7 +1415,7 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Group (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Permission_Group_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1466,7 +1466,7 @@ CREATE TABLE IF NOT EXISTS Shop_Permission (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
 	CONSTRAINT FK_Shop_Permission_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1507,7 +1507,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     display_order INTEGER NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Role_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1559,7 +1559,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link (
         REFERENCES Shop_Access_Level(id_access_level),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Role_Permission_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1601,7 +1601,7 @@ CREATE TABLE IF NOT EXISTS Shop_User (
     is_super_user BOOLEAN NOT NULL DEFAULT FALSE,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_User_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1649,7 +1649,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
         REFERENCES Shop_Role(id_role),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_User_Role_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1703,7 +1703,7 @@ CREATE TABLE Shop_Address (
     county VARCHAR(100) NOT NULL,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Address_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1757,7 +1757,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket (
 	quantity INTEGER NOT NULL,
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set_user INTEGER,
 	CONSTRAINT FK_Shop_User_Basket_id_change_set_user
 		FOREIGN KEY (id_change_set_user)
@@ -1811,7 +1811,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order_Status (
 	active BOOLEAN NOT NULL DEFAULT TRUE,
 	display_order INTEGER NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT FK_Shop_User_Order_Status_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -1864,7 +1864,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier (
         REFERENCES Shop_Currency(id_currency),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Supplier_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1908,7 +1908,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement (
 	
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Unit_Measurement_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -1952,7 +1952,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion (
     increment_unit_base REAL NOT NULL,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Unit_Measurement_Conversion_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -2013,7 +2013,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order (
     */
     active BOOLEAN NOT NULL DEFAULT TRUE,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INTEGER NULL,
@@ -2072,7 +2072,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link (
 	display_order INTEGER NOT NULL,
     active BOOLEAN NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INTEGER NULL,
@@ -2161,7 +2161,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order (
     */
     active BOOLEAN NOT NULL DEFAULT TRUE,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INTEGER NULL,
@@ -2221,7 +2221,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
 	display_order INTEGER NOT NULL,
     active BOOLEAN NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INTEGER NULL,
@@ -2309,7 +2309,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer (
         REFERENCES Shop_Currency(id_currency),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_Customer_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -2364,7 +2364,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order (
     */
     active BOOLEAN NOT NULL DEFAULT TRUE,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INTEGER NULL,
@@ -2424,7 +2424,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link (
     
     active BOOLEAN NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INTEGER NULL,
@@ -14915,7 +14915,7 @@ VALUES
 /*
     -- Clean up
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 -- Call

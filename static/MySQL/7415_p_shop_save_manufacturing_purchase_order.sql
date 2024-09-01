@@ -539,7 +539,7 @@ BEGIN
     DROP TABLE tmp_Shop_Manufacturing_Purchase_Order_Product_Link;
     DROP TABLE tmp_Msg_Error;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 /*

@@ -37,6 +37,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
     guid BINARY(36)
 );

@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS File_Type_Audit (
 	value_prev VARCHAR(100),
 	value_new VARCHAR(100),
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP,
 	updated_last_by VARCHAR(100)
 );

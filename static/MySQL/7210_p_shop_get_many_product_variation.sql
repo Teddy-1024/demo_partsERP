@@ -283,7 +283,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Variation;
     DROP TABLE IF EXISTS tmp_Variation_Type;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 /*

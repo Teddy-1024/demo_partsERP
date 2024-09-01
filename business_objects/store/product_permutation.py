@@ -13,7 +13,7 @@ Business object for product permutation
 # internal
 import lib.argument_validation as av
 from lib import data_types
-from forms import Form_Basket_Add, Form_Basket_Edit, Form_Filters_Permutation
+from forms.forms import Form_Basket_Add, Form_Basket_Edit, Form_Filters_Permutation
 from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.discount import Discount
 from business_objects.store.image import Image
@@ -55,6 +55,7 @@ class Product_Permutation(db.Model, Store_Base):
     name_recurrence_interval = db.Column(db.String(255))
     name_plural_recurrence_interval = db.Column(db.String(256))
     count_recurrence_interval = db.Column(db.Integer)
+    active = db.Column(db.Boolean)
     display_order = db.Column(db.Integer)
     can_view = db.Column(db.Boolean)
     can_edit = db.Column(db.Boolean)
@@ -89,32 +90,30 @@ class Product_Permutation(db.Model, Store_Base):
         v_arg_type = 'class attribute'
         print(f'query_row: {query_row}')
         permutation = Product_Permutation()
-        permutation.id_product = query_row[0]
-        permutation.id_permutation = query_row[1]
-        # permutation.name = query_row[2]
+        permutation.id_permutation = query_row[0]
+        permutation.id_product = query_row[1]
+        permutation.id_category = query_row[2]
         permutation.description = query_row[3]
-        # permutation.price_GBP_full = query_row[4]
-        # permutation.price_GBP_min = query_row[5]
-        permutation.id_currency_cost = query_row[7]
-        permutation.code_currency_cost = query_row[8]
-        permutation.symbol_currency_cost = query_row[9]
-        permutation.cost_local = query_row[6]
-        permutation.has_variations = query_row[4]
-        permutation.id_category = query_row[5]
-        permutation.latency_manufacture = query_row[11]
-        permutation.quantity_min = query_row[12]
-        permutation.quantity_max = query_row[13]
-        permutation.quantity_step = query_row[14]
-        permutation.quantity_stock = query_row[15]
-        permutation.id_stripe_product = query_row[16]
-        permutation.is_subscription = av.input_bool(query_row[17], "is_subscription", _m, v_arg_type=v_arg_type)
-        permutation.name_recurrence_interval = query_row[18]
-        permutation.name_plural_recurrence_interval = query_row[19]
-        permutation.count_recurrence_interval = query_row[20]
-        permutation.display_order = query_row[23]
-        permutation.can_view = av.input_bool(query_row[24], "can_view", _m, v_arg_type=v_arg_type)
-        permutation.can_edit = av.input_bool(query_row[25], "can_edit", _m, v_arg_type=v_arg_type)
-        permutation.can_admin = av.input_bool(query_row[26], "can_admin", _m, v_arg_type=v_arg_type)
+        permutation.cost_local = query_row[4]
+        permutation.id_currency_cost = query_row[5]
+        permutation.code_currency_cost = query_row[6]
+        permutation.symbol_currency_cost = query_row[7]
+        # permutation.profit_local_min = query_row[8]
+        permutation.latency_manufacture = query_row[9]
+        permutation.quantity_min = query_row[10]
+        permutation.quantity_max = query_row[11]
+        permutation.quantity_step = query_row[12]
+        permutation.quantity_stock = query_row[13]
+        permutation.id_stripe_product = query_row[14]
+        permutation.is_subscription = av.input_bool(query_row[15], "is_subscription", _m, v_arg_type=v_arg_type)
+        permutation.name_recurrence_interval = query_row[16]
+        permutation.name_plural_recurrence_interval = query_row[17]
+        permutation.count_recurrence_interval = query_row[18]
+        permutation.active = query_row[19]
+        permutation.display_order = query_row[20]
+        permutation.can_view = av.input_bool(query_row[21], "can_view", _m, v_arg_type=v_arg_type)
+        permutation.can_edit = av.input_bool(query_row[22], "can_edit", _m, v_arg_type=v_arg_type)
+        permutation.can_admin = av.input_bool(query_row[23], "can_admin", _m, v_arg_type=v_arg_type)
         return permutation
     
     def from_DB_Stripe_product(query_row):

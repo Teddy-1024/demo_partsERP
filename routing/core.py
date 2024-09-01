@@ -12,7 +12,7 @@ Initializes the Flask application, sets the configuration based on the environme
 
 # IMPORTS
 # internal
-from forms import Form_Contact
+from forms.forms import Form_Contact
 from models.model_view_admin_home import Model_View_Admin_Home
 from models.model_view_contact import Model_View_Contact
 from models.model_view_home import Model_View_Home

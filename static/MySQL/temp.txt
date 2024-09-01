@@ -36,8 +36,9 @@
 1122_tbl_Shop_Unit_Measurement_Audit.sql
 1124_tbl_Shop_Unit_Measurement_Conversion.sql
 1125_tbl_Shop_Unit_Measurement_Conversion_Audit.sql
-1200_tbl_Shop_Category.sql
-1201_tbl_Shop_Category_Audit.sql
+1200_tbl_Shop_Product_Category.sql
+1201_tbl_Shop_Product_Category_Audit.sql
+1202_tbl_Shop_Product_Category_Temp.sql
 1203_tbl_Shop_Product.sql
 1204_tbl_Shop_Product_Audit.sql
 1205_tbl_Shop_Product_Temp.sql
@@ -156,6 +157,8 @@
 6501_p_clear_shop_user_eval_temp.sql
 7101_p_shop_get_many_region.sql
 7116_p_shop_get_many_currency.sql
+7200_p_shop_save_product_category.sql
+7200_p_shop_save_product_category_test.sql
 7203_p_shop_save_product.sql
 7204_p_shop_get_many_product.sql
 7205_p_shop_get_many_stripe_product_new.sql
@@ -180,4 +183,3 @@
 9000_populate.sql
 9001_view.sql
 9010_anal.sql
-9020_edit_permissions.sql

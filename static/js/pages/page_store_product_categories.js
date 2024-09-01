@@ -1,6 +1,8 @@
 var _rowBlank = null;
 
 import { PageBase } from "./page_base.js";
+import API from "../api.js";
+import DOM from "../dom.js";
 
 export class PageStoreProductCategories extends PageBase {
     static hash = hashPageStoreProductCategories;
@@ -11,307 +13,315 @@ export class PageStoreProductCategories extends PageBase {
 
     initialize() {
         this.sharedInitialize();
-        hookupFilters();
-        hookupButtonsSaveCancel();
-        hookupTableMain();
-        hookupOverlayConfirm(saveCategories);
+        this.hookupFilters();
+        this.hookupButtonsAddSaveCancel();
+        this.hookupTableMain();
+        hookupOverlayConfirm(() => {
+            this.leave();
+            this.saveCategories();
+        });
     }
 
-    hookupFilters() {
-        initialiseEventHandler(idFilterCategory, flagInitialised, function(filterCategory) {
-            console.log("hooking up filter category");
-            /*
-            listCategories.forEach(function(category) {
-                console.log('adding category: ', category.value, category.text);
-                /*
-                let option = document.createElement('option');
-                option.value = category.value;
-                option.text = category.text;
-                *
-            filterCategory.appendChild(document.createElement('<option>', category));
-            });
-            console.log(listCategories);
-            */
-            filterCategory.addEventListener("change", function(event) {
-                loadCategories();
-            });
-            console.log("hooked up filter category");
-        });
+    hookupFilters() {        
+        this.hookupFilterIsNotEmpty();
+        this.hookupFilterActive();
+        this.hookupButtonApplyFilters();
+    }
 
-        initialiseEventHandler(idFilterProduct, flagInitialised, function(filterProduct) {
-            listProducts.forEach(function(product) {
-                if (product[attrIdCategory] != getElementCurrentValue(document.querySelectorAll(idFilterCategory))) return;
-                /*
-                let option = document.createElement('option');
-                option.value = product.value;
-                option.text = product.text;
-                */
-            filterProduct.appendChild(document.createElement('<option>', product));
-            });
-            filterProduct.addEventListener("change", function(event) {
-                loadCategories();
+    hookupFilterIsNotEmpty() {
+        initialiseEventHandler('.' + flagIsNotEmpty, flagInitialised, (filter) => {
+            filter.addEventListener("change", (event) => {
+                PageStoreProductCategories.isDirtyFilter(filter);
             });
         });
-        
-        initialiseEventHandler(idFilterIsOutOfStock, flagInitialised, function(filterIsOutOfStock) {
-            filterIsOutOfStock.addEventListener("change", function(event) {
-                loadCategories();
-            });
-        });
+    }
 
-        initialiseEventHandler(idFilterQuantityMin, flagInitialised, function(filterQuantityMin) {
-            filterQuantityMin.addEventListener("change", function(event) {
-                loadCategories();
+    hookupFilterActive() {
+        initialiseEventHandler('.' + flagActive, flagInitialised, (filter) => {
+            filter.addEventListener("change", (event) => {
+                PageStoreProductCategories.isDirtyFilter(filter);
             });
         });
-        
-        initialiseEventHandler(idFilterQuantityMax, flagInitialised, function(filterQuantityMax) {
-            filterQuantityMax.addEventListener("change", function(event) {
-                loadCategories();
+    }
+
+    hookupButtonApplyFilters() {
+        initialiseEventHandler(idButtonApplyFilters, flagInitialised, (button) => {
+            button.addEventListener("click", (event) => {
+                event.stopPropagation();
+                this.loadCategories();
             });
         });
     }
 
     loadCategories() {
 
-        let elForm = document.querySelectorAll(idFormFiltersCategories);
-        let ajaxData = {};
-        ajaxData[keyForm] = convertForm2JSON(elForm);
-        ajaxData.csrf_token = ajaxData[keyForm].csrf_token;
-        /*
-        ajaxData[attrIdCategory] = getElementCurrentValue(document.querySelectorAll(idFilterCategory));
-        ajaxData[attrIdProduct] = getElementCurrentValue(document.querySelectorAll(idFilterProduct));
-        ajaxData[flagIsOutOfStock] = getElementCurrentValue(document.querySelectorAll(idFilterIsOutOfStock));
-        ajaxData[flagQuantityMin] = getElementCurrentValue(document.querySelectorAll(idFilterQuantityMin));
-        ajaxData[flagQuantityMax] = getElementCurrentValue(document.querySelectorAll(idFilterQuantityMax));
-        */
-
-        console.log('ajaxData:'); console.log(ajaxData);
-
-        ajaxJSONData('permutations', mapHashToController(hashPageStoreCategoriesPost), ajaxData, callbackLoadCategories, false, {"X-CSRFToken": ajaxData.csrf_token});
+        let elForm = document.querySelector(idFormFiltersProductCategory);
+        API.getCategoriesByFilters(elForm)
+            .then(data => {
+                console.log('Data received:', data);
+                this.callbackLoadCategories(data);
+            })
+            .catch(error => console.error('Error:', error));
     }
 
     callbackLoadCategories(response) {
         
-        console.log('ajax:'); console.log(response.data);
+        console.log('ajax:'); console.log(response);
 
-        let table = document.querySelectorAll(idTableMain);
-        let bodyTable, row, dllCategory, ddlProduct;
+        let table = document.querySelector(idTableMain);
+        let row, sliderDisplayOrder, textareaCode, textareaName, textareaDescription, inputActive;
 
         // table.querySelector('tr').remove(); // :not(.' + flagRowNew + ')
-        bodyTable = table.querySelector('tbody');
-        bodyTable.querySelector('tr').remove(); 
+        let bodyTable = table.querySelector('tbody');
+        bodyTable.querySelectorAll('tr').forEach(function(row) { row.remove(); });
 
-        response.data.forEach(function(dataRow) {
+        let categories = response.data.categories.sort((a, b) => a.display_order - b.display_order);
+        
+        categories.forEach((category) => {
             row = _rowBlank.cloneNode(true);
-            row = document.querySelectorAll(row);
             row.classList.remove(flagRowNew);
-            console.log("applying data row: ", dataRow);
-            dllCategory = row.querySelector('td.' + flagCategory + ' select');
-            dllCategory.value = dataRow[attrIdCategory];
-            ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-            listProducts.forEach(function(product) {
-                if (product[attrIdCategory] != dataRow[attrIdCategory]) return;
-                ddlProduct.appendChild(document.createElement('<option>', product));
+            row.classList.remove(flagInitialised);
+            row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
+                element.classList.remove(flagInitialised);
             });
-            ddlProduct.value = dataRow[attrIdProduct];
-            row.querySelector('td.' + flagVariations + ' textarea').value = dataRow[flagVariations];
-            row.querySelector('td.' + flagQuantityStock + ' input').value = dataRow[flagQuantityStock];
-            row.querySelector('td.' + flagQuantityMin + ' input').value = dataRow[flagQuantityMin];
-            row.querySelector('td.' + flagQuantityMax + ' input').value = dataRow[flagQuantityMax];
-            row.querySelector('td.' + flagCostLocalVATIncl).innerHTML = dataRow[flagCostLocalVATIncl];
-            row.attr(attrIdCategory, dataRow[flagCategory]);
-            row.attr(attrIdProduct, dataRow[flagProduct]);
-            row.attr(attrIdPermutation, dataRow[attrIdPermutation]);
+            console.log("applying data row: ", category);
+            sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
+            textareaCode = row.querySelector('td.' + flagCode + ' textarea');
+            textareaName = row.querySelector('td.' + flagName + ' textarea');
+            textareaDescription = row.querySelector('td.' + flagDescription + ' textarea');
+            inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+            sliderDisplayOrder.setAttribute(attrValueCurrent, category[flagDisplayOrder]);
+            DOM.setElementValuePrevious(sliderDisplayOrder, category[flagDisplayOrder]);
+            DOM.setElementValueCurrent(textareaCode, category[flagCode]);
+            DOM.setElementValuePrevious(textareaCode, category[flagCode]);
+            DOM.setElementValueCurrent(textareaName, category[flagName]);
+            DOM.setElementValuePrevious(textareaName, category[flagName]);
+            DOM.setElementValueCurrent(textareaDescription, category[flagDescription]);
+            DOM.setElementValuePrevious(textareaDescription, category[flagDescription]);
+            DOM.setElementValueCurrent(inputActive, category[flagActive]);
+            DOM.setElementValuePrevious(inputActive, category[flagActive]);
+            row.setAttribute(attrIdCategory, category[attrIdCategory]);
             bodyTable.appendChild(row);
         });
+
+        this.hookupTableMain();
     }
 
-    hookupButtonsSaveCancel() {
-        initialiseEventHandler(idButtonSave, flagInitialised, function(button) {
-            button.addEventListener("click", function(event) {
-                event.stopPropagation();
-                showOverlayConfirm();
-            });
-        });
-        // let parentSave = btnSave.closest('div.' + flagColumn);
-        // parentSave.classList.add(flagCollapsed);
+    hookupButtonsAddSaveCancel() {
+        this.hookupButtonSave();
 
-        initialiseEventHandler(idButtonCancel, flagInitialised, function(button) {
+        initialiseEventHandler('form.' + flagFilter + ' button.' + flagCancel, flagInitialised, function(button) {
             button.addEventListener("click", function(event) {
                 event.stopPropagation();
                 loadCategories();
             });
+            button.classList.add(flagCollapsed);
         });
-        // let parentCancel = btnCancel.closest('div.' + flagColumn);
-        // parentCancel.classList.add(flagCollapsed);
 
-        initialiseEventHandler(idButtonCancel, flagInitialised, function(button) {
-            button.addEventListener("click", function(event) {
+        initialiseEventHandler('form.' + flagFilter + ' button.' + flagAdd, flagInitialised, (button) => {
+            button.addEventListener("click", (event) => {
                 event.stopPropagation();
-                let table = document.querySelectorAll(idTableMain);
+                let tbody = document.querySelector(idTableMain + ' tbody');
                 let row = _rowBlank.cloneNode(true);
-                row = document.querySelectorAll(row);
-                row.classList.remove(flagRowNew);
-                let ddlCategory = row.querySelector('td.' + flagCategory + ' select');
-                let idCategory = getElementCurrentValue(document.querySelectorAll(idFilterCategory));
-                idCategory = (idCategory == 0) ? idCategoryDefault : idCategory;
-                let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-                let products = productsByCategory[idCategory];
-                products.forEach(function(product) {
-                    ddlProduct.appendChild(document.createElement('<option>', product));
+                row.classList.remove(flagInitialised);
+                row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
+                    element.classList.remove(flagInitialised);
                 });
-                table.querySelector('tbody').appendChild(row);
+                let newDisplayOrder = parseInt(tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider).getAttribute(attrValueCurrent)) + 1;
+                tbody.appendChild(row);
+                let slider = tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
+                slider.setAttribute(attrValueCurrent, newDisplayOrder);
+                slider.setAttribute(attrValuePrevious, newDisplayOrder);
+                this.hookupTableMain();
             });
         });
     }
 
     saveCategories() {
 
-        let permutations = getCategories(true);
+        let categories = this.getCategories(true);
         
-        if (permutations.length == 0) {
-            showOverlayError('No permutations to save');
+        if (categories.length == 0) {
+            showOverlayError('No categories to save');
             return;
         }
-
-        let ajaxData = {};
-        ajaxData[keyCategories] = permutations;
-        ajaxData[keyForm] = convertForm2JSON(elForm);
-        ajaxData.csrf_token = ajaxData[keyForm].csrf_token;
-        ajaxData.comment = document.querySelectorAll(idTextareaConfirm).value;
-
-        console.log('ajaxData:'); console.log(ajaxData);
-        ajaxJSONData('permutations', mapHashToController(hashPageStoreCategoriesPost), ajaxData, callbackLoadCategories, false, {});
+        
+        let elForm = document.querySelector(idFormFiltersProductCategory);
+        let comment = DOM.getElementValueCurrent(document.querySelector(idTextareaConfirm)); // idOverlayConfirm + ' ' + textarea
+        API.saveCategories(categories, elForm, comment)
+            .then(data => {
+                console.log('Data received:', data);
+                this.callbackLoadCategories(data);
+                console.log('Categories saved?');
+            })
+            .catch(error => console.error('Error:', error));
     }
 
     getCategories(dirtyOnly) {
-        let table = document.querySelectorAll(idTableMain);
-        let permutations = [];
-        let row, permutation, ddlCategory, ddlProduct, variations, quantityStock, quantityMin, quantityMax, costLocal;
-        table.querySelector('tbody tr').each(function(index, row) {
-            row = document.querySelectorAll(row);
+        let table = document.querySelector(idTableMain);
+        let categories = [];
+        let category, sliderDisplayOrder, textareaCode, textareaName, textareaDescription, inputActive;
+        table.querySelectorAll('tbody tr').forEach(function(row) {
             if (dirtyOnly && !row.classList.contains(flagDirty)) return;
 
-            ddlCategory = row.querySelector('td.' + flagCategory + ' select');
-            ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-            variations = row.querySelector('td.' + flagVariations + ' textarea');
-            quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
-            quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
-            quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
+            sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
+            textareaCode = row.querySelector('td.' + flagCode + ' textarea');
+            textareaName = row.querySelector('td.' + flagName + ' textarea');
+            textareaDescription = row.querySelector('td.' + flagDescription + ' textarea');
+            inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
 
-            permutation = {};
-            permutation[attrIdCategory] = ddlCategory.attr(attrValueCurrent);
-            permutation[attrIdProduct] = ddlProduct.attr(attrValueCurrent);
-            permutation[attrIdPermutation] = row.attr(attrIdPermutation)
-            permutation[flagVariations] = variations.attr(attrValueCurrent);
-            permutation[flagQuantityStock] = quantityStock.attr(attrValueCurrent);
-            permutation[flagQuantityMin] = quantityMin.attr(attrValueCurrent);
-            permutation[flagQuantityMax] = quantityMax.attr(attrValueCurrent);
-            permutations.push(permutation);
+            category = {};
+            category[attrIdCategory] = row.getAttribute(attrIdCategory);
+            category[flagCode] = DOM.getElementValueCurrent(textareaCode);
+            category[flagName] = DOM.getElementValueCurrent(textareaName);
+            category[flagDescription] = DOM.getElementValueCurrent(textareaDescription);
+            category[flagActive] = DOM.getElementValueCurrent(inputActive);
+            category[flagDisplayOrder] = sliderDisplayOrder.getAttribute(attrValueCurrent);
+            categories.push(category);
         });
-        return permutations;
+        return categories;
     }
 
     hookupTableMain() {
-        initialiseEventHandler(idTableMain, flagInitialised, function(table) {
-
-            table.querySelectorAll('td.' + flagCategory + ' select').addEventListener("change", function(event) {
-                handleChangeInputCategories(this);
-                ddlCategory = this;
-                row = getRowFromElement(ddlCategory);
-                ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-                ddlProduct.querySelector('option').remove();
-                ddlProduct.appendChild(document.createElement('<option>', {value: '', text: 'Select Product'}));
-                listProducts.forEach(function(product) {
-                    if (product[attrIdCategory] != getElementCurrentValue(ddlCategory)) return;
-                    ddlProduct.appendChild(document.createElement('<option>', product));
-                });
-                handleChangeInputCategories(ddlProduct);
-            });
-
-            table.querySelectorAll("change", 'td.' + flagProduct + ' select' + ',' + 'td.' + flagQuantityStock + ' input' + ',' + 'td.' + flagQuantityMin + ' input' + ',' + 'td.' + flagQuantityMax + ' input').addEventListener("change", function(event) {
-                handleChangeInputCategories(this);
-            });
-
-            table.querySelectorAll("click", 'td.' + flagVariations + ' textarea').addEventListener("change", function(event) {
-                event.stopPropagation();
-                handleClickCategoriesInputVariations(this);
-            });
-
-            table.querySelectorAll("click", 'td.' + flagDetail + ' button').addEventListener("change", function(event) {
-                event.stopPropagation();
-                console.log("not implemented error: detail clicked");
-            });
-
-            table.querySelectorAll("click", 'td.' + flagVariations + ' button.' + flagAdd).addEventListener("change", function(event) {
-                event.stopPropagation();
-                handleClickCategoriesVariationsButtonAdd(this);
+        this.hookupSlidersDisplayOrder();
+        this.hookupTextareasCode();
+        this.hookupTextareasName();
+        this.hookupTextareasDescription();
+        this.hookupInputsActive();
+        if (_rowBlank == null) {
+            this.cacheRowBlank();
+        }
+    }
+    hookupSlidersDisplayOrder() {
+        let selectorDisplayOrder = idTableMain + ' tbody tr td.' + flagDisplayOrder;
+        initialiseEventHandler(selectorDisplayOrder, flagInitialised, (sliderDisplayOrder) => {
+            sliderDisplayOrder.addEventListener('mousedown', (event) => {
+                this.handleSliderMouseDown(event);
             });
         });
+    }
+    hookupTextareasCode() {
+        let selectorCode = idTableMain + ' tbody tr td.' + flagCode + ' textarea';
+        initialiseEventHandler(selectorCode, flagInitialised, (textareaCode) => {
+            textareaCode.addEventListener("change", (event) => {
+                console.log("textarea change event");
+                this.handleChangeInputCategories(textareaCode);
+            });
+        });
+    }
+    hookupTextareasName() {
+        let selectorName = idTableMain + ' tbody tr td.' + flagName + ' textarea';
+        initialiseEventHandler(selectorName, flagInitialised, (textareaName) => {
+            textareaName.addEventListener("change", (event) => {
+                console.log("textarea change event");
+                this.handleChangeInputCategories(textareaName);
+            });
+        });
+    }
+    hookupTextareasDescription() {
+        let selectorDescription = idTableMain + ' tbody tr td.' + flagDescription + ' textarea';
+        initialiseEventHandler(selectorDescription, flagInitialised, (textareaDescription) => {
+            textareaDescription.addEventListener("change", (event) => {
+                console.log("textarea change event");
+                this.handleChangeInputCategories(textareaDescription);
+            });
+        });
+    }
+    hookupInputsActive() {
+        let selectorActive = idTableMain + ' tbody tr td.' + flagActive + ' input[type="checkbox"]';
+        initialiseEventHandler(selectorActive, flagInitialised, (inputActive) => {
+            inputActive.addEventListener("change", (event) => {
+                console.log("input change event");
+                this.handleChangeInputCategories(inputActive);
+            });
+        });
+    }
+    handleSliderMouseDown(event) {
+        event.stopPropagation();
+        console.log("start drag slider");
+        let slider = event.target;
+        let initialY = event.clientY;
+        let initialRow = DOM.getRowFromElement(slider);
+        let placeholder = document.createElement('tr');
+        placeholder.className = 'placeholder';
+        placeholder.style.height = `${initialRow.offsetHeight}px`;
+        initialRow.parentNode.insertBefore(placeholder, initialRow.nextSibling);
+        initialRow.style.position = 'absolute';
+        initialRow.style.zIndex = '1000';
+        initialRow.style.width = `${initialRow.offsetWidth}px`;
 
-        // cache new row for cloning
-        let rowBlankTemp = table.querySelector('tr.' + flagRowNew);
+        function onMouseMove(event) {
+            let newY = event.clientY;
+            let deltaY = newY - initialY;
+            initialRow.style.transform = `translateY(${deltaY}px)`;
+
+            let rows = Array.from(initialRow.parentNode.children);
+            let currentIndex = rows.indexOf(initialRow);
+            let placeholderIndex = rows.indexOf(placeholder);
+
+            if (deltaY > 0 && currentIndex < rows.length - 1) {
+                let nextRow = rows[currentIndex + 1];
+                if (newY > nextRow.getBoundingClientRect().top) {
+                    initialRow.parentNode.insertBefore(placeholder, nextRow.nextSibling);
+                }
+            } else if (deltaY < 0 && currentIndex > 0) {
+                let prevRow = rows[currentIndex - 1];
+                if (newY < prevRow.getBoundingClientRect().bottom) {
+                    initialRow.parentNode.insertBefore(placeholder, prevRow);
+                }
+            }
+        }
+
+        function onMouseUp() {
+            initialRow.style.position = '';
+            initialRow.style.zIndex = '';
+            initialRow.style.transform = '';
+            placeholder.parentNode.insertBefore(initialRow, placeholder);
+            placeholder.remove();
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    }
+    cacheRowBlank() {
+        let selectorRowNew = idTableMain + ' tbody tr.' + flagRowNew;
+        let rowBlankTemp = document.querySelector(selectorRowNew);
         console.log("row blank temp: ", rowBlankTemp);
         _rowBlank = rowBlankTemp.cloneNode(true);
-        table.querySelectorAll('tr.' + flagRowNew).forEach(function(row) {
+        document.querySelectorAll(selectorRowNew).forEach(function(row) {
             row.remove();
         });
     }
 
     handleChangeInputCategories(element) {
         console.log("handleChangeInputCategories");
-        console.log("element value:", element.value);
-        let row = getRowFromElement(element);
-        let formFilters = document.querySelector(idFormFiltersCategories);
-        let buttonCancel = formFilters.querySelector(idButtonCancel);
-        let buttonSave = formFilters.querySelector(idButtonSave);
-        let wasDirty = isElementDirty(element);
-
-        if (objJQuery.classList.contains(flagVariations)) {
-            element.setAttribute(attrValueCurrent, getProductVariationsText(element));
-        } else {
-            element.setAttribute(attrValueCurrent, getElementCurrentValue(element));
-        }
-        let isDirty = isElementDirty(element);
-
-        if (wasDirty != isDirty) {
-            isRowDirty(row);
-            let permutationsDirty = getCategories(true);
-            if (isEmpty(permutationsDirty)) {
-                buttonCancel.classList.add(flagCollapsed);
-                buttonSave.classList.add(flagCollapsed);
-            } else {
-                buttonCancel.classList.remove(flagCollapsed);
-                buttonSave.classList.remove(flagCollapsed);
+        console.log("element value:", DOM.getElementValueCurrent(element));
+        let row = DOM.getRowFromElement(element);
+        let wasDirtyRow = this.isRowDirty(row);
+        let wasDirty = element.classList.contains(flagDirty);
+        let isDirty = DOM.isElementDirty(element);
+        if (isDirty != wasDirty) {
+            let isDirtyRow = this.isRowDirty(row);
+            if (isDirtyRow != wasDirtyRow) {
+                let categoriesDirty = this.getCategories(true);
+                let existsDirtyCategory = categoriesDirty.length > 0;
+                console.log("categoriesDirty:", categoriesDirty);
+                console.log("existsDirtyCategory:", existsDirtyCategory);
+                this.toggleShowButtonsSaveCancel(existsDirtyCategory);
             }
         }
     }
 
-    isElementDirty(element) {
-        let isDirty = element.attr(attrValuePrevious) != element.attr(attrValueCurrent);
-        let cell = getCellFromElement(element);
-        if (isDirty) {
-            element.classList.add(flagDirty);
-            cell.classList.add(flagDirty);
-        } else {
-            element.classList.remove(flagDirty);
-            cell.classList.remove(flagDirty);
-        }
-        return isDirty;
-    }
-
     isRowDirty(row) {
-        let ddlCategory = row.querySelector('td.' + flagCategory + ' select');
-        let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-        let variations = row.querySelector('td.' + flagVariations + ' textarea');
-        let quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
-        let quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
-        let quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
-        
-        // return isElementDirty(ddlCategory) || isElementDirty(ddlProduct) || isElementDirty(variations) || isElementDirty(quantityStock) || isElementDirty(quantityMin) || isElementDirty(quantityMax);
-        let isDirty = ddlCategory.classList.contains(flagDirty) || ddlProduct.classList.contains(flagDirty) || variations.classList.contains(flagDirty) || 
-            quantityStock.classList.contains(flagDirty) || quantityMin.classList.contains(flagDirty) || quantityMax.classList.contains(flagDirty);
+        let sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder);
+        let inputCode = row.querySelector('td.' + flagCode + ' textarea');
+        let inputName = row.querySelector('td.' + flagName + ' textarea');
+        let inputDescription = row.querySelector('td.' + flagDescription + ' textarea');
+        let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+        let isDirty = sliderDisplayOrder.classList.contains(flagDirty) || inputCode.classList.contains(flagDirty) || inputName.classList.contains(flagDirty) || 
+            inputDescription.classList.contains(flagDirty) || inputActive.classList.contains(flagDirty);
         if (isDirty) {
             row.classList.add(flagDirty);
         } else {
@@ -320,155 +330,15 @@ export class PageStoreProductCategories extends PageBase {
         return isDirty;
     }
 
-    getProductVariationsText(element) {
-        element = document.querySelectorAll(element);
-        /*
-        let value = element.value;
-        let variations = value.split('\n');
-        variations = variations.map(function(variation) {
-            return variation.trim();
-        });
-        variations = variations.filter(function(variation) {
-            return variation.length > 0;
-        });
-        */
-        let variations = dictVariations[element.attr(attrIdVariation)].map((variation, index) => {
-            return variation[keyNameVariationType] + ': ' + variation[keyNameVariation];
-        });
-        return variations.join(',\n');
-    }
-
-    getElementProductVariations(element) {
-        element = document.querySelectorAll(element);
-        let variations = element.attr(attrValueCurrent);
-        let objVariations = [];
-        if (!isEmpty(variations)) {
-            variations = variations.split(',');
-            variations.forEach((variation) => {
-                let parts = variation.split(':');
-                if (parts.length == 2) {
-                    objVariations.push({
-                        [attrIdVariationType]: parts[0].trim(),
-                        [attrIdVariation]: parts[1].trim(),
-                    });
-                }
-            });
-        }
-        return objVariations;
-    }
-
-    handleClickCategoriesInputVariations(element) {
-        element = document.querySelectorAll(element);
-        
-        let jsonVariation, jsonVariationType, tr, tdVariationType, variationType, attributesVariationType, tdNameVariation, nameVariation, attributesNameVariation, tdDelete, buttonDelete, tmpJsonVariation, tmpJsonVariationType;
-        let variations = getElementProductVariations(element);
-        let tblVariations = document.createElement("<table>");
-        let thead = document.createElement("<thead>");
-        tr = document.createElement("<tr>");
-        let thVariationType = document.createElement("<th>", {
-            text: 'Type',
-        });
-        let thNameVariation = document.createElement("<th>", {
-            text: 'Name',
-        });
-        let buttonAdd = document.createElement("<button>", {
-            class: flagAdd,
-            text: '+',
-        });
-        let thAddDelete = document.createElement("<th>");
-        thAddDelete.appendChild(buttonAdd);
-        tr.appendChild(thVariationType);
-        tr.appendChild(thNameVariation);
-        tr.appendChild(thAddDelete);
-        thead.appendChild(tr);
-        tblVariations.appendChild(thead);
-
-        let tbody = document.createElement("<tbody>");
-        console.log('variations:', variations);
-        /*
-        if (isEmpty(variations)) {
-            return;
-        }
-        */
-        variations.forEach((variation, index) => {
-            jsonVariationType = dictVariations[variation[attrIdVariationType]];
-            jsonVariation = dictVariations[variation[attrIdVariation]];
-            tdVariationType = document.createElement("<td>", {
-                class: attrIdVariationType,
-            });
-            attributesVariationType = {
-                class: attrIdVariationType,
-                value: variation[attrIdVariationType],
-            };
-            attributesVariationType[attrValueCurrent] = jsonVariation[attrIdVariationType];
-            attributesVariationType[attrValuePrevious] = jsonVariation[attrIdVariationType];
-            variationType = document.createElement("<select>", attributesVariationType);
-            listVariationTypes.forEach((idVariationType) => {
-                tmpJsonVariationType = dictVariationTypes[idVariationType];
-                variationType.appendChild(document.createElement('<option>', { 
-                    value: jsonVariationType[attrIdVariationType],
-                    text: jsonVariationType[keyNameVariationType],
-                    selected: (idVariationType == jsonVariationType[attrIdVariationType]),
-                }));
-            });
-            tdNameVariation = document.createElement("<td>", {
-                class: attrIdVariation,
-            });
-            attributesNameVariation = {
-                class: attrIdVariation,
-                value: variation[attrIdVariation],
-            };
-            attributesNameVariation[attrValueCurrent] = jsonVariation[attrIdVariation];
-            attributesNameVariation[attrValuePrevious] = jsonVariation[attrIdVariation];
-            nameVariation = document.createElement("<select>", attributesNameVariation);
-            listVariations.forEach((idVariation) => {
-                tmpJsonVariation = dictVariations[idVariation];
-                console.log("id_variation: ", idVariation);
-                console.log("tmpJsonVariation: ", tmpJsonVariation);
-                nameVariation.appendChild(document.createElement('<option>', {
-                    value: tmpJsonVariation[attrIdVariation],
-                    text: tmpJsonVariation[keyNameVariation],
-                    selected: (idVariation == jsonVariation[attrIdVariation]),
-                }));
-            });
-            tdDelete = document.createElement("<td>", {
-                class: flagDelete,
-            });
-            buttonDelete = document.createElement("<button>", {
-                class: flagDelete,
-                text: 'x',
-            });
-            tr = document.createElement("<tr>");
-            tdVariationType.appendChild(variationType);
-            tr.appendChild(tdVariationType);
-            tdNameVariation.appendChild(nameVariation);
-            tr.appendChild(tdNameVariation);
-            tdDelete.appendChild(buttonDelete);
-            tr.appendChild(tdDelete);
-            tbody.appendChild(tr);
-        });
-        
-        tblVariations.appendChild(tbody);
-        let parent = element.parentElement;
-        parent.innerHTML = '';
-        parent.appendChild(tblVariations);
-        console.log("tblVariations: ", tblVariations);
-    }
-
-    handleClickCategoriesVariationsButtonAdd(element) {
-        element = document.querySelectorAll(element);
-        let row = getRowFromElement(element);
-        let variations = row.querySelector('td.' + flagVariations + ' textarea');
-        let value = variations.value;
-        value = (isEmpty(value)) ? '' : value + '\n';
-        value += 'Type: Variation\n';
-        variations.value = value;
-        handleChangeInputCategories(variations);
-        console.log("error: not implemented");
-    }
-
     leave() {
         super.leave();
+    }
+
+    getFiltersDefaults() {
+        return {
+            [flagIsNotEmpty]: true,
+            [flagActive]: true
+        };
     }
 }
 

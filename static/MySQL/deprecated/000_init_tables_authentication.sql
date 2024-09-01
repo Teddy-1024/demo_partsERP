@@ -54,7 +54,7 @@ BEGIN
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 SELECT * FROM Shop_User_Change_Set;
 
@@ -69,7 +69,7 @@ CREATE TABLE Shop_Access_Level (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Access_Level_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -82,13 +82,13 @@ BEFORE INSERT ON Shop_Access_Level
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Access_Level_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -135,7 +135,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Access_Level (
 	display_order, code, name, priority
@@ -159,7 +159,7 @@ CREATE TABLE Shop_Permission_Group (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Permission_Group_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -173,13 +173,13 @@ BEFORE INSERT ON Shop_Permission_Group
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Permission_Group_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -223,7 +223,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Permission_Group (
 	display_order, code, name
@@ -254,7 +254,7 @@ CREATE TABLE Shop_Permission (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
 	CONSTRAINT FK_Shop_Permission_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -267,13 +267,13 @@ BEFORE INSERT ON Shop_Permission
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Permission_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -325,7 +325,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Permission (
 	display_order, code, name, id_permission_group, required_access_level
@@ -349,7 +349,7 @@ CREATE TABLE Shop_Role (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Role_id_change_set
 		FOREIGN KEY (id_change_set) 
@@ -362,13 +362,13 @@ BEFORE INSERT ON Shop_Role
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Role_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -412,7 +412,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Role (
     display_order,
@@ -449,7 +449,7 @@ CREATE TABLE Shop_Role_Permission_Link (
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Role_Permission_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -462,13 +462,13 @@ BEFORE INSERT ON Shop_Role_Permission_Link
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Role_Permission_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -516,7 +516,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Role_Permission_Link (
     id_role, id_permission, id_access_level
@@ -542,7 +542,7 @@ CREATE TABLE Shop_User (
     is_super_user BIT NOT NULL DEFAULT 0,
     active BIT NOT NULL DEFAULT 1,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_User_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -555,13 +555,13 @@ BEFORE INSERT ON Shop_User
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_User_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -605,7 +605,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_User (
     name,
@@ -636,7 +636,7 @@ CREATE TABLE Shop_User_Role_Link (
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_User_Role_Link_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -649,13 +649,13 @@ BEFORE INSERT ON Shop_User_Role_Link
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_User_Role_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -691,7 +691,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_User_Role_Link (
     id_user, id_role
@@ -723,7 +723,7 @@ CREATE TABLE Shop_Address (
     county VARCHAR(100) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Address_id_change_set
 		FOREIGN KEY (id_change_set)
@@ -736,13 +736,13 @@ BEFORE INSERT ON Shop_Address
 FOR EACH ROW
 BEGIN
 	IF NEW.created_on <=> NULL THEN
-		SET NEW.created_on = NOW();
+		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	END IF;
     IF NEW.created_by <=> NULL THEN
-		SET NEW.created_by = CURRENT_USER();
+		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 CREATE TABLE Shop_Address_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -810,7 +810,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 INSERT INTO Shop_Address (
     id_user, region, name_full, phone_number, postcode, address_line_1, address_line_2, city, county

@@ -164,7 +164,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Msg_Error;
     DROP TABLE IF EXISTS tmp_Shop_User;
 END //
-DELIMITER ;
+DELIMITER ;;
 
 
 

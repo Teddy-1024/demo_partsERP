@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
         REFERENCES Shop_Role(id_role),
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INTEGER,
     CONSTRAINT FK_Shop_User_Role_Link_id_change_set
 		FOREIGN KEY (id_change_set)

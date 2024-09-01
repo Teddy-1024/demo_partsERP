@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
     created_on TIMESTAMP,
-    created_by VARCHAR(100),
+    created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Region_id_change_set
 		FOREIGN KEY (id_change_set) 

@@ -71,7 +71,7 @@ BEGIN
         
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
-        , guid BIGINT NOT NULL
+        , guid BINARY(36) NOT NULL
 		, id_type INT NOT NULL
 		/*
         CONSTRAINT FK_tmp_Msg_Error_id_type 
@@ -241,5 +241,5 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
 END //
-DELIMITER ;
+DELIMITER ;;
 

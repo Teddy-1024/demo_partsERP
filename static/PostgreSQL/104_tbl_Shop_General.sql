@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Shop_General (
 	id_general INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	quantity_max REAL,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	id_change_set INTEGER,
 	CONSTRAINT CHK_Shop_General_id_change_set
 		FOREIGN KEY (id_change_set) 

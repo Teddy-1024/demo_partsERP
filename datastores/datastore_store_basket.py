@@ -21,7 +21,7 @@ from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.delivery_region import Delivery_Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Product_Filters 
+from business_objects.store.product import Product, Product_Permutation, Product_Price, Filters_Product 
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
@@ -40,6 +40,8 @@ from flask import Flask, session, current_app
 from pydantic import BaseModel, ConfigDict
 from typing import ClassVar
 from datetime import datetime
+
+# db = SQLAlchemy()
 
 
 class DataStore_Store_Basket(DataStore_Store_Base):

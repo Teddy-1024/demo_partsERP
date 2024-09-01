@@ -102,7 +102,7 @@ class Product_Image_Filters():
 
     def __new__(cls, product_id, get_thumbnail, get_remaining_LQ):
         # Initialiser - validation
-        _m = 'Product_Filters.__new__'
+        _m = 'Filters_Product.__new__'
         v_arg_type = 'class attribute'
         av.val_int(product_id, 'product_id', _m, v_arg_type=v_arg_type)
         av.val_bool(get_thumbnail, 'get_thumbnail', _m, v_arg_type=v_arg_type)

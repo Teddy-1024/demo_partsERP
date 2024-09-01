@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order (
     */
     active BIT NOT NULL DEFAULT 1,
 	created_on TIMESTAMP,
-	created_by VARCHAR(100),
+	created_by INT,
 	updated_last_on TIMESTAMP NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,

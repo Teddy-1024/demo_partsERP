@@ -35,5 +35,8 @@ class Helper_DB_MySQL(BaseModel):
         return db
     
     @staticmethod
-    def create_guid():
+    def create_guid_str():
         return str(uuid.uuid4())
+    @staticmethod
+    def create_guid():
+        return uuid.uuid4().bytes

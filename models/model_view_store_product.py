@@ -19,7 +19,7 @@ Data model for store product view
 from models.model_view_store import Model_View_Store
 from datastores.datastore_store_base import DataStore_Store_Base
 # from routes import bp_home
-from business_objects.store.product import Product, Product_Filters
+from business_objects.store.product import Product, Filters_Product
 import lib.argument_validation as av
 # external
 
@@ -44,7 +44,7 @@ class Model_View_Store_Product(Model_View_Store):
         super().__init__(hash_page_current=hash_page_current, id_currency=id_currency, id_region_delivery=id_region_delivery, is_included_VAT=is_included_VAT)
         print('supered')
         
-        category_list = DataStore_Store_Base().get_many_product(Product_Filters(
+        category_list = DataStore_Store_Base().get_many_product(Filters_Product(
             self.info_user['sub'], 
             True, '', False,
             True, '', False, False,

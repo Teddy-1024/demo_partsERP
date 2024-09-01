@@ -13,7 +13,7 @@ Business object for product
 # internal
 import lib.argument_validation as av
 from lib import data_types
-from forms import Form_Basket_Add, Form_Basket_Edit, Form_Filters_Permutation
+from forms.forms import Form_Basket_Add, Form_Basket_Edit, Form_Filters_Permutation
 from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.discount import Discount
 from business_objects.store.image import Image
@@ -62,6 +62,8 @@ class Product(db.Model, Store_Base):
     id_product = db.Column(db.Integer, primary_key=True)
     id_category = db.Column(db.Integer)
     name = db.Column(db.String(255))
+    id_access_level_required = db.Column(db.Integer)
+    active = db.Column(db.Boolean)
     display_order = db.Column(db.Integer)
     can_view = db.Column(db.Boolean)
     can_edit = db.Column(db.Boolean)
@@ -87,13 +89,15 @@ class Product(db.Model, Store_Base):
         v_arg_type = 'class attribute'
         product = Product()
         product.id_product = query_row[0]
-        product.id_category = query_row[5]
+        product.id_category = query_row[1]
         product.name = query_row[2]
-        product.has_variations = av.input_bool(query_row[4], "has_variations", _m, v_arg_type=v_arg_type)
-        product.display_order = query_row[22]
-        product.can_view = av.input_bool(query_row[24], "can_view", _m, v_arg_type=v_arg_type)
-        product.can_edit = av.input_bool(query_row[25], "can_edit", _m, v_arg_type=v_arg_type)
-        product.can_admin = av.input_bool(query_row[26], "can_admin", _m, v_arg_type=v_arg_type)
+        product.has_variations = av.input_bool(query_row[3], "has_variations", _m, v_arg_type=v_arg_type)
+        product.id_access_level_required = query_row[4]
+        product.active = av.input_bool(query_row[5], "active", _m, v_arg_type=v_arg_type)
+        product.display_order = query_row[6]
+        product.can_view = av.input_bool(query_row[7], "can_view", _m, v_arg_type=v_arg_type)
+        product.can_edit = av.input_bool(query_row[8], "can_edit", _m, v_arg_type=v_arg_type)
+        product.can_admin = av.input_bool(query_row[9], "can_admin", _m, v_arg_type=v_arg_type)
         return product
     """
     def from_permutation(permutation, has_variations = False):
@@ -315,12 +319,12 @@ class Product(db.Model, Store_Base):
         }
 
 @dataclass
-class Product_Filters():
+class Filters_Product():
     # id_user: str
-    get_all_category: bool
-    get_inactive_category: bool
-    # get_first_category_only: bool
-    ids_category: str
+    get_all_product_category: bool
+    get_inactive_product_category: bool
+    # get_first_product_category_only: bool
+    ids_product_category: str
     get_all_product: bool
     get_inactive_product: bool
     # get_first_product_only: bool
@@ -351,10 +355,10 @@ class Product_Filters():
     def to_json(self):
         return {
             'a_id_user': None,
-            'a_get_all_category': self.get_all_category,
-            'a_get_inactive_category': self.get_inactive_category,
-            # 'a_get_first_category_only': self.get_first_category_only,
-            'a_ids_category': self.ids_category,
+            'a_get_all_product_category': self.get_all_product_category,
+            'a_get_inactive_product_category': self.get_inactive_product_category,
+            # 'a_get_first_product_category_only': self.get_first_product_category_only,
+            'a_ids_product_category': self.ids_product_category,
             'a_get_all_product': self.get_all_product,
             'a_get_inactive_product': self.get_inactive_product,
             # 'a_get_first_product_only': self.get_first_product_only,
@@ -384,16 +388,16 @@ class Product_Filters():
     @staticmethod
     def from_form(form):
         # if not (form is Form_Filters_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Product_Filters.from_form', Form_Filters_Permutation)
+        av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Permutation)
         has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
         has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
-        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Product_Filters.from_form")
+        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Filters_Product.from_form")
         print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
-        return Product_Filters(
-            get_all_category = not has_category_filter,
-            get_inactive_category = False,
-            # get_first_category_only = False,
-            ids_category = form.id_category.data,
+        return Filters_Product(
+            get_all_product_category = not has_category_filter,
+            get_inactive_product_category = False,
+            # get_first_product_category_only = False,
+            ids_product_category = form.id_category.data,
             get_all_product = not has_product_filter,
             get_inactive_product = False,
             # get_first_product_only = False,
@@ -422,11 +426,11 @@ class Product_Filters():
     
     @staticmethod
     def get_default():
-        return Product_Filters(
-            get_all_category = True,
-            get_inactive_category = False,
-            # get_first_category_only = False,
-            ids_category = '',
+        return Filters_Product(
+            get_all_product_category = True,
+            get_inactive_product_category = False,
+            # get_first_product_category_only = False,
+            ids_product_category = '',
             get_all_product = True,
             get_inactive_product = False,
             # get_first_product_only = False,
@@ -451,4 +455,55 @@ class Product_Filters():
             # get_inactive_discount = False,
             # ids_discount = '',
             get_products_quantity_stock_below_min = True
+        )
+    
+    @classmethod
+    def from_json(cls, json):
+        return cls(
+            get_all_product_category = json.get('a_get_all_product_category', False),
+            get_inactive_product_category = json.get('a_get_inactive_product_category', False),
+            # get_first_product_category_only = json.get('a_get_first_product_category_only', False),
+            ids_product_category = json.get('a_ids_product_category', ''),
+            get_all_product = json.get('a_get_all_product', False),
+            get_inactive_product = json.get('a_get_inactive_product', False),
+            # get_first_product_only = json.get('a_get_first_product_only', False),
+            ids_product = json.get('a_ids_product', ''),
+            get_all_permutation = json.get('a_get_all_permutation', False),
+            get_inactive_permutation = json.get('a_get_inactive_permutation', False),
+            # get_first_permutation_only = json.get('a_get_first_permutation_only', False),
+            ids_permutation = json.get('a_ids_permutation', ''),
+            get_all_image = json.get('a_get_all_image', False),
+            get_inactive_image = json.get('a_get_inactive_image', False),
+            # get_first_image_only = json.get('a_get_first_image_only', False),
+            ids_image = json.get('a_ids_image', ''),
+            # get_all_region = json.get('a_get_all_region', False),
+            # get_inactive_region = json.get('a_get_inactive_region', False),
+            # get_first_region_only = json.get('a_get_first_region_only', False),
+            # ids_region = json.get('a_ids_region', ''),
+            # get_all_currency = json.get('a_get_all_currency', False),
+            # get_inactive_currency = json.get('a_get_inactive_currency', False),
+            # get_first_currency_only = json.get('a_get_first_currency_only', False),
+            # ids_currency = json.get('a_ids_currency', ''),
+            # get_all_discount = json.get('a_get_all_discount', False),
+            # get_inactive_discount = json.get('a_get_inactive_discount', False),
+            # ids_discount = json.get('a_ids_discount', ''),
+            get_products_quantity_stock_below_min = json.get('a_get_products_quantity_stock_below_min', False)
+        )
+    
+    @classmethod
+    def from_filters_product_category(cls, filters_category):
+        return cls(
+            get_all_product_category = True,
+            get_inactive_product_category = filters_category.active_only,
+            ids_product_category = '',
+            get_all_product = True,
+            get_inactive_product = False,
+            ids_product = False,
+            get_all_permutation = True,
+            get_inactive_permutation = False,
+            ids_permutation = '',
+            get_all_image = False,
+            get_inactive_image = False,
+            ids_image = '',
+            get_products_quantity_stock_below_min = False
         )

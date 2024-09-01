@@ -7,15 +7,9 @@ Technology: Business Objects
 Feature:    Product Category Business Object
 
 Description:
-Business object for product
+Business object for product category
 """
 
-# IMPORTS
-# VARIABLE INSTANTIATION
-# CLASSES
-# METHODS
-
-# IMPORTS
 # internal
 import lib.argument_validation as av
 from business_objects.store.product import Product, Product_Permutation, Product_Price
@@ -54,16 +48,19 @@ class Enum_Product_Category(Enum):
 """
 
 class Product_Category(db.Model, Store_Base):
-    ATTR_CODE_CATEGORY: ClassVar[str] = 'code-category'
-    ATTR_NAME_CATEGORY: ClassVar[str] = 'name-category'
-    ATTR_DESCRIPTION_CATEGORY: ClassVar[str] = 'description-category'
-    ATTR_DISPLAY_ORDER_CATEGORY: ClassVar[str] = 'display-order-category'
-
+    __tablename__ = 'Shop_Product_Category_Temp'
     id_category = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(50))
     name = db.Column(db.String(255))
     description = db.Column(db.String(4000))
+    id_access_level_required = db.Column(db.Integer)
     display_order = db.Column(db.Integer)
+    active = db.Column(db.Boolean)
+    can_view = db.Column(db.Boolean)
+    can_edit = db.Column(db.Boolean)
+    can_admin = db.Column(db.Boolean)
+    created_on = db.Column(db.DateTime)
+    created_by = db.Column(db.Integer)
     """
     def __new__(cls, id, name, description, display_order):
         _m = 'Category.__new__'
@@ -88,9 +85,15 @@ class Product_Category(db.Model, Store_Base):
     def from_DB_product(query_row):
         category = Product_Category()
         category.id_category = query_row[0]
-        category.name = query_row[1]
-        category.description = query_row[2]
-        category.display_order = query_row[3]
+        category.code = query_row[1]
+        category.name = query_row[2]
+        category.description = query_row[3]
+        category.id_access_level_required = query_row[4]
+        category.display_order = query_row[5]
+        category.active = query_row[6]
+        category.can_view = query_row[7]
+        category.can_edit = query_row[8]
+        category.can_admin = query_row[9]
         return category
     """
     def key_product_index_from_ids_product_permutation(id_product, id_permutation):
@@ -174,10 +177,12 @@ class Product_Category(db.Model, Store_Base):
     """
     def __repr__(self):
         return f'''
-            id: {self.id_category}
-            name: {self.name}
-            description: {self.description}
+            id: {self.id_category[0] if isinstance(self.id_category, tuple) else self.id_category}
+            code: {self.code[0] if isinstance(self.code, tuple) else self.code}
+            name: {self.name[0] if isinstance(self.name, tuple) else self.name}
+            description: {self.description[0] if isinstance(self.description, tuple) else self.description}
             display_order: {self.display_order}
+            active: {self.active}
             products: {self.products}
             '''
     def get_permutation_first(self):
@@ -203,42 +208,111 @@ class Product_Category(db.Model, Store_Base):
         return list_products
     def to_json(self):
         return {
-            self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
-            self.ATTR_CODE_CATEGORY: self.code,
-            self.ATTR_NAME_CATEGORY: self.name,
-            self.ATTR_DESCRIPTION_CATEGORY: self.description,
-            self.ATTR_DISPLAY_ORDER_CATEGORY: self.display_order
+            self.ATTR_ID_PRODUCT_CATEGORY: self.id_category[0] if isinstance(self.id_category, tuple) else self.id_category,
+            self.FLAG_CODE: self.code[0] if isinstance(self.code, tuple) else self.code,
+            self.FLAG_NAME: self.name[0] if isinstance(self.name, tuple) else self.name,
+            self.FLAG_DESCRIPTION: self.description[0] if isinstance(self.description, tuple) else self.description,
+            self.FLAG_DISPLAY_ORDER: self.display_order,
+            self.FLAG_ACTIVE: self.active,
+            self.FLAG_CAN_VIEW: self.can_view,
+            self.FLAG_CAN_EDIT: self.can_edit,
+            self.FLAG_CAN_ADMIN: self.can_admin
         }
     @classmethod
     def from_json(cls, json):
+        print(f' Category.from_json: {json}')
         category = cls()
-        category.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY],
-        category.code = json[cls.ATTR_CODE_CATEGORY],
-        category.name = json[cls.ATTR_NAME_CATEGORY],
-        category.description = json[cls.ATTR_DESCRIPTION_CATEGORY],
-        category.display_order = json[cls.ATTR_DISPLAY_ORDER_CATEGORY]
+        category.id_category = json.get(cls.ATTR_ID_PRODUCT_CATEGORY),
+        category.code = json[cls.FLAG_CODE],
+        category.name = json[cls.FLAG_NAME],
+        category.description = json[cls.FLAG_DESCRIPTION],
+        category.display_order = json[cls.FLAG_DISPLAY_ORDER]
+        category.active = json[cls.FLAG_ACTIVE]
+        category.can_view = json.get(cls.FLAG_CAN_VIEW, False)
+        category.can_edit = json.get(cls.FLAG_CAN_EDIT, False)
+        category.can_admin = json.get(cls.FLAG_CAN_ADMIN, False)
         return category
-
+    def to_json_str(self):
+        return {
+            self.ATTR_ID_PRODUCT_CATEGORY: self.id_category[0] if isinstance(self.id_category, tuple) else self.id_category,
+            self.FLAG_CODE: self.code[0] if isinstance(self.code, tuple) else self.code,
+            self.FLAG_NAME: self.name[0] if isinstance(self.name, tuple) else self.name,
+            self.FLAG_DESCRIPTION: self.description[0] if isinstance(self.description, tuple) else self.description,
+            self.FLAG_DISPLAY_ORDER: self.display_order,
+            self.FLAG_ACTIVE: self.output_bool(self.active),
+            self.FLAG_CAN_VIEW: self.output_bool(self.can_view),
+            self.FLAG_CAN_EDIT: self.output_bool(self.can_edit),
+            self.FLAG_CAN_ADMIN: self.output_bool(self.can_admin)
+        }
+    @staticmethod
+    def output_bool(value):
+        return av.input_bool(value, 'Product_Category bool attribute', 'Product_Category.output_bool')
+"""
 class Filters_Product_Category(BaseModel, Store_Base):
     ids_product_category: str
     ids_product: str
-    """
+    ""
     def __new__(cls, product_ids, product_categories):
-        _m = 'Product_Filters.__new__'
+        _m = 'Filters_Product.__new__'
         v_arg_type = 'class attribute'
         # av.val_list_instances(product_ids, 'product_ids', _m, str, v_arg_type=v_arg_type)
         # av.val_list_instances(product_categories, 'product_categories', _m, Product_Category_Enum, v_arg_type=v_arg_type)
         av.val_str(product_ids, 'product_ids', _m, v_arg_type=v_arg_type)
         av.val_str(product_categories, 'product_categories', _m, v_arg_type=v_arg_type)
         return super(Filters_Product_Category, cls).__new__(cls)
-    """
+    ""
     def __init__(self, ids_product, ids_product_category):
         super().__init__(ids_product=ids_product, ids_product_category=ids_product_category)
-        """
+        ""
         # Constructor
         self.ids = product_ids
         self.categories = product_categories
-        """
+        ""
+    @classmethod
+    def get_default(cls):
+        return Filters_Product_Category(
+            ids_product_category = '',
+            ids_product = ''
+        )
+    def to_json(self):
+        return {
+            'a_ids_product_category': self.ids_product_category,
+            'a_ids_product': self.ids_product
+        }
+    @classmethod
+    def from_json(cls, json):
+        filters = cls()
+        filters.ids_product_category = json['a_ids_product_category'],
+        filters.ids_product = json['a_ids_product']
+"""
+class Filters_Product_Category(BaseModel, Store_Base):
+    is_not_empty_only: bool
+    active_only: bool
+    def __init__(self, is_not_empty_only, active_only):
+        super().__init__(is_not_empty_only=is_not_empty_only, active_only=active_only)
+    @classmethod
+    def get_default(cls):
+        return cls(
+            is_not_empty_only = False,
+            active_only = True
+        )
+    def to_json(self):
+        return {
+            'is_not_empty_only': self.is_not_empty_only,
+            'active_only': self.active_only
+        }
+    @classmethod
+    def from_json(cls, json):
+        return cls(
+            is_not_empty_only = json['is_not_empty_only'],
+            active_only = json['active_only']
+        )
+    @classmethod
+    def from_form(cls, form):
+        return cls(
+            is_not_empty_only = av.input_bool(form.is_not_empty.data, 'is_not_empty', 'Filters_Product_Category.from_form'),
+            active_only = av.input_bool(form.active.data, 'active', 'Filters_Product_Category.from_form')
+        )
 
 class Container_Product_Category(Store_Base):
     categories: list
@@ -311,7 +385,7 @@ class Container_Product_Category(Store_Base):
         for category in self.categories:
             list_rows += category.to_list_rows_permutation()
         return list_rows
-    def to_list_categories(self):
+    def to_list_category_options(self):
         list_categories = []
         for category in self.categories:
             list_categories.append({'value': category.id_category, 'text': category.name})
@@ -328,3 +402,11 @@ class Container_Product_Category(Store_Base):
         for category in self.categories:
             dict_lists_products[category.id_category] = category.to_list_products()
         return dict_lists_products
+    def to_json(self):
+        return {
+            'categories': [category.to_json() for category in self.categories]
+        }
+    def to_json_str(self):
+        return {
+            'categories': [category.to_json_str() for category in self.categories]
+        }

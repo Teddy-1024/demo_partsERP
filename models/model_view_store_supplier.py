@@ -15,7 +15,7 @@ from models.model_view_base import Model_View_Base
 from models.model_view_store import Model_View_Store
 # from routes import bp_home
 from lib import argument_validation as av
-from forms import Form_Supplier
+from forms.forms import Form_Supplier
 
 # external
 

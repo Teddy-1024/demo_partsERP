@@ -14,7 +14,7 @@ Data model for contact view
 from models.model_view_base import Model_View_Base
 # from routes import bp_home
 from lib import argument_validation as av
-from forms import Form_Contact
+from forms.forms import Form_Contact
 # external
 from flask_wtf import FlaskForm
 from abc import abstractproperty

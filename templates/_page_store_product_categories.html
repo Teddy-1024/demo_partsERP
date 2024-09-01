@@ -5,15 +5,30 @@
     {% include '_shared_store.html' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/page_store_product_categories.css') }}">
     
-    <form id="{{ model.ID_FORM_FILTERS_CATEGORIES }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store.category_save') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
+    <form id="{{ model.ID_FORM_FILTERS_PRODUCT_CATEGORY }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product_category.save_category') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
                 {{ model.form_filters.is_not_empty.label }}
                 {{ model.form_filters.is_not_empty() }}
                 {% for error in model.form_filters.is_not_empty.errors %}
                     <p class="error">{{ error }}</p>
                 {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
+                {{ model.form_filters.active.label }}
+                {{ model.form_filters.active() }}
+                {% for error in model.form_filters.active.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
+                {% set block_id = 'button_apply_filters' %}
+                {% include '_blocks_button_save_cancel.html' %}
             </div>
         </div>
         <!--
@@ -43,6 +58,8 @@
         </div>
         -->
     </form>
+
+
     <table id="{{ model.ID_TABLE_MAIN }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
         <thead>
             <tr class="{{ model.FLAG_PRODUCT_CATEGORY }}">
@@ -50,6 +67,8 @@
                 <th class="{{ model.FLAG_CODE }}">Code</th>
                 <th class="{{ model.FLAG_NAME }}">Name</th>
                 <th class="{{ model.FLAG_DESCRIPTION }}">Description</th>
+                <th class="{{ model.FLAG_ACCESS_LEVEL }}">Access Level Required</th>
+                <th class="{{ model.FLAG_ACTIVE}}">Active</th>
             </tr>
         </thead>
         <tbody>
@@ -68,14 +87,15 @@
 
     {% set block_id = 'scripts' %}
     {% include '_shared_store.html' %}
-    <!-- Include JavaScript -->
-    <script type="module" src="{{ url_for('static', filename='js/pages/page_store_product_permutations.js') }}"></script>
-
+    <!-- Include JavaScript 
+    <script type="module" src="{{ url_for('static', filename='js/pages/page_store_product_categories.js') }}"></script>
+    -->
     <script>
         // pass arguments from model to JS
-        var idFormFiltersProductCategories = "#{{ model.ID_FORM_FILTERS_PRODUCT_CATEGORIES }}";
+        var flagIsNotEmpty = "{{ model.FLAG_IS_NOT_EMPTY }}";
+        var idFormFiltersProductCategory = "#{{ model.ID_FORM_FILTERS_PRODUCT_CATEGORY }}";
         var keyProductCategory = "{{ model.KEY_PRODUCT_CATEGORY }}";
-        var listCategories = {{ model.category_list.to_list_categories() | tojson | safe }};
+        var listCategories = {{ model.category_list.to_list_category_options() | tojson | safe }};
 
     </script>
 {% endblock %}

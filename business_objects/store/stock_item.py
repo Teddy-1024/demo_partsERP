@@ -11,7 +11,7 @@ Feature:    Stock Item Business Object
 # internal
 import lib.argument_validation as av
 from lib import data_types
-from forms import Form_Filters_Stock_Item
+from forms.forms import Form_Filters_Stock_Item
 from business_objects.store.product_price import Product_Price
 # from business_objects.discount import Discount
 from business_objects.store.store_base import Store_Base
@@ -272,10 +272,10 @@ class Stock_Item_Filters():
     @staticmethod
     def from_form(form):
         # if not (form is Form_Filters_Permutations): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Product_Filters.from_form', Form_Filters_Stock_Item)
+        av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Stock_Item)
         has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
         has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
-        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Product_Filters.from_form")
+        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Filters_Product.from_form")
         print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
         return Stock_Item_Filters(
             get_all_category = not has_category_filter,

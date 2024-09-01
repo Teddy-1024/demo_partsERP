@@ -217,13 +217,13 @@ export class PageBase {
     }
 
     
-    hookupButtonsContactUs() {
-        let selectorButtonsContactUs = "." + flagNavContact;
-        initialiseEventHandler(selectorButtonsContactUs, flagInitialised, function(buttonContactUs) {
-            buttonContactUs.addEventListener("click", function(event) {
+    hookupButtonSave() {
+        initialiseEventHandler('form.' + flagFilter + ' button.' + flagSave, flagInitialised, function(button) {
+            button.addEventListener("click", function(event) {
                 event.stopPropagation();
-                router.navigateToHash(hashPageContact);
+                showOverlayConfirm();
             });
+            button.classList.add(flagCollapsed);
         });
     }
 
@@ -240,5 +240,31 @@ export class PageBase {
         if (this.constructor === PageBase) {
             throw new Error("Must implement leave() method.");
         }
+    }
+
+    toggleShowButtonsSaveCancel(show, buttonSave = null, buttonCancel = null) {
+        if (buttonSave == null) buttonSave = document.querySelector('form.' + flagFilter + ' button.' + flagSave);
+        if (buttonCancel == null) buttonCancel = document.querySelector('form.' + flagFilter + ' button.' + flagCancel);
+        if (show) {
+            buttonCancel.classList.remove(flagCollapsed);
+            buttonSave.classList.remove(flagCollapsed);
+        } else {
+            buttonCancel.classList.add(flagCollapsed);
+            buttonSave.classList.add(flagCollapsed);
+        }
+    }
+
+    refreshDisplayOrders() {
+        let rows = document.querySelectorAll(idTableMain + 'tbody tr.' + flagRow);
+        rows.forEach((row, indexRow) => {
+            sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
+            sliderDisplayOrder.setAttribute(attrValueCurrent, indexRow);
+        });
+    }
+
+    static isDirtyFilter(filter) {
+        let isDirty = DOM.isElementDirty(filter);
+        if (isDirty) document.querySelectorAll(idTableMain + ' tbody tr').remove();
+        return isDirty;
     }
 }

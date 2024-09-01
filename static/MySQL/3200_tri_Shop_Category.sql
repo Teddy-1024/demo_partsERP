@@ -11,10 +11,10 @@ CREATE TRIGGER before_insert_Shop_Product_Category
 BEFORE INSERT ON Shop_Product_Category
 FOR EACH ROW
 BEGIN
-	SET NEW.created_on = NOW();
-    SET NEW.created_by = CURRENT_USER();
+	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
+    SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;
+DELIMITER ;;
 
 DELIMITER //
 CREATE TRIGGER before_update_Shop_Product_Category
@@ -52,6 +52,10 @@ BEGIN
     # Changed display_order
 	SELECT NEW.id_category, 'display_order', CONVERT(OLD.display_order, CHAR), CONVERT(NEW.display_order, CHAR), NEW.id_change_set
 		WHERE NOT OLD.display_order <=> NEW.display_order
+	UNION
+    # Changed id_access_level_required
+	SELECT NEW.id_category, 'id_access_level_required', CONVERT(OLD.id_access_level_required, CHAR), CONVERT(NEW.id_access_level_required, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_access_level_required <=> NEW.id_access_level_required
     ;
 END //
-DELIMITER ;
+DELIMITER ;;

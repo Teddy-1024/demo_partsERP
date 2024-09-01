@@ -15,20 +15,27 @@ Abstract business object for store objects
 from typing import ClassVar
 
 class Store_Base():
-    ATTR_ID_CURRENCY: ClassVar[str] = 'id-currency'
-    # ATTR_ID_CURRENCY_COST: ClassVar[str] = 'id-currency-cost'
-    ATTR_ID_DELIVERY_REGION: ClassVar[str] = 'id-delivery-region'
-    ATTR_ID_DISCOUNT: ClassVar[str] = 'id-discount'
-    ATTR_ID_IMAGE: ClassVar[str] = 'id-image'
-    ATTR_ID_LOCATION_STORAGE: ClassVar[str] = 'id-location-storage'
-    ATTR_ID_PRODUCT: ClassVar[str] = 'id-product'
-    ATTR_ID_PRODUCT_CATEGORY: ClassVar[str] = 'id-category'
-    ATTR_ID_PRODUCT_PERMUTATION: ClassVar[str] = 'id-permutation'
-    ATTR_ID_PRODUCT_PRICE: ClassVar[str] = 'id-price'
-    ATTR_ID_PRODUCT_VARIATION: ClassVar[str] = 'id-variation'
+    ATTR_ID_CURRENCY: ClassVar[str] = 'id_currency'
+    # ATTR_ID_CURRENCY_COST: ClassVar[str] = 'id_currency_cost'
+    ATTR_ID_DELIVERY_REGION: ClassVar[str] = 'id_delivery_region'
+    ATTR_ID_DISCOUNT: ClassVar[str] = 'id_discount'
+    ATTR_ID_IMAGE: ClassVar[str] = 'id_image'
+    ATTR_ID_LOCATION_STORAGE: ClassVar[str] = 'id_location_storage'
+    ATTR_ID_PRODUCT: ClassVar[str] = 'id_product'
+    ATTR_ID_PRODUCT_CATEGORY: ClassVar[str] = 'id_category'
+    ATTR_ID_PRODUCT_PERMUTATION: ClassVar[str] = 'id_permutation'
+    ATTR_ID_PRODUCT_PRICE: ClassVar[str] = 'id_price'
+    ATTR_ID_PRODUCT_VARIATION: ClassVar[str] = 'id_variation'
     ATTR_ID_PRODUCT_VARIATION_TYPE: ClassVar[str] = 'id_variation_type'
-    ATTR_ID_STOCK_ITEM: ClassVar[str] = 'id-stock-item'
+    ATTR_ID_STOCK_ITEM: ClassVar[str] = 'id_stock_item'
     FLAG_ACTIVE: ClassVar[str] = 'active'
+    FLAG_CAN_ADMIN: ClassVar[str] = 'can_admin'
+    FLAG_CAN_EDIT: ClassVar[str] = 'can_edit'
+    FLAG_CAN_VIEW: ClassVar[str] = 'can_view'
+    FLAG_CODE: ClassVar[str] = 'code'
+    FLAG_DESCRIPTION: ClassVar[str] = 'description'
+    FLAG_DISPLAY_ORDER: ClassVar[str] = 'display_order'
+    FLAG_NAME: ClassVar[str] = 'name'
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -55,3 +62,4 @@ class Store_Base():
         pass
     def to_json(self):
         pass
+

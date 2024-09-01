@@ -21,7 +21,7 @@ from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.delivery_region import Delivery_Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Product_Filters 
+from business_objects.store.product import Product, Product_Permutation, Product_Price, Filters_Product 
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
@@ -41,6 +41,8 @@ from pydantic import BaseModel, ConfigDict
 from typing import ClassVar
 from datetime import datetime
 
+# db = SQLAlchemy()
+
 
 class DataStore_Store_Base(DataStore_Base):
     # Global constants
@@ -52,17 +54,17 @@ class DataStore_Store_Base(DataStore_Base):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    def get_many_product(self, product_filters):
+    @classmethod
+    def get_many_product(cls, product_filters):
         # redundant argument validation? 
         _m = 'DataStore_Store_Base.get_many_product'
-        av.val_instance(product_filters, 'product_filters', _m, Product_Filters) 
+        av.val_instance(product_filters, 'product_filters', _m, Filters_Product) 
         argument_dict = product_filters.to_json()
-        user = self.get_user_session()
+        user = cls.get_user_session()
         argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_product')
-        result = self.db_procedure_execute('p_shop_get_many_product', argument_dict)
+        result = cls.db_procedure_execute('p_shop_get_many_product', argument_dict)
         cursor = result.cursor
         print('data received')
         
@@ -85,35 +87,36 @@ class DataStore_Store_Base(DataStore_Base):
         cursor.nextset()
         result_set_2 = cursor.fetchall()
         # print(f'products: {result_set_2}')
-        products = [] # [Product(**row) for row in result_set_2]
-        product_index = {}
+        # products = [] # [Product(**row) for row in result_set_2]
+        # product_index = {}
         for row in result_set_2:
+            new_product = Product.from_DB_product(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
+            index_category = category_list.get_index_category_from_id(new_product.id_category)
+            category = category_list.categories[index_category]
+            category_list.add_product(new_product)
+            # products.append(new_product)
+        print(f'category_list: {category_list}')
+
+        # Permutations
+        cursor.nextset()
+        result_set_3 = cursor.fetchall()
+        # print(f'Permutations: {result_set_3}')
+        permutations = [] # [Product(**row) for row in result_set_2]
+        # permutation_index = {}
+        for row in result_set_3:
             new_permutation = Product_Permutation.from_DB_product(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
             index_category = category_list.get_index_category_from_id(new_permutation.id_category)
             category = category_list.categories[index_category]
-            try:
-                index_product = category.get_index_product_from_id(new_permutation.id_product)
-                category_list.add_permutation(new_permutation)
-                # product = products[index_product]
-                # product.add_permutation(new_permutation)
-            except KeyError:
-                product_index[new_permutation.id_product] = len(products)
-                product = Product.from_DB_product(row)
-                product.add_permutation(new_permutation)
-                products.append(product)
-                # categories[category_index[new_product.id_category]].add_product(new_product)
-                category_list.add_product(product)
-            # category_list.add_permutation(new_permutation)
-        # print(f'products: {[p.id_product for p in products]}') # {products}')
+            category_list.add_permutation(new_permutation)
         print(f'category_list: {category_list}')
 
         # Product_Variations
         cursor.nextset()
-        result_set_3 = cursor.fetchall()
-        # print(f'variations: {result_set_3}')
-        # variations = [Product_Variation(**row) for row in result_set_3]
+        result_set_4 = cursor.fetchall()
+        # print(f'variations: {result_set_4}')
+        # variations = [Product_Variation(**row) for row in result_set_4]
         variations = []
-        for row in result_set_3:
+        for row in result_set_4:
             new_variation = Product_Variation.from_DB_product(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
             variations.append(new_variation)
             # products[product_index[new_variation.id_product]].variations.append(new_variation)
@@ -127,8 +130,8 @@ class DataStore_Store_Base(DataStore_Base):
         # Images
         cursor.nextset()
         result_set_5 = cursor.fetchall()
-        # print(f'images: {result_set_4}')
-        # images = [Image(**row) for row in result_set_4]
+        # print(f'images: {result_set_5}')
+        # images = [Image(**row) for row in result_set_5]
         images = []
         for row in result_set_5:
             new_image = Image.from_DB_product(row) # (row[0], row[1], row[2], row[3], row[4])
@@ -179,6 +182,7 @@ class DataStore_Store_Base(DataStore_Base):
         
         
         DataStore_Store_Base.db_cursor_clear(cursor)
+        cursor.close()
 
         return category_list, errors # categories, category_index
     
@@ -192,7 +196,7 @@ class DataStore_Store_Base(DataStore_Base):
                 price_ids.append() # get price id
         return price_ids
     """
-    
+    @staticmethod
     def get_ids_permutation_from_error_availability(msg_error_availability):
         ids_permutation = []
         index_colon = msg_error_availability.find(':', msg_error_availability.find(':'))
@@ -203,8 +207,8 @@ class DataStore_Store_Base(DataStore_Base):
             index_comma = msg_error_availability.find(',')
             ids_permutation.append(msg_error_availability[:index_comma])
         return ids_permutation
-    
-    def get_regions_and_currencies(self):
+    @classmethod
+    def get_regions_and_currencies(cls):
         _m  = 'DataStore_Store_Base.get_regions_and_currencies'
         _m_db_currency = 'p_shop_get_many_currency'
         _m_db_region = 'p_shop_get_many_region'
@@ -217,7 +221,7 @@ class DataStore_Store_Base(DataStore_Base):
         }
 
         print(f'executing {_m_db_currency}')
-        result = self.db_procedure_execute(_m_db_currency, argument_dict_list_currency)
+        result = cls.db_procedure_execute(_m_db_currency, argument_dict_list_currency)
         cursor = result.cursor
         print('data received')
 
@@ -231,7 +235,7 @@ class DataStore_Store_Base(DataStore_Base):
         DataStore_Store_Base.db_cursor_clear(cursor)
 
         print(f'executing {_m_db_region}')
-        result = self.db_procedure_execute(_m_db_region, argument_dict_list_region)
+        result = cls.db_procedure_execute(_m_db_region, argument_dict_list_region)
         cursor = result.cursor
         print('data received')
 
@@ -243,10 +247,11 @@ class DataStore_Store_Base(DataStore_Base):
             regions.append(region)
         print(f'regions: {regions}')
         DataStore_Store_Base.db_cursor_clear(cursor)
+        cursor.close()
 
         return regions, currencies
-    
-    def get_many_product_variation(self, variation_filters):
+    @classmethod
+    def get_many_product_variation(cls, variation_filters):
         _m = 'DataStore_Store_Base.get_many_product_variation'
         print(_m)
         av.val_instance(variation_filters, 'variation_filters', _m, Product_Variation_Filters)
@@ -262,14 +267,14 @@ class DataStore_Store_Base(DataStore_Base):
             'a_guid': guid
         }
         """
-        user = self.get_user_session()
+        user = cls.get_user_session()
         argument_dict_list = {
             # 'a_guid': guid
             'a_id_user': user.id_user
             , **variation_filters.to_json()
         }
         # argument_dict_list['a_guid'] = guid
-        result = self.db_procedure_execute('p_shop_get_many_product_variation', argument_dict_list)
+        result = cls.db_procedure_execute('p_shop_get_many_product_variation', argument_dict_list)
 
         cursor = result.cursor
         result_set = cursor.fetchall()
@@ -290,5 +295,7 @@ class DataStore_Store_Base(DataStore_Base):
                 print(f"Error [{error.code}]: {error.msg}")
 
         DataStore_Store_Base.db_cursor_clear(cursor)
+        
+        cursor.close()
 
         return variations, errors
