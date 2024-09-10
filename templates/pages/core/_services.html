@@ -7,7 +7,7 @@
 {% block page_body %}
     <!-- Include Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/core.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/services.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/core/services.css') }}" />
 
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }}">
@@ -103,7 +103,7 @@
     
     <!-- Include JavaScript -->
     <script type="module" src="{{ url_for('static', filename='js/sections/core.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/pages/services.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/core/services.js') }}"></script>
     
     <!--
     <script>
