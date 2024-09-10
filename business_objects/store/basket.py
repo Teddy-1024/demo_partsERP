@@ -61,8 +61,8 @@ class Basket_Item():
         basket_item.is_included_VAT = is_included_VAT
         return basket_item
     
-    def add_discount(self, discount):
-        av.val_instance(discount, 'discount', 'Basket_Item.add_discount', Discount, v_arg_type='class attribute')
+    def add_product_price_discount(self, discount):
+        av.val_instance(discount, 'discount', 'Basket_Item.add_product_price_discount', Discount, v_arg_type='class attribute')
         self.discounts.append(discount)
 
     def set_delivery_option(self, delivery_option):

@@ -1,0 +1,54 @@
+{% extends 'layouts/layout.html' %}
+
+{% block title %}{{ model.title }}{% endblock %}
+
+{% block page_body %}
+    <!-- Include Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/core.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/core/admin_home.css') }}">
+    
+    <!-- HTML content -->
+    <div class="{{ model.FLAG_CARD }} {{ model.FLAG_ROW }}">
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <h2>Store</h2>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <button class="{{ model.FLAG_NAV_STORE_PRODUCT_CATEGORIES }}">Product Categories</button>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <button class="{{ model.FLAG_NAV_STORE_PRODUCTS }}">Products</button>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <button class="{{ model.FLAG_NAV_STORE_PRODUCT_PERMUTATIONS }}">Product Permutations</button>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <button class="{{ model.FLAG_NAV_STORE_PRODUCT_PRICES }}">Product Prices</button>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <button class="{{ model.FLAG_NAV_STORE_STOCK_ITEMS }}">Product Stock</button>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <button class="{{ model.FLAG_NAV_STORE_PRODUCT_VARIATIONS }}">Product Variations</button>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <button class="{{ model.FLAG_NAV_ADMIN_STORE_STRIPE_PRODUCTS }}">Add new Stripe products</button>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <button class="{{ model.FLAG_NAV_ADMIN_STORE_STRIPE_PRICES }}">Add new Stripe prices</button>
+            </div>
+    </div>
+    
+    <!-- Include JavaScript -->
+    <script type="module" src="{{ url_for('static', filename='js/sections/core.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/core/admin_home.js') }}"></script>
+    <!-- <script type="module" src="{{ url_for('static', filename='js/pages/store/base.js') }}"></script> -->
+    
+    <!--
+    <script>
+        var hashPageCurrent = "{{ model.HASH_PAGE_STORE_ADMIN_HOME }}";
+
+        $(document).ready(function() {
+            hookupPageAdminHome();
+        });
+    </script>
+    -->
+{% endblock %}

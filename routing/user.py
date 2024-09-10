@@ -63,7 +63,7 @@ def login():
     
     Query Parameters: {query_params}
     """)
-    return jsonify({'Success': True, 'status': 'success', f'{Model_View_Base.KEY_CALLBACK}': headers})
+    return jsonify({'Success': True, Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, f'{Model_View_Base.KEY_CALLBACK}': headers})
 
 @routes_user.route("/login_callback") # <path:subpath>/<code>
 def login_callback():
@@ -117,7 +117,7 @@ def login_callback():
         print(f'user session: {session[Model_View_Base.KEY_USER]}')
         return redirect(f'{current_app.config['URL_HOST']}{hash_callback}')
     except Exception as e:
-        return jsonify({'status': 'failure', 'Message': f'Controller error.\n{e}'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
 
 @routes_user.route("/logout")
 def logout():
@@ -156,14 +156,14 @@ def logout_callback():
         print(f'user session: {session[Model_View_Base.KEY_USER]}')
         return redirect(f'{current_app.URL_HOST}{hash_callback}')
     except Exception as e:
-        return jsonify({'status': 'failure', 'Message': f'Controller error.\n{e}'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
 
 
 @routes_user.route("/user")
 def user():
     try:
         model = Model_View_User(current_app, db)
-        html_body = render_template('_page_user.html', model = model)
+        html_body = render_template('pages/user/_user.html', model = model)
     except Exception as e:
         return str(e)
     return html_body

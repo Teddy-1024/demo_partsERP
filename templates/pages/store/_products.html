@@ -1,0 +1,107 @@
+{% extends 'layouts/layout.html' %}
+
+{% block page_body %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/products.css') }}">
+    
+    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product.save_product') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
+        {{ model.form_filters.hidden_tag() }}
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {{ model.form_filters.id_category.label }}
+                {{ model.form_filters.id_category() }}
+                {% for error in model.form_filters.id_category.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
+                {{ model.form_filters.is_not_empty.label }}
+                {{ model.form_filters.is_not_empty() }}
+                {% for error in model.form_filters.is_not_empty.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
+                {{ model.form_filters.active.label }}
+                {{ model.form_filters.active() }}
+                {% for error in model.form_filters.active.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
+                {% set block_id = 'button_apply_filters' %}
+                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+            </div>
+        </div>
+        <!--
+        -->
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {% set block_id = 'button_add' %}
+                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {% set block_id = 'button_save' %}
+                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {% set block_id = 'button_cancel' %}
+                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+            </div>
+        </div>
+        <!--
+        <div class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            </div>
+        </div>
+        -->
+    </form>
+
+
+    <table id="{{ model.ID_TABLE_MAIN }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
+        <thead>
+            <tr class="{{ model.FLAG_PRODUCT }}">
+                <th class="{{ model.FLAG_DISPLAY_ORDER }}">Display Order</th>
+                <th class="{{ model.FLAG_PRODUCT_CATEGORY }}">Category</th>
+                <th class="{{ model.FLAG_NAME }}">Name</th>
+                <th class="{{ model.FLAG_VARIATIONS }}">Variations</th>
+                <th class="{{ model.FLAG_ACCESS_LEVEL }}">Access Level Required</th>
+                <th class="{{ model.FLAG_ACTIVE}}">Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set is_blank_row = False %}
+            {% for category in model.category_list.categories %}
+                {% for product in category.products %}
+                    {% include 'components/store/_row_product.html' %}
+                {% endfor %}
+            {% endfor %}
+
+            {% set is_blank_row = True %}
+            {% include 'components/store/_row_product.html' %}
+        </tbody>
+    </table>
+    
+    {% include 'components/common/temporary/_overlay_confirm.html' %}
+    {% include 'components/common/temporary/_overlay_error.html' %}
+
+    <!-- Include JavaScript -->
+    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/store/products.js') }}"></script>
+    
+    <script>
+        // pass arguments from model to JS
+        var flagIsNotEmpty = "{{ model.FLAG_IS_NOT_EMPTY }}";
+        var optionsAccessLevel = {{ model.convert_list_objects_to_list_options(model.access_levels) | tojson | safe }};
+    </script>
+{% endblock %}

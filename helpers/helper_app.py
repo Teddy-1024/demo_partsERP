@@ -19,13 +19,17 @@ class Helper_App(BaseModel):
 
     @staticmethod
     def get_request_data(request):
+        print(f'request={request}')
+        data = {}
         try:
-            return request.json
+            data = request.json
         except:
             try:
-                return request.data
+                data = request.data
             except:
                 try:
-                    return request.form
+                    data = request.form
                 except:
-                    return {}
+                    pass
+        print(f'data={data}')
+        return data

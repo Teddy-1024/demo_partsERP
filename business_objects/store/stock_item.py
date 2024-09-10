@@ -173,6 +173,19 @@ class Stock_Item(db.Model, Store_Base):
             permutations: {self.permutations}
             variation trees: {self.variation_trees}
             '''
+    def to_json(self):
+        return {
+            self.ATTR_ID_PRODUCT: {self.id_product},
+            self.ATTR_ID_PRODUCT_CATEGORY: {self.id_category},
+            self.FLAG_NAME: {self.name},
+            self.FLAG_DISPLAY_ORDER: {self.display_order},
+            self.FLAG_CAN_VIEW: {self.can_view},
+            self.FLAG_CAN_EDIT: {self.can_edit},
+            self.FLAG_CAN_ADMIN: {self.can_admin},
+            self.FLAG_HAS_VARIATIONS: {self.has_variations},
+            self.FLAG_PERMUTATIONS: {self.permutations},
+            self.FLAG_VARIATION_TREES: {self.variation_trees},
+        }
     def has_permutations(self):
         return len(self.permutations) > 0
     def is_available(self):
@@ -183,12 +196,17 @@ class Stock_Item(db.Model, Store_Base):
                 return True
         return False
     """
-    def to_list_rows_permutation(self):
+    def to_permutation_row_list(self):
         list_rows = []
         for permutation in self.permutations:
             list_rows.append(permutation.to_row_permutation())
         return list_rows
     """
+    def to_json_option(self):
+        return {
+            'value': self.id_stock_item,
+            'text': self.id_stock_item
+        }
 
 @dataclass
 class Stock_Item_Filters():

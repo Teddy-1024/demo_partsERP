@@ -13,8 +13,9 @@ Datastore for Store
 # internal
 # from routes import bp_home
 import lib.argument_validation as av
+from business_objects.store.access_level import Access_Level, Filters_Access_Level
 from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Container_Product_Category, Product_Category
+from business_objects.store.product_category import Product_Category_Container, Product_Category
 from business_objects.store.currency import Currency
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
@@ -26,7 +27,7 @@ from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
-from helpers.helper_db_mysql import Helper_DB_MySQL
+# from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
 # external
@@ -164,17 +165,52 @@ class DataStore_Base(BaseModel):
     def get_user_auth0():
         return User.from_json_auth0(session.get(current_app.config['ID_TOKEN_USER']))
     @staticmethod
-    def upload_bulk(objects, objectType, batch_size):
+    def upload_bulk(permanent_table_name, records, batch_size):
         _m = 'DataStore_Base.upload_bulk'
         print(f'{_m}\nstarting...')
         try:
-            for i in range(0, len(objects), batch_size):
-                batch = objects[i:i+batch_size]
+            for i in range(0, len(records), batch_size):
+                batch = records[i:i+batch_size]
                 data = [object.to_json() for object in batch]
                 print(f'batch: {batch}\ndata: {data}')
-                db.session.bulk_insert_mappings(objectType, data)
+                db.session.bulk_insert_mappings(permanent_table_name, data)
             db.session.commit()
         except Exception as e:
             print(f'{_m}\n{e}')
             db.session.rollback()
             raise e
+    @classmethod
+    def get_many_access_level(cls, filters):
+        _m = 'DataStore_Store_Base.get_many_access_level'
+        av.val_instance(filters, 'filters', _m, Filters_Access_Level) 
+        argument_dict = filters.to_json()
+        # user = cls.get_user_session()
+        # argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
+        print(f'argument_dict: {argument_dict}')
+        print('executing p_shop_get_many_access_level')
+        result = cls.db_procedure_execute('p_shop_get_many_access_level', argument_dict)
+        cursor = result.cursor
+        print('data received')
+        
+        # access_levels
+        result_set_1 = cursor.fetchall()
+        print(f'raw access levels: {result_set_1}')
+        access_levels = []
+        for row in result_set_1:
+            new_access_level = Access_Level.from_DB_access_level(row)
+            access_levels.append(new_access_level)
+            
+        # Errors
+        cursor.nextset()
+        result_set_e = cursor.fetchall()
+        print(f'raw errors: {result_set_e}')
+        errors = []
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            for error in errors:
+                print(f"Error [{error.code}]: {error.msg}")
+        
+        DataStore_Base.db_cursor_clear(cursor)
+        cursor.close()
+
+        return access_levels, errors

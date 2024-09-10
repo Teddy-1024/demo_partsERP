@@ -252,12 +252,12 @@ def basket_add():
             print(f'editing basket:')
             model.basket_item_edit(permutation_id, quantity, True) # new_basket = 
         except:
-            return jsonify({'status': 'failure', 'Message': 'Bad data received by controller'})
+            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Bad data received by controller'})
         # return jsonify(Success = True, data = { html_block: render_template(), Model_View_Store.key_basket: new_basket })
         html_block = render_template('_block_store_basket.html', model = model)
         # print(f'html_block:\n{html_block}')
         return jsonify(Success = True, data = { 'html_block': html_block, 'basket': {'items': model.basket.to_json_list()}}) # 'items': [b_i.to_json() for b_i in model.basket]}})
-    return jsonify({'status': 'failure', 'Message': 'Invalid quantities'})
+    return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Invalid quantities'})
 
 
 
@@ -285,12 +285,12 @@ def basket_edit():
             permutation_id, quantity = model.import_JSON_basket_item(data, form)
             model.basket_item_edit(permutation_id, quantity, False) # new_basket = 
         except:
-            return jsonify({'status': 'failure', 'Message': 'Bad data received by controller'})
+            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Bad data received by controller'})
         # return jsonify(Success = True, data = { html_block: render_template(), Model_View_Store.key_basket: new_basket })
         html_block = render_template('_block_store_basket.html', model = model)
         # print(f'html_block:\n{html_block}')
         return jsonify(Success = True, data = { 'html_block': html_block, 'basket': {'items': model.basket.to_json_list()}})
-    return jsonify({'status': 'failure', 'Message': 'Invalid quantities'})
+    return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Invalid quantities'})
 
 @app.route('/store/basket_delete', methods=['POST'])
 def basket_delete():
@@ -307,7 +307,7 @@ def basket_delete():
         permutation_id, quantity = model.import_JSON_basket_item(data)
         model.basket_item_edit(permutation_id, 0, False) # new_basket = 
     except:
-        return jsonify({'status': 'failure', 'Message': 'Bad data received by controller'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Bad data received by controller'})
     # return jsonify(Success = True, data = { html_block: render_template(), Model_View_Store.key_basket: new_basket })
     html_block = render_template('_block_store_basket.html', model = model)
     # print(f'html_block:\n{html_block}')
@@ -320,7 +320,7 @@ def basket_delete():
             item_deleted = True
             break
     if not item_deleted:
-        return jsonify({'status': 'failure', 'Message': 'Basket item removal failure: product not found in basket.'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Basket item removal failure: product not found in basket.'})
     # return jsonify(Success = True, data = { html_block: render_template(), Model_View_Store.key_basket: new_basket })
     html_block = render_template('_block_store_basket.html', model = model)
     # print(f'html_block:\n{html_block}')
@@ -345,7 +345,7 @@ def store_basket():
         print('importing basket')
         model.import_JSON_basket(data)
     except:
-        return jsonify({'status': 'failure', 'Message': 'Bad basket data received by controller'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Bad basket data received by controller'})
     # return jsonify(Success = True, data = { html_block: render_template(), Model_View_Store.key_basket: new_basket })
     html_block = render_template('_page_store_billing.html', model = model)
     # print(f'html_block:\n{html_block}')
@@ -390,7 +390,7 @@ def basket_info():
             data_info[model.key_info_identical] = form.identical
             print(f'identical: {data_info[model.key_info_identical]}')
         except:
-            return jsonify({'status': 'failure', 'Message': 'Bad form data received by controller'})
+            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Bad form data received by controller'})
         # return jsonify(Success = True, data = { html_block: render_template(), Model_View_Store.key_basket: new_basket })
         # html_block = render_template('_block_store_basket.html', model = model)
         # print(f'html_block:\n{html_block}')
@@ -398,7 +398,7 @@ def basket_info():
         data[model.key_info_type] = model.key_info_billing if (info_type == model.key_info_billing) else model.key_info_delivery
         data[info_type] = data_info
         return jsonify(Success = True, data = data)
-    return jsonify({'status': 'failure', 'Message': f'Invalid address information\n{form.errors}'})
+    return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': f'Invalid address information\n{form.errors}'})
 
 
 @app.route('/store/product?permutationId=<permutation_id>regionId=&<region_id>&currencyId=<currency_id>&isIncludedVAT=<is_included_VAT>', methods=['GET']) # <product_id>&
@@ -507,7 +507,7 @@ def create_checkout_session():
         code_currency = 'GBP' # data[model.key_code_currency]
         print(f'currency code: {code_currency}')
     except:
-        return jsonify({'status': 'failure', 'Message': 'Bad form data received by controller'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, 'Message': 'Bad form data received by controller'})
     items = []
     for item in model.basket.items:
         permutation = item.product.get_permutation_selected()

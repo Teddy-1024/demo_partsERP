@@ -63,7 +63,7 @@ class Delivery_Option(db.Model):
     display_order = db.Column(db.Integer)
     def __init__(self):
         self.delivery_regions = []
-    def from_DB_product(query_row):
+    def from_DB_get_many_product_catalogue(query_row):
         option = Delivery_Option()
         option.id_option = query_row[0]
         option.id_product = query_row[1]

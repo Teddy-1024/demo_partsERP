@@ -13,7 +13,7 @@ Datastore for Store Product Categories
 # internal
 import lib.argument_validation as av
 from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Container_Product_Category, Product_Category
+from business_objects.store.product_category import Product_Category_Container, Product_Category
 from business_objects.store.currency import Currency
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
@@ -63,11 +63,12 @@ class Row_Shop_Product_Category_Temp(db.Model):
     code: str = db.Column(db.String(50))
     name: str = db.Column(db.String(255))
     description: str = db.Column(db.String(4000))
+    id_access_level_required: int = db.Column(db.Integer)
     active: bool = db.Column(db.Boolean)
     display_order: int = db.Column(db.Integer)
     guid: str = db.Column(db.BINARY(36))
-    created_on: datetime = db.Column(db.DateTime)
-    created_by: int = db.Column(db.Integer)
+    # created_on: datetime = db.Column(db.DateTime)
+    # created_by: int = db.Column(db.Integer)
 
     @classmethod
     def from_product_category(cls, product_category):
@@ -76,6 +77,7 @@ class Row_Shop_Product_Category_Temp(db.Model):
         row.code = product_category.code[0] if isinstance(product_category.code, tuple) else product_category.code
         row.name = product_category.name[0] if isinstance(product_category.name, tuple) else product_category.name
         row.description = product_category.description[0] if isinstance(product_category.description, tuple) else product_category.description
+        row.id_access_level_required = product_category.id_access_level_required[0] if isinstance(product_category.id_access_level_required, tuple) else product_category.id_access_level_required
         row.active = product_category.active
         row.display_order = product_category.display_order
         """
@@ -90,12 +92,15 @@ class Row_Shop_Product_Category_Temp(db.Model):
             'code': self.code,
             'name': self.name,
             'description': self.description,
+            'id_access_level_required': self.id_access_level_required,
             'active': self.active,
             'display_order': self.display_order,
             'guid': self.guid,
-            'created_on': self.created_on,
-            'created_by': self.created_by
         }
+        """
+        'created_on': self.created_on,
+        'created_by': self.created_by
+        """
 
 
 class DataStore_Store_Product_Category(DataStore_Store_Base):
@@ -115,7 +120,8 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
         rows = []
         id_category_new = 0
         for category in categories:
-            row = Row_Shop_Product_Category_Temp.from_product_category(category)
+            # row = Row_Shop_Product_Category_Temp.from_product_category(category)
+            row = category.to_temporary_record()
             # id_tmp = 
             if row.id_category == '':
                 id_category_new -= 1
@@ -123,8 +129,8 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
             else:
                 print(f'row.id_category: {row.id_category}')
             row.guid = guid
-            row.created_on = now
-            row.created_by = user.id_user
+            # row.created_on = now
+            # row.created_by = user.id_user
             rows.append(row)
         
         print(f'rows: {rows}')
@@ -141,7 +147,7 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
         cursor.close()
         print('cursor closed')
         """
-        DataStore_Store_Base.upload_bulk(rows, Row_Shop_Product_Category_Temp, 1000)
+        DataStore_Store_Base.upload_bulk(rows, Product_Category.__tablename__, 1000)
 
         argument_dict_list = {
             'a_id_user': user.id_user,

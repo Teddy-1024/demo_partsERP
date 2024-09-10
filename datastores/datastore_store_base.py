@@ -13,8 +13,9 @@ Datastore for Store
 # internal
 # from routes import bp_home
 import lib.argument_validation as av
+# from business_objects.store.access_level import Access_Level, Filters_Access_Level
 from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Container_Product_Category, Product_Category
+from business_objects.store.product_category import Product_Category_Container, Product_Category
 from business_objects.store.currency import Currency
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
@@ -27,7 +28,7 @@ from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
 from datastores.datastore_base import DataStore_Base
-from helpers.helper_db_mysql import Helper_DB_MySQL
+# from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
 # external
@@ -69,7 +70,7 @@ class DataStore_Store_Base(DataStore_Base):
         print('data received')
         
         
-        category_list = Container_Product_Category()
+        category_list = Product_Category_Container()
         # Categories
         result_set_1 = cursor.fetchall()
         print(f'raw categories: {result_set_1}')
@@ -77,10 +78,10 @@ class DataStore_Store_Base(DataStore_Base):
         # categories = []
         # category_index = {}
         for row in result_set_1:
-            new_category = Product_Category.from_DB_product(row) # Product_Category(row[0], row[1], row[2], row[3])
+            new_category = Product_Category.from_DB_get_many_product_catalogue(row) # Product_Category(row[0], row[1], row[2], row[3])
             # category_index[new_category.id_category] = len(categories)
             # categories.append(new_category)
-            category_list.add_category(new_category)
+            category_list.add_product_category(new_category)
         # print(f'categories: {[c.id_category for c in categories]}')
 
         # Products
@@ -90,7 +91,7 @@ class DataStore_Store_Base(DataStore_Base):
         # products = [] # [Product(**row) for row in result_set_2]
         # product_index = {}
         for row in result_set_2:
-            new_product = Product.from_DB_product(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
+            new_product = Product.from_DB_get_many_product_catalogue(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
             index_category = category_list.get_index_category_from_id(new_product.id_category)
             category = category_list.categories[index_category]
             category_list.add_product(new_product)
@@ -104,10 +105,10 @@ class DataStore_Store_Base(DataStore_Base):
         permutations = [] # [Product(**row) for row in result_set_2]
         # permutation_index = {}
         for row in result_set_3:
-            new_permutation = Product_Permutation.from_DB_product(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
+            new_permutation = Product_Permutation.from_DB_get_many_product_catalogue(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
             index_category = category_list.get_index_category_from_id(new_permutation.id_category)
             category = category_list.categories[index_category]
-            category_list.add_permutation(new_permutation)
+            category_list.add_product_permutation(new_permutation)
         print(f'category_list: {category_list}')
 
         # Product_Variations
@@ -117,13 +118,13 @@ class DataStore_Store_Base(DataStore_Base):
         # variations = [Product_Variation(**row) for row in result_set_4]
         variations = []
         for row in result_set_4:
-            new_variation = Product_Variation.from_DB_product(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+            new_variation = Product_Variation.from_DB_get_many_product_catalogue(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
             variations.append(new_variation)
             # products[product_index[new_variation.id_product]].variations.append(new_variation)
             # index_category = category_index[new_variation.id_category]
             # index_product = categories[index_category].index_product_from_ids_product_permutation(new_variation.id_product, new_variation.id_permutation)
             # categories[index_category].products[index_product].variations.append(new_variation)
-            category_list.add_variation(new_variation)
+            category_list.add_product_variation(new_variation)
         # print(f'variations: {variations}')
         # print(f'products: {[p.id_product for p in products]}')
 
@@ -134,7 +135,7 @@ class DataStore_Store_Base(DataStore_Base):
         # images = [Image(**row) for row in result_set_5]
         images = []
         for row in result_set_5:
-            new_image = Image.from_DB_product(row) # (row[0], row[1], row[2], row[3], row[4])
+            new_image = Image.from_DB_get_many_product_catalogue(row) # (row[0], row[1], row[2], row[3], row[4])
             images.append(new_image)
             # products[product_index[new_image.id_product]].images.append(new_image)
             """
@@ -142,7 +143,7 @@ class DataStore_Store_Base(DataStore_Base):
             index_product = categories[index_category].index_product_from_ids_product_permutation(new_image.id_product, new_image.id_permutation)
             categories[index_category].products[index_product].images.append(new_image)
             """
-            category_list.add_image(new_image)
+            category_list.add_product_image(new_image)
         # print(f'images: {images}')
         # print(f'products: {[p.id_product for p in products]}')
         
@@ -156,7 +157,7 @@ class DataStore_Store_Base(DataStore_Base):
             for error in errors:
                 print(f"Error [{error.code}]: {error.msg}")
         
-        category_list.get_all_variation_trees()
+        category_list.get_all_product_variation_trees()
         """
         for category in category_list.categories:
             print(f'category: {category.name}')
@@ -283,7 +284,7 @@ class DataStore_Store_Base(DataStore_Base):
         variations = Product_Variation_List()
         for row in result_set:
             new_variation = Product_Variation.from_DB_variation(row) 
-            variations.add_variation(new_variation)
+            variations.add_product_variation(new_variation)
 
         errors = []
         cursor.nextset()
@@ -299,3 +300,4 @@ class DataStore_Store_Base(DataStore_Base):
         cursor.close()
 
         return variations, errors
+    

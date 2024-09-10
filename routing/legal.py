@@ -30,7 +30,7 @@ routes_legal = Blueprint('routes_legal', __name__)
 def license():
     try:
         model = Model_View_Home()
-        html_body = render_template('_page_license.html', model = model)
+        html_body = render_template('pages/legal/_license.html', model = model)
     except Exception as e:
         return str(e)
     return html_body
@@ -38,7 +38,7 @@ def license():
 def accessibility_statement():
     try:
         model = Model_View_Home()
-        html_body = render_template('_page_accessibility_statement.html', model = model)
+        html_body = render_template('pages/legal/_accessibility_statement.html', model = model)
     except Exception as e:
         return str(e)
     return html_body
@@ -46,7 +46,7 @@ def accessibility_statement():
 def accessibility_report():
     try:
         model = Model_View_Home()
-        html_body = render_template('_page_accessibility_report.html', model = model)
+        html_body = render_template('pages/legal/_accessibility_report.html', model = model)
     except Exception as e:
         return str(e)
     return html_body
@@ -54,7 +54,7 @@ def accessibility_report():
 def retention_schedule():
     try:
         model = Model_View_Home()
-        html_body = render_template('_page_retention_schedule.html', model = model)
+        html_body = render_template('pages/legal/_retention_schedule.html', model = model)
     except Exception as e:
         return str(e)
     return html_body
@@ -62,7 +62,7 @@ def retention_schedule():
 def privacy_notice():
     try:
         model = Model_View_Home()
-        html_body = render_template('_page_privacy_notice.html', model = model)
+        html_body = render_template('pages/legal/_privacy_notice.html', model = model)
     except Exception as e:
         return str(e)
     return html_body

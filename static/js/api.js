@@ -8,8 +8,8 @@ export default class API {
         return document.querySelector(idCSRFToken).getAttribute('content');
     }
     
-    static async request(hashEndpoint, method = 'GET', data = null) {
-        const url = API.getUrlFromHash(hashEndpoint);
+    static async request(hashEndpoint, method = 'GET', data = null, params = null) {
+        const url = API.getUrlFromHash(hashEndpoint, params);
         const options = {
             method,
             headers: {
@@ -36,11 +36,25 @@ export default class API {
         }
     }
     
-    static getUrlFromHash(hash) {
+    static getUrlFromHash(hash, params = null) {
         if (hash == null) hash = hashPageHome;
         console.log("getUrlFromHash:");
-        console.log("base url: " + _pathHost + "\nhash: " + hash);
-        return _pathHost + hash;
+        console.log("base url: " + _pathHost + "\nhash: " + hash + '\nparams: ' + params);
+        let url = _pathHost + hash;
+        if (params) {
+            url += '?' + new URLSearchParams(params).toString();
+        }
+        console.log("url: " + url);
+        return url;
+    }
+
+    static goToUrl(url) {
+        window.location.href = url;
+    }
+
+    static goToHash(hash, params = null) {
+        const url = API.getUrlFromHash(hash, params);
+        API.goToUrl(url);
     }
 
     
@@ -63,14 +77,18 @@ export default class API {
     static async getCategories() {
         return await API.request(hashGetStoreProductCategory);
     }
-    static async getCategoriesByFilters(formFilters) {
+    static async getCategoriesByFilters(filtersJson) {
+        /*
         let dataRequest = {};
-        dataRequest[keyForm] = DOM.convertForm2JSON(formFilters);
+        dataRequest[keyForm] = filtersJson;
         return await API.request(hashGetStoreProductCategory, 'POST', dataRequest);
+        */
+        // return await API.request(hashPageStoreProductCategories, 'GET', filtersJson);
+        API.goToHash(hashPageStoreProductCategories, filtersJson);
     }
     static async saveCategories(categories, formFilters, comment) {
         let dataRequest = {};
-        dataRequest[keyForm] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
         dataRequest[flagCategory] = categories;
         dataRequest[flagComment] = comment;
         return await API.request(hashSaveStoreProductCategory, 'POST', dataRequest);

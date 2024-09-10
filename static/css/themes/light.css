@@ -27,10 +27,10 @@
     --nav-hover-text: #007bff;
     
     /* Buttons */
-    --btn-primary-bg: #007bff;
-    --btn-primary-text: #ffffff;
-    --btn-secondary-bg: #6c757d;
-    --btn-secondary-text: #ffffff;
+    --Button-primary-bg: #007bff;
+    --Button-primary-text: #ffffff;
+    --Button-secondary-bg: #6c757d;
+    --Button-secondary-text: #ffffff;
     
     /* Forms */
     --input-bg: #ffffff;

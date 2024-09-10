@@ -14,7 +14,7 @@ Datastore for Store Product Variations
 # from routes import bp_home
 import lib.argument_validation as av
 from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Container_Product_Category, Product_Category
+from business_objects.store.product_category import Product_Category_Container, Product_Category
 from business_objects.store.currency import Currency
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
@@ -27,7 +27,7 @@ from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
 from datastores.datastore_store_base import DataStore_Store_Base
-from helpers.helper_db_mysql import Helper_DB_MySQL
+# from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
 # external
@@ -83,7 +83,7 @@ class DataStore_Store_Product_Variation(DataStore_Store_Base):
         variations = Product_Variation_List()
         for row in result_set:
             new_variation = Product_Variation.from_DB_variation(row) 
-            variations.add_variation(new_variation)
+            variations.add_product_variation(new_variation)
 
         errors = []
         cursor.nextset()

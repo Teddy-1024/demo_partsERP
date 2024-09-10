@@ -1,0 +1,18 @@
+<!-- Basket -->
+{% set show_delivery_option = False %}
+<div id="{{ model.ID_BASKET }}" class="{{ model.FLAG_CARD }} {{ model.FLAG_SCROLLABLE }}">
+    <div class="container column">
+        <div class="container row">
+            <h2>Basket</h2>
+            <img class="img-icon" src="{{ url_for('static', filename='images/icon_basket.png')}}" alt="Basket icon">
+        </div>
+        {% for basket_item in model.basket.items %}
+            {% include 'components/store/_basket_item.html' %}
+        {% endfor %}
+        <h3 id="{{ model.ID_BASKET_TOTAL }}">Total: {{ model.output_basket_total() }}</h3>{% if not model.app.is_included_VAT %}<h4> + VAT </h4>{% endif %}
+        <p id="{{ model.ID_LABEL_BASKET_EMPTY }}" style="margin: 1vh;">Buy some shit dawg!</p>
+        <!-- <div id="{{ model.id_basket_notices }}"> include line above
+        </div> -->
+        <button id="{{ model.ID_BUTTON_CHECKOUT }}" type="submit">Checkout</button>
+    </div>
+</div>

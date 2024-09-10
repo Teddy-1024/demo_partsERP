@@ -42,8 +42,8 @@ class Product_Price(db.Model, Store_Base):
         super().__init__()
         Store_Base.__init__(self)
 
-    def from_DB_product(query_row):
-        # _m = 'Product_Price.from_DB_product'
+    def from_DB_get_many_product_catalogue(query_row):
+        # _m = 'Product_Price.from_DB_get_many_product_catalogue'
         price = Product_Price()
         price.id_price = query_row[0]
         price.id_permutation = query_row[1]
@@ -89,6 +89,11 @@ class Product_Price(db.Model, Store_Base):
             self.FLAG_VALUE_LOCAL_VAT_INCL: {self.value_local_VAT_incl},
             self.FLAG_VALUE_LOCAL_VAT_EXCL: {self.value_local_VAT_excl},
             self.FLAG_DISPLAY_ORDER: {self.display_order}
+        }
+    def to_json_option(self):
+        return {
+            'value': self.id_price,
+            'text': f'{self.symbol_currency} {self.value_local_VAT_incl}'
         }
 
     @classmethod

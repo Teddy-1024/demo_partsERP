@@ -6,7 +6,7 @@
     <form {{ model.attr_form_type }}="{{ form.form_type }}" {{ model.attr_id_product }}="{{ product.id_product }}" {{ model.attr_id_permutation }}="{{ permutation.id_permutation }}" class="container column">
         {{ form.hidden_tag() }}
         {% set tmp_quantity = 1 %}
-        {% include '_block_input_number_plus_minus.html' %}
+        {% include 'components/common/inputs/_input_number_plus_minus.html' %}
         {{ form.submit() }}
     </form>
     <!-- 

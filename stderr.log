@@ -5150,7 +5150,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5203,7 +5203,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5248,7 +5248,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5309,7 +5309,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5354,7 +5354,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5399,7 +5399,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5460,7 +5460,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_contact.html", line 1, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5520,7 +5520,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5573,7 +5573,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5618,7 +5618,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5663,7 +5663,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5708,7 +5708,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5753,7 +5753,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_home.html", line 3, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 90, in top-level template code
     <a id="{{ model.ID_NAV_CONTACT }}">Contact</a> <!-- href="{{ url_for('contact') }}" -->
@@ -5886,7 +5886,7 @@ Traceback (most recent call last):
   File "/home/partsltd/virtualenv/public_html/parts_website/3.11/lib/python3.11/site-packages/jinja2/environment.py", line 936, in handle_exception
     raise rewrite_traceback_stack(source=source)
   File "/home/partsltd/public_html/parts_website/templates/_page_contact.html", line 1, in top-level template code
-    {% extends 'layout.html' %}
+    {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/partsltd/public_html/parts_website/templates/layout.html", line 138, in top-level template code
     {% block page_body %}{% endblock %}

@@ -1,0 +1,8 @@
+{% if display_order is defined %}
+<!-- Fix this
+    <div class="{{ model.FLAG_SLIDER }} {{ model.FLAG_DISPLAY_ORDER }}" {{ model.ATTR_VALUE_CURRENT }}="{{ display_order }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ display_order }}">☰</div>
+-->
+<input type="number" class="{{ model.FLAG_SLIDER }} {{ model.FLAG_DISPLAY_ORDER }}" {{ model.ATTR_VALUE_CURRENT }}="{{ display_order }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ display_order }}" value="{{ display_order }}">
+{% else %}
+<div class="{{ model.FLAG_SLIDER }} {{ model.FLAG_DISPLAY_ORDER }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>☰</div>
+{% endif %}

@@ -37,7 +37,7 @@ class Model_View_Store_Product(Model_View_Store):
     def title(self):
         return 'Store Product'
 
-    def __init__(self, id_permutation, id_currency, id_region_delivery, is_included_VAT, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCT):
+    def __init__(self, id_permutation, id_currency, id_region_delivery, is_included_VAT, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCTS):
         # Constructor
         _m = 'Model_View_Store_Product.__init__'
         print(f'{_m}\nstarting...')
@@ -57,8 +57,10 @@ class Model_View_Store_Product(Model_View_Store):
         print('connection to db successful')
         # self.categories = categories
         # self.category_index = category_index
-        if (category_list.get_count_categories() > 0):
+        """
+        if (category_list.get_category_count() > 0):
             self.product = category_list.get_permutation_first()
         else:
             self.product = None
         print('selected permutation selected')
+        """

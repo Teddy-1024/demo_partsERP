@@ -38,8 +38,11 @@ class App {
 
     initPageCurrent() {
         console.log("initPageCurrent");
+        /*
         _pageCurrent = Router.getPageCurrent();
         _pageCurrent.initialize();
+        */
+        this.router.loadPageCurrent();
     }
     
 }

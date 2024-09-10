@@ -39,6 +39,8 @@ import lib.argument_validation as av
 """
 from routing.core import routes_core
 from routing.legal import routes_legal
+from routing.store.store import routes_store
+from routing.store.product import routes_store_product
 from routing.store.product_category import routes_store_product_category
 from routing.store.product_permutation import routes_store_product_permutation
 from routing.store.stock_item import routes_store_stock_item
@@ -100,7 +102,8 @@ with app.app_context():
 
 app.register_blueprint(routes_core)
 app.register_blueprint(routes_legal)
-# app.register_blueprint(routes_store_product)
+app.register_blueprint(routes_store)
+app.register_blueprint(routes_store_product)
 app.register_blueprint(routes_store_product_category)
 app.register_blueprint(routes_store_product_permutation)
 app.register_blueprint(routes_store_stock_item)

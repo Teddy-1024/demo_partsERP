@@ -111,7 +111,7 @@ BEGIN
         , IFNULL(PC_T.code, PC.code) AS code
         , IFNULL(PC_T.name, PC.code) AS name
         , IFNULL(PC_T.description, PC.description) AS description
-        , PC_T.id_access_level_required AS id_access_level_required
+        , IFNULL(PC_T.id_access_level_required, PC.id_access_level_required) AS id_access_level_required
         , IFNULL(PC_T.active, PC.active) AS active
         , IFNULL(PC_T.display_order, PC.display_order) AS display_order
         , IFNULL(PC_T.name, IFNULL(PC.name, IFNULL(PC_T.code, IFNULL(PC.code, IFNULL(PC_T.id_category, '(No Product Category)'))))) AS name_error

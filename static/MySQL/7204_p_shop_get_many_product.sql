@@ -325,14 +325,16 @@ BEGIN
         , PC.name
         , PC.description
         , PC.id_access_level_required
+		, AL.name AS name_access_level_required
         , PC.display_order
         , PC.active
         , MIN(t_P.can_view) AS can_view
         , MIN(t_P.can_edit) AS can_edit
         , MIN(t_P.can_admin) AS can_admin
     FROM tmp_Category t_C
-    INNER JOIN Shop_product_category PC ON t_C.id_category = PC.id_category
+    INNER JOIN Shop_Product_Category PC ON t_C.id_category = PC.id_category
     LEFT JOIN tmp_Product t_P ON t_C.id_category = t_P.id_product
+    INNER JOIN Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
 	GROUP BY t_C.id_category -- , t_P.id_product
 	ORDER BY PC.display_order
 	;
@@ -344,6 +346,7 @@ BEGIN
         P.name,
         P.has_variations,
         P.id_access_level_required,
+		AL.name AS name_access_level_required,
         P.active,
         P.display_order,
         t_P.can_view,
@@ -352,6 +355,7 @@ BEGIN
     FROM tmp_Product t_P
     INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
     INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
+    INNER JOIN Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
     GROUP BY t_P.id_category, t_C.display_order, t_P.id_product, t_P.can_view, t_P.can_edit, t_P.can_admin
 	ORDER BY t_C.display_order, P.display_order
 	;

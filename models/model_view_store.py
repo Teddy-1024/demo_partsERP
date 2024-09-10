@@ -18,7 +18,9 @@ Parent data model for store views
 # internal
 # from context import models
 from models.model_view_base import Model_View_Base
+from business_objects.store.store_base import Store_Base
 from business_objects.store.product import Product, Filters_Product, Product_Permutation # Product_Image_Filters, 
+# from business_objects.store.product_category import Filters_Product_Category
 from business_objects.store.image import Resolution_Level_Enum
 import lib.argument_validation as av
 from datastores.datastore_store_base import DataStore_Store_Base
@@ -33,6 +35,7 @@ from flask import send_file, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import locale
 from typing import ClassVar
+from abc import abstractmethod
 
 # VARIABLE INSTANTIATION
 
@@ -56,6 +59,7 @@ class Model_View_Store(Model_View_Base):
     FLAG_DATE_PURCHASED: ClassVar[str] = 'date-purchased'
     FLAG_DATE_RECEIVED: ClassVar[str] = 'date-received'
     FLAG_DATE_UNSEALED: ClassVar[str] = 'date-unsealed'
+    FLAG_IS_NOT_EMPTY: ClassVar[str] = Store_Base.FLAG_IS_NOT_EMPTY
     FLAG_IS_OUT_OF_STOCK: ClassVar[str] = 'is-out-of-stock'
     FLAG_LOCATION_STORAGE: ClassVar[str] = 'storage-location'
     FLAG_PRODUCT: ClassVar[str] = 'product'
@@ -64,6 +68,7 @@ class Model_View_Store(Model_View_Base):
     FLAG_QUANTITY_MIN: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_MIN # 'quantity-min'
     FLAG_QUANTITY_STOCK: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_STOCK # 'quantity-stock'
     FLAG_PLANT_STORAGE: ClassVar[str] = 'plant-storage'
+    FLAG_PRODUCT_CATEGORY: ClassVar[str] = 'category'
     FLAG_REGION_STORAGE: ClassVar[str] = 'region-storage'
     FLAG_VARIATIONS: ClassVar[str] = 'variations'
     HASH_PAGE_STORE_BASKET : ClassVar[str] = '/store/basket'
@@ -71,7 +76,9 @@ class Model_View_Store(Model_View_Base):
     HASH_STORE_BASKET_DELETE : ClassVar[str] = '/store/basket_delete'
     HASH_STORE_BASKET_EDIT : ClassVar[str] = '/store/basket_edit'
     HASH_STORE_BASKET_LOAD : ClassVar[str] = '/store/basket_load'
+    HASH_GET_STORE_PRODUCT: ClassVar[str] = '/store/product_get'
     HASH_GET_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/category_get'
+    HASH_SAVE_STORE_PRODUCT: ClassVar[str] = '/store/product_save'
     HASH_GET_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_get'
     HASH_SAVE_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/category_save'
     HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_save'
@@ -103,7 +110,6 @@ class Model_View_Store(Model_View_Base):
     KEY_NAME_VARIATION : ClassVar[str] = Product_Variation.KEY_NAME_VARIATION
     KEY_NAME_VARIATION_TYPE : ClassVar[str] = Product_Variation.KEY_NAME_VARIATION_TYPE
     KEY_PRICE : ClassVar[str] = 'price'
-    KEY_PRODUCT_CATEGORY: ClassVar[str] = 'category'
     KEY_QUANTITY : ClassVar[str] = 'quantity'
     KEY_VALUE_DEFAULT : ClassVar[str] = 'default'
     TYPE_FORM_BASKET_ADD : ClassVar[str] = 'Form_Basket_Add'
@@ -133,6 +139,9 @@ class Model_View_Store(Model_View_Base):
         # cls.FLAG_BUTTON_BASKET_ADD = cls.FLAG_BUTTON_SUBMIT + '.buttonAdd2Basket'
         return super().__new__(cls, db, info_user, app) # Model_View_Store, cls
     """
+    @property
+    def title(self):
+        raise NotImplementedError('title must be implemented in child class')
 
     def __init__(self, hash_page_current, **kwargs): # , id_currency, id_region_delivery, is_included_VAT):
         # Constructor
