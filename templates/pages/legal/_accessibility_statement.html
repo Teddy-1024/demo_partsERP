@@ -5,7 +5,7 @@
 {% block page_body %}
     <!-- Include Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/legal.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/accessibility_statement.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/legal/accessibility_statement.css') }}">
     
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }} {{ model.FLAG_COLUMN }}">
@@ -204,5 +204,5 @@
 
     <!-- Include JavaScript -->
     <script type="module" src="{{ url_for('static', filename='js/sections/legal.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/pages/accessibility_statement.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/legal/accessibility_statement.js') }}"></script>
 {% endblock %}
