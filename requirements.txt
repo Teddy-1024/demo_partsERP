@@ -11,5 +11,5 @@ stripe
 python_dotenv
 authlib
 pydantic
-psycopg2
+# psycopg2
 

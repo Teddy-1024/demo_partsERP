@@ -56,7 +56,9 @@ from flask_wtf.csrf import CSRFProtect
 from authlib.integrations.flask_client import OAuth
 import os
 import sys
-
+from logging.handlers import RotatingFileHandler
+import traceback
+import logging
 
 sys.path.insert(0, os.path.dirname(__file__)) # Todo: why?
 
@@ -98,6 +100,26 @@ with app.app_context():
         authorize_url = f'https://{app.config['DOMAIN_AUTH0']}/authorize',
         access_token_url = f'https://{app.config['DOMAIN_AUTH0']}/oauth/token',
     )
+
+
+# logging
+handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
+handler.setLevel(logging.ERROR)
+app.logger.addHandler(handler)
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    app.logger.error('Server Error: %s', (error))
+    app.logger.error('Request: %s %s %s %s %s',
+                     request.remote_addr,
+                     request.method,
+                     request.scheme,
+                     request.full_path,
+                     request.headers)
+    app.logger.error('Request data: %s', request.get_data())
+    app.logger.error('Traceback: %s', traceback.format_exc())
+    return "500 Internal Server Error", 500
+
 
 
 app.register_blueprint(routes_core)
