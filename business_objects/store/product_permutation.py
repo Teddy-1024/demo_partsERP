@@ -21,6 +21,7 @@ from business_objects.store.product_price import Product_Price
 from business_objects.store.stock_item import Stock_Item
 from business_objects.store.store_base import Store_Base
 from business_objects.store.product_variation import Product_Variation
+from business_objects.store.product_variation_tree import Product_Variation_Tree
 from extensions import db
 # external
 from datetime import datetime, timedelta
@@ -64,6 +65,7 @@ class Product_Permutation(db.Model, Store_Base):
     # form_basket_edit: Form_Basket_Edit
     # is_unavailable_in_currency_or_region: bool
     # is_available: bool
+    # variation_tree
 
     def __init__(self):
         self.variations = []
@@ -84,9 +86,10 @@ class Product_Permutation(db.Model, Store_Base):
         self.form_basket_edit = Form_Basket_Edit()
         self.is_unavailable_in_currency_or_region = False
         # self.is_available = False
+        self.variation_tree = None
 
-    def from_DB_product(query_row):
-        _m = 'Product_Permutation.from_DB_product'
+    def from_DB_get_many_product_catalogue(query_row):
+        _m = 'Product_Permutation.from_DB_get_many_product_catalogue'
         v_arg_type = 'class attribute'
         print(f'query_row: {query_row}')
         permutation = Product_Permutation()
@@ -155,7 +158,7 @@ class Product_Permutation(db.Model, Store_Base):
         if permutation.has_variations:
             for jsonProductVariation in json[cls.ATTR_ID_PRODUCT_VARIATION]:
                 variation = Product_Variation.from_json(jsonProductVariation)
-                permutation.add_variation(variation)
+                permutation.add_product_variation(variation)
         permutation.quantity_stock = json[cls.FLAG_QUANTITY_STOCK]
         permutation.quantity_min = json[cls.FLAG_QUANTITY_MIN]
         permutation.quantity_max = json[cls.FLAG_QUANTITY_MAX]
@@ -185,6 +188,13 @@ class Product_Permutation(db.Model, Store_Base):
             'delivery_options': {self.delivery_options},
             'prices': {self.prices}
         }
+    def to_json_option(self):
+        return {
+            'value': self.id_permutation,
+            'text': self.get_name_variations()
+        }
+    def get_name_variations(self):
+        return self.variation_tree.get_name_variations()
     def is_available(self):
         return len(self.prices) > 0
     def get_price(self):
@@ -270,8 +280,9 @@ class Product_Permutation(db.Model, Store_Base):
             price_GBP_min: {self.price_GBP_min}
         """
 
-    def add_variation(self, variation):
-        _m = 'Product_Permutation.add_variation'
+    def add_product_variation(self, variation):
+        _m = 'Product_Permutation.add_product_variation'
+        """
         av.val_instance(variation, 'variation', _m, Product_Variation)
         try:
             self.variation_index[variation.id_variation]
@@ -279,8 +290,13 @@ class Product_Permutation(db.Model, Store_Base):
         except KeyError:
             self.variation_index[variation.id_variation] = len(self.variations)
             self.variations.append(variation)
-    def add_price(self, price):
-        _m = 'Product_Permutation.add_price'
+        """
+        if self.variation_tree is None:
+            self.variation_tree = Product_Variation_Tree.from_product_variation(variation)
+        else:
+            self.variation_tree.add_product_variation(variation)
+    def add_product_price(self, price):
+        _m = 'Product_Permutation.add_product_price'
         av.val_instance(price, 'price', _m, Product_Price)
         try:
             self.price_index[price.display_order]
@@ -288,8 +304,8 @@ class Product_Permutation(db.Model, Store_Base):
         except KeyError:
             self.price_index[price.display_order] = len(self.prices)
             self.prices.append(price)
-    def add_image(self, image):
-        _m = 'Product_Permutation.add_image'
+    def add_product_image(self, image):
+        _m = 'Product_Permutation.add_product_image'
         av.val_instance(image, 'image', _m, Image)
         try:
             self.image_index[image.id_image]
@@ -306,8 +322,8 @@ class Product_Permutation(db.Model, Store_Base):
         except KeyError:
             self.delivery_option_index[delivery_option.id_option] = len(self.delivery_options)
             self.delivery_options.append(delivery_option)
-    def add_discount(self, discount):
-        _m = 'Product_Permutation.add_discount'
+    def add_product_price_discount(self, discount):
+        _m = 'Product_Permutation.add_product_price_discount'
         av.val_instance(discount, 'discount', _m, Discount)
         try:
             self.discount_index[discount.display_order]
@@ -352,8 +368,8 @@ class Permutation_Product_Variation_Link(db.Model):
     id_category = db.Column(db.Integer)
     id_variation = db.Column(db.Integer)
 
-    def from_DB_product(query_row):
-        _m = 'Permutation_Product_Variation_Link.from_DB_product'
+    def from_DB_get_many_product_catalogue(query_row):
+        _m = 'Permutation_Product_Variation_Link.from_DB_get_many_product_catalogue'
         v_arg_type = 'class attribute'
         link = Permutation_Product_Variation_Link()
         link.id_permutation = query_row[0]

@@ -3,7 +3,7 @@
     <h3 style="width: 100%; justify-self: left; margin-left: 3vh; display: inline-flex;">{{ cat.name }}</h4>
     <div class="container">
         {% for product in cat.products %}
-            {% include '_block_store_product.html' %}
+            {% include 'components/store/_product.html' %}
         {% endfor %}
     </div>
 </div>

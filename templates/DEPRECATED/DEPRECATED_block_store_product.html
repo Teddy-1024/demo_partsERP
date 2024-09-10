@@ -14,7 +14,7 @@
                 <h2>{{ product.name }}</h2>
                 <h3>{{ permutation.output_price(model.is_included_VAT) }}</h3>
                 {% set tmp_quantity = 1 %}
-                {% include '_block_input_number_plus_minus.html' %}
+                {% include 'components/common/inputs/_input_number_plus_minus.html' %}
                 {{ form.submit() }}
                 <p>Get it: <strong>{{ permutation.output_delivery_date() }}</strong></p>
             </form>

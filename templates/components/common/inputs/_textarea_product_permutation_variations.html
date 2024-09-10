@@ -1,0 +1,18 @@
+
+{% if variation_tree is not defined %}
+    {% set is_blank_row = True %}
+{% endif %}
+{% if is_blank_row is not defined %}
+    {% set is_blank_row = True %}
+{% endif %}
+
+{% if not is_blank_row %}
+    {% set json_str_variations = permutation.variation_tree.to_json_str() %}
+    <textarea 
+        class="{{ model.FLAG_VARIATIONS }}" 
+        {{ model.ATTR_VALUE_CURRENT }}="{{ json_str_variations }}" 
+        {{ model.ATTR_VALUE_PREVIOUS }}="{{ json_str_variations }}"
+    >{{ permutation.variation_tree.to_str_textarea() }}</textarea>
+{% else %}
+    <textarea class="{{ model.FLAG_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+{% endif %}

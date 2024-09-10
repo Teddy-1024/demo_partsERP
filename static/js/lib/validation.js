@@ -126,6 +126,22 @@ function arrayContainsItem(array, itemValue) {
 function dictHasKey(d, k) {
     return (k in d);
 }
+function areEqualDicts(dict1, dict2) {
+    const keys1 = Object.keys(dict1);
+    const keys2 = Object.keys(dict2);
+    
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+    
+    for (let key of keys1) {
+      if (dict1[key] !== dict2[key]) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
 
 function imageExists(url, callback) {
 

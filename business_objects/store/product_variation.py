@@ -56,7 +56,7 @@ class Product_Variation(db.Model, Store_Base):
         super().__init__()
         Store_Base.__init__(self)
     
-    def from_DB_product(query_row):
+    def from_DB_get_many_product_catalogue(query_row):
         variation = Product_Variation.from_DB_variation(query_row)
         variation.id_product = query_row[11]
         variation.id_permutation = query_row[12]
@@ -122,6 +122,11 @@ class Product_Variation(db.Model, Store_Base):
             self.KEY_ACTIVE_VARIATION_TYPE: self.active_variation_type,
             self.KEY_ACTIVE_VARIATION: self.active_variation,
         }
+    def to_json_option(self):
+        return {
+            'value': self.id_variation,
+            'text': self.name_variation
+        }
     
     def to_json_variation_type(self):
         return {
@@ -159,7 +164,7 @@ class Product_Variation_Filters():
     @staticmethod
     def from_form(form):
         av.val_instance(form, 'form', 'User_Filters.from_form', Form_Filters_Product_Variation)
-        get_inactive = av.input_bool(form.active_only.data, "active_only", "User_Filters.from_form")
+        get_inactive = av.input_bool(form.active.data, "active", "User_Filters.from_form")
         id_user = form.id_user.data
         return User_Filters(
             get_all_user = (id_user is None),
@@ -197,8 +202,8 @@ class Product_Variation_Filters():
 class Product_Variation_List(BaseModel):
     variations: list = []
 
-    def add_variation(self, variation):
-        av.val_instance(variation, 'variation', 'Product_Variation_List.add_variation', Product_Variation)
+    def add_product_variation(self, variation):
+        av.val_instance(variation, 'variation', 'Product_Variation_List.add_product_variation', Product_Variation)
         self.variations.append(variation)
 
     def __repr__(self):

@@ -160,7 +160,7 @@ class User_Filters():
     @staticmethod
     def from_form(form):
         av.val_instance(form, 'form', 'User_Filters.from_form', Form_Filters_User)
-        get_inactive = av.input_bool(form.active_only.data, "active_only", "User_Filters.from_form")
+        get_inactive = av.input_bool(form.active.data, "active", "User_Filters.from_form")
         id_user = form.id_user.data
         return User_Filters(
             get_all_user = (id_user is None),
@@ -212,7 +212,7 @@ class User_Filters():
     @staticmethod
     def from_form(form):
         av.val_instance(form, 'form', 'User_Filters.from_form', Form_Filters_User)
-        get_inactive = av.input_bool(form.active_only.data, "active_only", "User_Filters.from_form")
+        get_inactive = av.input_bool(form.active.data, "active", "User_Filters.from_form")
         return User_Filters(
             ids_user = form.id_user.data,
             get_inactive_users = get_inactive,

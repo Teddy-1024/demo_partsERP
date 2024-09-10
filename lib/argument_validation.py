@@ -1313,4 +1313,6 @@ def val_DataFrame(v_input, v_name, method, v_types=[], min_col=-1, max_col=-1, c
 
 
 
-
+if __name__ == '__main__':
+    print(input_bool('true', 'input_bool', 'test'))
+    print(input_bool(None, 'input_bool', 'test'))

@@ -37,7 +37,7 @@ class Discount(db.Model):
 
     def __init__(self):
         self.delivery_regions = []
-    def from_DB_product(query_row):
+    def from_DB_get_many_product_catalogue(query_row):
         discount = Discount()
         discount.id_discount = query_row[0]
         discount.id_category = query_row[1]

@@ -39,7 +39,7 @@ routes_store_product_permutation = Blueprint('routes_store_product_permutation',
 def permutation():
     filters = Filters_Product.get_default()
     model = Model_View_Store_Product_Permutation(filters_product=filters)
-    return render_template('_page_store_product_permutations.html', model = model)
+    return render_template('pages/store/_product_permutations.html', model = model)
 
 @routes_store_product_permutation.route('/store/permutation_filter', methods=['POST'])
 def permutation_filter():
@@ -48,13 +48,13 @@ def permutation_filter():
     try:
         form_filters = get_Form_Filters_Permutation(data)
         if not form_filters.validate_on_submit():
-            return jsonify({'status': 'failure', 'Message': f'Form invalid.\n{form_filters.errors}'})
+            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'})
         # ToDo: manually validate category, product
         filters_form = Filters_Product.from_form(form_filters)
         model = Model_View_Store_Product_Permutation(filters_product=filters_form)
-        return jsonify({'status': 'success', 'Success': True, 'data': model.category_list.to_list_rows_permutation()})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model.category_list.to_permutation_row_list()})
     except Exception as e:
-        return jsonify({'status': 'failure', 'Message': f'Bad data received by controller.\n{e}'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
 
 def get_Form_Filters_Permutation(data_request):
     data_form = data_request[Model_View_Store_Product_Permutation.KEY_FORM]
@@ -69,11 +69,11 @@ def permutation_save():
     try:
         form_filters = get_Form_Filters_Permutation(data)
         if not form_filters.validate_on_submit():
-            return jsonify({'status': 'failure', 'Message': f'Filters form invalid.\n{form_filters.errors}'})
+            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'})
         
         permutations = data[Model_View_Store_Product_Permutation.KEY_PERMUTATIONS]
         if len(permutations) == 0:
-            return jsonify({'status': 'failure', 'Message': f'No permutations.'})
+            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'No permutations.'})
         objsPermutation = []
         for permutation in permutations:
             objsPermutation.append(Product_Permutation.from_json(permutation))
@@ -84,7 +84,7 @@ def permutation_save():
         model_save.save_permutations(data.comment, objsPermutation)
 
         model_return = Model_View_Store_Product_Permutation(filters_product=filters_form)
-        return jsonify({'status': 'success', 'Success': True, 'data': model_return.category_list.to_list_rows_permutation()})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model_return.category_list.to_permutation_row_list()})
     except Exception as e:
-        return jsonify({'status': 'failure', 'Message': f'Bad data received by controller.\n{e}'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
     

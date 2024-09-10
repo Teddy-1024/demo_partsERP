@@ -14,11 +14,14 @@ Defines Flask-WTF forms for handling user input.
 # internal
 # from business_objects.store.product_category import Filters_Product_Category # circular
 # from models.model_view_store import Model_View_Store # circular
+from forms.base import Form_Base
 # external
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, BooleanField, IntegerField, SelectField, FloatField
 from wtforms.validators import InputRequired, NumberRange, Regexp, DataRequired, Optional
 from flask_wtf.recaptcha import RecaptchaField
+from abc import ABCMeta, abstractmethod
+
 
 
 class Form_Contact(FlaskForm):
@@ -141,5 +144,5 @@ class Form_Filters_Stock_Item(FlaskForm):
 
 
 class Form_Filters_User(FlaskForm):
-    active_only = BooleanField('Active only?')
+    active = BooleanField('Active only?')
     id_user = SelectField('User ID', validators=[Optional()], choices=[])

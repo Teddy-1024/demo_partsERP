@@ -19,8 +19,11 @@ Base data model for views
 # from routes import bp_home
 import lib.argument_validation as av
 from forms.forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
+from datastores.datastore_base import DataStore_Base
 from datastores.datastore_user import DataStore_User
 from business_objects.store.store_base import Store_Base
+from business_objects.store.product_category import Product_Category
+from business_objects.store.access_level import Filters_Access_Level
 from business_objects.user import User, User_Filters
 # external
 from abc import ABC, abstractmethod
@@ -33,10 +36,13 @@ from typing import ClassVar
 class Model_View_Base(BaseModel, ABC):
     # Global constants
     # ATTR_FOR: ClassVar[str] = 'for'
+    ATTR_ID_ACCESS_LEVEL: ClassVar[str] = Store_Base.ATTR_ID_ACCESS_LEVEL
     ATTR_TEXT_COLLAPSED: ClassVar[str] = 'textCollapsed'
     ATTR_TEXT_EXPANDED: ClassVar[str] = 'textExpanded'
     ATTR_VALUE_CURRENT: ClassVar[str] = 'current-value'
     ATTR_VALUE_PREVIOUS: ClassVar[str] = 'previous-value'
+    FLAG_ACCESS_LEVEL: ClassVar[str] = 'access_level'
+    FLAG_ACCESS_LEVEL_REQUIRED: ClassVar[str] = Product_Category.FLAG_ACCESS_LEVEL_REQUIRED
     FLAG_ACTIVE: ClassVar[str] = Store_Base.FLAG_ACTIVE
     FLAG_ADD: ClassVar[str] = 'add'
     FLAG_CANCEL: ClassVar[str] = 'button-cancel'
@@ -58,10 +64,14 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_DISPLAY_ORDER: ClassVar[str] = Store_Base.FLAG_DISPLAY_ORDER
     FLAG_ERROR: ClassVar[str] = 'error'
     FLAG_EXPANDED: ClassVar[str] = 'expanded'
+    FLAG_FAILURE: ClassVar[str] = 'failure'
     FLAG_FILTER: ClassVar[str] = 'filter'
+    FLAG_FORM_FILTERS: ClassVar[str] = 'form-filters'
     FLAG_HAMBURGER: ClassVar[str] = 'hamburger'
     FLAG_IMAGE_LOGO: ClassVar[str] = 'image-logo'
     FLAG_INITIALISED: ClassVar[str] = 'initialised'
+    FLAG_KEY_PRIMARY: ClassVar[str] = Store_Base.FLAG_KEY_PRIMARY
+    FLAG_MESSAGE: ClassVar[str] = 'Message'
     FLAG_MODAL: ClassVar[str] = 'modal'
     FLAG_NAME: ClassVar[str] = Store_Base.FLAG_NAME
     FLAG_NAV_ADMIN_HOME: ClassVar[str] = 'navAdminHome'
@@ -86,11 +96,14 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_PAGE_BODY: ClassVar[str] = 'page-body'
     FLAG_ROW: ClassVar[str] = 'row'
     FLAG_ROW_NEW: ClassVar[str] = 'row-new'
+    FLAG_ROWS: ClassVar[str] = Store_Base.FLAG_ROWS
     FLAG_SAVE: ClassVar[str] = 'save'
     FLAG_SCROLLABLE: ClassVar[str] = 'scrollable'
     FLAG_SLIDER: ClassVar[str] = 'slider'
+    FLAG_STATUS: ClassVar[str] = 'status'
     FLAG_SUBMIT: ClassVar[str] = 'submit'
     FLAG_SUBMITTED: ClassVar[str] = 'submitted'
+    FLAG_SUCCESS: ClassVar[str] = 'success'
     # flagIsDatePicker: ClassVar[str] = 'is-date-picker'
     HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_filter'
     HASH_CALLBACK_LOGIN: ClassVar[str] = '/callback-login'
@@ -118,6 +131,7 @@ class Model_View_Base(BaseModel, ABC):
     HASH_PAGE_USER_ADMIN: ClassVar[str] = '/user/admin'
     HASH_PAGE_USER_LOGIN: ClassVar[str] = '/login'
     HASH_PAGE_USER_LOGOUT: ClassVar[str] = '/logout'
+    HASH_SCRIPTS_SECTION_STORE: ClassVar[str] = '/scripts_store'
     ID_BUTTON_ADD: ClassVar[str] = 'buttonAdd'
     ID_BUTTON_APPLY_FILTERS: ClassVar[str] = 'buttonApplyFilters'
     ID_BUTTON_CANCEL: ClassVar[str] = 'buttonCancel'
@@ -127,6 +141,7 @@ class Model_View_Base(BaseModel, ABC):
     ID_FORM_CONTACT: ClassVar[str] = 'formContact'
     ID_FORM_CURRENCY: ClassVar[str] = 'formCurrency'
     ID_FORM_DELIVERY_REGION: ClassVar[str] = 'formDeliveryRegion'
+    ID_FORM_FILTERS: ClassVar[str] = 'formFilters'
     ID_FORM_IS_INCLUDED_VAT: ClassVar[str] = 'formIsIncludedVAT'
     ID_LABEL_ERROR: ClassVar[str] = 'labelError'
     ID_MODAL_SERVICES: ClassVar[str] = 'modalServices'
@@ -158,6 +173,7 @@ class Model_View_Base(BaseModel, ABC):
     ID_TEXTAREA_CONFIRM: ClassVar[str] = 'textareaConfirm'
     KEY_CALLBACK: ClassVar[str] = 'callback'
     # KEY_CSRF_TOKEN: ClassVar[str] = 'X-CSRFToken'
+    KEY_DATA: ClassVar[str] = 'data'
     KEY_FORM: ClassVar[str] = 'form'
     KEY_FORM_FILTERS: ClassVar[str] = KEY_FORM + 'Filters'
     KEY_USER: ClassVar[str] = User.KEY_USER
@@ -184,6 +200,7 @@ class Model_View_Base(BaseModel, ABC):
     session: None = None
     is_page_store: bool = None
     is_user_logged_in: bool = None
+    access_levels: list = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -272,4 +289,21 @@ class Model_View_Base(BaseModel, ABC):
             return False
     """
 
-    # def get_csrf_token(self):
+    def get_many_access_level(self, filters):
+        _m = 'Model_View_Store.get_many_access_level'
+        av.val_instance(filters, 'filters', _m, Filters_Access_Level)
+        
+        access_levels, errors = DataStore_Base.get_many_access_level(filters)
+        
+        return access_levels
+    @staticmethod
+    def convert_list_objects_to_list_options(list_objects):
+        return Store_Base.convert_list_objects_to_list_options(list_objects)
+    @staticmethod
+    def join_with_linebreaks(strs):
+        str_multiline = ''
+        for str in strs:
+            if str_multiline != '':
+                str_multiline += '\n'
+            str_multiline += str
+        return str_multiline

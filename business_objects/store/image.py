@@ -73,8 +73,8 @@ class Image(db.Model):
         self.display_order = display_order
         super().__init__()
 """
-    def from_DB_product(query_row):
-        _m = 'Image.from_DB_product'
+    def from_DB_get_many_product_catalogue(query_row):
+        _m = 'Image.from_DB_get_many_product_catalogue'
         # print(f'image: {query_row}')
         image = Image()
         image.id_image = query_row[0]

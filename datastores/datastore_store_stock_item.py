@@ -14,7 +14,7 @@ Datastore for Store Stock Items
 # from routes import bp_home
 import lib.argument_validation as av
 from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Container_Product_Category, Product_Category
+from business_objects.store.product_category import Product_Category_Container, Product_Category
 from business_objects.store.currency import Currency
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
@@ -27,7 +27,7 @@ from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
 from datastores.datastore_store_base import DataStore_Store_Base
-from helpers.helper_db_mysql import Helper_DB_MySQL
+# from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
 # external
@@ -73,7 +73,7 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
 
     def input_many_stock_item(cursor):
         _m = 'DataStore_Store_Stock_Item.input_many_stock_item'
-        category_list = Container_Product_Category()
+        category_list = Product_Category_Container()
         # Categories
         result_set_1 = cursor.fetchall()
         print(f'raw categories: {result_set_1}')
@@ -95,12 +95,12 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
                     except KeyError:
                         permutation = Product_Permutation.from_DB_stock_item(row)
                         permutation.add_stock_item(new_stock_item)
-                        product.add_permutation(permutation)
+                        product.add_product_permutation(permutation)
                 except KeyError:
                     product = Product.from_DB_stock_item(row)
                     permutation = Product_Permutation.from_DB_stock_item(row)
                     permutation.add_stock_item(new_stock_item)
-                    product.add_permutation(permutation)
+                    product.add_product_permutation(permutation)
                     category_list.add_product(product)
                 """
             except KeyError:
@@ -109,10 +109,10 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
                 product = Product.from_DB_stock_item(row)
                 permutation = Product_Permutation.from_DB_stock_item(row)
                 permutation.add_stock_item(new_stock_item)
-                product.add_permutation(permutation)
+                product.add_product_permutation(permutation)
                 new_category.add_product(product)
                 """
-                category_list.add_category(new_category)
+                category_list.add_product_category(new_category)
             try:
                 index_product = category.get_index_product_from_id(new_stock_item.id_product)
                 product = category.products[index_product]
@@ -125,7 +125,7 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
                 permutation.add_stock_item(new_stock_item)
             except KeyError:
                 new_permutation = Product_Permutation.from_DB_stock_item(row)
-                product.add_permutation(new_permutation)
+                product.add_product_permutation(new_permutation)
             category_list.add_stock_item(new_stock_item)
         
         # Product_Variations
@@ -133,9 +133,9 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         result_set_3 = cursor.fetchall()
         variations = []
         for row in result_set_3:
-            new_variation = Product_Variation.from_DB_product(row)
+            new_variation = Product_Variation.from_DB_get_many_product_catalogue(row)
             variations.append(new_variation)
-            category_list.add_variation(new_variation)
+            category_list.add_product_variation(new_variation)
         
         # Errors
         cursor.nextset()
@@ -147,7 +147,7 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
             for error in errors:
                 print(f"Error [{error.code}]: {error.msg}")
         
-        category_list.get_all_variation_trees()
+        category_list.get_all_product_variation_trees()
         """
         for category in category_list.categories:
             print(f'category: {category.name}')

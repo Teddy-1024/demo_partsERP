@@ -14,6 +14,4 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Temp (
 	, display_order INT NOT NULL
     , id_access_level_required INT NOT NULL DEFAULT 1
     , guid BINARY(36) NOT NULL
-	, created_on TIMESTAMP NOT NULL
-	, created_by INT NOT NULL
 );

@@ -66,8 +66,8 @@ class Currency(db.Model):
         currency.display_order = query_row[5]
         return currency
     """
-    def from_DB_product(query_row):
-        _m = 'Currency.from_DB_product'
+    def from_DB_get_many_product_catalogue(query_row):
+        _m = 'Currency.from_DB_get_many_product_catalogue'
         v_arg_type = 'class attribute'
         currency = Currency()
         currency.id_permutation = query_row[0]

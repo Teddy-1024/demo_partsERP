@@ -1,0 +1,20 @@
+
+{% if variation_tree is not defined %}
+    {% set is_blank_row = True %}
+{% endif %}
+{% if is_blank_row is not defined %}
+    {% set is_blank_row = True %}
+{% endif %}
+
+{% if not is_blank_row %}
+    {# % set json_str_variation_types = product.get_json_str_types_variation_trees() % #}
+    {% set names_variation_type = product.get_variation_types_unique() %}
+    {% set json_str_variation_types = jsonify(names_variation_type) %}
+    <textarea 
+        class="{{ model.FLAG_VARIATIONS }}" 
+        {{ model.ATTR_VALUE_CURRENT }}="{{ json_str_variation_types }}" 
+        {{ model.ATTR_VALUE_PREVIOUS }}="{{ json_str_variation_types }}"
+    >{{ model.join_with_linebreaks(names_variation_type) }}</textarea>
+{% else %}
+    <textarea class="{{ model.FLAG_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+{% endif %}

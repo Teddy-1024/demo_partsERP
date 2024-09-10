@@ -44,17 +44,22 @@ export default class DOM {
         pageBody.innerHTML = contentNew;
     }
     static getHashPageCurrent() {
-        return document.body.dataset.page;
+        const hashPageCurrent = document.body.dataset.page;
+        console.log("hashPageCurrent: " + hashPageCurrent);
+        return hashPageCurrent;
     }
     static isElementDirty(element) {
         element.setAttribute(attrValueCurrent, DOM.getElementValueCurrent(element));
         let isDirty = element.getAttribute(attrValuePrevious) != element.getAttribute(attrValueCurrent);
+        DOM.handleDirtyElement(element, isDirty);
+        return isDirty;
+    }
+    static handleDirtyElement(element, isDirty) {
         if (isDirty) {
             element.classList.add(flagDirty);
         } else {
             element.classList.remove(flagDirty);
         }
-        return isDirty;
     }
     static getElementValueCurrent(element) {
         let returnVal = '';
@@ -99,5 +104,7 @@ export default class DOM {
         }
     }
     */
-   
+    /* non-static method on page object to use
+    static handleChangeElement(element) {}
+    */
 }

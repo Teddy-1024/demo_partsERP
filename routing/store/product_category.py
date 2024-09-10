@@ -11,8 +11,8 @@ Initializes the Flask application, sets the configuration based on the environme
 """
 
 # internal
-from business_objects.store.product_category import Product_Category, Filters_Product_Category
-from forms.store.product_category import Form_Filters_Product_Category
+from business_objects.store.product_category import Product_Category #, Filters_Product_Category
+from forms.store.product_category import Filters_Product_Category
 from models.model_view_store_product_category import Model_View_Store_Product_Category
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
@@ -30,46 +30,74 @@ routes_store_product_category = Blueprint('routes_store_product_category', __nam
 
 @routes_store_product_category.route(Model_View_Store_Product_Category.HASH_PAGE_STORE_PRODUCT_CATEGORIES, methods=['GET'])
 def categories():
+    print('categories')
+    # data = Helper_App.get_request_data(request)
+    try:
+        form_filters = Filters_Product_Category.from_json(request.args)
+    except Exception as e:
+        print(f'Error: {e}')
+        form_filters = Filters_Product_Category()
+    print(f'form_filters={form_filters}')
+    """
     filters = Filters_Product_Category.get_default()
-    model = Model_View_Store_Product_Category(filters)
-    return render_template('_page_store_product_categories.html', model = model)
+    have_changed_filters = False
+    arg_filter_is_not_empty = request.args.get(Model_View_Store_Product_Category.FLAG_IS_NOT_EMPTY, None)
+    have_changed_filters = have_changed_filters or arg_filter_is_not_empty is None
+    print(f'arg_filter_is_not_empty={arg_filter_is_not_empty}')
+    filters.is_not_empty = filters.is_not_empty if arg_filter_is_not_empty is None else av.input_bool(arg_filter_is_not_empty, 'is_not_empty', 'filter_category')
+    arg_filter_active = request.args.get(Model_View_Store_Product_Category.FLAG_ACTIVE, None)
+    have_changed_filters = have_changed_filters or arg_filter_active is None
+    print(f'arg_filter_active={arg_filter_active}')
+    filters.active = filters.active if arg_filter_active is None else av.input_bool(arg_filter_active, 'active', 'filter_category')
+    if have_changed_filters:
+        print('redirecting')
+        return redirect(url_for('routes_store_product_category.categories', **filters.to_json()))
+    """
+    model = Model_View_Store_Product_Category(form_filters)
+    return render_template('pages/store/_product_categories.html', model = model)
 
 @routes_store_product_category.route(Model_View_Store_Product_Category.HASH_GET_STORE_PRODUCT_CATEGORY, methods=['POST'])
 def filter_category():
     data = Helper_App.get_request_data(request)
     # form_filters = None
     try:
-        form_filters = get_Form_Filters_Product_Category(data)
+        form_filters = Filters_Product_Category.from_json(data)
         if not form_filters.validate_on_submit():
-            return jsonify({'status': 'failure', 'Message': f'Form invalid.\n{form_filters.errors}'})
+            return jsonify({
+                Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
+                Model_View_Store_Product_Category.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
+            })
         # ToDo: manually validate category, product
-        filters_form = Filters_Product_Category.from_form(form_filters)
-        model = Model_View_Store_Product_Category(filters_category = filters_form)
-        return jsonify({'status': 'success', 'Success': True, 'data': model.category_list.to_json_str()})
+        # filters_form = Filters_Product_Category.from_form(form_filters)
+        model = Model_View_Store_Product_Category(form_filters = form_filters)
+        return jsonify({
+            Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
+            Model_View_Store_Product_Category.KEY_DATA: model.category_list.to_json()
+        })
     except Exception as e:
-        return jsonify({'status': 'failure', 'Message': f'Bad data received by controller.\n{e}'})
-
-def get_Form_Filters_Product_Category(data_request):
-    data_form = data_request[Model_View_Store_Product_Category.KEY_FORM]
-    form_filters = Form_Filters_Product_Category(**data_form)
-    form_filters.is_not_empty.data = av.input_bool(data_form['is_not_empty'], 'is_not_empty', 'filter_category')
-    form_filters.active.data = av.input_bool(data_form['active'], 'active', 'filter_category')
-    return form_filters
+        return jsonify({
+            Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
+            Model_View_Store_Product_Category.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
+        })
 
 @routes_store_product_category.route(Model_View_Store_Product_Category.HASH_SAVE_STORE_PRODUCT_CATEGORY, methods=['POST'])
 def save_category():
     data = Helper_App.get_request_data(request)
-    # form_filters = None
-    print(f'data={data}')
     try:
-        form_filters = get_Form_Filters_Product_Category(data)
+        form_filters = Filters_Product_Category.from_json(data[Model_View_Store_Product_Category.FLAG_FORM_FILTERS])
         if not form_filters.validate_on_submit():
-            return jsonify({'status': 'failure', 'Message': f'Filters form invalid.\n{form_filters.errors}'})
-        filters_form = Filters_Product_Category.from_form(form_filters)
+            return jsonify({
+                Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
+                Model_View_Store_Product_Category.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'
+            })
+        # filters_form = Filters_Product_Category.from_form(form_filters)
         
         categories = data[Model_View_Store_Product_Category.FLAG_PRODUCT_CATEGORY]
         if len(categories) == 0:
-            return jsonify({'status': 'failure', 'Message': f'No categories.'})
+            return jsonify({
+                Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
+                Model_View_Store_Product_Category.FLAG_MESSAGE: f'No categories.'
+            })
         objsCategory = []
         for category in categories:
             objsCategory.append(Product_Category.from_json(category))
@@ -77,9 +105,15 @@ def save_category():
         print(f'objsCategory={objsCategory}')
         Model_View_Store_Product_Category.save_categories(data.get('comment', 'No comment'), objsCategory)
 
-        model_return = Model_View_Store_Product_Category(filters_category=filters_form)
+        model_return = Model_View_Store_Product_Category(form_filters=form_filters)
         print('nips')
-        return jsonify({'status': 'success', 'Success': True, 'data': model_return.category_list.to_json_str()})
+        return jsonify({
+            Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
+            Model_View_Store_Product_Category.KEY_DATA: model_return.category_list.to_json()
+        })
     except Exception as e:
-        return jsonify({'status': 'failure', 'Message': f'Bad data received by controller.\n{e}'})
+        return jsonify({
+            Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
+            Model_View_Store_Product_Category.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
+        })
     

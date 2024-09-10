@@ -59,7 +59,7 @@ class Delivery_Region(db.Model):
         self.code = code
         self.display_order = display_order
     """
-    def from_DB_product(query_row):
+    def from_DB_get_many_product_catalogue(query_row):
         region = Delivery_Region()
         region.id_region = query_row[0]
         region.name = query_row[1]

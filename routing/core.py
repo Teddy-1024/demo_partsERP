@@ -36,7 +36,7 @@ def home():
     try:
         model = Model_View_Home()
         print('nips')
-        html_body = render_template('_page_home.html', model = model)
+        html_body = render_template('pages/core/_home.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403
     return html_body
@@ -46,7 +46,7 @@ def contact():
     try:
         form = Form_Contact()
         model = Model_View_Contact(form)
-        html_body = render_template('_page_contact.html', model = model)
+        html_body = render_template('pages/core/_contact.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403
     return html_body
@@ -67,7 +67,7 @@ def contact_post():
             mail.send(mailItem)
             return "Submitted."
         return "Invalid. Failed to submit."
-        # html_body = render_template('_page_contact.html', model = model)
+        # html_body = render_template('pages/core/_contact.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403
 
@@ -75,7 +75,7 @@ def contact_post():
 def services():
     try:
         model = Model_View_Services()
-        html_body =  render_template('_page_services.html', model = model)
+        html_body =  render_template('pages/core/_services.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403
     return html_body
@@ -84,7 +84,7 @@ def services():
 def admin_home():
     try:
         model = Model_View_Admin_Home()
-        html_body =  render_template('_page_admin_home.html', model = model)
+        html_body =  render_template('pages/core/_admin_home.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403
     return html_body

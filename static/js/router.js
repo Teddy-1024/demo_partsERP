@@ -1,36 +1,117 @@
 
-import { PageAdminHome } from './pages/page_admin_home.js';
-import { PageHome } from './pages/page_home.js';
-import { PageContact } from './pages/page_contact.js';
-import { PageAccessibilityStatement } from './pages/page_accessibility_statement.js';
-import { PageLicense } from './pages/page_license.js';
-import { PageServices } from './pages/page_services.js';
-import { PageStoreBasket } from './pages/page_store_basket.js';
-import { PageStoreHome } from './pages/page_store_home.js';
-import { PageStoreProductCategories } from './pages/page_store_product_categories.js';
-import { PageStoreProductPermutations } from './pages/page_store_product_permutations.js';
-// import { PageStoreProductPrices } from './pages/page_store_product_prices.js';
-// import { PageStoreProducts } from './pages/page_store_products.js';
-// import { PageStoreProductVariations } from './pages/page_store_product_variations.js';
-import { PageStoreStockItems } from './pages/page_store_stock_items.js';
+/*
+import { PageAdminHome } from './pages/core/admin_home.js';
+import { PageHome } from './pages/core/home.js';
+import { PageContact } from './pages/core/contact.js';
+import { PageAccessibilityStatement } from './pages/legal/accessibility_statement.js';
+import { PageLicense } from './pages/legal/license.js';
+import { PageServices } from './pages/core/services.js';
+import { PageStoreBasket } from './pages/store/basket.js';
+import { PageStoreHome } from './pages/store/home.js';
+import { PageStoreProductCategories } from './pages/store/product_categories.js';
+import { PageStoreProductPermutations } from './pages/store/product_permutations.js';
+// import { PageStoreProductPrices } from './pages/store/product_prices.js';
+// import { PageStoreProducts } from './pages/store/products.js';
+// import { PageStoreProductVariations } from './pages/store/product_variations.js';
+import { PageStoreStockItems } from './pages/store/stock_items.js';
+*/
 import API from './api.js';
 import DOM from './dom.js';
 
 export default class Router {
     constructor() {
+        // Pages
+        this.pages = {};
+        // Core
+        this.pages[hashPageHome] = { name: 'PageHome', pathModule: './pages/core/home.js' };
+        this.pages[hashPageContact] = { name: 'PageContact', pathModule: './pages/core/contact.js' };
+        this.pages[hashPageServices] = { name: 'PageServices', pathModule: './pages/core/services.js' };
+        this.pages[hashPageAdminHome] = { name: 'PageAdminHome', pathModule: './pages/core/admin_home.js' };
+        // Legal
+        this.pages[hashPageAccessibilityStatement] = { name: 'PageAccessibilityStatement', pathModule: './pages/legal/accessibility_statement.js' };
+        this.pages[hashPageLicense] = { name: 'PageLicense', pathModule: './pages/legal/license.js' };
+        // Store
+        this.pages[hashPageStoreProductCategories] = { name: 'PageStoreProductCategories', pathModule: './pages/store/product_categories.js' };
+        this.pages[hashPageStoreProductPermutations] = { name: 'PageStoreProductPermutations', pathModule: './pages/store/product_permutations.js' };
+        // this.pages[hashPageStoreProductPrices] = { name: 'PageStoreProductPrices', pathModule: './pages/store/product_prices.js' };
+        this.pages[hashPageStoreProducts] = { name: 'PageStoreProducts', pathModule: './pages/store/products.js' };
+        // this.pages[hashPageStoreProductVariations] = { name: 'PageStoreProductVariations', pathModule: './pages/store/product_variations.js' };
+        // User
+        // this.pages[hashPageUserLogin] = { name: 'PageUserLogin', pathModule: './pages/user/login.js' };
+        // this.pages[hashPageUserLogout] = { name: 'PageUserLogout', pathModule: './pages/user/logout.js' };
+        // this.pages[hashPageUserAccount] = { name: 'PageUserAccount', pathModule: './pages/user/account.js' };
+        
+        // Routes
         this.routes = {};
+        // Core
+        this.routes[hashPageHome] = (isPopState = false) => this.navigateToHash(hashPageHome, isPopState);
+        this.routes[hashPageContact] = (isPopState = false) => this.navigateToHash(hashPageContact, isPopState);
+        this.routes[hashPageServices] = (isPopState = false) => this.navigateToHash(hashPageServices, isPopState);
+        this.routes[hashPageAdminHome] = (isPopState = false) => this.navigateToHash(hashPageAdminHome, isPopState);
+        // Legal
+        this.routes[hashPageAccessibilityStatement] = (isPopState = false) => this.navigateToHash(hashPageAccessibilityStatement, isPopState);
+        this.routes[hashPageLicense] = (isPopState = false) => this.navigateToHash(hashPageLicense, isPopState);
+        // Store
+        this.routes[hashPageStoreProductCategories] = (isPopState = false) => this.navigateToHash(hashPageStoreProductCategories, isPopState);
+        this.routes[hashPageStoreProductPermutations] = (isPopState = false) => this.navigateToHash(hashPageStoreProductPermutations, isPopState);
+        // this.routes[hashPageStoreProductPrices] = (isPopState = false) => this.navigateToHash(hashPageStoreProductPrices, isPopState);
+        this.routes[hashPageStoreProducts] = (isPopState = false) => this.navigateToHash(hashPageStoreProducts, isPopState);
+        // this.routes[hashPageStoreProductVariations] = (isPopState = false) => this.navigateToHash(hashPageStoreProductVariations, isPopState);
+        // User
+        // this.routes[hashPageUserLogin] = (isPopState = false) => this.navigateToHash(hashPageUserLogin, isPopState);
+        // this.routes[hashPageUserLogout] = (isPopState = false) => this.navigateToHash(hashPageUserLogout, isPopState);
+        // this.routes[hashPageUserAccount] = (isPopState = false) => this.navigateToHash(hashPageUserAccount, isPopState);
         this.initialize();
     }
-
+    async loadPage(hashPage, isPopState = false) {
+        const PageClass = await this.getClassPageFromHash(hashPage);
+        this.currentPage = new PageClass();
+        this.currentPage.initialize(isPopState);
+    }
+    async getClassPageFromHash(hashPage) {
+        let pageJson = this.pages[hashPage];
+        const module = await import(pageJson.pathModule);
+        return module[pageJson.name];
+    }
     initialize() {
+        /*
         let pages = Router.getPages();
         for (const key of Object.keys(pages)) {
             let page = pages[key];
             this.addRoute(page.hash, page.initialize);
         }
+        */
         window.addEventListener('popstate', this.handlePopState.bind(this)); // page accessed by history navigation
     }
+    handlePopState(event) {
+        this.loadPageCurrent();
+    }
+    loadPageCurrent() {
+        const hashPageCurrent = DOM.getHashPageCurrent();
+        this.loadPage(hashPageCurrent);
+    }
+    navigateToHash(hash, data = null, params = null, isPopState = false) {
+        this.beforeLeave();
+        /*
+        if (this.routes[hash]) {
+            console.log("navigating to hash: " + hash);
+            this.routes[hash](isPopState);
+        } else {
+            console.error(`Hash ${hash} not found`);
+        }
+        */
+        let url = API.getUrlFromHash(hash, params);
+        // if (!isPopState) 
+        history.pushState(data, '', url);
+        API.goToUrl(url, data);
+    }
+    async beforeLeave() {
+        const ClassPageCurrent = await this.getClassPageFromHash(DOM.getHashPageCurrent());
+        const pageCurrent = new ClassPageCurrent();
+        pageCurrent.leave();
+    }
 
+    /*
     static getPages() {
         let pages = {};
         pages[hashPageAccessibilityStatement] = PageAccessibilityStatement;
@@ -56,15 +137,19 @@ export default class Router {
     }
 
     handlePopState(event) {
+        /*
         let url = window.location.pathname;
         url = url.split('?')[0];
         let hash = url.replace(_pathHost, '');
         console.log("handlePopState: " + hash);
         this.handleRouteHash(hash);
+        *
+        let pageCurrent = Router.getPageCurrent();
+        pageCurrent.initialize(true);
     }
 
     navigateToHash(hash, data = null) {
-        const url = Router.getUrlFromHash(hash);
+        const url = API.getUrlFromHash(hash);
         this.navigateToUrl(url, data);
     }
 
@@ -109,11 +194,8 @@ export default class Router {
         }
         return url;
     }
+    */
 
-    static #goToUrl(url) {
-        window.location.href = url;
-    }
-    
     /*
     handleRouteUrl(url) {
         const path = url.split('?')[0]; // Remove query parameters

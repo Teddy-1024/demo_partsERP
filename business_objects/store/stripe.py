@@ -153,7 +153,7 @@ class Stripe_Product(db.Model):
             delivery_options: {self.delivery_options}
             '''
 
-    def add_discount(self, discount):
+    def add_product_price_discount(self, discount):
         _m = 'Category.add_product'
         av.val_instance(discount, 'discount', _m, Discount)
         # self.product_index.append(len(self.products))

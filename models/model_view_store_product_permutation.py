@@ -13,7 +13,7 @@ Data model for store permutations view
 # internal
 from models.model_view_store import Model_View_Store
 from datastores.datastore_store_product_permutation import DataStore_Store_Product_Permutation
-from business_objects.store.product_category import Container_Product_Category
+from business_objects.store.product_category import Product_Category_Container
 from forms.forms import Form_Filters_Permutation
 # from routes import bp_home
 from business_objects.store.product import Product, Filters_Product, Product_Permutation
@@ -30,10 +30,10 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
     ID_FILTER_IS_OUT_OF_STOCK: ClassVar[str] = 'is_out_of_stock'
     ID_FILTER_QUANTITY_MIN: ClassVar[str] = 'quantity_min'
     ID_FILTER_QUANTITY_MAX: ClassVar[str] = 'quantity_max'
-    ID_Form_Filters_Permutation: ClassVar[str] = 'Form_Filters_Permutation'
+    # ID_Form_Filters_Permutation: ClassVar[str] = 'Form_Filters_Permutation'
     KEY_PERMUTATIONS: ClassVar[str] = 'permutations'
 
-    category_list: Container_Product_Category = None # (str)
+    category_list: Product_Category_Container = None # (str)
     filters_product: Filters_Product
     form_filters: Form_Filters_Permutation = None
     permutation_blank: Product_Permutation = None
@@ -67,7 +67,7 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
         print(f'category_list_filters: {category_list_filters.categories}')
         self.form_filters.id_category.choices = [('0', 'All')] + [(str(category.id_category), category.name) for category in category_list_filters.categories]
         print(f'category options: {self.form_filters.id_category.choices}')
-        product_list = category_list_filters.to_list_products()
+        product_list = category_list_filters.to_product_option_list()
         print(f'product_list: {product_list}')
         self.form_filters.id_product.choices = [('0', 'All')] + [(str(product['value']), product['text']) for product in product_list]
         self.permutation_blank = Product_Permutation()
