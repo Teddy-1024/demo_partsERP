@@ -69,6 +69,26 @@ app = Flask(__name__)
 app.config.from_object(app_config) # for db init with required keys
 # app.config["config"] = app_config()
 
+
+# logging
+handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
+handler.setLevel(logging.ERROR)
+app.logger.addHandler(handler)
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    app.logger.error('Server Error: %s', (error))
+    app.logger.error('Request: %s %s %s %s %s',
+                     request.remote_addr,
+                     request.method,
+                     request.scheme,
+                     request.full_path,
+                     request.headers)
+    app.logger.error('Request data: %s', request.get_data())
+    app.logger.error('Traceback: %s', traceback.format_exc())
+    return "500 Internal Server Error", 500
+
+
 """
 csrf = CSRFProtect()
 cors = CORS()
@@ -95,31 +115,11 @@ with app.app_context():
         client_kwargs={
             "scope": "openid profile email",
         },
-        server_metadata_url=f'https://{app.config['DOMAIN_AUTH0']}/.well-known/openid-configuration',
-        api_base_url = f'https://{app.config['DOMAIN_AUTH0']}',
-        authorize_url = f'https://{app.config['DOMAIN_AUTH0']}/authorize',
-        access_token_url = f'https://{app.config['DOMAIN_AUTH0']}/oauth/token',
+        server_metadata_url=f'https://{app.config["DOMAIN_AUTH0"]}/.well-known/openid-configuration',
+        api_base_url = f'https://{app.config["DOMAIN_AUTH0"]}',
+        authorize_url = f'https://{app.config["DOMAIN_AUTH0"]}/authorize',
+        access_token_url = f'https://{app.config["DOMAIN_AUTH0"]}/oauth/token',
     )
-
-
-# logging
-handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
-handler.setLevel(logging.ERROR)
-app.logger.addHandler(handler)
-
-@app.errorhandler(500)
-def internal_server_error(error):
-    app.logger.error('Server Error: %s', (error))
-    app.logger.error('Request: %s %s %s %s %s',
-                     request.remote_addr,
-                     request.method,
-                     request.scheme,
-                     request.full_path,
-                     request.headers)
-    app.logger.error('Request data: %s', request.get_data())
-    app.logger.error('Traceback: %s', traceback.format_exc())
-    return "500 Internal Server Error", 500
-
 
 
 app.register_blueprint(routes_core)
