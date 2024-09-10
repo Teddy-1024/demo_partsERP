@@ -15,31 +15,61 @@ import { PageStoreProductPermutations } from './pages/store/product_permutations
 // import { PageStoreProductVariations } from './pages/store/product_variations.js';
 import { PageStoreStockItems } from './pages/store/stock_items.js';
 */
+import "./lib/common.js";
+import "./lib/constants.js";
+import "./lib/events.js";
+import "./lib/extras.js";
+// import "./DEPRECATED/init.js";
+import "./lib/local_storage.js";
+import "./lib/utils.js";
+import "./lib/validation.js";
 import API from './api.js';
 import DOM from './dom.js';
+
+// Create a context for the pages
+const pagesContext = require.context('./pages', true, /\.js$/);
+
+/*
+const pageModules = {
+    // Core
+    [hashPageHome]: () => import('./pages/core/home.js'),
+    [hashPageContact]: () => import('./pages/core/contact.js'),
+    [hashPageServices]: () => import('./pages/core/services.js'),
+    [hashPageAdminHome]: () => import('./pages/core/admin_home.js'),
+    // Legal
+    [hashPageAccessibilityStatement]: () => import('./pages/legal/accessibility_statement.js'),
+    [hashPageLicense]: () => import('./pages/legal/license.js'),
+    // Store
+    [hashPageStoreProductCategories]: () => import('./pages/store/product_categories.js'),
+    [hashPageStoreProductPermutations]: () => import('./pages/store/product_permutations.js'),
+    // [hashPageStoreProducts]: () => import('./pages/store/products.js'),
+    // User
+    // Add other pages here...
+};
+*/
 
 export default class Router {
     constructor() {
         // Pages
         this.pages = {};
         // Core
-        this.pages[hashPageHome] = { name: 'PageHome', pathModule: './pages/core/home.js' };
-        this.pages[hashPageContact] = { name: 'PageContact', pathModule: './pages/core/contact.js' };
-        this.pages[hashPageServices] = { name: 'PageServices', pathModule: './pages/core/services.js' };
-        this.pages[hashPageAdminHome] = { name: 'PageAdminHome', pathModule: './pages/core/admin_home.js' };
+        this.pages[hashPageHome] = { name: 'PageHome', pathModule: './core/home.js' };
+        this.pages[hashPageContact] = { name: 'PageContact', pathModule: './core/contact.js' };
+        this.pages[hashPageServices] = { name: 'PageServices', pathModule: './core/services.js' };
+        this.pages[hashPageAdminHome] = { name: 'PageAdminHome', pathModule: './core/admin_home.js' };
         // Legal
-        this.pages[hashPageAccessibilityStatement] = { name: 'PageAccessibilityStatement', pathModule: './pages/legal/accessibility_statement.js' };
-        this.pages[hashPageLicense] = { name: 'PageLicense', pathModule: './pages/legal/license.js' };
+        this.pages[hashPageAccessibilityStatement] = { name: 'PageAccessibilityStatement', pathModule: './legal/accessibility_statement.js' };
+        this.pages[hashPageLicense] = { name: 'PageLicense', pathModule: './legal/license.js' };
         // Store
-        this.pages[hashPageStoreProductCategories] = { name: 'PageStoreProductCategories', pathModule: './pages/store/product_categories.js' };
-        this.pages[hashPageStoreProductPermutations] = { name: 'PageStoreProductPermutations', pathModule: './pages/store/product_permutations.js' };
-        // this.pages[hashPageStoreProductPrices] = { name: 'PageStoreProductPrices', pathModule: './pages/store/product_prices.js' };
-        this.pages[hashPageStoreProducts] = { name: 'PageStoreProducts', pathModule: './pages/store/products.js' };
-        // this.pages[hashPageStoreProductVariations] = { name: 'PageStoreProductVariations', pathModule: './pages/store/product_variations.js' };
+        this.pages[hashPageStoreProductCategories] = { name: 'PageStoreProductCategories', pathModule: './store/product_categories.js' };
+        this.pages[hashPageStoreProductPermutations] = { name: 'PageStoreProductPermutations', pathModule: './store/product_permutations.js' };
+        // this.pages[hashPageStoreProductPrices] = { name: 'PageStoreProductPrices', pathModule: './store/product_prices.js' };
+        this.pages[hashPageStoreProducts] = { name: 'PageStoreProducts', pathModule: './store/products.js' };
+        // this.pages[hashPageStoreProductVariations] = { name: 'PageStoreProductVariations', pathModule: './store/product_variations.js' };
         // User
-        // this.pages[hashPageUserLogin] = { name: 'PageUserLogin', pathModule: './pages/user/login.js' };
-        // this.pages[hashPageUserLogout] = { name: 'PageUserLogout', pathModule: './pages/user/logout.js' };
-        // this.pages[hashPageUserAccount] = { name: 'PageUserAccount', pathModule: './pages/user/account.js' };
+        // this.pages[hashPageUserLogin] = { name: 'PageUserLogin', pathModule: './user/login.js' };
+        // this.pages[hashPageUserLogout] = { name: 'PageUserLogout', pathModule: './user/logout.js' };
+        // this.pages[hashPageUserAccount] = { name: 'PageUserAccount', pathModule: './user/account.js' };
         
         // Routes
         this.routes = {};
@@ -64,14 +94,26 @@ export default class Router {
         this.initialize();
     }
     async loadPage(hashPage, isPopState = false) {
+        console.log("loadPage: " + hashPage);
         const PageClass = await this.getClassPageFromHash(hashPage);
+        console.log("PageClass: ", PageClass);
         this.currentPage = new PageClass();
+        console.log("this.currentPage: ", this.currentPage);
         this.currentPage.initialize(isPopState);
     }
     async getClassPageFromHash(hashPage) {
+        
         let pageJson = this.pages[hashPage];
-        const module = await import(pageJson.pathModule);
-        return module[pageJson.name];
+        console.log("pageJson: ", pageJson);
+        try {
+            const module = await pagesContext(pageJson.pathModule);
+            console.log("module: ", module);
+            return module[pageJson.name];
+        }
+        catch (error) {
+            console.error('Page not found:', hashPage);
+            throw error;
+        }
     }
     initialize() {
         /*
@@ -180,7 +222,7 @@ export default class Router {
     }
 
     static parameteriseUrl(url, parameters) {
-        if (!isEmpty(parameters)) {
+        if (!Validation.isEmpty(parameters)) {
             url += '%3F'; // '?';
             let firstParameter = true;
             for (var p in parameters) {

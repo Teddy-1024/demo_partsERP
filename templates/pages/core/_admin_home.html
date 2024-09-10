@@ -3,10 +3,11 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block page_body %}
-    <!-- Include Stylesheet -->
+    <!-- Include Stylesheet 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/core.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/core/admin_home.css') }}">
-    
+    -->
+
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }} {{ model.FLAG_ROW }}">
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
@@ -37,10 +38,10 @@
             </div>
     </div>
     
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript 
     <script type="module" src="{{ url_for('static', filename='js/sections/core.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/core/admin_home.js') }}"></script>
-    <!-- <script type="module" src="{{ url_for('static', filename='js/pages/store/base.js') }}"></script> -->
+    <!- <script type="module" src="{{ url_for('static', filename='js/pages/store/base.js') }}"></script> -->
     
     <!--
     <script>

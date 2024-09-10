@@ -10,7 +10,7 @@ export class PageUser extends BasePage {
 
     initialize() {
         this.sharedInitialize();
-        hookupButtonsContactUs();
+        this.hookupButtonNavContact();
     }
 
     leave() {

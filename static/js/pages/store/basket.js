@@ -1,3 +1,6 @@
+
+import Events from "../../lib/events.js";
+import LocalStorage from "../../lib/local_storage.js";
 import { BasePage } from "../base.js";
 
 export class PageStoreBasket extends BasePage {
@@ -37,7 +40,7 @@ export class PageStoreBasket extends BasePage {
         elForm = elOverlay.querySelector('form');
         
         hookupOverlay(elOverlay);
-        initialiseEventHandler(elForm, flagInitialised, function() {
+        Events.initialiseEventHandler(elForm, flagInitialised, function() {
             elForm.submit(function(event) {
                 elForm = document.querySelectorAll(elForm);
                 event.preventDefault();
@@ -57,7 +60,7 @@ export class PageStoreBasket extends BasePage {
         elForm = elOverlay.querySelector('form');
 
         hookupOverlay(elOverlay);
-        initialiseEventHandler(elForm, flagInitialised, function() {
+        Events.initialiseEventHandler(elForm, flagInitialised, function() {
             elForm.submit(function(event) {
                 event.preventDefault();
                 console.log("billing submit method");
@@ -81,7 +84,7 @@ export class PageStoreBasket extends BasePage {
         console.log('ajax:'); console.log(response.data);
         let infoType = response.data[keyInfoType];
         let infoAddress = response.data[infoType];
-        setLocalStorage(infoType, infoAddress);
+        LocalStorage.setLocalStorage(infoType, infoAddress);
 
         // update webpage elements in background
         if (infoType == keyInfoBilling) {
@@ -137,14 +140,14 @@ export class PageStoreBasket extends BasePage {
     hookupButtonCheckoutSession() {
         let btnCheckout = document.querySelectorAll(idButtonCheckout);
         btnCheckout.classList.remove(flagInitialised);
-        initialiseEventHandler(idButtonCheckout, flagInitialised, function() {
+        Events.initialiseEventHandler(idButtonCheckout, flagInitialised, function() {
 
             btnCheckout.removeEventListener("click");
             btnCheckout.addEventListener("click", function(event) {
                 
                 
                 //setupPageLocalStorageNext(hashPageStoreBasket);
-                let basket = getLocalStorage(keyBasket);
+                let basket = LocalStorage.getLocalStorage(keyBasket);
                 // goToPage(hashPageStoreBasket);
                 let ajaxData = {};
                 ajaxData[keyBasket] = basket;
@@ -169,7 +172,7 @@ export class PageStoreBasket extends BasePage {
 
         // let elButton = document.querySelectorAll(idButtonFormBillingCopy);
 
-        initialiseEventHandler(idButtonFormBillingCopy, flagInitialised, function() {
+        Events.initialiseEventHandler(idButtonFormBillingCopy, flagInitialised, function() {
             document.querySelectorAll(idButtonFormBillingCopy).addEventListener("click", function (event) {
                 
                 let keys = [keyNameFull, keyPhoneNumber, keyPostcode, keyAddress1, keyAddress2, keyCity, keyCounty];

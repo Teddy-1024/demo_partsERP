@@ -1,107 +1,93 @@
 
-// Argument validation
-/*
-function isNullOrWhitespace(v) {
-    let txt = JSON.stringify(v).replace('/\s\g', '');
-    return (txt == '' || 'null');
-}
-*/
+export default class Validation {
+    /*
+    isNullOrWhitespace(v) {
+        let txt = JSON.stringify(v).replace('/\s\g', '');
+        return (txt == '' || 'null');
+    }
+    */
 
-function isEmpty(object) {
+    static isEmpty(object) {
 
-    let isEmpty = true;
+        let isEmpty = true;
 
-    if (object !== null && object !== "null" && object !== undefined && object !== "undefined") {
+        if (object !== null && object !== "null" && object !== undefined && object !== "undefined") {
 
-        if (object.length == undefined) {
-            isEmpty = false; // object exists but isn't a collection
-        }
-        else if (typeof object === "function") {
-            isEmpty = false; // object is function reference
-        }
-        else { // string or collection
+            if (object.length == undefined) {
+                isEmpty = false; // object exists but isn't a collection
+            }
+            else if (typeof object === "function") {
+                isEmpty = false; // object is reference
+            }
+            else { // string or collection
 
-            let isString = (typeof object == "string");
+                let isString = (typeof object == "string");
 
-            if (isString) object = object.trim();
+                if (isString) object = object.trim();
 
-            if (object.length > 0) {
+                if (object.length > 0) {
 
-                if (isString) {
-                    isEmpty = false; // String greater than length 0
-                }
-                else {
-
-                    if (typeof object[0] != "string") {
-                        isEmpty = false;
+                    if (isString) {
+                        isEmpty = false; // String greater than length 0
                     }
                     else {
-                        for(let i = 0; i < object.length; i++) {
-                            if (object[i] != "") {
-                                isEmpty = false;
-                                break
+
+                        if (typeof object[0] != "string") {
+                            isEmpty = false;
+                        }
+                        else {
+                            for(let i = 0; i < object.length; i++) {
+                                if (object[i] != "") {
+                                    isEmpty = false;
+                                    break
+                                }
                             }
                         }
                     }
                 }
             }
         }
+
+        return isEmpty;
     }
 
-    return isEmpty;
-}
-
-function isValidNumber(value, positiveOnly) {
-    return !isEmpty(value) && !isNaN(value) && (!positiveOnly || parseFloat(value) > 0);
-}
-
-function getDataContentType(params) {
-
-    var data = null;
-    var contentType = '';
-
-    if (!isEmpty(params)) {
-
-        if (typeof params === "string") {
-            data = params;
-            contentType = "application/x-www-form-urlencoded; charset=UTF-8";
-        }
-        else {
-            data = JSON.stringify(params);
-            contentType = "application/json; charset=UTF-8";
-        }
+    static isValidNumber(value, positiveOnly) {
+        return !Validation.isEmpty(value) && !isNaN(value) && (!positiveOnly || parseFloat(value) > 0);
     }
 
-    return { Data: data, ContentType: contentType };
-}
+    static getDataContentType(params) {
 
-function arrayContainsItem(array, itemValue) {
+        var data = null;
+        var contentType = '';
 
-    var hasItem = false;
+        if (!Validation.isEmpty(params)) {
 
-    if (!isEmpty(array) && !isEmpty(itemValue)) {
-
-        var isJQueryElementArray = array[0] instanceof jQuery;
-
-        if (isJQueryElementArray) {
-
-            for (let i = 0; i < array.length; i++) {
-
-                if (document.querySelectorAll(array[i]).is(itemValue)) {
-                    hasItem = true;
-                    break;
-                }
+            if (typeof params === "string") {
+                data = params;
+                contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            }
+            else {
+                data = JSON.stringify(params);
+                contentType = "application/json; charset=UTF-8";
             }
         }
-        else {
 
-            var isDate = array[0] instanceof Date;
+        return { Data: data, ContentType: contentType };
+    }
 
-            if (isDate) {
-                
+    static arrayContainsItem(array, itemValue) {
+
+        var hasItem = false;
+
+        if (!Validation.isEmpty(array) && !Validation.isEmpty(itemValue)) {
+
+            var isJQueryElementArray = array[0] instanceof jQuery;
+
+            if (isJQueryElementArray) {
+
                 for (let i = 0; i < array.length; i++) {
 
-                    if (array[i].getTime() === itemValue.getTime()) {
+                    if (document.querySelectorAll(array[i]).is(itemValue)) {
                         hasItem = true;
                         break;
                     }
@@ -109,54 +95,69 @@ function arrayContainsItem(array, itemValue) {
             }
             else {
 
-                for (let i = 0; i < array.length; i++) {
+                var isDate = array[0] instanceof Date;
 
-                    if (array[i] == itemValue) {
-                        hasItem = true;
-                        break;
+                if (isDate) {
+                    
+                    for (let i = 0; i < array.length; i++) {
+
+                        if (array[i].getTime() === itemValue.getTime()) {
+                            hasItem = true;
+                            break;
+                        }
+                    }
+                }
+                else {
+
+                    for (let i = 0; i < array.length; i++) {
+
+                        if (array[i] == itemValue) {
+                            hasItem = true;
+                            break;
+                        }
                     }
                 }
             }
         }
+
+        return hasItem;
     }
 
-    return hasItem;
-}
-
-function dictHasKey(d, k) {
-    return (k in d);
-}
-function areEqualDicts(dict1, dict2) {
-    const keys1 = Object.keys(dict1);
-    const keys2 = Object.keys(dict2);
-    
-    if (keys1.length !== keys2.length) {
-      return false;
+    static dictHasKey(d, k) {
+        return (k in d);
     }
-    
-    for (let key of keys1) {
-      if (dict1[key] !== dict2[key]) {
+    static areEqualDicts(dict1, dict2) {
+        const keys1 = Object.keys(dict1);
+        const keys2 = Object.keys(dict2);
+        
+        if (keys1.length !== keys2.length) {
         return false;
-      }
-    }
-    
-    return true;
-  }
-
-function imageExists(url, callback) {
-
-    var img = new Image();
-
-    img.onload = function() { callback(true); };
-    img.onerror = function() { callback(false); };
-    img.src = url;
-}
-
-function validateImageUrl(id, img) {
-    imageExists(img, function(exists) {
-        if (exists) {
-            document.querySelectorAll("#" + id).css({ "background-image": "url(" + url + ")", "background-size": "35px 35px"})
         }
-    })
-}
+        
+        for (let key of keys1) {
+        if (dict1[key] !== dict2[key]) {
+            return false;
+        }
+        }
+        
+        return true;
+    }
 
+    static imageExists(url, callback) {
+
+        var img = new Image();
+
+        img.onload = function() { callback(true); };
+        img.onerror = function() { callback(false); };
+        img.src = url;
+    }
+
+    static validateImageUrl(id, img) {
+        Validation.imageExists(img, function(exists) {
+            if (exists) {
+                document.querySelectorAll("#" + id).css({ "background-image": "url(" + url + ")", "background-size": "35px 35px"})
+            }
+        })
+    }
+
+}

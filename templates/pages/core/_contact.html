@@ -3,9 +3,10 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block page_body %}
-    <!-- Include Stylesheet -->
+    <!-- Include Stylesheet 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/core.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/core/contact.css') }}">
+    -->
 
     <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lf8Q8cpAAAAAFAawGu4-ma60bvbEixNVTVvRzKe"></script> <!-- reCaptcha Integration -->
     
@@ -86,10 +87,11 @@
         </div>
     </div>
     
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript
     <script type="module" src="{{ url_for('static', filename='js/sections/core.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/core/contact.js') }}"></script>
-
+    -->
+    
     <script>
         var idEmail = "#{{ model.ID_EMAIL }}";
         var idMessage = "#{{ model.ID_MESSAGE }}";

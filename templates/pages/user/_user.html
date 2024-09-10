@@ -3,10 +3,10 @@
 {% extends 'layouts/layout.html' %}
 
 {% block page_body %}
-    <!-- Include Stylesheet -->
+    <!-- Include Stylesheet
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/user.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/user.css') }}" />
-
+    -->
     <!-- HTML content -->
     <div>
         {% set firstname = 'new user' if user.firstname is none else user.firstname %}
@@ -15,9 +15,10 @@
         {% include 'components/common/buttons/_buttons_save_cancel.html' %}
     </div>
     
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript
     <script type="module" src="{{ url_for('static', filename='js/sections/user.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/user.js') }}"></script>
+    -->
     
     <!--
     <script>

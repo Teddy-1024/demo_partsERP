@@ -1,5 +1,8 @@
 
+import Events from "../../lib/events.js";
 import { BasePage } from "../base.js";
+import Validation from "../../lib/validation";
+
 
 export class PageStoreProductPermutations extends BasePage {
     static hash = hashPageStoreProductPermutations;
@@ -17,7 +20,7 @@ export class PageStoreProductPermutations extends BasePage {
     }
 
     hookupFilters() {
-        initialiseEventHandler(idFilterCategory, flagInitialised, function(filterCategory) {
+        Events.initialiseEventHandler(idFilterCategory, flagInitialised, function(filterCategory) {
             console.log("hooking up filter category");
             /*
             listCategories.forEach(function(category) {
@@ -37,7 +40,7 @@ export class PageStoreProductPermutations extends BasePage {
             console.log("hooked up filter category");
         });
 
-        initialiseEventHandler(idFilterProduct, flagInitialised, function(filterProduct) {
+        Events.initialiseEventHandler(idFilterProduct, flagInitialised, function(filterProduct) {
             listProducts.forEach(function(product) {
                 if (product[attrIdCategory] != getElementCurrentValue(document.querySelectorAll(idFilterCategory))) return;
                 /*
@@ -52,19 +55,19 @@ export class PageStoreProductPermutations extends BasePage {
             });
         });
         
-        initialiseEventHandler(idFilterIsOutOfStock, flagInitialised, function(filterIsOutOfStock) {
+        Events.initialiseEventHandler(idFilterIsOutOfStock, flagInitialised, function(filterIsOutOfStock) {
             filterIsOutOfStock.addEventListener("change", function(event) {
                 loadPermutations();
             });
         });
 
-        initialiseEventHandler(idFilterQuantityMin, flagInitialised, function(filterQuantityMin) {
+        Events.initialiseEventHandler(idFilterQuantityMin, flagInitialised, function(filterQuantityMin) {
             filterQuantityMin.addEventListener("change", function(event) {
                 loadPermutations();
             });
         });
         
-        initialiseEventHandler(idFilterQuantityMax, flagInitialised, function(filterQuantityMax) {
+        Events.initialiseEventHandler(idFilterQuantityMax, flagInitialised, function(filterQuantityMax) {
             filterQuantityMax.addEventListener("change", function(event) {
                 loadPermutations();
             });
@@ -127,7 +130,7 @@ export class PageStoreProductPermutations extends BasePage {
     }
 
     hookupButtonsSaveCancel() {
-        initialiseEventHandler(idButtonSave, flagInitialised, function(button) {
+        Events.initialiseEventHandler(idButtonSave, flagInitialised, function(button) {
             button.addEventListener("click", function(event) {
                 event.stopPropagation();
                 showOverlayConfirm();
@@ -136,7 +139,7 @@ export class PageStoreProductPermutations extends BasePage {
         // let parentSave = btnSave.closest('div.' + flagColumn);
         // parentSave.classList.add(flagCollapsed);
 
-        initialiseEventHandler(idButtonCancel, flagInitialised, function(button) {
+        Events.initialiseEventHandler(idButtonCancel, flagInitialised, function(button) {
             button.addEventListener("click", function(event) {
                 event.stopPropagation();
                 loadPermutations();
@@ -145,7 +148,7 @@ export class PageStoreProductPermutations extends BasePage {
         // let parentCancel = btnCancel.closest('div.' + flagColumn);
         // parentCancel.classList.add(flagCollapsed);
 
-        initialiseEventHandler(idButtonCancel, flagInitialised, function(button) {
+        Events.initialiseEventHandler(idButtonCancel, flagInitialised, function(button) {
             button.addEventListener("click", function(event) {
                 event.stopPropagation();
                 let table = document.querySelectorAll(idTableMain);
@@ -213,7 +216,7 @@ export class PageStoreProductPermutations extends BasePage {
     }
 
     hookupTableMain() {
-        initialiseEventHandler(idTableMain, flagInitialised, function(table) {
+        Events.initialiseEventHandler(idTableMain, flagInitialised, function(table) {
 
             table.querySelectorAll('td.' + flagCategory + ' select').addEventListener("change", function(event) {
                 handleChangeInputPermutations(this);
@@ -277,7 +280,7 @@ export class PageStoreProductPermutations extends BasePage {
         if (wasDirty != isDirty) {
             isRowDirty(row);
             let permutationsDirty = getPermutations(true);
-            if (isEmpty(permutationsDirty)) {
+            if (Validation.isEmpty(permutationsDirty)) {
                 buttonCancel.classList.add(flagCollapsed);
                 buttonSave.classList.add(flagCollapsed);
             } else {
@@ -341,7 +344,7 @@ export class PageStoreProductPermutations extends BasePage {
         element = document.querySelectorAll(element);
         let variations = element.attr(attrValueCurrent);
         let objVariations = [];
-        if (!isEmpty(variations)) {
+        if (!Validation.isEmpty(variations)) {
             variations = variations.split(',');
             variations.forEach((variation) => {
                 let parts = variation.split(':');
@@ -385,7 +388,7 @@ export class PageStoreProductPermutations extends BasePage {
         let tbody = document.createElement("<tbody>");
         console.log('variations:', variations);
         /*
-        if (isEmpty(variations)) {
+        if (Validation.isEmpty(variations)) {
             return;
         }
         */
@@ -459,7 +462,7 @@ export class PageStoreProductPermutations extends BasePage {
         let row = getRowFromElement(element);
         let variations = row.querySelector('td.' + flagVariations + ' textarea');
         let value = variations.value;
-        value = (isEmpty(value)) ? '' : value + '\n';
+        value = (Validation.isEmpty(value)) ? '' : value + '\n';
         value += 'Type: Variation\n';
         variations.value = value;
         handleChangeInputPermutations(variations);

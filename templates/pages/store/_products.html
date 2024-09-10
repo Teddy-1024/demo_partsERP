@@ -1,8 +1,10 @@
 {% extends 'layouts/layout.html' %}
 
 {% block page_body %}
+    <!--
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/products.css') }}">
+    -->
     
     <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product.save_product') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
@@ -95,10 +97,11 @@
     {% include 'components/common/temporary/_overlay_confirm.html' %}
     {% include 'components/common/temporary/_overlay_error.html' %}
 
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript 
     <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/store/products.js') }}"></script>
-    
+    -->
+
     <script>
         // pass arguments from model to JS
         var flagIsNotEmpty = "{{ model.FLAG_IS_NOT_EMPTY }}";

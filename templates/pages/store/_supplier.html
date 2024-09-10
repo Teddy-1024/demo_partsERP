@@ -6,9 +6,10 @@
     {% set supplier = model.supplier %}
     {% set block_id = 'styles' %}
     {% include 'layouts/_shared_store.html' %}
-    
+    <!--
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/supplier.css') }}">
+    -->
     
     <!-- HTML content -->
     <div class="card">
@@ -93,9 +94,10 @@
         </form>
     </div>
 
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript
     <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/store/supplier.js') }}"></script>
+    -->
 
     <!--
     <script>

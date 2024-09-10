@@ -3,10 +3,11 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block page_body %}
-    <!-- Include Stylesheet -->
+    <!-- Include Stylesheet
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/legal.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/legal/license.css') }}">
-    
+    -->
+
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }} {{ model.FLAG_COLUMN }}">
         <p>Copyright &copy; 2024 Precision And Research Technology Systems Limited
@@ -21,10 +22,11 @@
         </p>
     </div>
 
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript
     <script type="module" src="{{ url_for('static', filename='js/sections/legal.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/legal/license.js') }}"></script>
-
+    -->
+    
     <!--
     <script>
         var hashPageCurrent = "{{ model.HASH_PAGE_LICENSE }}";

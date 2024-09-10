@@ -5,10 +5,11 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block page_body %}
-    <!-- Include Stylesheet -->
+    <!-- Include Stylesheet
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/core.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/core/services.css') }}" />
-
+    -->
+    
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }}">
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
@@ -101,10 +102,11 @@
         </ul>
     </div>
     
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript
     <script type="module" src="{{ url_for('static', filename='js/sections/core.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/core/services.js') }}"></script>
-    
+    -->
+
     <!--
     <script>
         var hashPageCurrent = "{{ model.HASH_PAGE_SERVICES }}";
