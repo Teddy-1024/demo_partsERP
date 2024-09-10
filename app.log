@@ -1,0 +1,69 @@
+Exception on /store/products [GET]
+Traceback (most recent call last):
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 178, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\routing\store\product.py", line 40, in products
+    filters.is_not_empty = filters.is_not_empty if arg_filter_is_not_empty is None else av.input_bool(arg_filter_is_not_empty, 'is_not_empty', 'filter')
+                           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\pydantic\main.py", line 828, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'Filters_Product' object has no attribute 'is_not_empty'
+Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+Request: 127.0.0.1 GET http /store/products? Host: 127.0.0.1:5000
+Connection: keep-alive
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-Ch-Ua: "Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "Windows"
+Upgrade-Insecure-Requests: 1
+Dnt: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://127.0.0.1:5000/store/products
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8
+Cookie: session=.eJytVlmvqzgS_iutSN1PnXPB7EdqzWQFcgJJSFhfIseGYLYQlgTovv99TM6de_uhZ5NGCsF2FVVfudbfJ7Bt4ltF6hDbdVhN3n-fIFicIc5Jca6bWxVO3puqDX_903H7Yvw8DXNIssn7JMRPWOG3nGCchc2tqHPSxH-_jtQ3dMsnv04iUtVNAXMqcHIKMe7pGcFn1FZVWKD-jMMItlkzeS_aLHuRqvBKbsVfED4BsN_X59EIhsp9vf8QBRlcFAHJioAZBUrMBbJMFEajwvr8Qnx-hBWJSIgn7xHM6vBFIQXKWhziszM7_dD6aScl121JVf3Z-Lqtvhlk_NPu6XE0fPKV3lddRefmloYFpQMlwgoQsYKlSxRCSQKcKCGJh5iHUBIVXpAlxIkshdh-cwNEKKzr7xLCfhNfVER2ZJNCTyfbxSa75Ma4nxuJDSzGNHXyJNAzBz25EahZDNIMcdsraeD5zaXAMRz0p5kEWZAEt52a8RcisKgXYuxZN2MhJBfAPPSCeXvze4tKEYTwmU3D5zp7c4SZLjNFgfY8-gjvHnuYabF2nJVyG-RcftMz42oEkvshrnMju1PU_bkqJC3z5i1MdprqYeuYRPLixBtp1xIQA8Xp-dapiMF2q3XBR7DyhLpr0E7Wc0U_SbVnFpqqM4_iHkBj734cVW7rFlwjHLzNw_WZM75Ws6WzUE6mVZ8f25PTbk9q90xdrdib7sbkhZnk5Iv1dGb46v1cwKMpbhqIV7t-Olsqnn44cz2zFstD_vHs9oqg9OFB2HN8L2SsxXe4q4fkYzhraz0Jmfn8ZkgztLA0rXkmDNsN-5pM8-3DkvIti_VcXnv3_rhke1GlydQaInPyuhvjMqudLekflrk8V7IVgT1bK9usW5sw3byFSz-WpuG534rKND3C3f3jsZjRMAi7klRhfYY0BFkJ8JLCA4n7cU5oUMgizzCvLPiLKDnag86aRK_1whLQQhf1tPScBd3nTRmM-8J5hF5gWynPX5LNI9CurJOut8Y6Zq1-o7xRYS10zeqSr5vgSD_InRSDdR8shAa6VnpRHeYChOHiZgx8CRbii2uPyrNAwzHKDy2lpYHaZVhVWgTYEqvxLABsDN1n6wOlGUMWqVmCNaf_1BEzWJsPOyI_aGgWKF8D37NiRD7D0_eCGKvrfjvYQ7A0cyM5MMYSp-aJGgt83lT93gRmbCwRbw4WCZY-s-cMxVxen5tCV5CK8mDJ3rBmPVFvD4ej3VuEPrmZ0nT4cypkRkp15WvG9zbD5rRRA_fQIlUoRszYm6cUVxaslRiPl5noT4qlMZbXxkgC20hWojHQ56S3u6XRu6Mjcqfx3awe0zNwLY7KTbc5WwaqVQee9bgUZgOp_oOKX3zb3Hxcjj--87ggQ3mWQ9dJ9aTMfbcbguP_IeWpPb43yqS4GHwPPas7pax3APEJenF3GuhNZWvRSWPv4K6zY1qKdp6OJaj0vQPZJSuO2s593rkx4uXHgDNOqDeXiDGGK2f01M-cQ0YdVBcDl3PZTGzeyHXBdA1-d3JSY5nF5jAn_mn1DHInf8UGyF64fC4GFpupgeM8Ajue23lTBKqwN_Ly6J7i1k07YKhKYuSrEVdL4zJ5xVNyYEM1digtDoY5H6hpb3M4NtR4NZa62lxb5-BKHJ-5qoVdajZnlPuzVazqW-MRdyezCjSVVfjQFnay2OaaKUXA6QU9AF2xVze7JPUUwlv2gLj99n7XpG2UwvlSjqMqR_gBBj9sTZNfzbIbK88Jm8b6ScmwLboPgDwP28vzAe6Jve-rbLbWzdPUkjeLsJLSSJ0zRGkS3lxZ9rXNHd2XzMtuhYDdAbT1uzTxC6yWxqoaem56MUV1WGhXJlJMf1668VTeldou1ARNP2ERHmc7jdSYd4J0teM6Ge27w95p5_e5EIG2STucgGNM7BLuNGjNHwuwmw5G0JRbrduLW8VAZ24mrKKj5YNl1qvk3q8ObHe_xayr6i6u4xKtMCPx7JXWrxrdyrEz0v-C4J_K6haRLPzpc174dfIqWOemf_HMQ1jRpvfZ-0gR3V79r6XNeXJVk765m4a7iI-ku-8kYB0GR3NnMNxsaH5P_pcR5F-0flpSv9VYnpPHGku-F11G-jyoa6ogbpqyfv_yBYePafGEKWBEMYzEWCZd8dbWb6_pY1T1her6Nhj8Z1AFQem_Yx5ZbgUa6bzQxTZzg1emwwQcn5CJl5RcEtS046D2HWH9dq3gAzawesH5XH4ROMxFgOcZCQtAkCKZj4CE4Ggjf8Ei_7f6N15mfql-K6-_4N9esn7mZj-DNf0hXPywj-4_RdZ0FeK3snh5nIwOQ91D9dehfQu1mZVecbEDieXLRbB9MDcE4MjYXv6bWa0tMWzoNDY6YwIYwE8ZeQrEE2DfOfadBW8yB4LJ169f_wFsnZ0r.Zsz0IQ.CsqbE-G2jF9oYmUiZKS36HfeRw4
+
+
+Request data: b''
+Traceback: Traceback (most recent call last):
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 178, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\routing\store\product.py", line 40, in products
+    filters.is_not_empty = filters.is_not_empty if arg_filter_is_not_empty is None else av.input_bool(arg_filter_is_not_empty, 'is_not_empty', 'filter')
+                           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\pydantic\main.py", line 828, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'Filters_Product' object has no attribute 'is_not_empty'
+

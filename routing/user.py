@@ -115,14 +115,14 @@ def login_callback():
         # DataStore_Store().add_new_user(id_user) # this is part of get basket - should occur on page load
 
         print(f'user session: {session[Model_View_Base.KEY_USER]}')
-        return redirect(f'{current_app.config['URL_HOST']}{hash_callback}')
+        return redirect(f"{current_app.config['URL_HOST']}{hash_callback}")
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
 
 @routes_user.route("/logout")
 def logout():
     session.clear()
-    url_logout = "https://" + current_app.config['DOMAIN_AUTH0'] + "/v2/logout?" + urlencode(
+    url_logout = f"https://{current_app.config['DOMAIN_AUTH0']}/v2/logout?" + urlencode(
         {
             "returnTo": url_for("routes_user.logout_callback", _external=True),
             "client_id": current_app.config['ID_AUTH0_CLIENT'],
