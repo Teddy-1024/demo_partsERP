@@ -12,6 +12,7 @@
         {% set firstname = 'new user' if user.firstname is none else user.firstname %}
         <h2 style="font-size: 24px; color: white; font-weight: normal;">Welcome, {{ firstname }}</h2>
         {% set block_id = 'button_get_in_touch' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
     </div>
     
     <!-- Include JavaScript -->
