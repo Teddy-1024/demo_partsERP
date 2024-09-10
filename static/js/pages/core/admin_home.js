@@ -1,4 +1,5 @@
 
+import Events from "../../lib/events.js";
 import { BasePage } from "../base.js";
 // import { router } from "../../router.js";
 
@@ -26,14 +27,14 @@ export class PageAdminHome extends BasePage {
         this.hookupButtonNavAdminStoreStripePrices();
     }
     hookupButtonNavAdminStoreStripeProducts() {
-        initialiseEventHandler('.' + flagNavAdminStoreStripeProducts, flagInitialised, function(navigator) {
+        Events.initialiseEventHandler('.' + flagNavAdminStoreStripeProducts, flagInitialised, function(navigator) {
             navigator.addEventListener("click", function(event) {
                 router.navigateToHash(hashPageAdminStoreStripeProducts);
             });
         });
     }
     hookupButtonNavAdminStoreStripePrices() {
-        initialiseEventHandler('.' + flagNavAdminStoreStripePrices, flagInitialised, function(navigator) {
+        Events.initialiseEventHandler('.' + flagNavAdminStoreStripePrices, flagInitialised, function(navigator) {
             navigator.addEventListener("click", function(event) {
                 router.navigateToHash(hashPageAdminStoreStripePrices);
             });

@@ -1,4 +1,5 @@
 
+import Events from "../../lib/events.js";
 import { TableBasePage } from "../base_table.js";
 import API from "../../api.js";
 import DOM from "../../dom.js";
@@ -22,7 +23,7 @@ export class PageStoreProductCategories extends TableBasePage {
         this.hookupFilterActive();
     }
     hookupFilterIsNotEmpty() {
-        initialiseEventHandler('.' + flagIsNotEmpty, flagInitialised, (filter) => {
+        Events.initialiseEventHandler('.' + flagIsNotEmpty, flagInitialised, (filter) => {
             filter.addEventListener("change", (event) => {
                 PageStoreProductCategories.isDirtyFilter(filter);
             });

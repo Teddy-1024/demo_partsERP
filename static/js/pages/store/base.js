@@ -1,11 +1,14 @@
 
+import Events from "../../lib/events.js";
+import LocalStorage from "../../lib/local_storage.js";
+import Validation from "../../lib/validation";
 // import { BasePage } from "../base.js";
-import { DOM } from "../../dom.js";
+import DOM from "../../dom.js";
 import { isEmpty } from "../../lib/utils.js";
 
 export class StoreMixinPage { // extends BasePage {
     constructor() {
-        super();
+        // super();
     }
 
     initialize(thisPage) {
@@ -24,7 +27,7 @@ export class StoreMixinPage { // extends BasePage {
         /*
         let elForm = document.querySelectorAll(idFormCurrency);
         let elSelector = document.querySelectorAll(elForm.querySelector('select')[0]);
-        initialiseEventHandler(elSelector, flagInitialised, function(){
+        Events.initialiseEventHandler(elSelector, flagInitialised, function(){
             elForm = document.querySelectorAll(idFormCurrency);
             elSelector.addEventListener("change", function(event) {
                 ajaxData = {};
@@ -52,7 +55,7 @@ export class StoreMixinPage { // extends BasePage {
             option.classList.add(flagCollapsed);
         }
         handleSelectCollapse(dropdownCurrency);
-        initialiseEventHandler(dropdownCurrency, flagInitialised, function() {
+        Events.initialiseEventHandler(dropdownCurrency, flagInitialised, function() {
             dropdownCurrency = document.querySelectorAll(dropdownCurrency);
             dropdownCurrency.addEventListener("focus", function() {
                 handleSelectExpand(dropdownCurrency);
@@ -63,10 +66,10 @@ export class StoreMixinPage { // extends BasePage {
             dropdownCurrency.addEventListener("change", function() {
                 let selectedCurrency = dropdownCurrency.val();
                 console.log("selected currency: ", selectedCurrency);
-                let basket = getLocalStorage(keyBasket);
+                let basket = LocalStorage.getLocalStorage(keyBasket);
                 basket[keyIdCurrency] = selectedCurrency;
-                // setLocalStorage(keyIdCurrency, selectedCurrency);
-                setLocalStorage(keyBasket, basket);
+                // LocalStorage.setLocalStorage(keyIdCurrency, selectedCurrency);
+                LocalStorage.setLocalStorage(keyBasket, basket);
                 let ajaxData = {};
                 ajaxData[keyBasket] = basket;
                 ajaxJSONData('update currency', mapHashToController(hashPageCurrent), ajaxData, loadPageBody, false);
@@ -77,7 +80,7 @@ export class StoreMixinPage { // extends BasePage {
         /*
         let elForm = document.querySelectorAll(idFormDeliveryRegion);
         let elSelector = document.querySelectorAll(elForm.querySelector('select')[0]);
-        initialiseEventHandler(elSelector, flagInitialised, function(){
+        Events.initialiseEventHandler(elSelector, flagInitialised, function(){
             elForm = document.querySelectorAll(idFormDeliveryRegion);
             elSelector.addEventListener("change", function(event) {
                 ajaxData = {};
@@ -103,7 +106,7 @@ export class StoreMixinPage { // extends BasePage {
 
         handleSelectCollapse(dropdownRegion);
 
-        initialiseEventHandler(dropdownRegion, flagInitialised, function() {
+        Events.initialiseEventHandler(dropdownRegion, flagInitialised, function() {
             dropdownRegion = document.querySelectorAll(dropdownRegion);
             dropdownRegion.addEventListener("focus", function() {
                 console.log("dropdown region focused");
@@ -117,10 +120,10 @@ export class StoreMixinPage { // extends BasePage {
                 handleSelectCollapse(dropdownRegion);
                 let selectedRegion = dropdownRegion.val();
                 console.log("selected region: ", selectedRegion);
-                let basket = getLocalStorage(keyBasket);
+                let basket = LocalStorage.getLocalStorage(keyBasket);
                 basket[keyIdRegionDelivery] = selectedRegion;
-                // setLocalStorage(keyIdRegionDelivery, selectedRegion);
-                setLocalStorage(keyBasket, basket);
+                // LocalStorage.setLocalStorage(keyIdRegionDelivery, selectedRegion);
+                LocalStorage.setLocalStorage(keyBasket, basket);
                 let ajaxData = {};
                 ajaxData[keyIdRegionDelivery] = selectedRegion;
                 ajaxJSONData('update region', mapHashToController(hashStoreSetRegion), ajaxData, null, false);
@@ -130,7 +133,7 @@ export class StoreMixinPage { // extends BasePage {
     hookupFilterIsIncludedVAT() {
         let elForm = document.querySelectorAll(idFormIsIncludedVAT);
         let elSelector = document.querySelectorAll(elForm.querySelector('input[type="checkbox"]')[0]);
-        initialiseEventHandler(elSelector, flagInitialised, function(){
+        Events.initialiseEventHandler(elSelector, flagInitialised, function(){
             elForm = document.querySelectorAll(idFormIsIncludedVAT);
             elSelector.addEventListener("change", function(event) {
                 ajaxData = {};
@@ -146,15 +149,15 @@ export class StoreMixinPage { // extends BasePage {
         // setupPageLocalStorage(hashPageCurrent);
         // let lsPage = getPageLocalStorage(hashPageCurrent);
         // let d = {}
-        // d[keyBasket] = getLocalStorage(keyBasket); // (keyBasket in lsPage) ? lsPage[keyBasket] : {'items': []};
+        // d[keyBasket] = LocalStorage.getLocalStorage(keyBasket); // (keyBasket in lsPage) ? lsPage[keyBasket] : {'items': []};
         // console.log('d:'); console.log(d);
         let basket;
         let createNewBasket = true;
         if (true) { // !isUserLoggedIn) {
             try {
-                basket = getLocalStorage(keyBasket);
+                basket = LocalStorage.getLocalStorage(keyBasket);
                 console.log('basket found: '); console.log(basket);
-                createNewBasket = isEmpty(basket);
+                createNewBasket = Validation.isEmpty(basket);
             }
             catch {
                 
@@ -171,13 +174,13 @@ export class StoreMixinPage { // extends BasePage {
             basket[keyIsIncludedVAT] = true;
             basket[keyIdCurrency] = 1;
             basket[keyIdRegionDelivery] = 1;
-            setLocalStorage(keyBasket, basket);
+            LocalStorage.setLocalStorage(keyBasket, basket);
             console.log("new local basket created");
         }
         let ajaxData = {}
         ajaxData[keyBasket] = basket;
         // console.log("hookupLocalStorageStore\nhashStoreBasketLoad: " + hashStoreBasketLoad + "\n");
-        // ajaxData[keyIsIncludedVAT] = getLocalStorage(keyIsIncludedVAT);
+        // ajaxData[keyIsIncludedVAT] = LocalStorage.getLocalStorage(keyIsIncludedVAT);
         console.log('ajax:' + ajaxData);
         ajaxJSONData(keyBasket, mapHashToController(hashStoreBasketLoad), ajaxData, loadBasket, false);
     }
@@ -201,7 +204,7 @@ export class StoreMixinPage { // extends BasePage {
         // let lsPage = getPageLocalStorage(hashPageCurrent);
         // let basket = lsPage[keyBasket]['items'];
         // let products = containerBasket.filter('');
-        let basket = getLocalStorage(keyBasket);
+        let basket = LocalStorage.getLocalStorage(keyBasket);
 
         if (basket['items'].length == 0) {
             btnCheckout.style.display = "none";
@@ -217,11 +220,11 @@ export class StoreMixinPage { // extends BasePage {
 
         const btnCheckout = document.querySelectorAll(idButtonCheckout);
         // let lsPage = getPageLocalStorage(hashPageCurrent);
-        initialiseEventHandler(btnCheckout, flagInitialised, function() {
+        Events.initialiseEventHandler(btnCheckout, flagInitialised, function() {
             btnCheckout.addEventListener("click", function() {
                 /*
                 //setupPageLocalStorageNext(hashPageStoreBasket);
-                let basket = getLocalStorage(keyBasket);
+                let basket = LocalStorage.getLocalStorage(keyBasket);
                 // goToPage(hashPageStoreBasket);
                 let ajaxData = {};
                 ajaxData[keyBasket] = basket;
@@ -238,7 +241,7 @@ export class StoreMixinPage { // extends BasePage {
         // Increment
         document.querySelectorAll('div.btn-increment[' + attrFormType + '=' + typeFormBasketAdd + ']').each(function() {
             let elButton = this;
-            initialiseEventHandler(elButton, flagInitialised, function(){
+            Events.initialiseEventHandler(elButton, flagInitialised, function(){
                 elButton.addEventListener("click", function(event) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -254,7 +257,7 @@ export class StoreMixinPage { // extends BasePage {
         // Decrement
         document.querySelectorAll('div.btn-decrement[' + attrFormType + '=' + typeFormBasketAdd + ']').each(function() {
             let elButton = this;
-            initialiseEventHandler(elButton, flagInitialised, function(){
+            Events.initialiseEventHandler(elButton, flagInitialised, function(){
                 elButton.addEventListener("click", function(event) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -272,7 +275,7 @@ export class StoreMixinPage { // extends BasePage {
         // Increment
         document.querySelectorAll('div.btn-increment[' + attrFormType + '=' + typeFormBasketEdit + ']').each(function() {
             let elButton = this;
-            initialiseEventHandler(elButton, flagInitialised, function(){
+            Events.initialiseEventHandler(elButton, flagInitialised, function(){
                 elButton.addEventListener("click", function(event) {
                     event.stopPropagation();
                     // basketItem = document.querySelectorAll('.card.subcard[' + attrIdProduct +'=' + elButton.attr(attrIdProduct) + ']');
@@ -289,7 +292,7 @@ export class StoreMixinPage { // extends BasePage {
         // Decrement
         document.querySelectorAll('div.btn-decrement[' + attrFormType + '=' + typeFormBasketEdit + ']').each(function() {
             let elButton = this;
-            initialiseEventHandler(elButton, flagInitialised, function(){
+            Events.initialiseEventHandler(elButton, flagInitialised, function(){
                 elButton.addEventListener("click", function(event) {
                     event.stopPropagation();
                     let elInput= document.querySelectorAll(getFormProductSelector(typeFormBasketEdit, elButton)).querySelector('input[type="number"]');
@@ -307,7 +310,7 @@ export class StoreMixinPage { // extends BasePage {
         document.querySelectorAll('form[' + attrFormType + '=' + typeFormBasketAdd + ']').each(function() {
             let elForm = this;
             let elInput = elForm.querySelector('input[type="number"]');
-            initialiseEventHandler(elInput, flagInitialised, function(){
+            Events.initialiseEventHandler(elInput, flagInitialised, function(){
                 elInput.addEventListener("change", function(event) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -328,13 +331,13 @@ export class StoreMixinPage { // extends BasePage {
         document.querySelectorAll('form[' + attrFormType + '=' + typeFormBasketEdit + ']').each(function() {
             let elForm = this;
             let elInput = elForm.querySelector('input[type="number"]');
-            initialiseEventHandler(elInput, flagInitialised, function(){
+            Events.initialiseEventHandler(elInput, flagInitialised, function(){
                 elInput.addEventListener("change", function(event) {
                     event.preventDefault();
                     event.stopPropagation();
                     // let lsPage = getPageLocalStorageCurrent();
                     d = {};
-                    d[keyBasket]= getLocalStorage(keyBasket); // lsPage[keyBasket]; // JSON.parse(lsPage[keyBasket]);
+                    d[keyBasket]= LocalStorage.getLocalStorage(keyBasket); // lsPage[keyBasket]; // JSON.parse(lsPage[keyBasket]);
                     d[keyIdProduct] = elForm.attr(attrIdProduct); // lsPage[keyIdProduct];
                     d[keyIdPermutation] = elForm.attr(attrIdPermutation);
                     // d[keyQuantity] = lsPage[keyQuantity];
@@ -356,11 +359,11 @@ export class StoreMixinPage { // extends BasePage {
         document.querySelectorAll('form[' + attrFormType + '=' + typeFormBasketEdit + ']').each(function() {
             let elForm = this;
             let elDelete = elForm.querySelector('a.' + flagBasketItemDelete);
-            initialiseEventHandler(elDelete, flagInitialised, function(){
+            Events.initialiseEventHandler(elDelete, flagInitialised, function(){
                 elDelete.addEventListener("click", function(event) {
                     event.stopPropagation();
                     ajaxData = {};
-                    ajaxData[keyBasket]= getLocalStorage(keyBasket);
+                    ajaxData[keyBasket]= LocalStorage.getLocalStorage(keyBasket);
                     ajaxData[keyIdProduct] = elForm.attr(attrIdProduct);
                     ajaxData[keyIdPermutation] = elForm.attr(attrIdPermutation);
                     console.log('sending data to basket delete controller: '); console.log(ajaxData);
@@ -387,7 +390,7 @@ export class StoreMixinPage { // extends BasePage {
         
             var form = this;
 
-            initialiseEventHandler(form, flagInitialised, function() {
+            Events.initialiseEventHandler(form, flagInitialised, function() {
                 // form = document.querySelectorAll(form);
                 form.submit(function(event) {
                     event.preventDefault();
@@ -398,7 +401,7 @@ export class StoreMixinPage { // extends BasePage {
                     ajaxData = {};
                     ajaxData[keyIdProduct] = form.attr(attrIdProduct);
                     ajaxData[keyIdPermutation] = form.attr(attrIdPermutation);
-                    basket = getLocalStorage(keyBasket);
+                    basket = LocalStorage.getLocalStorage(keyBasket);
                     ajaxData[keyBasket] = basket; // lsShared[keyBasket];
                     console.log("basket before add: ", basket);
                     ajaxData[keyForm] = convertForm2JSON(form); // formData; // form.serialize();
@@ -420,7 +423,7 @@ export class StoreMixinPage { // extends BasePage {
 
         let basket = response.data[keyBasket]; // JSON.parse(response.data[keyBasket]);
         // setPageLocalStorage(keyShared, lsShared);
-        setLocalStorage(keyBasket, basket);
+        LocalStorage.setLocalStorage(keyBasket, basket);
         items = basket['items'];
         // console.log('old basket:'); console.log(basketContainer.innerHTML);
         // console.log('setting basket:'); console.log(response.data['html_block']);
@@ -446,7 +449,7 @@ export class StoreMixinPage { // extends BasePage {
     getFormProductSelector(typeForm, elementInForm) {
         idPermutation = elementInForm.attr(attrIdPermutation);
         console.log('idPermutation: ', idPermutation);
-        hasPermutation = !isEmpty(idPermutation);
+        hasPermutation = !Validation.isEmpty(idPermutation);
         console.log('has permutation: ', hasPermutation);
         selectorIdPermutation = hasPermutation ? '[' + attrIdPermutation + '=' + idPermutation + ']' : '';
         return 'form[' + attrFormType + '="' + typeForm + '"][' + attrIdProduct + '=' + elementInForm.attr(attrIdProduct) + ']' + selectorIdPermutation;
@@ -462,9 +465,9 @@ export class StoreMixinPage { // extends BasePage {
     }
 
     addMetadataBasketToJSON(jsonData) {
-        jsonData[keyIdCurrency] = getLocalStorage(keyIdCurrency);
-        jsonData[keyIdRegionDelivery] = getLocalStorage(keyIdRegionDelivery);
-        jsonData[keyIsIncludedVAT] = getLocalStorage(keyIsIncludedVAT);
+        jsonData[keyIdCurrency] = LocalStorage.getLocalStorage(keyIdCurrency);
+        jsonData[keyIdRegionDelivery] = LocalStorage.getLocalStorage(keyIdRegionDelivery);
+        jsonData[keyIsIncludedVAT] = LocalStorage.getLocalStorage(keyIsIncludedVAT);
         return jsonData;
     }
 
@@ -472,7 +475,7 @@ export class StoreMixinPage { // extends BasePage {
         
         let d; // , lsShared;
         let selectorCardProduct = '.card.subcard';
-        initialiseEventHandler(selectorCardProduct, flagInitialised, function(cardProduct) {
+        Events.initialiseEventHandler(selectorCardProduct, flagInitialised, function(cardProduct) {
             console.log("initialising product card: ", cardProduct);
             cardProduct.addEventListener("click", function(event) {
                 // d = { keyIdProduct: product.attr(attrIdProduct) }

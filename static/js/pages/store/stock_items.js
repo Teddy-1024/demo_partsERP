@@ -1,6 +1,7 @@
 
 
-
+import Events from "../../lib/events.js";
+import Validation from "../../lib/validation";
 import { BasePage } from "../base.js";
 
 export class PageStoreStockItems extends BasePage {
@@ -20,7 +21,7 @@ export class PageStoreStockItems extends BasePage {
 
     hookupFilters() {
         let filterCategory = document.querySelectorAll(idFilterCategory);
-        initialiseEventHandler(filterCategory, flagInitialised, function() {
+        Events.initialiseEventHandler(filterCategory, flagInitialised, function() {
             console.log("hooking up filter category");
             filterCategory = document.querySelectorAll(filterCategory);
             /*
@@ -42,7 +43,7 @@ export class PageStoreStockItems extends BasePage {
         });
 
         let filterProduct = document.querySelectorAll(idFilterProduct);
-        initialiseEventHandler(filterProduct, flagInitialised, function() {
+        Events.initialiseEventHandler(filterProduct, flagInitialised, function() {
             listProducts.forEach(function(product) {
                 if (product[attrIdCategory] != getElementCurrentValue(document.querySelectorAll(idFilterCategory))) return;
                 /*
@@ -58,21 +59,21 @@ export class PageStoreStockItems extends BasePage {
         });
         
         let filterIsOutOfStock = document.querySelectorAll(idFilterIsOutOfStock);
-        initialiseEventHandler(filterIsOutOfStock, flagInitialised, function() {
+        Events.initialiseEventHandler(filterIsOutOfStock, flagInitialised, function() {
             filterIsOutOfStock.addEventListener("change", function(event) {
                 loadPermutations();
             });
         });
 
         let filterQuantityMin = document.querySelectorAll(idFilterQuantityMin);
-        initialiseEventHandler(filterQuantityMin, flagInitialised, function() {
+        Events.initialiseEventHandler(filterQuantityMin, flagInitialised, function() {
             filterQuantityMin.addEventListener("change", function(event) {
                 loadPermutations();
             });
         });
         
         let filterQuantityMax = document.querySelectorAll(idFilterQuantityMax);
-        initialiseEventHandler(filterQuantityMax, flagInitialised, function() {
+        Events.initialiseEventHandler(filterQuantityMax, flagInitialised, function() {
             filterQuantityMax.addEventListener("change", function(event) {
                 loadPermutations();
             });
@@ -251,7 +252,7 @@ export class PageStoreStockItems extends BasePage {
             quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
             quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
             
-            initialiseEventHandler(ddlCategory, flagInitialised, function() {
+            Events.initialiseEventHandler(ddlCategory, flagInitialised, function() {
                 // ddlCategory = document.querySelectorAll(ddlCategory);
                 ddlCategory.addEventListener('change', function() {
                     /*
@@ -273,21 +274,21 @@ export class PageStoreStockItems extends BasePage {
                 });
             });
 
-            initialiseEventHandler(ddlProduct, flagInitialised, function() {
+            Events.initialiseEventHandler(ddlProduct, flagInitialised, function() {
                 // ddlProduct = document.querySelectorAll(ddlProduct);
                 ddlProduct.addEventListener('change', function() {
                     handleChangeInputPermutations(this);
                 });
             });
 
-            initialiseEventHandler(variations, flagInitialised, function() {
+            Events.initialiseEventHandler(variations, flagInitialised, function() {
                 // variations = document.querySelectorAll(variations);
                 variations.addEventListener('change', function() {
                     handleChangeInputPermutations(this);
                 });
             });
 
-            initialiseEventHandler(quantityStock, flagInitialised, function() {
+            Events.initialiseEventHandler(quantityStock, flagInitialised, function() {
                 // quantityStock = document.querySelectorAll(quantityStock);
                 quantityStock.addEventListener('change', function() {
                     // console.log(this.value);
@@ -296,14 +297,14 @@ export class PageStoreStockItems extends BasePage {
                 });
             });
 
-            initialiseEventHandler(quantityMin, flagInitialised, function() {
+            Events.initialiseEventHandler(quantityMin, flagInitialised, function() {
                 // quantityMin = document.querySelectorAll(quantityMin);
                 quantityMin.addEventListener('change', function() {
                     handleChangeInputPermutations(this);
                 });
             });
 
-            initialiseEventHandler(quantityMax, flagInitialised, function() {
+            Events.initialiseEventHandler(quantityMax, flagInitialised, function() {
                 // quantityMax = document.querySelectorAll(quantityMax);
                 quantityMax.addEventListener('change', function() {
                     handleChangeInputPermutations(this);
@@ -330,7 +331,7 @@ export class PageStoreStockItems extends BasePage {
         if (wasDirty != isDirty) {
             isRowDirty(row);
             let permutationsDirty = getPermutations(true);
-            if (isEmpty(permutationsDirty)) {
+            if (Validation.isEmpty(permutationsDirty)) {
                 buttonCancel.classList.add(flagCollapsed);
                 buttonSave.classList.add(flagCollapsed);
             } else {
@@ -395,7 +396,7 @@ export class PageStoreProductCategories extends TableBasePage {
         this.hookupFilterActive();
     }
     hookupFilterIsNotEmpty() {
-        initialiseEventHandler('.' + flagIsNotEmpty, flagInitialised, (filter) => {
+        Events.initialiseEventHandler('.' + flagIsNotEmpty, flagInitialised, (filter) => {
             filter.addEventListener("change", (event) => {
                 PageStoreProductCategories.isDirtyFilter(filter);
             });

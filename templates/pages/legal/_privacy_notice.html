@@ -3,9 +3,10 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block page_body %}
-    <!-- Include Stylesheet -->
+    <!-- Include Stylesheet 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/legal.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/legal/privacy_notice.css') }}">
+    -->
     
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }} {{ model.FLAG_COLUMN }}">
@@ -80,9 +81,10 @@
         <p>1 May 2024</p>
     </div>
 
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript 
     <script type="module" src="{{ url_for('static', filename='js/sections/legal.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/legal/privacy_notice.js') }}"></script>
+    -->
 
     <!--
     <script>

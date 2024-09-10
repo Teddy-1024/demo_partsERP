@@ -3,9 +3,10 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block page_body %}
-    <!-- Include Stylesheets -->
+    <!-- Include Stylesheets
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/store/checkout_success.css') }}">
+    -->
     
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }}">
@@ -25,9 +26,10 @@
         </div>
     </div>
     
-    <!-- Include JavaScript -->
+    <!-- Include JavaScript
     <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/store/checkout_success.js') }}"></script>
+    -->
     {% set block_id = 'checkout' %}
     {% include 'layouts/_shared_store.html' %}
     <!--

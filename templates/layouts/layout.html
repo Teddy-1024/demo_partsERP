@@ -35,7 +35,7 @@
     <meta name="yandex-verification" content="4693a824cfda082a" />
     <meta id="{{ model.ID_CSRF_TOKEN }}" name="{{ model.NAME_CSRF_TOKEN }}" content="{{ csrf_token() }}" />
 
-    <!-- Scripts -->
+    <!-- Scripts 
     <script src="{{ url_for('static', filename='js/lib/common.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/constants.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/events.js') }}"></script>
@@ -44,6 +44,7 @@
     <script src="{{ url_for('static', filename='js/lib/local_storage.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/validation.js') }}"></script>
+    -->
     
     <script>
         // var attrFor = "{{ model.ATTR_FOR }}";
@@ -191,8 +192,10 @@
     </script>
 
 
-    <!-- Stylesheets -->
+    <!-- Stylesheets 
     <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css"/>
+    -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/main.css') }}">
 </head>
 <body data-page="{{ model.hash_page_current }}">
 {% set user = model.get_user_session() %}
@@ -315,9 +318,9 @@
     </div>
 </div>
 
-<!--<script type="module" src="{{ url_for('static', filename='js/pages/base.js') }}"></script>-->
-<script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
-
+<!--<script type="module" src="{{ url_for('static', filename='js/pages/base.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>-->
+<script src="{{ url_for('static', filename='dist/js/main.bundle.js') }}"></script>
 </body>
 </html>
 

@@ -1,5 +1,7 @@
 
-
+import Events from "../lib/events.js";
+import LocalStorage from "../lib/local_storage.js";
+import Validation from "../lib/validation";
 import { BasePage } from "./base.js";
 import API from "../api.js";
 import DOM from "../dom.js";
@@ -53,7 +55,7 @@ export class TableBasePage extends BasePage {
             let filters = dataPage[flagFormFilters];
             let formFilters = this.getFormFilters();
             let filtersDefault = DOM.convertForm2JSON(formFilters);
-            if (!areEqualDicts(filters, filtersDefault)) {
+            if (!Validation.areEqualDicts(filters, filtersDefault)) {
 
             }
         }
@@ -65,7 +67,7 @@ export class TableBasePage extends BasePage {
         this.hookupButtonApplyFilters();
     }
     hookupFilterActive() {
-        initialiseEventHandler(idFormFilters + '.' + flagActive, flagInitialised, (filter) => {
+        Events.initialiseEventHandler(idFormFilters + '.' + flagActive, flagInitialised, (filter) => {
             filter.addEventListener("change", (event) => {
                 TableBasePage.isDirtyFilter(filter);
             });
@@ -81,7 +83,7 @@ export class TableBasePage extends BasePage {
         return isDirty;
     }
     hookupButtonApplyFilters() {
-        initialiseEventHandler(idButtonApplyFilters, flagInitialised, (button) => {
+        Events.initialiseEventHandler(idButtonApplyFilters, flagInitialised, (button) => {
             button.addEventListener("click", (event) => {
                 event.stopPropagation();
                 this.getAndLoadFilteredTableContent();
@@ -108,7 +110,7 @@ export class TableBasePage extends BasePage {
         let bodyTable = table.querySelector('tbody');
         bodyTable.querySelectorAll('tr').forEach(function(row) { row.remove(); });
         let rowsJson = response.data[flagRows];
-        if (!isEmpty(rowsJson) && rowsJson.every(row => row.hasOwnProperty('display_order'))) {
+        if (!Validation.isEmpty(rowsJson) && rowsJson.every(row => row.hasOwnProperty('display_order'))) {
             rowsJson = rowsJson.sort((a, b) => a.display_order - b.display_order);
         }
         rowsJson.forEach(this.loadRowTable.bind(this));
@@ -161,7 +163,7 @@ export class TableBasePage extends BasePage {
         throw new Error("Subclass of TableBasePage must implement method getJsonRow().");
     }
     hookupButtonCancel() {
-        initialiseEventHandler(idFormFilters + ' button.' + flagCancel, flagInitialised, function(button) {
+        Events.initialiseEventHandler(idFormFilters + ' button.' + flagCancel, flagInitialised, function(button) {
             button.addEventListener("click", function(event) {
                 event.stopPropagation();
                 getAndLoadFilteredTableContent();
@@ -170,7 +172,7 @@ export class TableBasePage extends BasePage {
         });
     }
     hookupButtonAddRowTable() {
-        initialiseEventHandler(idFormFilters + ' button.' + flagAdd, flagInitialised, (button) => {
+        Events.initialiseEventHandler(idFormFilters + ' button.' + flagAdd, flagInitialised, (button) => {
             button.addEventListener("click", (event) => {
                 event.stopPropagation();
                 let tbody = document.querySelector(idTableMain + ' tbody');
@@ -209,7 +211,7 @@ export class TableBasePage extends BasePage {
     }
     hookupSlidersDisplayOrderTable() {
         let selectorDisplayOrder = idTableMain + ' tbody tr td.' + flagDisplayOrder + ' input.' + flagSlider + '.' + flagDisplayOrder;
-        initialiseEventHandler(selectorDisplayOrder, flagInitialised, (sliderDisplayOrder) => {
+        Events.initialiseEventHandler(selectorDisplayOrder, flagInitialised, (sliderDisplayOrder) => {
             /*
             sliderDisplayOrder.setAttribute('draggable', true);
             sliderDisplayOrder.addEventListener('dragstart', this.handleDragSliderStart.bind(this), false);
@@ -285,7 +287,7 @@ export class TableBasePage extends BasePage {
     */
     hookupTextareasCodeTable() {
         let selectorCode = idTableMain + ' tbody tr td.' + flagCode + ' textarea';
-        initialiseEventHandler(selectorCode, flagInitialised, (textareaCode) => {
+        Events.initialiseEventHandler(selectorCode, flagInitialised, (textareaCode) => {
             textareaCode.addEventListener("change", (event) => {
                 console.log("textarea change event");
                 this.handleChangeElementCellTable(textareaCode);
@@ -359,7 +361,7 @@ export class TableBasePage extends BasePage {
     }
     hookupTextareasNameTable() {
         let selectorName = idTableMain + ' tbody tr td.' + flagName + ' textarea';
-        initialiseEventHandler(selectorName, flagInitialised, (textareaName) => {
+        Events.initialiseEventHandler(selectorName, flagInitialised, (textareaName) => {
             textareaName.addEventListener("change", (event) => {
                 console.log("textarea change event");
                 this.handleChangeElementCellTable(textareaName);
@@ -368,7 +370,7 @@ export class TableBasePage extends BasePage {
     }
     hookupTextareasDescriptionTable() {
         let selectorDescription = idTableMain + ' tbody tr td.' + flagDescription + ' textarea';
-        initialiseEventHandler(selectorDescription, flagInitialised, (textareaDescription) => {
+        Events.initialiseEventHandler(selectorDescription, flagInitialised, (textareaDescription) => {
             textareaDescription.addEventListener("change", (event) => {
                 console.log("textarea change event");
                 this.handleChangeElementCellTable(textareaDescription);
@@ -377,7 +379,7 @@ export class TableBasePage extends BasePage {
     }
     hookupInputsActiveTable() {
         let selectorActive = idTableMain + ' tbody tr td.' + flagActive + ' input[type="checkbox"]';
-        initialiseEventHandler(selectorActive, flagInitialised, (inputActive) => {
+        Events.initialiseEventHandler(selectorActive, flagInitialised, (inputActive) => {
             inputActive.addEventListener("change", (event) => {
                 console.log("input change event");
                 this.handleChangeElementCellTable(inputActive);
@@ -385,7 +387,7 @@ export class TableBasePage extends BasePage {
         });
     }
     hookupTdsAccessLevel() {
-        initialiseEventHandler(idTableMain + ' tbody td.' + flagAccessLevel, flagInitialised, (tdAccessLevel) => {
+        Events.initialiseEventHandler(idTableMain + ' tbody td.' + flagAccessLevel, flagInitialised, (tdAccessLevel) => {
             tdAccessLevel.addEventListener("click", (event) => { this.handleClickTdAccessLevel(event); } );
         });
     }
@@ -414,7 +416,7 @@ export class TableBasePage extends BasePage {
         this.hookupDdlsAccessLevelTable();
     }
     hookupDdlsAccessLevelTable() {
-        initialiseEventHandler(idTableMain + ' tbody select.' + flagAccessLevel, flagInitialised, (ddlAccessLevel) => {
+        Events.initialiseEventHandler(idTableMain + ' tbody select.' + flagAccessLevel, flagInitialised, (ddlAccessLevel) => {
             ddlAccessLevel.addEventListener("change", (event) => {
                 event.stopPropagation();
                 this.handleChangeDdlAccessLevelTable(ddlAccessLevel);

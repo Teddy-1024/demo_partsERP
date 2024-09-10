@@ -1,3 +1,6 @@
+
+import Validation from "./lib/validation";
+
 // Module for DOM manipulation
 export default class DOM {
     static setElementValueCurrent(element, data) {
@@ -23,7 +26,7 @@ export default class DOM {
     }
     static convertForm2JSON(elementForm) {
         let dataForm = {};
-        if (isEmpty(elementForm)) {
+        if (Validation.isEmpty(elementForm)) {
             console.log("empty form element");
             return dataForm;
         }
@@ -64,7 +67,7 @@ export default class DOM {
     static getElementValueCurrent(element) {
         let returnVal = '';
     
-        if (!isEmpty(element)) {
+        if (!Validation.isEmpty(element)) {
     
             if (element.type === "checkbox") {
                 returnVal = element.checked;
@@ -82,7 +85,7 @@ export default class DOM {
             }
         }
     
-        if (isEmpty(returnVal)) returnVal = '';
+        if (Validation.isEmpty(returnVal)) returnVal = '';
     
         return returnVal;
     }
@@ -107,4 +110,28 @@ export default class DOM {
     /* non-static method on page object to use
     static handleChangeElement(element) {}
     */
+    scrollToElement(parent, element) {
+        // REQUIRED: parent has scroll-bar
+        parent.scrollTop(parent.scrollTop() + (element.offset().top - parent.offset().top));
+    }
+    isElementInContainer(container, element) {
+
+        if (typeof jQuery === 'function') {
+            if (container instanceof jQuery) container = container[0];
+            if (element instanceof jQuery) element = element[0];
+        }
+
+        var containerBounds = container.getBoundingClientRect();
+        var elementBounds = element.getBoundingClientRect();
+
+        return (
+            containerBounds.top <= elementBounds.top &&
+            containerBounds.left <= elementBounds.left &&
+            ((elementBounds.top + elementBounds.height) <= (containerBounds.top + containerBounds.height)) &&
+            ((elementBounds.left + elementBounds.width) <= (containerBounds.left + containerBounds.width))
+        );
+    }
+    alertError(errorType, errorText) {
+        alert(errorType + '\n' + errorText);
+    }
 }

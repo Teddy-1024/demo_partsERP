@@ -13,7 +13,9 @@
     </div>
 </div>
 
-<script>
+<script type="module">
+    import Events from "{{ url_for('static', filename='js/lib/events.js') }}";
+    
     var idOverlayConfirm = "#{{ model.ID_OVERLAY_CONFIRM }}";
 
     function hookupOverlayConfirm(callbackSuccess) {
@@ -27,13 +29,13 @@
         let selectorButtonCancel = idOverlayConfirm + ' button.' + flagCancel;
         let selectorButtonConfirm = idOverlayConfirm + ' button.' + flagSubmit;
 
-        initialiseEventHandler(selectorButtonCancel, flagInitialised, function(buttonCancel) {
+        Events.initialiseEventHandler(selectorButtonCancel, flagInitialised, function(buttonCancel) {
             buttonCancel.addEventListener('click', function() {
                 let overlay = document.querySelector(idOverlayConfirm);
                 overlay.style.visibility = 'hidden';
             });
         });
-        initialiseEventHandler(selectorButtonConfirm, flagInitialised, function(buttonConfirm) {
+        Events.initialiseEventHandler(selectorButtonConfirm, flagInitialised, function(buttonConfirm) {
             buttonConfirm.addEventListener('click', function() {
                 let overlay = document.querySelector(idOverlayConfirm);
                 let textarea = overlay.querySelector('textarea');

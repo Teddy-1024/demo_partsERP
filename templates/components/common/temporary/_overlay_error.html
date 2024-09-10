@@ -9,13 +9,15 @@
     </div>
 </div>
 
-<script>
+<script type="module">
+    import Events from "{{ url_for('static', filename='js/lib/events.js') }}";
+    
     var idOverlayError = "#{{ model.ID_OVERLAY_ERROR}}";
     function hookupOverlayError() {
         let overlay = document.querySelector(idOverlayError);
         let selectorButtonCancel = idOverlayError + ' button.' + flagCancel;
 
-        initialiseEventHandler(selectorButtonCancel, flagInitialised, function(buttonCancel) {
+        Events.initialiseEventHandler(selectorButtonCancel, flagInitialised, function(buttonCancel) {
             buttonCancel.onclick = function() {
                 overlay.style.visibility = 'hidden';
             };

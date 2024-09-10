@@ -1,4 +1,6 @@
 
+import Validation from "./lib/validation";
+
 function mapHashToController(hash) {
     if (hash == null) return mapHashToController(hashPageHome);
 
@@ -40,7 +42,7 @@ function goToPage(pageHash, parametersJSON) {
     url = mapHashToController(pageHash);
 
     
-    if (!isEmpty(parametersJSON)) {
+    if (!Validation.isEmpty(parametersJSON)) {
         url += '%3F'; // '?';
         let firstParameter = true;
         for (var p in parametersJSON) {

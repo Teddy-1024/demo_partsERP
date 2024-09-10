@@ -1,5 +1,7 @@
 
-// Local storage
+import Validation from "./validation";
+
+export default class LocalStorage {
 /*
 function getPageLocalStorage(pageHash) {
 
@@ -10,7 +12,7 @@ function getPageLocalStorage(pageHash) {
 
     }
 
-    if (isEmpty(ls)) return {}
+    if (Validation.isEmpty(ls)) return {}
 
     return ls;
 }
@@ -32,19 +34,19 @@ function setupPageLocalStorage(pageHash) {
 
     let ls = getPageLocalStorage(pageHash);
 
-    if (isEmpty(ls)) ls = {};
+    if (Validation.isEmpty(ls)) ls = {};
 
     setPageLocalStorage(pageHash, ls);
 }
 */
 
-function getLocalStorage(key) {
-    return JSON.parse(localStorage.getItem(key));
-}
+    static getLocalStorage(key) {
+        return JSON.parse(localStorage.getItem(key));
+    }
 
-function setLocalStorage(key, newLS) {
-    localStorage.setItem(key, JSON.stringify(newLS));
-}
+    static setLocalStorage(key, newLS) {
+        localStorage.setItem(key, JSON.stringify(newLS));
+    }
 
 /*
 function setupPageLocalStorageNext(pageHashNext) {
@@ -57,3 +59,4 @@ function setupPageLocalStorageNext(pageHashNext) {
     setPageLocalStorage(hashPageCurrent, lsNew);
 }
 */
+}
