@@ -1,5 +1,5 @@
 
-.page-body > * {
+#pageBody > * {
     height: 100%;
 }
 #pageBody > * :first-child{
@@ -23,3 +23,10 @@ img {
   background-image: url("/static/images/Tag_Molly1.png");
 }
 */
+
+#pageBody h2 {
+    width: 100%;
+}
+#pageBody button.navContact {
+    width: fit-content;
+}

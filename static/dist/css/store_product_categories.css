@@ -1,0 +1,63 @@
+
+
+
+td.display-order, th.display-order {
+    width: 8% !important;
+}
+td.code, th.code {
+    width: 15% !important;
+}
+td.name, th.name {
+    width: 25% !important;
+}
+td.description, th.description {
+    width: 35% !important;
+}
+td.access_level, th.access_level {
+    width: 10% !important;
+}
+td.active, th.active {
+    width: 7% !important;
+}
+
+/*
+.row-new {
+    visibility: hidden;
+}
+*/
+
+textarea {
+    width: 95% !important;
+}
+
+select {
+    width: 100% !important;
+}
+
+input {
+    width: 90% !important;
+}
+
+td > input, td > select, td > textarea, .container-input > input, .container-input > select, .container-input > textarea {
+    border: 2px solid var(--c_purple);
+    border-radius: 0.5vh;
+}
+
+#tableMain tbody tr td button {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    text-decoration: none;
+}
+
+#tableMain tbody tr td table thead tr th.id_variation_type, #tableMain tbody tr td table tbody tr td.id_variation_type, #tableMain tbody tr td table thead tr th.id_variation, #tableMain tbody tr td table tbody tr td.id_variation {
+    width: 47.5%;
+}
+
+
+/*
+select.id_variation, select.id_variation_type {
+    max-width: 40% !important;
+}
+*/
+

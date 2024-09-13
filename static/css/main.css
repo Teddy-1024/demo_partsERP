@@ -1,15 +1,16 @@
 
-/* Base styles */
+/*
+/* Base styles *
 @import 'lib/reset.css';
 @import 'lib/typography.css';
 @import 'lib/variables.css';
 @import 'lib/utils.css';
 
-/* Layout styles */
+/* Layout styles *
 @import 'layouts/header.css';
 @import 'layouts/footer.css';
 
-/* Component styles */
+/* Component styles *
 @import 'components/button.css';
 @import 'components/card.css';
 @import 'components/dialog.css';
@@ -18,7 +19,7 @@
 @import 'components/navigation.css';
 @import 'components/overlay.css';
 
-/* Section styles */
+/* Section styles *
 @import 'sections/store.css';
 
 /* Page-specific styles *
@@ -30,12 +31,15 @@
 @import 'pages/page_store_home.css';
 @import 'pages/page_store_product_permutations.css';
 @import 'pages/page_store_stock_items.css';
-*/
+*
 
 /* Theme styles *
 @import 'themes/light.css';
-/* Uncomment the line below to enable dark theme */
-/* @import 'themes/dark.css'; */
+/* Uncomment the line below to enable dark theme *
+/* @import 'themes/dark.css'; *
+
+
+*/
 
 /* Custom styles */
 /* Add any custom styles or overrides here */

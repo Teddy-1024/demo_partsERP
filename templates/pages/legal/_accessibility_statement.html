@@ -3,9 +3,11 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block page_body %}
-    <!-- Include Stylesheet -->
+    <!-- Include Stylesheet 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/legal.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/legal/accessibility_statement.css') }}">
+    -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/legal_accessibility_statement.css') }}">
     
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }} {{ model.FLAG_COLUMN }}">

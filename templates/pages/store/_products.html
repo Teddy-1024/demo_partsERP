@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/products.css') }}">
     -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_products.css') }}">
     
     <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product.save_product') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
