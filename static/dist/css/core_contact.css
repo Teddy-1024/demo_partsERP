@@ -1,0 +1,27 @@
+
+
+#pageBody > .card:first-of-type{
+    flex-grow: 1;
+}
+#pageBody > .card:last-of-type {
+}
+#pageBody > .card:not(:first-of-type) {
+}
+
+
+/*
+.content > a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.content > a > img, .content > a > h4 {
+    flex: content;
+    margin: 0px;
+}
+*/
+
+

@@ -1,3 +1,23 @@
+// Bundle css imports
+import '../css/lib/reset.css';
+import '../css/lib/typography.css';
+import '../css/lib/variables.css';
+import '../css/lib/utils.css';
+
+import '../css/layouts/header.css';
+import '../css/layouts/footer.css';
+
+import '../css/components/button.css';
+import '../css/components/card.css';
+import '../css/components/dialog.css';
+import '../css/components/form.css';
+import '../css/components/modal.css';
+import '../css/components/navigation.css';
+import '../css/components/overlay.css';
+
+import '../css/sections/store.css';
+
+
 
 // Main entry point for the application
 'use strict';

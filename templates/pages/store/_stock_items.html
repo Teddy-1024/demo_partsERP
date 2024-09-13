@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/stock_items.css') }}">
     -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_stock_items.css') }}">
 
     <!-- HTML content -->
     <form id="{{ model.ID_FORM_FILTERS_STOCK }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store.stock_filter') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->

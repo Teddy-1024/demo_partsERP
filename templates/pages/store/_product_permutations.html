@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/product_permutations.css') }}">
     -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_product_permutations.css') }}">
     
     <!-- HTML content -->
     <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product_permutation.permutation_save') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
