@@ -1,14 +1,14 @@
 
 
 import Events from "../../lib/events.js";
-import Validation from "../../lib/validation";
-import { BasePage } from "../base.js";
+import Validation from "../../lib/validation.js";
+import BasePage from "../base.js";
 
-export class PageStoreStockItems extends BasePage {
+export default class PageStoreStockItems extends BasePage {
     static hash = hashPageStoreStockItems;
 
-    constructor() {
-        super();
+    constructor(router) {
+        super(router);
     }
 
     initialize() {
@@ -374,7 +374,7 @@ export class PageStoreStockItems extends BasePage {
 }
 
 
-import { TableBasePage } from "../base_table.js";
+import TableBasePage from "../base_table.js";
 import API from "../../api.js";
 import DOM from "../../dom.js";
 

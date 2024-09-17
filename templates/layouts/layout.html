@@ -116,14 +116,17 @@
         var flagSubmitted = "{{ model.FLAG_SUBMITTED }}";
         var flagSuccess = "{{ model.FLAG_SUCCESS }}";
         var hashApplyFiltersStoreProductPermutation = "{{ model.HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION }}";
+        var hashPageAccessibilityReport = "{{ model.HASH_PAGE_ACCESSIBILITY_REPORT }}";
         var hashPageAccessibilityStatement = "{{ model.HASH_PAGE_ACCESSIBILITY_STATEMENT }}";
         var hashPageAdminHome = "{{ model.HASH_PAGE_ADMIN_HOME }}";
         var hashPageContact = "{{ model.HASH_PAGE_CONTACT }}";
+        var hashPageDataRetentionSchedule = "{{ model.HASH_PAGE_DATA_RETENTION_SCHEDULE }}";
         // var hashPageCurrent = "{{ model.hash_page_current }}";
         var hashPageErrorNoPermission = "{{ model.HASH_PAGE_ERROR_NO_PERMISSION }}";
         var hashPageAdminHome = "{{ model.HASH_PAGE_ADMIN_HOME }}";
         var hashPageHome = "{{ model.HASH_PAGE_HOME }}";
         var hashPageLicense = "{{ model.HASH_PAGE_LICENSE }}";
+        var hashPagePrivacyPolicy = "{{ model.HASH_PAGE_PRIVACY_POLICY }}";
         var hashPageServices = "{{ model.HASH_PAGE_SERVICES }}";
         var hashPageStoreAdminStripePrices = "{{ model.HASH_PAGE_STORE_ADMIN_STRIPE_PRICES }}";
         var hashPageStoreAdminStripeProducts = "{{ model.HASH_PAGE_STORE_ADMIN_STRIPE_PRODUCTS }}";
@@ -314,7 +317,7 @@
     <h5>Company number 13587499</h5>
     <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}"><p><a href="{{ url_for('routes_legal.accessibility_statement') }}" alt="Accessibility statement" aria-label="Accessibility statement">Accessibility statement</a></p></div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}"><p><a href="{{ url_for('routes_legal.privacy_notice') }}" alt="Privacy notice" aria-label="Privacy notice">Privacy notice</a></p></div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}"><p><a href="{{ url_for('routes_legal.privacy_policy') }}" alt="Privacy notice" aria-label="Privacy notice">Privacy notice</a></p></div>
     </div>
 </div>
 

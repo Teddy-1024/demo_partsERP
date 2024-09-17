@@ -1,14 +1,13 @@
 
 import Events from "../../lib/events.js";
 import LocalStorage from "../../lib/local_storage.js";
-import Validation from "../../lib/validation";
-// import { BasePage } from "../base.js";
+import Validation from "../../lib/validation.js";
+// import BasePage from "../base.js";
 import DOM from "../../dom.js";
 import { isEmpty } from "../../lib/utils.js";
 
-export class StoreMixinPage { // extends BasePage {
+export default class StoreMixinPage {
     constructor() {
-        // super();
     }
 
     initialize(thisPage) {

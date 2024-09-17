@@ -1,5 +1,5 @@
 
-import Validation from "./lib/validation";
+import Validation from "./lib/validation.js";
 
 export default class TextArea {
     removeBlankTextAreaLines(textarea) {

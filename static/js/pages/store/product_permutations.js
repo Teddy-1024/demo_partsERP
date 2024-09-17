@@ -1,14 +1,14 @@
 
 import Events from "../../lib/events.js";
-import { BasePage } from "../base.js";
-import Validation from "../../lib/validation";
+import BasePage from "../base.js";
+import Validation from "../../lib/validation.js";
 
 
-export class PageStoreProductPermutations extends BasePage {
+export default class PageStoreProductPermutations extends BasePage {
     static hash = hashPageStoreProductPermutations;
 
-    constructor() {
-        super();
+    constructor(router) {
+        super(router);
     }
 
     initialize() {

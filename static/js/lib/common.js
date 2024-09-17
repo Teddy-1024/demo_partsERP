@@ -1,5 +1,5 @@
 
-import Validation from "./validation";
+import Validation from "./validation.js";
 
 export default class Common {
     static parseCSSPropertyToFloat(element, propertyName) {

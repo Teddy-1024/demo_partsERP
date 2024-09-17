@@ -1,5 +1,5 @@
 
-import Validation from "./lib/validation";
+import Validation from "./lib/validation.js";
 
 // Module for DOM manipulation
 export default class DOM {

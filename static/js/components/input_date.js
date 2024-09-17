@@ -1,5 +1,5 @@
 
-import Validation from "./lib/validation";
+import Validation from "./lib/validation.js";
 
 
 // Date picker inputs

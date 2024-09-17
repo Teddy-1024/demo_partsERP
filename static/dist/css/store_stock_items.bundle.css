@@ -1,0 +1,40 @@
+
+th, td {
+    min-width: fit-content;
+}
+
+
+
+.category {
+    width: 12%;
+}
+.product {
+    width: 12%;
+}
+.variations {
+    width: 12%;
+}
+.currency {
+    width: 12%;
+}
+.cost-local-VAT-incl {
+    width: 10%;
+}
+.date-puchased, .date-received, .date-unsealed, .date-expiration, .date-consumed {
+    width: 6%;
+}
+.storage-location {
+    width: 12%;
+}
+.active {
+    width: 5%;
+}
+
+.row-new {
+    visibility: hidden;
+}
+
+textarea, select, input {
+    width: 100% !important;
+}
+
