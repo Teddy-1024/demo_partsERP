@@ -40,18 +40,19 @@ export default class API {
         if (hash == null) hash = hashPageHome;
         console.log("getUrlFromHash:");
         console.log("base url: " + _pathHost + "\nhash: " + hash + '\nparams: ' + params);
-        let url = _pathHost + hash;
-        if (params) {
-            url += '?' + new URLSearchParams(params).toString();
-        }
+        let url = API.parameteriseUrl(_pathHost + hash, params);
         console.log("url: " + url);
         return url;
     }
-
+    static parameteriseUrl(url, params) {
+        if (params) {
+            url += '?' + new URLSearchParams(params).toString();
+        }
+        return url;
+    }
     static goToUrl(url) {
         window.location.href = url;
     }
-
     static goToHash(hash, params = null) {
         const url = API.getUrlFromHash(hash, params);
         API.goToUrl(url);

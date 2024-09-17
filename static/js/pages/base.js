@@ -131,6 +131,7 @@ export default class BasePage {
                 console.log('sending data to user login controller: '); 
                 console.log(dataRequest);
                 */
+                // let page = this;
                 API.loginUser()
                     .then((response) => {
                     if (response.Success) {
