@@ -132,7 +132,7 @@ export default class BasePage {
                 console.log(dataRequest);
                 */
                 API.loginUser()
-                    .then(function(response) {
+                    .then((response) => {
                     if (response.Success) {
                         this.router.navigateToUrl(response[keyCallback], null, false); // window.app.
                     } else {
