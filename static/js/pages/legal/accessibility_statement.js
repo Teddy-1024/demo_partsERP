@@ -1,10 +1,10 @@
-import { BasePage } from "../base.js";
+import BasePage from "../base.js";
 
-export class PageAccessibilityStatement extends BasePage {
+export default class PageAccessibilityStatement extends BasePage {
     static hash = hashPageAccessibilityStatement;
 
-    constructor() {
-        super();
+    constructor(router) {
+        super(router);
     }
 
     initialize() {

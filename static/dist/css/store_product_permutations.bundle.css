@@ -1,0 +1,61 @@
+
+
+td.category, th.category {
+    width: 16% !important;
+}
+td.product, th.product {
+    width: 23% !important;
+}
+td.variations, th.variations {
+    width: 19% !important;
+}
+td.quantity-stock, th.quantity-stock {
+    width: 10% !important;
+}
+td.quantity-min, th.quantity-min {
+    width: 10% !important;
+}
+td.quantity-max, th.quantity-max {
+    width: 10% !important;
+}
+td.cost-local-VAT-incl, th.cost-local-VAT-incl {
+    width: 6% !important;
+}
+td.detail, th.detail {
+    width: 6% !important;
+}
+
+textarea {
+    width: 95% !important;
+}
+
+select {
+    width: 100% !important;
+}
+
+input {
+    width: 90% !important;
+}
+
+td > input, td > select, td > textarea, .container-input > input, .container-input > select, .container-input > textarea {
+    border: 2px solid var(--c_purple);
+    border-radius: 0.5vh;
+}
+
+#tableMain tbody tr td button {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    text-decoration: none;
+}
+
+#tableMain tbody tr td table thead tr th.id_variation_type, #tableMain tbody tr td table tbody tr td.id_variation_type, #tableMain tbody tr td table thead tr th.id_variation, #tableMain tbody tr td table tbody tr td.id_variation {
+    width: 47.5%;
+}
+
+/*
+select.id_variation, select.id_variation_type {
+    max-width: 40% !important;
+}
+*/
+

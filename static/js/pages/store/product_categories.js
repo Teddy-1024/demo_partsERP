@@ -1,16 +1,16 @@
 
 import Events from "../../lib/events.js";
-import { TableBasePage } from "../base_table.js";
+import TableBasePage from "../base_table.js";
 import API from "../../api.js";
 import DOM from "../../dom.js";
 
-export class PageStoreProductCategories extends TableBasePage {
+export default class PageStoreProductCategories extends TableBasePage {
     static hash = hashPageStoreProductCategories;
     callFilterTableContent = API.getCategoriesByFilters;
     callSaveTableContent = API.saveCategories;
 
-    constructor() {
-        super();
+    constructor(router) {
+        super(router);
     }
 
     initialize() {

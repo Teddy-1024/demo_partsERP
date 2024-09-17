@@ -1,17 +1,17 @@
 
 import Events from "../lib/events.js";
 import LocalStorage from "../lib/local_storage.js";
-import Validation from "../lib/validation";
-import { BasePage } from "./base.js";
+import Validation from "../lib/validation.js";
+import BasePage from "./base.js";
 import API from "../api.js";
 import DOM from "../dom.js";
 
-export class TableBasePage extends BasePage {
+export default class TableBasePage extends BasePage {
     // callFilterTableContent
     // callSaveTableContent
 
-    constructor() {
-        super();
+    constructor(router) {
+        super(router);
         /*
         if (!this.constructor.callFilterTableContent) {
             throw new Error(`Class ${this.constructor.name} must have a static callFilterTableContent method attribute that takes a single argument - the filters as json.`);

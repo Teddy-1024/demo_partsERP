@@ -3,10 +3,16 @@ import Events from "../lib/events.js";
 import LocalStorage from "../lib/local_storage.js";
 import API from "../api.js";
 import DOM from "../dom.js";
-import { router } from "../router.js";
 
-export class BasePage {
-    constructor() {
+export default class BasePage {
+    constructor(router) {
+        if (!router) {
+            throw new Error("Router is required");
+        }
+        else {
+            console.log("initialising with router: ", router);
+        }
+        this.router = router;
         this.title = titlePageCurrent;
         // this.hash = hashPageCurrent;
         if (this.constructor === BasePage) {
@@ -74,51 +80,51 @@ export class BasePage {
         this.hookupButtonNavAdminHome();
     }
     hookupButtonNavHome() {
-        Events.initialiseEventHandler('.' + flagNavHome, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavHome, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageHome);
+                this.router.navigateToHash(hashPageHome);
             });
         });
     }
     hookupButtonNavServices() {        
-        Events.initialiseEventHandler('.' + flagNavServices, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavServices, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
                 console.log('going to services page');
-                router.navigateToHash(hashPageServices);
+                this.router.navigateToHash(hashPageServices);
             });
         });
     }
     hookupButtonNavContact() {        
-        Events.initialiseEventHandler('.' + flagNavContact, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavContact, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageContact);
+                this.router.navigateToHash(hashPageContact);
             });
         });
     }
     hookupButtonNavUserAccount() {        
-        Events.initialiseEventHandler('.' + flagNavUserAccount, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavUserAccount, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageUserAccount);
+                this.router.navigateToHash(hashPageUserAccount);
             });
         });
     }
     hookupButtonNavUserLogout() {        
-        Events.initialiseEventHandler('.' + flagNavUserLogout, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavUserLogout, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageUserLogout);
+                this.router.navigateToHash(hashPageUserLogout);
             });
         });
     }
     hookupButtonNavUserLogin() {        
-        Events.initialiseEventHandler('.' + flagNavUserLogin, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavUserLogin, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                // router.navigateToHash(hashPageUserLogin);
+                // this.router.navigateToHash(hashPageUserLogin);
                 /*
                 let dataRequest = {};
                 dataRequest[keyCallback] = hashPageCurrent;
@@ -128,7 +134,7 @@ export class BasePage {
                 API.loginUser()
                     .then(function(response) {
                     if (response.Success) {
-                        window.app.router.navigateToUrl(response[keyCallback], null, false);
+                        this.router.navigateToUrl(response[keyCallback], null, false); // window.app.
                     } else {
                         DOM.alertError("Error", response.Message);
                     }
@@ -137,76 +143,76 @@ export class BasePage {
         });
     }
     hookupButtonNavStoreHome() {        
-        Events.initialiseEventHandler('.' + flagNavStoreHome, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavStoreHome, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageStoreHome);
+                this.router.navigateToHash(hashPageStoreHome);
             });
         });
     }
     hookupButtonNavStoreProductCategories() {
-        Events.initialiseEventHandler('.' + flagNavStoreProductCategories, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavStoreProductCategories, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageStoreProductCategories);
+                this.router.navigateToHash(hashPageStoreProductCategories);
             });
         });
     }
     hookupButtonNavStoreProducts() {
-        Events.initialiseEventHandler('.' + flagNavStoreProducts, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavStoreProducts, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageStoreProducts);
+                this.router.navigateToHash(hashPageStoreProducts);
             });
         });
     }
     hookupButtonNavStoreProductPermutations() {
-        Events.initialiseEventHandler('.' + flagNavStoreProductPermutations, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavStoreProductPermutations, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageStoreProductPermutations);
+                this.router.navigateToHash(hashPageStoreProductPermutations);
             });
         });
     }
     hookupButtonNavStoreProductPrices() {
-        Events.initialiseEventHandler('.' + flagNavStoreProductPrices, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavStoreProductPrices, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageStoreProductPrices);
+                this.router.navigateToHash(hashPageStoreProductPrices);
             });
         });
     }
     hookupButtonNavStoreProductVariations() {
-        Events.initialiseEventHandler('.' + flagNavStoreProductVariations, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavStoreProductVariations, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageStoreProductVariations);
+                this.router.navigateToHash(hashPageStoreProductVariations);
             });
         });
     }
     hookupButtonNavStoreStockItems() {
-        Events.initialiseEventHandler('.' + flagNavStoreStockItems, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavStoreStockItems, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageStoreStockItems);
+                this.router.navigateToHash(hashPageStoreStockItems);
             });
         });
     }
     hookupButtonNavAdminHome() {
-        Events.initialiseEventHandler('.' + flagNavAdminHome, flagInitialised, function(navigator) {
-            navigator.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('.' + flagNavAdminHome, flagInitialised, (navigator) => {
+            navigator.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageAdminHome);
+                this.router.navigateToHash(hashPageAdminHome);
             });
         });
     }
 
     hookupImagesLogo() {
         let selectorImagesLogo = "img." + flagImageLogo;
-        Events.initialiseEventHandler(selectorImagesLogo, flagInitialised, function(imageLogo) {
-            imageLogo.addEventListener("click", function(event) {
+        Events.initialiseEventHandler(selectorImagesLogo, flagInitialised, (buttonImageLogo) => {
+            buttonImageLogo.addEventListener("click", (event) => {
                 event.stopPropagation();
-                router.navigateToHash(hashPageHome);
+                this.router.navigateToHash(hashPageHome);
             });
         });
     }

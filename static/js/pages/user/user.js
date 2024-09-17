@@ -1,11 +1,11 @@
 
-import { BasePage } from "../base.js";
+import BasePage from "../base.js";
 
-export class PageUser extends BasePage {
+export default class PageUser extends BasePage {
     static hash = hashPageUser;
 
-    constructor() {
-        super();
+    constructor(router) {
+        super(router);
     }
 
     initialize() {

@@ -1,5 +1,5 @@
 
-import Validation from "./lib/validation";
+import Validation from "./lib/validation.js";
 
 function mapHashToController(hash) {
     if (hash == null) return mapHashToController(hashPageHome);

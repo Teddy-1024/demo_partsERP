@@ -1,13 +1,13 @@
 
 import Events from "../../lib/events.js";
 import LocalStorage from "../../lib/local_storage.js";
-import { BasePage } from "../base.js";
+import BasePage from "../base.js";
 
-export class PageStoreBasket extends BasePage {
+export default class PageStoreBasket extends BasePage {
     static hash = hashPageStoreBasket;
 
-    constructor() {
-        super();
+    constructor(router) {
+        super(router);
     }
 
     initialize() {
