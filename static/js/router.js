@@ -179,6 +179,12 @@ export default class Router {
         const pageCurrent = new ClassPageCurrent(this);
         pageCurrent.leave();
     }
+    navigateToUrl(url, data = null, appendHistory = true) {
+        this.beforeLeave();
+        if (appendHistory) history.pushState(data, '', url);
+        url = API.parameteriseUrl(url, data);
+        API.goToUrl(url);
+    }
 
     /*
     static getPages() {
@@ -222,12 +228,6 @@ export default class Router {
         this.navigateToUrl(url, data);
     }
 
-    navigateToUrl(url, data = null, appendHistory = true) {
-        this.leavePageCurrent();
-        if (appendHistory) history.pushState(data, '', url);
-        url = Router.parameteriseUrl(url, data);
-        Router.#goToUrl(url);
-    }
 
     leavePageCurrent() {
         const pageCurrent = Router.getPageCurrent();
