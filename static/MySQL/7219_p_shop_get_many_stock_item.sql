@@ -166,17 +166,17 @@ BEGIN
         price_GBP_full FLOAT NOT NULL,
 		price_GBP_min FLOAT NOT NULL,
 		*
-        , latency_manufacture INT NOT NULL
+        , latency_manufacture_days INT NOT NULL
 		, quantity_min FLOAT NOT NULL
 		, quantity_max FLOAT NOT NULL
 		, quantity_step FLOAT NOT NULL
 		, quantity_stock FLOAT NOT NULL
 		, is_subscription BIT NOT NULL
-		, id_recurrence_interval INT
-		, CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval)
-		, count_recurrence_interval INT
+		, id_unit_measurement_interval_recurrence INT
+		, CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval)
+		, count_interval_recurrence INT
         , id_stripe_product VARCHAR(100)
         , product_has_variations INT NOT NULL
         , can_view BIT

@@ -12,8 +12,6 @@ Datastore for Store
 
 # internal
 # from routes import bp_home
-import lib.argument_validation as av
-# from business_objects.store.access_level import Access_Level, Filters_Access_Level
 from business_objects.store.basket import Basket, Basket_Item
 from business_objects.store.product_category import Product_Category_Container, Product_Category
 from business_objects.store.currency import Currency
@@ -26,11 +24,12 @@ from business_objects.store.product import Product, Product_Permutation, Product
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
+from business_objects.store.product_variation import Product_Variation_Type, Product_Variation, Product_Variation_Filters, Product_Variation_Container
 from datastores.datastore_base import DataStore_Base
-# from helpers.helper_db_mysql import Helper_DB_MySQL
-# from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
+from helpers.helper_db_mysql import Helper_DB_MySQL
+import lib.argument_validation as av
+# from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 # external
 # from abc import ABC, abstractmethod, abstractproperty
 from flask_sqlalchemy import SQLAlchemy
@@ -118,12 +117,8 @@ class DataStore_Store_Base(DataStore_Base):
         # variations = [Product_Variation(**row) for row in result_set_4]
         variations = []
         for row in result_set_4:
-            new_variation = Product_Variation.from_DB_get_many_product_catalogue(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+            new_variation = Product_Variation.from_DB_get_many_product_catalogue(row)
             variations.append(new_variation)
-            # products[product_index[new_variation.id_product]].variations.append(new_variation)
-            # index_category = category_index[new_variation.id_category]
-            # index_product = categories[index_category].index_product_from_ids_product_permutation(new_variation.id_product, new_variation.id_permutation)
-            # categories[index_category].products[index_product].variations.append(new_variation)
             category_list.add_product_variation(new_variation)
         # print(f'variations: {variations}')
         # print(f'products: {[p.id_product for p in products]}')
@@ -209,15 +204,11 @@ class DataStore_Store_Base(DataStore_Base):
             ids_permutation.append(msg_error_availability[:index_comma])
         return ids_permutation
     @classmethod
-    def get_regions_and_currencies(cls):
-        _m  = 'DataStore_Store_Base.get_regions_and_currencies'
+    def get_many_currency(cls):
+        _m  = 'DataStore_Store_Base.get_many_currency'
         _m_db_currency = 'p_shop_get_many_currency'
-        _m_db_region = 'p_shop_get_many_region'
 
         argument_dict_list_currency = {
-            'a_get_inactive_currency': 0
-        }
-        argument_dict_list_region = {
             'a_get_inactive_currency': 0
         }
 
@@ -235,6 +226,17 @@ class DataStore_Store_Base(DataStore_Base):
         print(f'currencies: {currencies}')
         DataStore_Store_Base.db_cursor_clear(cursor)
 
+        return currencies
+    
+    @classmethod
+    def get_many_region(cls):
+        _m  = 'DataStore_Store_Base.get_many_region'
+        _m_db_region = 'p_shop_get_many_region'
+
+        argument_dict_list_region = {
+            'a_get_inactive_currency': 0
+        }
+
         print(f'executing {_m_db_region}')
         result = cls.db_procedure_execute(_m_db_region, argument_dict_list_region)
         cursor = result.cursor
@@ -250,7 +252,15 @@ class DataStore_Store_Base(DataStore_Base):
         DataStore_Store_Base.db_cursor_clear(cursor)
         cursor.close()
 
+        return regions
+    
+    @classmethod
+    def get_many_region_and_currency(cls):
+        _m  = 'DataStore_Store_Base.get_many_region_and_currency'
+        currencies = cls.get_many_currency()
+        regions = cls.get_many_region()
         return regions, currencies
+    
     @classmethod
     def get_many_product_variation(cls, variation_filters):
         _m = 'DataStore_Store_Base.get_many_product_variation'
@@ -278,13 +288,30 @@ class DataStore_Store_Base(DataStore_Base):
         result = cls.db_procedure_execute('p_shop_get_many_product_variation', argument_dict_list)
 
         cursor = result.cursor
-        result_set = cursor.fetchall()
+        result_set_vt = cursor.fetchall()
         
+        # Product_Variation Types
+        # variation_container = Product_Variation_Container()
+        variation_types = []
+        variation_types_dict = {}
+        for row in result_set_vt:
+            new_variation_type = Product_Variation_Type.from_DB_get_many_product_variation(row) 
+            # variation_container.add_product_variation_type(new_variation_type)
+            variation_types.append(new_variation_type)
+            variation_types_dict[new_variation_type.id_type] = new_variation_type
+
+        print(f'variation_types_dict: {variation_types_dict}')
+
         # Product_Variations
-        variations = Product_Variation_List()
-        for row in result_set:
-            new_variation = Product_Variation.from_DB_variation(row) 
-            variations.add_product_variation(new_variation)
+        cursor.nextset()
+        result_set_v = cursor.fetchall()
+        # variations = Product_Variation_Container()
+        variations = []
+        for row in result_set_v:
+            new_variation = Product_Variation.from_DB_get_many_product_variation(row)
+            new_variation.variation_type = variation_types_dict[new_variation.id_type]
+            # variation_container.add_product_variation(new_variation)
+            variations.append(new_variation)
 
         errors = []
         cursor.nextset()
@@ -299,5 +326,5 @@ class DataStore_Store_Base(DataStore_Base):
         
         cursor.close()
 
-        return variations, errors
+        return variation_types, variations, errors
     

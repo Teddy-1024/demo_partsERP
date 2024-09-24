@@ -91,7 +91,7 @@ function convertForm2JSON(elemForm) {
         /*
         console.log('field name: ' + field.name);
         console.log('field value: ' + field.value);
-        console.log('field currentval: ' + getElementCurrentValue(field));
+        console.log('field currentval: ' + getElementValueCurrent(field));
         */
     });
     

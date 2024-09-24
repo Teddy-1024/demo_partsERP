@@ -18,26 +18,30 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
     id_currency_cost INT NOT NULL,
 	profit_local_min FLOAT NOT NULL,
     -- id_currency_profit_min INT NOT NULL,
-	latency_manufacture INT NOT NULL,
+	latency_manufacture_days INT NOT NULL,
+	id_unit_measurement_quantity INT NOT NULL,
+	CONSTRAINT FK_Shop_Product_Permutation_id_unit_quantity
+		FOREIGN KEY (id_unit_measurement_quantity)
+		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
+	count_unit_measurement_per_quantity_step FLOAT NOT NULL,
 	quantity_min FLOAT NOT NULL,
 	quantity_max FLOAT NOT NULL,
-	quantity_step FLOAT NOT NULL,
 	quantity_stock FLOAT NOT NULL,
 	is_subscription BIT NOT NULL,
-	id_interval_recurrence INT,
-	CONSTRAINT FK_Shop_Product_Permutation_id_interval_recurrence
-		FOREIGN KEY (id_interval_recurrence)
+	id_unit_measurement_interval_recurrence INT,
+	CONSTRAINT FK_Shop_Product_Permutation_id_unit_interval_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
 		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 	/*
-	CONSTRAINT CHECK_FK_Shop_Product_Permutation_id_interval_recurrence
-		CHECK (id_interval_recurrence IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)),
+	CONSTRAINT CHECK_FK_Shop_Product_Permutation_id_unit_measurement_interval_recurrence
+		CHECK (id_unit_measurement_interval_recurrence IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)),
 	*/
 	count_interval_recurrence INT,
 	id_stripe_product VARCHAR(100) NULL,
 	does_expire_faster_once_unsealed BIT NOT NULL DEFAULT 0,
-	id_interval_expiration_unsealed INT,
-	CONSTRAINT FK_Shop_Product_Permutation_id_interval_expiration_unsealed
-		FOREIGN KEY (id_interval_expiration_unsealed)
+	id_unit_measurement_interval_expiration_unsealed INT,
+	CONSTRAINT FK_Shop_Product_Permutation_id_unit_interval_expiration_unsealed
+		FOREIGN KEY (id_unit_measurement_interval_expiration_unsealed)
 		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 	/*
 	CONSTRAINT CHECK_FK_Shop_Product_Permutation_id_interval_expiration_unsealed

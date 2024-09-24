@@ -15,6 +15,7 @@ import lib.argument_validation as av
 # from lib import data_types
 from business_objects.store.product import Product
 from business_objects.store.delivery_option import Delivery_Option
+from business_objects.store.store_base import Store_Base
 # from forms import Form_Product
 # from models.model_view_store import Model_View_Store # circular
 # external
@@ -26,7 +27,7 @@ import locale
 # VARIABLE INSTANTIATION
 
 # CLASSES
-class Order():
+class Order(Store_Base):
     category: str
     product: Product
     quantity: int
@@ -69,6 +70,7 @@ class Order():
     
     def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             'product_id': self.product.id_product,
             'price': self.product.price_GBP_full,
             'quantity': self.quantity

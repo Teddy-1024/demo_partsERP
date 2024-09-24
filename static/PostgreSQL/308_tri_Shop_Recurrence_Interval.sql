@@ -1,7 +1,7 @@
 
 -- Shop Recurrence Interval
 
-CREATE OR REPLACE FUNCTION before_insert_Shop_Recurrence_Interval()
+CREATE OR REPLACE FUNCTION before_insert_Shop_Interval_Recurrence()
 RETURNS TRIGGER AS $$
 BEGIN
 	NEW.created_on = CURRENT_TIMESTAMP;
@@ -11,13 +11,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Recurrence_Interval
-BEFORE INSERT ON Shop_Recurrence_Interval
+CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Interval_Recurrence
+BEFORE INSERT ON Shop_Interval_Recurrence
 FOR EACH ROW
-EXECUTE FUNCTION before_insert_Shop_Recurrence_Interval();
+EXECUTE FUNCTION before_insert_Shop_Interval_Recurrence();
 
 
-CREATE OR REPLACE FUNCTION before_update_Shop_Recurrence_Interval()
+CREATE OR REPLACE FUNCTION before_update_Shop_Interval_Recurrence()
 RETURNS TRIGGER AS $$
 BEGIN
 	IF OLD.id_change_set IS NOT DISTINCT FROM NEW.id_change_set THEN
@@ -25,7 +25,7 @@ BEGIN
 			USING ERRCODE = '45000';
     END IF;
     
-    INSERT INTO Shop_Recurrence_Interval_Audit (
+    INSERT INTO Shop_Interval_Recurrence_Audit (
 		id_interval,
         name_field,
         value_prev,
@@ -53,7 +53,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_update_Shop_Recurrence_Interval
-BEFORE UPDATE ON Shop_Recurrence_Interval
+CREATE OR REPLACE TRIGGER tri_before_update_Shop_Interval_Recurrence
+BEFORE UPDATE ON Shop_Interval_Recurrence
 FOR EACH ROW
-EXECUTE FUNCTION before_update_Shop_Recurrence_Interval();
+EXECUTE FUNCTION before_update_Shop_Interval_Recurrence();

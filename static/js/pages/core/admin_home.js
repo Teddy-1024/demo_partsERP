@@ -15,24 +15,24 @@ export default class PageAdminHome extends BasePage {
     }
     
     hookupAdminStore() {
-        this.hookupButtonNavStoreProductCategories();
-        this.hookupButtonNavStoreProducts();
-        this.hookupButtonNavStoreProductPermutations();
-        this.hookupButtonNavStoreProductPrices();
-        this.hookupButtonNavStoreStockItems();
-        this.hookupButtonNavStoreProductVariations();
+        this.hookupButtonsNavStoreProductCategories();
+        this.hookupButtonsNavStoreProducts();
+        this.hookupButtonsNavStoreProductPermutations();
+        this.hookupButtonsNavStoreProductPrices();
+        this.hookupButtonsNavStoreStockItems();
+        this.hookupButtonsNavStoreProductVariations();
 
-        this.hookupButtonNavAdminStoreStripeProducts();
-        this.hookupButtonNavAdminStoreStripePrices();
+        this.hookupButtonsNavAdminStoreStripeProducts();
+        this.hookupButtonsNavAdminStoreStripePrices();
     }
-    hookupButtonNavAdminStoreStripeProducts() {
+    hookupButtonsNavAdminStoreStripeProducts() {
         Events.initialiseEventHandler('.' + flagNavAdminStoreStripeProducts, flagInitialised, function(navigator) {
             navigator.addEventListener("click", function(event) {
                 this.router.navigateToHash(hashPageAdminStoreStripeProducts);
             });
         });
     }
-    hookupButtonNavAdminStoreStripePrices() {
+    hookupButtonsNavAdminStoreStripePrices() {
         Events.initialiseEventHandler('.' + flagNavAdminStoreStripePrices, flagInitialised, function(navigator) {
             navigator.addEventListener("click", function(event) {
                 this.router.navigateToHash(hashPageAdminStoreStripePrices);

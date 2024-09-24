@@ -12,6 +12,7 @@ Abstract business object for store objects
 
 # internal
 # from helpers.DEPRECATED.helper_abc import Interface_ABC
+from business_objects.base import Base
 from extensions import db
 import lib.argument_validation as av
 # external
@@ -55,40 +56,33 @@ class I_Store_Base():
     ""
 """
 
-class Store_Base():
-    ATTR_ID_ACCESS_LEVEL: ClassVar[str] = 'id_access_level'
-    ATTR_ID_CURRENCY: ClassVar[str] = 'id_currency'
+class Store_Base(Base):
     # ATTR_ID_CURRENCY_COST: ClassVar[str] = 'id_currency_cost'
-    ATTR_ID_DELIVERY_REGION: ClassVar[str] = 'id_delivery_region'
     ATTR_ID_DISCOUNT: ClassVar[str] = 'id_discount'
     ATTR_ID_IMAGE: ClassVar[str] = 'id_image'
     ATTR_ID_LOCATION_STORAGE: ClassVar[str] = 'id_location_storage'
     ATTR_ID_PRODUCT: ClassVar[str] = 'id_product'
     ATTR_ID_PRODUCT_CATEGORY: ClassVar[str] = 'id_category'
+    ATTR_ID_PRODUCT_IMAGE: ClassVar[str] = 'id_image'
     ATTR_ID_PRODUCT_PERMUTATION: ClassVar[str] = 'id_permutation'
     ATTR_ID_PRODUCT_PRICE: ClassVar[str] = 'id_price'
     ATTR_ID_PRODUCT_VARIATION: ClassVar[str] = 'id_variation'
-    ATTR_ID_PRODUCT_VARIATION_TYPE: ClassVar[str] = 'id_variation_type'
+    ATTR_ID_PRODUCT_VARIATION_TYPE: ClassVar[str] = 'id_type'
     ATTR_ID_STOCK_ITEM: ClassVar[str] = 'id_stock_item'
-    FLAG_ACCESS_LEVEL_REQUIRED: ClassVar[str] = 'access_level_required'
-    FLAG_ACTIVE: ClassVar[str] = 'active'
-    FLAG_CAN_ADMIN: ClassVar[str] = 'can_admin'
-    FLAG_CAN_EDIT: ClassVar[str] = 'can_edit'
-    FLAG_CAN_VIEW: ClassVar[str] = 'can_view'
-    FLAG_CODE: ClassVar[str] = 'code'
-    FLAG_DESCRIPTION: ClassVar[str] = 'description'
-    FLAG_DISPLAY_ORDER: ClassVar[str] = 'display_order'
+    FLAG_CURRENCY: ClassVar[str] = 'currency'
+    FLAG_DELIVERY_OPTION: ClassVar[str] = 'delivery_option'
     FLAG_HAS_VARIATIONS: ClassVar[str] = 'has_variations'
-    FLAG_IS_NOT_EMPTY: ClassVar[str] = 'is_not_empty'
-    FLAG_KEY_PRIMARY: ClassVar[str] = 'key_primary'
-    FLAG_NAME: ClassVar[str] = 'name'
-    FLAG_PERMUTATIONS: ClassVar[str] = 'permutations'
-    FLAG_PRIORITY: ClassVar[str] = 'priority'
-    FLAG_ROWS: ClassVar[str] = 'rows'
-    FLAG_VARIATION_TREES: ClassVar[str] = 'variation_trees'
-    @classmethod
-    def output_bool(cls, value):
-        return av.input_bool(value, f'{cls.__name__} bool attribute', f'{cls.__name__}.output_bool')
-    @staticmethod
-    def convert_list_objects_to_list_options(objects):
-        return [object.to_json_option() for object in objects]
+    FLAG_IS_OUT_OF_STOCK: ClassVar[str] = 'is_out_of_stock'
+    FLAG_PRODUCT: ClassVar[str] = 'product'
+    FLAG_PRODUCT_CATEGORY: ClassVar[str] = 'product_category'
+    FLAG_PRODUCT_IMAGE: ClassVar[str] = 'product_image'
+    FLAG_PRODUCT_PERMUTATION: ClassVar[str] = 'product_permutation'
+    FLAG_PRODUCT_PRICE: ClassVar[str] = 'product_price'
+    FLAG_PRODUCT_VARIATION: ClassVar[str] = 'product_variation'
+    FLAG_PRODUCT_VARIATIONS: ClassVar[str] = f'{FLAG_PRODUCT_VARIATION}s'
+    FLAG_PRODUCT_VARIATION_TYPE: ClassVar[str] = 'product_variation_type'
+    FLAG_QUANTITY_MIN: ClassVar[str] = 'quantity_min'
+    FLAG_QUANTITY_MAX: ClassVar[str] = 'quantity_max'
+    FLAG_TEXT: ClassVar[str] = 'text'
+    FLAG_VALUE_TEXT: ClassVar[str] = 'value_text'
+    

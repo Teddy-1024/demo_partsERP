@@ -77,7 +77,7 @@
                 <th class="{{ model.FLAG_DISPLAY_ORDER }}">Display Order</th>
                 <th class="{{ model.FLAG_PRODUCT_CATEGORY }}">Category</th>
                 <th class="{{ model.FLAG_NAME }}">Name</th>
-                <th class="{{ model.FLAG_VARIATIONS }}">Variations</th>
+                <th class="{{ model.FLAG_PRODUCT_VARIATIONS }}">Variations</th>
                 <th class="{{ model.FLAG_ACCESS_LEVEL }}">Access Level Required</th>
                 <th class="{{ model.FLAG_ACTIVE}}">Active</th>
             </tr>
@@ -106,6 +106,6 @@
     <script>
         // pass arguments from model to JS
         var flagIsNotEmpty = "{{ model.FLAG_IS_NOT_EMPTY }}";
-        var optionsAccessLevel = {{ model.convert_list_objects_to_list_options(model.access_levels) | tojson | safe }};
+        var accessLevels = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.access_levels) | tojson | safe }};
     </script>
 {% endblock %}

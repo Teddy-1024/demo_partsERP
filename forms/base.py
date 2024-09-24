@@ -21,10 +21,12 @@ class Form_Base_Meta(type(FlaskForm), ABCMeta):
 
 
 class Form_Base(FlaskForm, metaclass=Form_Base_Meta):
+    """
     @classmethod
     @abstractmethod
     def from_filters(cls, filters):
         pass
+    """
     @abstractmethod
     def __repr__(self):
         pass
@@ -44,3 +46,19 @@ class Form_Base(FlaskForm, metaclass=Form_Base_Meta):
         form_filters.active.data = av.input_bool(data_form['active'], 'active', 'filter_category')
         return form_filters
     """
+
+'''
+class Filters_Stored_Procedure_Base(Form_Base):
+    """
+    @abstractmethod
+    def __repr__(self):
+        pass
+    @classmethod
+    @abstractmethod
+    def from_json(cls, json):
+        pass
+    """
+    @abstractmethod
+    def to_json(self):
+        pass
+'''

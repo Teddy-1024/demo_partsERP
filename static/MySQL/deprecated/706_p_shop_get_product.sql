@@ -309,14 +309,14 @@ BEGIN
 			P.quantity_stock,
 			P.id_stripe_product,
 			P.is_subscription,
-			RI.name AS name_recurrence_interval,
-			RI.name_plural AS name_plural_recurrence_interval,
-			P.count_recurrence_interval
+			RI.name AS name_interval_recurrence,
+			RI.name_plural AS name_plural_interval_recurrence,
+			P.count_interval_recurrence
 		FROM tmp_Shop_Product t_P
 		INNER JOIN Shop_Product P
 			ON t_P.id_product = P.id_product
-		LEFT JOIN Shop_Recurrence_Interval RI
-			ON P.id_recurrence_interval = RI.id_interval
+		LEFT JOIN Shop_Interval_Recurrence RI
+			ON P.id_unit_measurement_interval_recurrence = RI.id_interval
 		WHERE ISNULL(t_P.id_permutation)
 		ORDER BY t_P.display_order
 		;
@@ -336,17 +336,17 @@ BEGIN
 			P.quantity_stock,
 			P.id_stripe_product,
 			P.is_subscription,
-			RI.name AS name_recurrence_interval,
-			RI.name_plural AS name_plural_recurrence_interval,
-			P.count_recurrence_interval
+			RI.name AS name_interval_recurrence,
+			RI.name_plural AS name_plural_interval_recurrence,
+			P.count_interval_recurrence
 		FROM tmp_Shop_Product t_P
 		INNER JOIN Shop_Product_Permutation PP
 			ON t_P.id_permutation = PP.id_permutation
 				AND PP.active
 		INNER JOIN Shop_Product P
 			ON PP.id_product = P.id_product
-		LEFT JOIN Shop_Recurrence_Interval RI
-			ON P.id_recurrence_interval = RI.id_interval
+		LEFT JOIN Shop_Interval_Recurrence RI
+			ON P.id_unit_measurement_interval_recurrence = RI.id_interval
 		WHERE NOT ISNULL(t_P.id_permutation)
 		ORDER BY t_P.display_order
 		;

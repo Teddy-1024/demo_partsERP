@@ -25,11 +25,11 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 	quantity_step FLOAT,
 	quantity_stock FLOAT,
 	is_subscription BIT,
-	id_recurrence_interval INT,
-	CONSTRAINT FK_Shop_Product_id_recurrence_interval
-		FOREIGN KEY (id_recurrence_interval)
-		REFERENCES Shop_Recurrence_Interval(id_interval),
-	count_recurrence_interval INT,
+	id_unit_measurement_interval_recurrence INT,
+	CONSTRAINT FK_Shop_Product_id_unit_measurement_interval_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
+		REFERENCES Shop_Interval_Recurrence(id_interval),
+	count_interval_recurrence INT,
 	*/
     id_access_level_required INT NOT NULL,
     CONSTRAINT FK_Shop_Product_id_access_level_required

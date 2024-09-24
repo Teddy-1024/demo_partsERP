@@ -22,6 +22,7 @@ import lib.argument_validation as av
 from business_objects.store.product import Product #, Filters_Product
 from business_objects.store.discount import Discount
 from business_objects.store.delivery_option import Delivery_Option
+from business_objects.store.store_base import Store_Base
 # from forms import Form_Product
 # from models.model_view_store import Model_View_Store # circular
 # from datastores.datastore_store import DataStore_Store # circular
@@ -107,7 +108,7 @@ class Basket_Item():
             subtotal: {self.get_subtotal()}
             '''
 
-class Basket():
+class Basket(Store_Base):
     KEY_BASKET: str = 'basket'
     KEY_ID_CURRENCY: str = 'id_currency'
     KEY_ID_REGION_DELIVERY: str = 'id_region_delivery'
@@ -147,6 +148,7 @@ class Basket():
         return json_list
     def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             Basket.KEY_ITEMS: self.to_json_list(),
             Basket.KEY_IS_INCLUDED_VAT: self.is_included_VAT,
             Basket.KEY_ID_CURRENCY: self.id_currency,

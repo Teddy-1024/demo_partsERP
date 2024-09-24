@@ -1,8 +1,9 @@
-
+ 
 import Events from "../../lib/events.js";
 import TableBasePage from "../base_table.js";
 import API from "../../api.js";
 import DOM from "../../dom.js";
+import StoreTableMixinPage from "./mixin_table.js";
 
 export default class PageStoreProductCategories extends TableBasePage {
     static hash = hashPageStoreProductCategories;
@@ -11,22 +12,21 @@ export default class PageStoreProductCategories extends TableBasePage {
 
     constructor(router) {
         super(router);
+        this.storeMixin = new StoreTableMixinPage(this);
     }
 
     initialize() {
-        super.initialize();
+        this.sharedInitialize();
     }
 
     hookupFilters() {
-        super.hookupFilters();
+        this.sharedHookupFilters();
         this.hookupFilterIsNotEmpty();
         this.hookupFilterActive();
     }
     hookupFilterIsNotEmpty() {
-        Events.initialiseEventHandler('.' + flagIsNotEmpty, flagInitialised, (filter) => {
-            filter.addEventListener("change", (event) => {
-                PageStoreProductCategories.isDirtyFilter(filter);
-            });
+        this.hookupEventHandler("change", idFormFilters + ' .' + flagIsNotEmpty, (event, filter) => {
+            PageStoreProductCategories.isDirtyFilter(filter);
         });
     }
 
@@ -47,22 +47,16 @@ export default class PageStoreProductCategories extends TableBasePage {
         let divAccessLevel = tdAccessLevel.querySelector('div.' + flagAccessLevel);
         let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
 
-        sliderDisplayOrder.setAttribute(attrValueCurrent, rowJson[flagDisplayOrder]);
-        DOM.setElementValuePrevious(sliderDisplayOrder, rowJson[flagDisplayOrder]);
-        DOM.setElementValueCurrent(textareaCode, rowJson[flagCode]);
-        DOM.setElementValuePrevious(textareaCode, rowJson[flagCode]);
-        DOM.setElementValueCurrent(textareaName, rowJson[flagName]);
-        DOM.setElementValuePrevious(textareaName, rowJson[flagName]);
-        DOM.setElementValueCurrent(textareaDescription, rowJson[flagDescription]);
-        DOM.setElementValuePrevious(textareaDescription, rowJson[flagDescription]);
+        DOM.setElementValuesCurrentAndPrevious(sliderDisplayOrder, rowJson[flagDisplayOrder]);
+        DOM.setElementValuesCurrentAndPrevious(textareaCode, rowJson[flagCode]);
+        DOM.setElementValuesCurrentAndPrevious(textareaName, rowJson[flagName]);
+        DOM.setElementValuesCurrentAndPrevious(textareaDescription, rowJson[flagDescription]);
         tdAccessLevel.setAttribute(attrIdAccessLevel, rowJson[attrIdAccessLevel]);
         tdAccessLevel.setAttribute(flagAccessLevelRequired, rowJson[flagAccessLevelRequired]);
         divAccessLevel.setAttribute(attrIdAccessLevel, rowJson[attrIdAccessLevel]);
-        DOM.setElementValueCurrent(divAccessLevel, rowJson[attrIdAccessLevel]);
-        DOM.setElementValuePrevious(divAccessLevel, rowJson[attrIdAccessLevel]);
+        DOM.setElementValuesCurrentAndPrevious(divAccessLevel, rowJson[attrIdAccessLevel]);
         divAccessLevel.textContent = rowJson[flagAccessLevelRequired];
-        DOM.setElementValueCurrent(inputActive, rowJson[flagActive]);
-        DOM.setElementValuePrevious(inputActive, rowJson[flagActive]);
+        DOM.setElementValuesCurrentAndPrevious(inputActive, rowJson[flagActive]);
         row.setAttribute(rowJson[flagKeyPrimary], rowJson[rowJson[flagKeyPrimary]]);
         
         let table = this.getTableMain();
@@ -79,15 +73,25 @@ export default class PageStoreProductCategories extends TableBasePage {
         let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
 
         let jsonCategory = {};
-        jsonCategory[attrIdCategory] = row.getAttribute(attrIdCategory);
+        jsonCategory[attrIdProductCategory] = row.getAttribute(attrIdProductCategory);
         jsonCategory[flagCode] = DOM.getElementValueCurrent(textareaCode);
         jsonCategory[flagName] = DOM.getElementValueCurrent(textareaName);
         jsonCategory[flagDescription] = DOM.getElementValueCurrent(textareaDescription);
-        jsonCategory[flagAccessLevelRequired] = tdAccessLevel.getAttribute(flagAccessLevelRequired);
-        jsonCategory[attrIdAccessLevel] = tdAccessLevel.getAttribute(attrIdAccessLevel);
+        // jsonCategory[flagAccessLevelRequired] = tdAccessLevel.getAttribute(flagAccessLevelRequired);
+        jsonCategory[attrIdAccessLevel] = DOM.getElementValueCurrent(tdAccessLevel);
         jsonCategory[flagActive] = DOM.getElementValueCurrent(inputActive);
         jsonCategory[flagDisplayOrder] = sliderDisplayOrder.getAttribute(attrValueCurrent);
         return jsonCategory;
+    }
+    initialiseRowNew(row) {
+        if (row == null) return;
+        let slidersDisplayOrder = document.querySelectorAll('td.' + flagDisplayOrder + ' input.' + flagSlider);
+        let maxDisplayOrder = 0;
+        slidersDisplayOrder.forEach((slider) => {
+            maxDisplayOrder = Math.max(maxDisplayOrder, parseFloat(DOM.getElementValueCurrent(slider)));
+        });
+        let sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
+        DOM.setElementValuesCurrentAndPrevious(sliderDisplayOrder, maxDisplayOrder + 1);
     }
 
     hookupTableMain() {
@@ -100,6 +104,7 @@ export default class PageStoreProductCategories extends TableBasePage {
         this.hookupInputsActiveTable();
     }
     
+    /*
     isDirtyRow(row) {
         if (row == null) return false;
         console.log("Product Category isDirtyRow");
@@ -115,16 +120,19 @@ export default class PageStoreProductCategories extends TableBasePage {
         DOM.handleDirtyElement(row, isDirty);
         return isDirty;
     }
-
+    */
+    
     leave() {
         super.leave();
     }
 
+    /*
     getFiltersDefaults() {
         filters = {};
         filters.flagIsNotEmpty = true;
         filters.flagActive = true;
         return filters;
     }
+    */
 }
 

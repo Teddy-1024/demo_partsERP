@@ -4,7 +4,7 @@ import DOM from './dom.js';
 export default class API {
     
     static getCsrfToken() {
-        // return document.querySelectorAll('meta[name=' + nameCSRFToken + ']').attr('content');
+        // return document.querySelectorAll('meta[name=' + nameCSRFToken + ']').getAttribute('content');
         return document.querySelector(idCSRFToken).getAttribute('content');
     }
     
@@ -74,7 +74,7 @@ export default class API {
     }
 
     // store
-    // categories
+    // product categories
     static async getCategories() {
         return await API.request(hashGetStoreProductCategory);
     }
@@ -90,9 +90,24 @@ export default class API {
     static async saveCategories(categories, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
-        dataRequest[flagCategory] = categories;
+        dataRequest[flagProductCategory] = categories;
         dataRequest[flagComment] = comment;
         return await API.request(hashSaveStoreProductCategory, 'POST', dataRequest);
+    }
+    
+    // product permutations
+    static async getProductPermutations() {
+        return await API.request(hashGetStoreProductPermutation);
+    }
+    static async getProductPermutationsByFilters(filtersJson) {
+        API.goToHash(hashPageStoreProductPermutations, filtersJson);
+    }
+    static async saveProductPermutations(permutations, formFilters, comment) {
+        let dataRequest = {};
+        dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagProductPermutation] = permutations;
+        dataRequest[flagComment] = comment;
+        return await API.request(hashSaveStoreProductPermutation, 'POST', dataRequest);
     }
 }
 

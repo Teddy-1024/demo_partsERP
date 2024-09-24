@@ -13,7 +13,8 @@ Business object for product
 # internal
 import lib.argument_validation as av
 from lib import data_types
-from forms.forms import Form_Basket_Add, Form_Basket_Edit, Form_Filters_Permutation
+from forms.forms import Form_Basket_Add, Form_Basket_Edit
+from forms.store.product_permutation import Filters_Product_Permutation
 from business_objects.db_base import SQLAlchemy_ABC, Get_Many_Parameters_Base
 from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.discount import Discount
@@ -52,14 +53,11 @@ class Enum_Status_Stock(Enum):
         
 """
 class Product(SQLAlchemy_ABC, Store_Base):
-    FLAG_NAME: ClassVar[str] = 'name-product'
-    FLAG_DISPLAY_ORDER: ClassVar[str] = 'display-order-product'
-    FLAG_CAN_VIEW: ClassVar[str] = 'can-view-product'
-    FLAG_CAN_EDIT: ClassVar[str] = 'can-edit-product'
-    FLAG_CAN_ADMIN: ClassVar[str] = 'can-admin-product'
+    NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT
+    NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME
     FLAG_HAS_VARIATIONS: ClassVar[str] = 'has-variations-product'
     FLAG_INDEX_PERMUTATION_SELECTED: ClassVar[str] = 'index-permutation-selected'
-    FLAG_VARIATION_TREES: ClassVar[str] = 'variation-trees'
+    FLAG_PRODUCT_VARIATION_TREES: ClassVar[str] = 'variation-trees'
 
     id_product = db.Column(db.Integer, primary_key=True)
     id_category = db.Column(db.Integer)
@@ -305,11 +303,12 @@ class Product(SQLAlchemy_ABC, Store_Base):
         for json_permutation in json[cls.ATTR_ID_PRODUCT_PERMUTATION]:
             product.permutations.append(Product_Permutation.from_json(json_permutation))
         product.variation_trees = []
-        for json_tree in json[cls.FLAG_VARIATION_TREES]:
+        for json_tree in json[cls.FLAG_PRODUCT_VARIATION_TREES]:
             product.variation_trees.append(Product_Variation_Tree.from_json(json_tree))
         return product
     def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             self.ATTR_ID_PRODUCT: self.id_product,
             self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
             self.FLAG_NAME: self.name,
@@ -320,7 +319,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
             self.FLAG_HAS_VARIATIONS: self.has_variations,
             self.FLAG_INDEX_PERMUTATION_SELECTED: self.index_permutation_selected,
             self.ATTR_ID_PRODUCT_PERMUTATION: [permutation.to_json() for permutation in self.permutations],
-            self.FLAG_VARIATION_TREES: [tree.to_json() for tree in self.variation_trees]
+            self.FLAG_PRODUCT_VARIATION_TREES: [tree.to_json() for tree in self.variation_trees]
         }
     def to_json_option(self):
         return {
@@ -421,7 +420,7 @@ class Filters_Product():
     
     @staticmethod
     def from_form_filters_product(form):
-        # if not (form is Form_Filters_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
+        # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
         av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Product)
         has_filter_category = not (form.id_category.data == '0' or form.id_category.data == '')
         is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Filters_Product.from_form_filters_product")
@@ -458,8 +457,8 @@ class Filters_Product():
         )
     @staticmethod
     def from_form_filters_product_permutation(form):
-        # if not (form is Form_Filters_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Permutation)
+        # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
+        av.val_instance(form, 'form', 'Filters_Product.from_form', Filters_Product_Permutation)
         has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
         has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
         get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Filters_Product.from_form")
@@ -651,7 +650,7 @@ class Filters_Product(Get_Many_Parameters_Base):
     
     @staticmethod
     def from_form_filters_product(form):
-        # if not (form is Form_Filters_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
+        # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
         av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Product)
         has_filter_category = not (form.id_category.data == '0' or form.id_category.data == '')
         is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Filters_Product.from_form_filters_product")
@@ -660,7 +659,7 @@ class Filters_Product(Get_Many_Parameters_Base):
             get_all_product_category = not has_filter_category,
             get_inactive_product_category = not active,
             # get_first_product_category_only = False,
-            ids_product_category = form.id_category.data,
+            ids_product_category = str(form.id_category.data),
             get_all_product = True,
             get_inactive_product = not active,
             # get_first_product_only = False,
@@ -686,23 +685,23 @@ class Filters_Product(Get_Many_Parameters_Base):
             # ids_discount = '',
             get_products_quantity_stock_below_min = False
         )
-    @staticmethod
+    @staticmethod 
     def from_form_filters_product_permutation(form):
-        # if not (form is Form_Filters_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Permutation)
-        has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
-        has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
+        # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
+        av.val_instance(form, 'form', 'Filters_Product.from_form', Filters_Product_Permutation)
+        has_category_filter = not (form.id_category.data is None or form.id_category.data == '0' or form.id_category.data == '')
+        has_product_filter = not (form.id_product.data is None or form.id_product.data == '0' or form.id_product.data == '')
         get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Filters_Product.from_form")
         print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
         return Filters_Product(
             get_all_product_category = not has_category_filter,
             get_inactive_product_category = False,
             # get_first_product_category_only = False,
-            ids_product_category = form.id_category.data,
+            ids_product_category = str(form.id_category.data) if has_category_filter else '',
             get_all_product = not has_product_filter,
             get_inactive_product = False,
             # get_first_product_only = False,
-            ids_product = form.id_product.data,
+            ids_product = str(form.id_product.data) if has_product_filter else '',
             get_all_permutation = not get_permutations_stock_below_min,
             get_inactive_permutation = False,
             # get_first_permutation_only = False,

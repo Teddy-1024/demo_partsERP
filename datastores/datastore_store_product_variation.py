@@ -25,7 +25,7 @@ from business_objects.store.product import Product, Product_Permutation, Product
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
+from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container
 from datastores.datastore_store_base import DataStore_Store_Base
 # from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
@@ -80,7 +80,7 @@ class DataStore_Store_Product_Variation(DataStore_Store_Base):
         result_set = cursor.fetchall()
         
         # Product_Variations
-        variations = Product_Variation_List()
+        variations = Product_Variation_Container()
         for row in result_set:
             new_variation = Product_Variation.from_DB_variation(row) 
             variations.add_product_variation(new_variation)

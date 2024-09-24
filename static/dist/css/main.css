@@ -30,7 +30,7 @@
     justify-self: left;
 }
 
-.buttonAdd2Basket {
+.buttonAddToBasket {
     background-color: var(--c_blue_pastel);
     color: var(--c_blue_dark);
     border-color: var(--c_blue_dark);

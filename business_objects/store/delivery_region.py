@@ -11,7 +11,9 @@ Business object for delivery region
 """
 
 # internal
+from business_objects.store.store_base import Store_Base
 from extensions import db
+from lib import argument_validation as av
 # external
 from enum import Enum
 from typing import ClassVar
@@ -20,12 +22,9 @@ from typing import ClassVar
 class Enum_Delivery_Region(Enum):
     UK = 0
 
-class Delivery_Region(db.Model):
-    ATTR_ID_REGION: ClassVar[str] = 'id-region'
-    FLAG_CODE: ClassVar[str] = 'code-region'
-    FLAG_NAME: ClassVar[str] = 'name-region'
-    FLAG_ACTIVE: ClassVar[str] = 'active-region'
-    FLAG_DISPLAY_ORDER: ClassVar[str] = 'display-order-region'
+class Delivery_Region(db.Model, Store_Base):
+    NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_DELIVERY_REGION
+    NAME_ATTR_OPTION_TEXT: ClassVar[str] = Store_Base.FLAG_NAME
 
     id_region = db.Column(db.Integer, primary_key=True)
     """
@@ -59,19 +58,21 @@ class Delivery_Region(db.Model):
         self.code = code
         self.display_order = display_order
     """
-    def from_DB_get_many_product_catalogue(query_row):
-        region = Delivery_Region()
+    @classmethod
+    def from_DB_get_many_product_catalogue(cls, query_row):
+        region = cls()
         region.id_region = query_row[0]
         region.name = query_row[1]
         region.code = query_row[2]
         # self.display_order = query_row[3]
         return region
-    def from_DB_region(query_row):
-        region = Delivery_Region()
+    @classmethod
+    def from_DB_region(cls, query_row):
+        region = cls()
         region.id_region = query_row[0]
         region.code = query_row[1]
         region.name = query_row[2]
-        region.active = query_row[3]
+        region.active = av.input_bool(query_row[3], cls.FLAG_ACTIVE, f'{cls.__name__}.from_DB_region')
         region.display_order = query_row[4]
         return region
     def __repr__(self):
@@ -84,11 +85,12 @@ class Delivery_Region(db.Model):
             '''
     def to_json(self):
         return {
-            Delivery_Region.ATTR_ID_REGION: self.id_region,
-            Delivery_Region.FLAG_CODE: self.code,
-            Delivery_Region.FLAG_NAME: self.name,
-            Delivery_Region.FLAG_ACTIVE: self.active,
-            Delivery_Region.FLAG_DISPLAY_ORDER: self.display_order
+            **self.get_shared_json_attributes(self),
+            self.ATTR_ID_REGION: self.id_region,
+            self.FLAG_CODE: self.code,
+            self.FLAG_NAME: self.name,
+            self.FLAG_ACTIVE: self.active,
+            self.FLAG_DISPLAY_ORDER: self.display_order
         }
     @staticmethod
     def from_json(json_region):

@@ -1,0 +1,19 @@
+{#
+    <select class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}" value="{{ permutation.id_unit_measurement_interval_recurrence }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_unit_measurement_interval_recurrence }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_unit_measurement_interval_recurrence }}"></select>
+#}
+{% with _is_blank_row = (is_blank_row or units_measurement_time | length == 0 or permutation.id_unit_measurement_interval_recurrence is none) %}
+    {% if not _is_blank_row %}
+        {% set interval_recurrence = units_measurement_time[permutation.id_unit_measurement_interval_recurrence] | console_log %}
+        <div 
+            class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }} {% if not permutation.is_subscription %}{{ model.FLAG_COLLAPSED }}{% endif %}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_unit_measurement_interval_recurrence }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_unit_measurement_interval_recurrence }}"
+        >{{ interval_recurrence.name_singular }}</div>
+    {% else %}
+        <div 
+            class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }} {{ model.FLAG_COLLAPSED }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="" 
+            {{ model.ATTR_VALUE_PREVIOUS }}=""
+        ></div>
+    {% endif %}
+{% endwith %}

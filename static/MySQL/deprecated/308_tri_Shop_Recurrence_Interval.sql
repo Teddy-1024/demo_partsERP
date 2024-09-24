@@ -4,13 +4,13 @@
 
 
 
-DROP TRIGGER IF EXISTS before_insert_Shop_Recurrence_Interval;
-DROP TRIGGER IF EXISTS before_update_Shop_Recurrence_Interval;
+DROP TRIGGER IF EXISTS before_insert_Shop_Interval_Recurrence;
+DROP TRIGGER IF EXISTS before_update_Shop_Interval_Recurrence;
 
 
 DELIMITER //
-CREATE TRIGGER before_insert_Shop_Recurrence_Interval
-BEFORE INSERT ON Shop_Recurrence_Interval
+CREATE TRIGGER before_insert_Shop_Interval_Recurrence
+BEFORE INSERT ON Shop_Interval_Recurrence
 FOR EACH ROW
 BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -20,8 +20,8 @@ DELIMITER ;;
 
 
 DELIMITER //
-CREATE TRIGGER before_update_Shop_Recurrence_Interval
-BEFORE UPDATE ON Shop_Recurrence_Interval
+CREATE TRIGGER before_update_Shop_Interval_Recurrence
+BEFORE UPDATE ON Shop_Interval_Recurrence
 FOR EACH ROW
 BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
@@ -29,7 +29,7 @@ BEGIN
         SET MESSAGE_TEXT = 'New change Set ID must be provided.';
     END IF;
     
-    INSERT INTO Shop_Recurrence_Interval_Audit (
+    INSERT INTO Shop_Interval_Recurrence_Audit (
 		id_interval,
         name_field,
         value_prev,

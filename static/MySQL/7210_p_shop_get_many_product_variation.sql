@@ -1,22 +1,5 @@
 
-
-
-/*
-
-CALL p_shop_get_many_product_variation (
-	'', # a_id_user
-    1, # a_get_all_supplier
-	0, # a_get_inactive_variation
-    0, # a_get_first_variation_only
-	'', # a_ids_variation
-);
-
-*/
-
-
--- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
-
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_product_variation (
@@ -236,32 +219,33 @@ BEGIN
     END IF;
     
     -- Returns
-    /*
     # Variation Types
     SELECT 
 		t_VT.id_type
         , VT.code
         , VT.name
         , VT.name_plural
+        , VT.display_order
         , VT.active
     FROM tmp_Variation_Type t_VT
     INNER JOIN Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
 	;
-    */
     
     # Variations
     SELECT 
 		t_V.id_variation
+        , t_V.id_type
         , V.code AS code_variation
         , V.name AS name_variation
-        , V.active AS active_variation
 		, V.display_order
-        , t_V.id_type
+        , V.active AS active_variation
+        /*
         , VT.code AS code_variation_type
         , VT.name AS name_variation_type
         , VT.name_plural AS name_plural_variation_type
         , VT.active AS active_variation_type
 		, VT.display_order
+        */
     FROM tmp_Variation t_V
     INNER JOIN Shop_Variation V ON t_V.id_variation = V.id_variation
     INNER JOIN tmp_Variation_Type t_VT ON V.id_type = t_VT.id_type

@@ -1,0 +1,22 @@
+
+{#
+{% if variation_tree is not defined %}
+    {% set is_blank_row = True %}
+{% endif %}
+{% if is_blank_row is not defined %}
+    {% set is_blank_row = True %}
+{% endif %}
+#}
+{% with _is_blank_row = (is_blank_row or variation_tree is not defined or variation_tree is none or is_blank_row is not defined or is_blank_row) %}
+    {% if not _is_blank_row %}
+        {% set str_ids_variations = variation_tree.to_variation_id_pairs_str() %}
+        {% set str_variations = variation_tree.to_preview_str() %}
+        <div 
+            class="{{ model.FLAG_PRODUCT_VARIATIONS }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ str_ids_variations }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ str_ids_variations }}"
+        >{{ str_variations }}</div>
+    {% else %}
+        <div class="{{ model.FLAG_PRODUCT_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></div>
+    {% endif %}
+{% endwith %}

@@ -75,7 +75,7 @@ VALUES
 ;
 
 -- Recurrence Interval
-INSERT INTO Shop_Recurrence_Interval (
+INSERT INTO Shop_Interval_Recurrence (
 	code, name, name_plural
 )
 VALUES 
@@ -198,14 +198,14 @@ INSERT INTO Shop_Product_Permutation (
     id_currency_cost,
     profit_local_min,
     -- id_currency_profit_min,
-    latency_manufacture,
+    latency_manufacture_days,
 	quantity_min,
 	quantity_max,
 	quantity_step,
 	quantity_stock,
 	is_subscription,
-	id_recurrence_interval,
-	count_recurrence_interval,
+	id_unit_measurement_interval_recurrence,
+	count_interval_recurrence,
 	-- id_access_level_required,
 	id_stripe_product
 )

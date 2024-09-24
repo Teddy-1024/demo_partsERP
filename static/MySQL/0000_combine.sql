@@ -146,8 +146,8 @@ DROP TABLE IF EXISTS Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Audit;
 DROP TABLE IF EXISTS Shop_Product_Permutation;
 
-DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
-DROP TABLE IF EXISTS Shop_Recurrence_Interval;
+DROP TABLE IF EXISTS Shop_Interval_Recurrence_Audit;
+DROP TABLE IF EXISTS Shop_Interval_Recurrence;
 
 DROP TABLE IF EXISTS Shop_Product_Audit;
 DROP TABLE IF EXISTS Shop_Product;
@@ -221,8 +221,13 @@ DROP TABLE IF EXISTS Shop_Product_Change_Set;
 DROP PROCEDURE IF EXISTS p_split;
 DROP PROCEDURE IF EXISTS p_clear_split_temp;
 
+DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_name;
+
 DROP PROCEDURE IF EXISTS p_shop_user_eval;
 DROP PROCEDURE IF EXISTS p_clear_shop_user_eval_temp;
+
+DROP PROCEDURE IF EXISTS p_shop_get_many_access_level;
+DROP PROCEDURE IF EXISTS p_shop_get_many_unit_measurement;
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_region;
 DROP PROCEDURE IF EXISTS p_shop_get_many_currency;
@@ -312,6 +317,9 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+
+
 # Access Level Audits
 
 
@@ -923,6 +931,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement (
     name_singular VARCHAR(255) NOT NULL,
     name_plural VARCHAR(256) NOT NULL,
     symbol VARCHAR(50) NOT NULL,
+    symbol_is_suffix_not_prefix BIT NOT NULL DEFAULT 1,
     is_base_unit BIT NOT NULL DEFAULT 0,
     is_unit_of_distance BIT NOT NULL DEFAULT 0,
     is_unit_of_mass BIT NOT NULL DEFAULT 0,
@@ -1051,6 +1060,8 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Audit (
 
 # Categories Temp
 
+-- DROP TABLE Shop_Product_Category_Temp;
+
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Category_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Product_Category_Temp (
@@ -1060,10 +1071,8 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Temp (
 	, description VARCHAR(4000) NULL
 	, active BIT NOT NULL
 	, display_order INT NOT NULL
-    , id_access_level_required INT NOT NULL
+    , id_access_level_required INT NOT NULL DEFAULT 1
     , guid BINARY(36) NOT NULL
-	, created_on TIMESTAMP NOT NULL
-	, created_by INT NOT NULL
 );
 
 # Products
@@ -1092,11 +1101,11 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 	quantity_step FLOAT,
 	quantity_stock FLOAT,
 	is_subscription BIT,
-	id_recurrence_interval INT,
-	CONSTRAINT FK_Shop_Product_id_recurrence_interval
-		FOREIGN KEY (id_recurrence_interval)
-		REFERENCES Shop_Recurrence_Interval(id_interval),
-	count_recurrence_interval INT,
+	id_unit_measurement_interval_recurrence INT,
+	CONSTRAINT FK_Shop_Product_id_unit_measurement_interval_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
+		REFERENCES Shop_Interval_Recurrence(id_interval),
+	count_interval_recurrence INT,
 	*/
     id_access_level_required INT NOT NULL,
     CONSTRAINT FK_Shop_Product_id_access_level_required
@@ -1172,26 +1181,30 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
     id_currency_cost INT NOT NULL,
 	profit_local_min FLOAT NOT NULL,
     -- id_currency_profit_min INT NOT NULL,
-	latency_manufacture INT NOT NULL,
+	latency_manufacture_days INT NOT NULL,
+	id_unit_measurement_quantity INT NOT NULL,
+	CONSTRAINT FK_Shop_Product_Permutation_id_unit_quantity
+		FOREIGN KEY (id_unit_measurement_quantity)
+		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
+	count_unit_measurement_per_quantity_step FLOAT NOT NULL,
 	quantity_min FLOAT NOT NULL,
 	quantity_max FLOAT NOT NULL,
-	quantity_step FLOAT NOT NULL,
 	quantity_stock FLOAT NOT NULL,
 	is_subscription BIT NOT NULL,
-	id_interval_recurrence INT,
-	CONSTRAINT FK_Shop_Product_Permutation_id_interval_recurrence
-		FOREIGN KEY (id_interval_recurrence)
+	id_unit_measurement_interval_recurrence INT,
+	CONSTRAINT FK_Shop_Product_Permutation_id_unit_interval_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
 		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 	/*
-	CONSTRAINT CHECK_FK_Shop_Product_Permutation_id_interval_recurrence
-		CHECK (id_interval_recurrence IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)),
+	CONSTRAINT CHECK_FK_Shop_Product_Permutation_id_unit_measurement_interval_recurrence
+		CHECK (id_unit_measurement_interval_recurrence IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)),
 	*/
 	count_interval_recurrence INT,
 	id_stripe_product VARCHAR(100) NULL,
 	does_expire_faster_once_unsealed BIT NOT NULL DEFAULT 0,
-	id_interval_expiration_unsealed INT,
-	CONSTRAINT FK_Shop_Product_Permutation_id_interval_expiration_unsealed
-		FOREIGN KEY (id_interval_expiration_unsealed)
+	id_unit_measurement_interval_expiration_unsealed INT,
+	CONSTRAINT FK_Shop_Product_Permutation_id_unit_interval_expiration_unsealed
+		FOREIGN KEY (id_unit_measurement_interval_expiration_unsealed)
 		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 	/*
 	CONSTRAINT CHECK_FK_Shop_Product_Permutation_id_interval_expiration_unsealed
@@ -1248,28 +1261,30 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
 	cost_local FLOAT NOT NULL,
     id_currency_cost INT NOT NULL,
 	profit_local_min FLOAT NOT NULL,
-	latency_manufacture INT NOT NULL,
+	latency_manufacture_days INT NOT NULL,
+	id_unit_measurement_quantity INT NOT NULL,
+	CONSTRAINT FK_Shop_Product_Permutation_Temp_id_unit_quantity
+		FOREIGN KEY (id_unit_measurement_quantity)
+		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
+	count_unit_measurement_per_quantity_step FLOAT NOT NULL,
 	quantity_min FLOAT NOT NULL,
 	quantity_max FLOAT NOT NULL,
-	quantity_step FLOAT NOT NULL,
-	quantity_stock FLOAT NOT NULL,
+	quantity_stock FLOAT NULL,
 	is_subscription BIT NOT NULL,
-	id_interval_recurrence INT,
-	CONSTRAINT FK_Shop_Product_Permutation_Temp_id_interval_recurrence
-		FOREIGN KEY (id_interval_recurrence)
+	id_unit_measurement_interval_recurrence INT,
+	CONSTRAINT FK_Shop_Product_Permutation_Temp_id_unit_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
 		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 	count_interval_recurrence INT,
 	id_stripe_product VARCHAR(100) NULL,
 	does_expire_faster_once_unsealed BIT NOT NULL DEFAULT 0,
-	id_interval_expiration_unsealed INT,
-	CONSTRAINT FK_Shop_Product_Permutation_Temp_id_interval_expiration_unsealed
-		FOREIGN KEY (id_interval_expiration_unsealed)
+	id_unit_measurement_interval_expiration_unsealed INT,
+	CONSTRAINT FK_Shop_Product_Permutation_Temp_id_unit_expiration
+		FOREIGN KEY (id_unit_measurement_interval_expiration_unsealed)
 		REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 	count_interval_expiration_unsealed INT,
 	active BIT NOT NULL DEFAULT 1,
-	display_order INT NOT NULL,
-	created_on TIMESTAMP,
-	created_by INT,
+	-- display_order INT NOT NULL,
     guid BINARY(36)
 );
 
@@ -3622,11 +3637,11 @@ BEGIN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have subscription status or variations (with subscription statuses).';
 		END IF;
-		IF ISNULL(NEW.id_recurrence_interval) THEN
+		IF ISNULL(NEW.id_unit_measurement_interval_recurrence) THEN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have recurrence interval or variations (with recurrence intervals).';
 		END IF;
-		IF ISNULL(NEW.count_recurrence_interval) THEN
+		IF ISNULL(NEW.count_interval_recurrence) THEN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have recurrence interval count or variations (with recurrence interval counts).';
 		END IF;
@@ -3696,13 +3711,13 @@ BEGIN
 	SELECT NEW.id_product, 'is_subscription', CONVERT(CONVERT(OLD.is_subscription, SIGNED), CHAR), CONVERT(CONVERT(NEW.is_subscription, SIGNED), CHAR), NEW.id_change_set
 		WHERE NOT OLD.is_subscription <=> NEW.is_subscription
 	UNION
-    # Changed id_recurrence_interval
-	SELECT NEW.id_product, 'id_recurrence_interval', CONVERT(OLD.id_recurrence_interval, CHAR), CONVERT(NEW.id_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.id_recurrence_interval <=> NEW.id_recurrence_interval
+    # Changed id_unit_measurement_interval_recurrence
+	SELECT NEW.id_product, 'id_unit_measurement_interval_recurrence', CONVERT(OLD.id_unit_measurement_interval_recurrence, CHAR), CONVERT(NEW.id_unit_measurement_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_interval_recurrence <=> NEW.id_unit_measurement_interval_recurrence
     UNION
-    # Changed count_recurrence_interval
-	SELECT NEW.id_product, 'count_recurrence_interval', CONVERT(OLD.count_recurrence_interval, CHAR), CONVERT(NEW.count_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.count_recurrence_interval <=> NEW.count_recurrence_interval
+    # Changed count_interval_recurrence
+	SELECT NEW.id_product, 'count_interval_recurrence', CONVERT(OLD.count_interval_recurrence, CHAR), CONVERT(NEW.count_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.count_interval_recurrence <=> NEW.count_interval_recurrence
 	UNION
     # Changed id_stripe_product
 	SELECT NEW.id_product, 'id_stripe_product', OLD.id_stripe_product, NEW.id_stripe_product, NEW.id_change_set
@@ -3759,16 +3774,16 @@ BEGIN
     END IF;
 
 	IF (NOT (
-		NEW.id_interval_recurrence IS NULL
-		OR NEW.id_interval_recurrence NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
+		NEW.id_unit_measurement_interval_recurrence IS NULL
+		OR NEW.id_unit_measurement_interval_recurrence NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Recurrence interval ID must be a unit of time.';
     END IF;
 
 	IF (NOT (
-		NEW.id_interval_expiration_unsealed IS NULL
-		OR NEW.id_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
+		NEW.id_unit_measurement_interval_expiration_unsealed IS NULL
+		OR NEW.id_unit_measurement_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Unsealed expiration interval ID must be a unit of time.';
@@ -3807,11 +3822,11 @@ BEGIN
 	SELECT NEW.id_permutation, 'id_currency_cost', CONVERT(OLD.id_currency_cost, CHAR), CONVERT(NEW.id_currency_cost, CHAR), NEW.id_change_set
 		WHERE NOT (OLD.id_currency_cost <=> NEW.id_currency_cost)
 	UNION
+    /*
 	# Changed profit_local_min
 	SELECT NEW.id_permutation, 'profit_local_min', CONVERT(OLD.profit_local_min, CHAR), CONVERT(NEW.profit_local_min, CHAR), NEW.id_change_set
 		WHERE NOT (OLD.profit_local_min <=> NEW.profit_local_min)
 	UNION
-    /*
 	# Changed id_currency_profit_min
 	SELECT NEW.id_permutation, 'id_currency_profit_min', CONVERT(OLD.id_currency_profit_min, CHAR), CONVERT(NEW.id_currency_profit_min, CHAR), NEW.id_change_set
 		WHERE NOT (OLD.id_currency_profit_min <=> NEW.id_currency_profit_min)
@@ -3823,36 +3838,40 @@ BEGIN
 		WHERE NOT (OLD.price_GBP_min <=> NEW.price_GBP_min)
 	UNION
     */
-    # Changed latency_manufacture
-	SELECT NEW.id_product, 'latency_manufacture', CONVERT(OLD.latency_manufacture, CHAR), CONVERT(NEW.latency_manufacture, CHAR), NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
+    # Changed latency_manufacture_days
+	SELECT NEW.id_permutation, 'latency_manufacture_days', CONVERT(OLD.latency_manufacture_days, CHAR), CONVERT(NEW.latency_manufacture_days, CHAR), NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
+	UNION
+    # Changed id_unit_measurement_quantity
+	SELECT NEW.id_permutation, 'id_unit_measurement_quantity', CONVERT(OLD.id_unit_measurement_quantity, CHAR), CONVERT(NEW.id_unit_measurement_quantity, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_quantity <=> NEW.id_unit_measurement_quantity
+	UNION
+    # Changed count_unit_measurement_per_quantity_step
+	SELECT NEW.id_permutation, 'count_unit_measurement_per_quantity_step', CONVERT(OLD.count_unit_measurement_per_quantity_step, CHAR), CONVERT(NEW.count_unit_measurement_per_quantity_step, CHAR), NEW.id_change_set
+		WHERE NOT OLD.count_unit_measurement_per_quantity_step <=> NEW.count_unit_measurement_per_quantity_step
 	UNION
     # Changed quantity_min
-	SELECT NEW.id_product, 'quantity_min', CONVERT(OLD.quantity_min, CHAR), CONVERT(NEW.quantity_min, CHAR), NEW.id_change_set
+	SELECT NEW.id_permutation, 'quantity_min', CONVERT(OLD.quantity_min, CHAR), CONVERT(NEW.quantity_min, CHAR), NEW.id_change_set
 		WHERE NOT OLD.quantity_min <=> NEW.quantity_min
 	UNION
     # Changed quantity_max
-	SELECT NEW.id_product, 'quantity_max', CONVERT(OLD.quantity_max, CHAR), CONVERT(NEW.quantity_max, CHAR), NEW.id_change_set
+	SELECT NEW.id_permutation, 'quantity_max', CONVERT(OLD.quantity_max, CHAR), CONVERT(NEW.quantity_max, CHAR), NEW.id_change_set
 		WHERE NOT OLD.quantity_max <=> NEW.quantity_max
 	UNION
-    # Changed quantity_step
-	SELECT NEW.id_product, 'quantity_step', CONVERT(OLD.quantity_step, CHAR), CONVERT(NEW.quantity_step, CHAR), NEW.id_change_set
-		WHERE NOT OLD.quantity_step <=> NEW.quantity_step
-	UNION
     # Changed quantity_stock
-	SELECT NEW.id_product, 'quantity_stock', CONVERT(OLD.quantity_stock, CHAR), CONVERT(NEW.quantity_stock, CHAR), NEW.id_change_set
+	SELECT NEW.id_permutation, 'quantity_stock', CONVERT(OLD.quantity_stock, CHAR), CONVERT(NEW.quantity_stock, CHAR), NEW.id_change_set
 		WHERE NOT OLD.quantity_stock <=> NEW.quantity_stock
     UNION
     # Changed is_subscription
-	SELECT NEW.id_product, 'is_subscription', CONVERT(CONVERT(OLD.is_subscription, SIGNED), CHAR), CONVERT(CONVERT(NEW.is_subscription, SIGNED), CHAR), NEW.id_change_set
+	SELECT NEW.id_permutation, 'is_subscription', CONVERT(CONVERT(OLD.is_subscription, SIGNED), CHAR), CONVERT(CONVERT(NEW.is_subscription, SIGNED), CHAR), NEW.id_change_set
 		WHERE NOT OLD.is_subscription <=> NEW.is_subscription
 	UNION
-    # Changed id_interval_recurrence
-	SELECT NEW.id_product, 'id_interval_recurrence', CONVERT(OLD.id_interval_recurrence, CHAR), CONVERT(NEW.id_interval_recurrence, CHAR), NEW.id_change_set
-		WHERE NOT OLD.id_interval_recurrence <=> NEW.id_interval_recurrence
+    # Changed id_unit_measurement_interval_recurrence
+	SELECT NEW.id_permutation, 'id_unit_measurement_interval_recurrence', CONVERT(OLD.id_unit_measurement_interval_recurrence, CHAR), CONVERT(NEW.id_unit_measurement_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_interval_recurrence <=> NEW.id_unit_measurement_interval_recurrence
     UNION
     # Changed count_interval_recurrence
-	SELECT NEW.id_product, 'count_interval_recurrence', CONVERT(OLD.count_interval_recurrence, CHAR), CONVERT(NEW.count_interval_recurrence, CHAR), NEW.id_change_set
+	SELECT NEW.id_permutation, 'count_interval_recurrence', CONVERT(OLD.count_interval_recurrence, CHAR), CONVERT(NEW.count_interval_recurrence, CHAR), NEW.id_change_set
 		WHERE NOT OLD.count_interval_recurrence <=> NEW.count_interval_recurrence
 	UNION
     # Changed id_stripe_product
@@ -3860,24 +3879,26 @@ BEGIN
 		WHERE NOT (OLD.id_stripe_product <=> NEW.id_stripe_product)
 	UNION
     # Changed does_expire_faster_once_unsealed
-	SELECT NEW.id_product, 'does_expire_faster_once_unsealed', CONVERT(OLD.does_expire_faster_once_unsealed, CHAR), CONVERT(NEW.does_expire_faster_once_unsealed, CHAR), NEW.id_change_set
+	SELECT NEW.id_permutation, 'does_expire_faster_once_unsealed', CONVERT(OLD.does_expire_faster_once_unsealed, CHAR), CONVERT(NEW.does_expire_faster_once_unsealed, CHAR), NEW.id_change_set
 		WHERE NOT OLD.does_expire_faster_once_unsealed <=> NEW.does_expire_faster_once_unsealed
     UNION
-    # Changed id_interval_expiration_unsealed
-	SELECT NEW.id_product, 'id_interval_expiration_unsealed', CONVERT(OLD.id_interval_expiration_unsealed, CHAR), CONVERT(NEW.id_interval_expiration_unsealed, CHAR), NEW.id_change_set
-		WHERE NOT OLD.id_interval_expiration_unsealed <=> NEW.id_interval_expiration_unsealed
+    # Changed id_unit_measurement_interval_expiration_unsealed
+	SELECT NEW.id_permutation, 'id_unit_measurement_interval_expiration_unsealed', CONVERT(OLD.id_unit_measurement_interval_expiration_unsealed, CHAR), CONVERT(NEW.id_unit_measurement_interval_expiration_unsealed, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_interval_expiration_unsealed <=> NEW.id_unit_measurement_interval_expiration_unsealed
     UNION
     # Changed count_interval_expiration_unsealed
-	SELECT NEW.id_product, 'count_interval_expiration_unsealed', CONVERT(OLD.count_interval_expiration_unsealed, CHAR), CONVERT(NEW.count_interval_expiration_unsealed, CHAR), NEW.id_change_set
+	SELECT NEW.id_permutation, 'count_interval_expiration_unsealed', CONVERT(OLD.count_interval_expiration_unsealed, CHAR), CONVERT(NEW.count_interval_expiration_unsealed, CHAR), NEW.id_change_set
 		WHERE NOT OLD.count_interval_expiration_unsealed <=> NEW.count_interval_expiration_unsealed
 	UNION
     # Changed active
 	SELECT NEW.id_permutation, 'active', CONVERT(CONVERT(OLD.active, SIGNED), CHAR), CONVERT(CONVERT(NEW.active, SIGNED), CHAR), NEW.id_change_set
 		WHERE NOT (OLD.active <=> NEW.active)
-	UNION
+	/*
+    UNION
 	# Changed display_order
 	SELECT NEW.id_permutation, 'display_order', CONVERT(OLD.display_order, CHAR), CONVERT(NEW.display_order, CHAR), NEW.id_change_set
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
+    */
     ;
 END //
 DELIMITER ;;
@@ -5938,6 +5959,36 @@ FROM Shop_User_Eval_Temp;
 
 */
 
+DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_name;
+
+DELIMITER //
+
+CREATE FUNCTION fn_shop_get_product_permutation_name(id_product_permutation INT)
+RETURNS VARCHAR(4000)
+DETERMINISTIC
+BEGIN
+    DECLARE name VARCHAR(4000);
+    
+    SET name := (
+        SELECT 
+            CONCAT(
+                P.name
+                , CASE WHEN P.has_variations = 1 THEN
+                    CONCAT(' - ', GROUP_CONCAT(CONCAT(VT.name, ': ', V.name) SEPARATOR ', '))
+                ELSE '' END
+            )
+        FROM Shop_Product_Permutation PP
+        INNER JOIN Shop_Product P ON PP.id_product = P.id_product
+        INNER JOIN Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+        INNER JOIN Shop_Product_Variation V ON PPVL.id_variation = V.id_variation
+        INNER JOIN Shop_Product_Variation_Type VT ON V.id_type = VT.id_type
+    );
+    
+    RETURN name;
+END //
+
+DELIMITER ;
+
 
 
 
@@ -6734,6 +6785,51 @@ FROM Shop_User_Eval_Temp;
 
 /*
 
+CALL p_shop_get_many_access_level (
+	0 # a_get_inactive_access_level
+)
+
+*/
+
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS p_shop_get_many_access_level;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_get_many_access_level (
+	IN a_get_inactive_access_level BIT
+)
+BEGIN
+	SET a_get_inactive_access_level = IFNULL(a_get_inactive_access_level, 0);
+    
+	SELECT 
+		AL.id_access_level,
+		AL.code,
+		AL.name,
+		AL.active,
+		AL.priority,
+		AL.display_order
+	FROM Shop_Access_Level AL
+	WHERE 
+		a_get_inactive_access_level = 1
+		OR AL.active = 1
+	ORDER BY AL.display_order
+	;
+END //
+DELIMITER ;;
+
+
+/*
+CALL p_shop_get_many_access_level (
+	0 # a_get_inactive_access_level
+);
+*/
+
+
+
+/*
+
 CALL p_shop_get_many_region (
 	0 # a_get_inactive_region
 )
@@ -6803,9 +6899,10 @@ BEGIN
 		C.id_currency,
         C.code,
         C.name,
+        C.symbol,
         C.factor_from_GBP,
-        C.active,
-        C.display_order
+        C.display_order,
+        C.active
 	FROM Shop_Currency C
 	WHERE a_get_inactive_currency
 		OR C.active
@@ -6821,7 +6918,46 @@ CALL p_shop_get_many_currency (
 );
 */
 
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS p_shop_get_many_unit_measurement;
 
+
+DELIMITER //
+CREATE PROCEDURE p_shop_get_many_unit_measurement (
+	IN a_get_inactive_unit_measurement BIT
+)
+BEGIN
+	SET a_get_inactive_unit_measurement := IFNULL(a_get_inactive_unit_measurement, 0);
+    
+	SELECT 
+		UM.id_unit_measurement,
+		UM.name_singular,
+		UM.name_plural,
+		UM.symbol,
+		UM.symbol_is_suffix_not_prefix,
+		UM.is_base_unit,
+		UM.is_unit_of_distance,
+		UM.is_unit_of_mass,
+		UM.is_unit_of_time,
+		UM.is_unit_of_volume,
+		UM.active
+	FROM Shop_Unit_Measurement UM
+	WHERE 
+		a_get_inactive_unit_measurement = 1
+		OR UM.active = 1
+	;
+END //
+DELIMITER ;;
+
+
+/*
+CALL p_shop_get_many_unit_measurement (
+	0 # a_get_inactive_unit_measurement
+);
+
+select *
+from shop_unit_measurement
+*/
 
 
 -- Clear previous proc
@@ -6897,6 +7033,7 @@ BEGIN
         , code VARCHAR(50) NOT NULL
         , name VARCHAR(255) NOT NULL
         , description VARCHAR(4000) NULL
+        , id_access_level_required INT NOT NULL
         , active BIT NOT NULL
         , display_order INT NOT NULL
         , can_view BIT NULL
@@ -6921,6 +7058,7 @@ BEGIN
         , code
         , name
         , description
+        , id_access_level_required
         , active
         , display_order
         , name_error
@@ -6931,6 +7069,7 @@ BEGIN
         , IFNULL(PC_T.code, PC.code) AS code
         , IFNULL(PC_T.name, PC.code) AS name
         , IFNULL(PC_T.description, PC.description) AS description
+        , IFNULL(PC_T.id_access_level_required, PC.id_access_level_required) AS id_access_level_required
         , IFNULL(PC_T.active, PC.active) AS active
         , IFNULL(PC_T.display_order, PC.display_order) AS display_order
         , IFNULL(PC_T.name, IFNULL(PC.name, IFNULL(PC_T.code, IFNULL(PC.code, IFNULL(PC_T.id_category, '(No Product Category)'))))) AS name_error
@@ -6939,9 +7078,6 @@ BEGIN
     LEFT JOIN Shop_Product_Category PC ON PC_T.id_category = PC.id_category
     WHERE PC_T.guid = a_guid
     ;
-    
-    SELECT *
-    FROM tmp_Category;
     
     -- Validation
     -- Missing mandatory fields
@@ -7045,6 +7181,7 @@ BEGIN
 				, PC.code = t_C.code
 				, PC.name = t_C.name
 				, PC.description = t_C.description
+                , PC.id_access_level_required = t_C.id_access_level_required
                 , PC.active = t_C.active
 				, PC.display_order = t_C.display_order
 				, PC.id_change_set = v_id_change_set
@@ -7055,6 +7192,7 @@ BEGIN
 			code
 			, name
 			, description
+            , id_access_level_required
             , active
 			, display_order
 			, created_by
@@ -7065,6 +7203,7 @@ BEGIN
             t_C.code AS code
 			, t_C.name AS name
 			, t_C.description AS description
+            , t_C.id_access_level_required AS id_access_level_required
 			, t_C.active AS active
 			, t_C.display_order AS display_order
 			, a_id_user AS created_by
@@ -7680,10 +7819,10 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     DROP TEMPORARY TABLE IF EXISTS tmp_Image;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_2;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_Copy;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Image;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product_2;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product_Copy;
     
     
     CREATE TEMPORARY TABLE tmp_Category (
@@ -7693,21 +7832,21 @@ BEGIN
     );
     
     CREATE TEMPORARY TABLE tmp_Product (
-		-- id_category INT NOT NULL,
+		id_category INT NOT NULL,
 		id_product INT NOT NULL,
-        active BIT NOT NULL,
-        display_order INT NOT NULL
-    );
-    
-    CREATE TEMPORARY TABLE tmp_Permutation (
-		-- id_category INT NOT NULL,
-		id_product INT NOT NULL,
-		id_permutation INT NULL,
         active BIT NOT NULL,
         display_order INT NOT NULL,
         can_view BIT, 
         can_edit BIT, 
         can_admin BIT
+    );
+    
+    CREATE TEMPORARY TABLE tmp_Permutation (
+		id_permutation INT NULL
+        -- id_category INT NOT NULL,
+		, id_product INT NOT NULL
+        , active BIT NOT NULL
+        -- , display_order INT NOT NULL
     );
     
     CREATE TEMPORARY TABLE tmp_Image (
@@ -7760,13 +7899,13 @@ BEGIN
     ;
     
 	INSERT INTO tmp_Product (
-		-- id_category,
+		id_category,
 		id_product,
         active,
         display_order
 	)
     SELECT 
-		-- P.id_category,
+		P.id_category,
 		P.id_product,
         P.active,
         P.display_order
@@ -7786,18 +7925,18 @@ BEGIN
     ;
     
 	INSERT INTO tmp_Permutation (
+		id_permutation
 		-- id_category,
-		id_product,
-		id_permutation,
-        active,
-        display_order
+		, id_product
+        , active
+        -- , display_order
 	)
     SELECT 
+		PP.id_permutation
 		-- P.id_category,
-		PP.id_product,
-		PP.id_permutation,
-        PP.active,
-        PP.display_order
+		, PP.id_product
+        , PP.active
+        -- , RANK() OVER (ORDER BY VT.display_order, V.display_order)
 	FROM Shop_Product_Permutation PP
     INNER JOIN tmp_Product t_P ON PP.id_product = t_P.id_product
 	WHERE (
@@ -7817,12 +7956,10 @@ BEGIN
 		)
     ;
     
-    select 'nips';
-    
     # Product Images
-    -- CREATE TEMPORARY TABLE tmp_Shop_Product_Copy SELECT * FROM tmp_Shop_Product;
+    -- CREATE TEMPORARY TABLE tmp_Product_Copy SELECT * FROM tmp_Product;
     
-	INSERT INTO tmp_Shop_Image (
+	INSERT INTO tmp_Image (
 		-- id_product
         id_permutation
         , id_image
@@ -7837,7 +7974,7 @@ BEGIN
 			, t_P.id_permutation
 			, t_P.product_has_variations
 			, t_P.rank_permutation
-		FROM tmp_Shop_Product t_P
+		FROM tmp_Product t_P
 	)
     */
     SELECT 
@@ -7848,49 +7985,26 @@ BEGIN
 		, I.display_order
 		-- , RANK() OVER (PARTITION BY IPP.id_product, IPP.id_permutation ORDER BY IPP.display_order_product_temp, IPP.display_order_image)
 	FROM Shop_Product_Image I
-	INNER JOIN tmp_Shop_Product t_P
-		ON I.id_permutation = t_P.id_permutation
-		AND NOT t_P.product_has_variations
-	/*
-	FROM (
-		SELECT 
-			-- t_P.id_product
-			I.id_permutation
-			, I.id_image
-			, I.active
-			, I.display_order AS display_order_image
-            -- , t_P.rank_permutation AS display_order_product_temp
-		FROM Shop_Product_Image I
-		INNER JOIN tmp_Shop_Product t_P
-			ON I.id_permutation = t_P.id_permutation
-			AND NOT t_P.product_has_variations
-		
-		UNION
-		SELECT 
-			-- t_P2_Copy.id_product
-			I.id_permutation
-			, I.id_image
-			, I.active
-			, I.display_order AS display_order_image
-            -- , t_P2.rank_permutation AS display_order_product_temp
-		FROM Shop_Product_Image I
-		INNER JOIN tmp_Shop_Product_Copy t_P_Copy
-			ON I.id_permutation = t_P_Copy.id_permutation
-				AND t_P_Copy.product_has_variations
-        ) IPP
-	*/
-	WHERE (a_get_all_image OR FIND_IN_SET(id_image, a_ids_image) > 0)
-		AND (a_get_inactive_image OR I.active)
+	INNER JOIN tmp_Permutation t_PP ON I.id_permutation = t_PP.id_permutation
+	INNER JOIN Shop_Product P ON t_PP.id_product = P.id_product
+    WHERE 
+		P.has_variations = 0
+		AND (
+			a_get_all_image = 1 OR 
+            FIND_IN_SET(id_image, a_ids_image) > 0
+		)
+		AND (
+			a_get_inactive_image = 1
+			OR I.active = 1
+        )
 	;
     
-    select 'nips';
-    
     -- Permissions
-    IF EXISTS (SELECT * FROM tmp_Shop_Product LIMIT 1) THEN
+    IF EXISTS (SELECT * FROM tmp_Product LIMIT 1) THEN
         # SET v_id_user := (SELECT id_user FROM Shop_User WHERE name = CURRENT_USER());
         SET v_id_permission_product := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
-        SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_product));
-        -- SET v_ids_permutation_permission := (SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_permutation));
+        SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Product WHERE NOT ISNULL(id_product));
+        -- SET v_ids_permutation_permission := (SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') FROM tmp_Product WHERE NOT ISNULL(id_permutation));
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission;
         -- select * from Shop_User_Eval_Temp;
@@ -7908,18 +8022,18 @@ BEGIN
             t_P.can_admin = UE_T.can_admin
 		;
 		-- select * from Shop_User_Eval_Temp;
-		-- select * from tmp_Shop_Product;
+		-- select * from tmp_Product;
         
         SET v_ids_product_invalid := (
-			SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') 
-            FROM tmp_Product P
+			SELECT GROUP_CONCAT(t_P.id_product SEPARATOR ',') 
+            FROM tmp_Product t_P
 			WHERE ISNULL(t_P.can_view)
 		);
         
         DELETE -- t_PC
         FROM tmp_Category t_PC
         WHERE t_PC.id_category IN (
-			SELECT id_category
+			SELECT PC.id_category
             FROM Shop_Product_Category PC
             INNER JOIN Shop_Product P ON PC.id_category = P.id_category
             WHERE FIND_IN_SET(P.id_product, v_ids_product_invalid) > 0
@@ -7945,9 +8059,7 @@ BEGIN
         */
     END IF;
     
-    select 'nips';
-    
-    -- select * from tmp_Shop_Product;
+    -- select * from tmp_Product;
     
     -- Returns
     -- SET v_now := NOW();
@@ -7959,15 +8071,18 @@ BEGIN
         , PC.code
         , PC.name
         , PC.description
+        , PC.id_access_level_required
+		, AL.name AS name_access_level_required
         , PC.display_order
         , PC.active
         , MIN(t_P.can_view) AS can_view
         , MIN(t_P.can_edit) AS can_edit
         , MIN(t_P.can_admin) AS can_admin
     FROM tmp_Category t_C
-    INNER JOIN Shop_product_category PC
-		ON t_P.id_category = PC.id_category
-	-- GROUP BY t_P.id_category
+    INNER JOIN Shop_Product_Category PC ON t_C.id_category = PC.id_category
+    LEFT JOIN tmp_Product t_P ON t_C.id_category = t_P.id_product
+    INNER JOIN Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
+	GROUP BY t_C.id_category -- , t_P.id_product
 	ORDER BY PC.display_order
 	;
     
@@ -7976,24 +8091,20 @@ BEGIN
 		t_P.id_product,
         P.id_category,
         P.name,
-        P.description,
         P.has_variations,
-        P.latency_manufacture,
-        P.quantity_min,
-        P.quantity_max,
-        P.quantity_step,
-        P.quantity_stock,
-        P.id_stripe_product,
-        P.is_subscription,
+        P.id_access_level_required,
+		AL.name AS name_access_level_required,
         P.active,
         P.display_order,
         t_P.can_view,
         t_P.can_edit,
         t_P.can_admin
-    FROM tmp_Shop_Product t_P
+    FROM tmp_Product t_P
     INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
-    GROUP BY C.id_category, P.id_product
-	ORDER BY PC.display_order, P.display_order
+    INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
+    INNER JOIN Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
+    GROUP BY t_P.id_category, t_C.display_order, t_P.id_product, t_P.can_view, t_P.can_edit, t_P.can_admin
+	ORDER BY t_C.display_order, P.display_order
 	;
     
     # Product Permutations
@@ -8001,47 +8112,73 @@ BEGIN
 		t_PP.id_permutation,
 		PP.id_product,
         P.id_category,
+        PP.description,
         PP.cost_local,
         PP.id_currency_cost,
         C.code AS code_currency_cost,
         C.symbol AS symbol_currency_cost,
-        PP.profit_local_min,
-        P.is_subscription,
-        UM.name_singular AS name_recurrence_interval,
-        UM.name_plural AS name_plural_recurrence_interval,
+        -- PP.profit_local_min,
+        PP.latency_manufacture_days,
+        PP.id_unit_measurement_quantity,
+        UM_Q.symbol AS symbol_unit_measurement_quantity,
+        UM_Q.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_quantity,
+        UM_Q.name_singular AS name_singular_unit_measurement_quantity,
+        UM_Q.name_plural AS name_plural_unit_measurement_quantity,
+        PP.count_unit_measurement_per_quantity_step,
+        PP.quantity_min,
+        PP.quantity_max,
+        PP.quantity_stock,
+        PP.is_subscription,
+        PP.id_unit_measurement_interval_recurrence,
+        UM_R.symbol AS symbol_unit_measurement_interval_recurrence,
+        UM_R.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_interval_recurrence,
+        UM_R.name_singular AS name_singular_unit_measurement_interval_recurrence,
+        UM_R.name_plural AS name_plural_unit_measurement_interval_recurrence,
         PP.count_interval_recurrence,
-        t_PP.active,
-        t_PP.display_order,
-        IFNULL(t_PP.can_view, 0) AS can_view,
-        IFNULL(t_PP.can_edit, 0) AS can_edit,
-        IFNULL(t_PP.can_admin, 0) AS can_admin
-    FROM tmp_Shop_Product_Permutation t_PP
+        PP.id_stripe_product,
+        PP.does_expire_faster_once_unsealed,
+        PP.id_unit_measurement_interval_expiration_unsealed,
+        UM_X.symbol AS symbol_unit_measurement_interval_expiration_unsealed,
+        UM_X.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed,
+        UM_X.name_singular AS name_singular_unit_measurement_interval_expiration_unsealed,
+        UM_X.name_plural AS name_plural_unit_measurement_interval_expiration_unsealed,
+        PP.count_interval_expiration_unsealed,
+        NOT ISNULL(PPVL.id_permutation) AS has_variations,
+        PP.active,
+        -- PP.display_order,
+        IFNULL(t_P.can_view, 0) AS can_view,
+        IFNULL(t_P.can_edit, 0) AS can_edit,
+        IFNULL(t_P.can_admin, 0) AS can_admin
+    FROM tmp_Permutation t_PP
     INNER JOIN Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
+    INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
     INNER JOIN Shop_Product P ON t_PP.id_product = P.id_product
     INNER JOIN Shop_Product_Category PC ON P.id_category = PC.id_category
-	-- LEFT JOIN Shop_Recurrence_Interval RI ON t_P.id_interval_recurrence = RI.id_interval
-	LEFT JOIN Shop_Unit_Measurement UM ON PP.id_interval_recurrence = UM.id_unit_measurement
+    LEFT JOIN Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+	LEFT JOIN Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
+	LEFT JOIN Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
+	LEFT JOIN Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
     INNER JOIN Shop_Currency C ON PP.id_currency_cost = C.id_currency
-    GROUP BY C.id_category, P.id_product, PP.id_permutation
-	ORDER BY PC.display_order, P.display_order, PP.display_order
+    GROUP BY PC.id_category, P.id_product, PP.id_permutation, t_P.can_view, t_P.can_edit, t_P.can_admin
+	ORDER BY PC.display_order, P.display_order -- , t_PP.display_order
 	;
     
     # Variations
     SELECT 
 		V.id_variation
+        , V.id_type
         , V.code AS code_variation
         , V.name AS name_variation
+		, V.display_order AS display_order_variation
         , V.active AS active_variation
-		, V.display_order
-        , V.id_type
         , VT.code AS code_variation_type
         , VT.name AS name_variation_type
         , VT.name_plural AS name_plural_variation_type
+		, VT.display_order AS display_order_variation_type
         , VT.active AS active_variation_type
-		, VT.display_order
         , t_P.id_product
-        , t_P.id_permutation
-        , t_P.id_category
+        , t_PP.id_permutation
+        , t_C.id_category
     FROM Shop_Variation V
 	INNER JOIN Shop_Variation_Type VT ON V.id_type = VT.id_type
     INNER JOIN Shop_Product_Permutation_Variation_Link PPVL ON V.id_variation = PPVL.id_variation
@@ -8059,7 +8196,7 @@ BEGIN
 		t_P.id_category,
 		id_variation
 	FROM Shop_Product_Permutation_Variation_Link PPVL
-	INNER JOIN tmp_Shop_Product t_P
+	INNER JOIN tmp_Product t_P
 		ON t_P.id_permutation = PPVL.id_permutation
 	ORDER BY t_P.display_order
 	;
@@ -8069,24 +8206,24 @@ BEGIN
     /*
     select * from tmp_Currency;
     select * from tmp_delivery_region;
-    select * from tmp_shop_product;
+    select * from tmp_product;
     */
     
     # Images
     SELECT 
 		t_I.id_image,
-        t_P.id_product,
+        t_PP.id_product,
 		t_I.id_permutation,
-        t_P.id_category,
+        t_C.id_category,
         I.url,
         I.active,
         I.display_order
-    FROM tmp_Shop_Image t_I
-    INNER JOIN Shop_Product_Image I
-		ON t_I.id_image = I.id_image
-	INNER JOIN tmp_Shop_Product t_P
-		ON t_I.id_permutation = t_P.id_permutation
-	ORDER BY t_P.rank_permutation, I.display_order
+    FROM tmp_Image t_I
+    INNER JOIN Shop_Product_Image I ON t_I.id_image = I.id_image
+	INNER JOIN tmp_Permutation t_PP ON t_I.id_permutation = t_PP.id_permutation
+    INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
+    INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
+	ORDER BY t_C.display_order, t_P.display_order, I.display_order
 	;
     
     # Errors
@@ -8121,22 +8258,23 @@ BEGIN
     */
     
     # select 'other outputs';
-    # select * from tmp_Shop_Product;
+    # select * from tmp_Product;
     
     -- Clean up
     DROP TEMPORARY TABLE IF EXISTS tmp_Image;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Image;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Image;
     DROP TEMPORARY TABLE IF EXISTS tmp_Category;
     DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_2;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_Copy;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product_2;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product_Copy;
     
 END //
 DELIMITER ;;
 
 
+/*
 
 CALL partsltd_prod.p_shop_get_many_product (
 	1 #'auth0|6582b95c895d09a70ba10fef', # a_id_user
@@ -8154,10 +8292,10 @@ CALL partsltd_prod.p_shop_get_many_product (
 	, '' # a_ids_image
     , 1 # a_get_products_quantity_stock_below_minimum
 );
-/*
 
 select * FROM Shop_User_Eval_Temp;
 
+select * from Shop_Product_Category;
 select * from Shop_Product_Permutation;
 select * from shop_product_change_set;
 insert into shop_product_change_set ( comment ) values ('set stock quantities below minimum for testing');
@@ -8494,544 +8632,483 @@ CALL p_shop_user_eval (
 */
 
 
-
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_save_permutation;
-
-DROP TABLE IF EXISTS tmp_Shop_Manufacturing_Purchase_Order_Product_Link;
-DROP TABLE IF EXISTS tmp_Msg_Error;
+DROP PROCEDURE IF EXISTS p_shop_save_product_permutation;
 
 DELIMITER //
-CREATE PROCEDURE p_shop_save_permutation (
+CREATE PROCEDURE p_shop_save_product_permutation (
 	IN a_guid VARCHAR(500),
     IN a_id_user INT,
-    IN a_id_order INT,
-    -- IN a_id_supplier_ordered INT,
-    IN a_id_currency_cost INT,
-    IN a_active BIT,
     IN a_comment VARCHAR(500)
 )
 BEGIN
-    DECLARE v_id_error_type_bad_data INT;
-    DECLARE v_code_error_type_bad_data VARCHAR(50);
-    DECLARE v_id_error_type_no_permission INT;
-    DECLARE v_code_error_type_no_permission VARCHAR(50);
-    DECLARE v_guid_permission BINARY(36);
-    -- DECLARE v_id_user VARCHAR(100);
-    DECLARE v_id_permission_manufacturing_purchase_order INT;
-	DECLARE v_id_access_level_EDIT INT;
-    DECLARE v_ids_product VARCHAR(4000);
-    DECLARE v_ids_product_no_permission VARCHAR(4000);
-    -- DECLARE v_id_order_new INT;
+    
+	DECLARE v_code_type_error_bad_data VARCHAR(100);
+    DECLARE v_id_type_error_bad_data INT;
+    DECLARE v_id_permission_product INT;
+    DECLARE v_ids_product_permission LONGTEXT;
     DECLARE v_id_change_set INT;
-    DECLARE v_is_new_manufacturing_purchase_order BIT;
+    DECLARE v_id_access_level_edit INT;
+    DECLARE v_now TIMESTAMP;
     
-	SET SESSION sql_mode = sys.list_drop(@@session.sql_mode, 'ONLY_FULL_GROUP_BY');
-    
-    SET v_code_error_type_bad_data = 'BAD_DATA';
-    SET v_id_error_type_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_error_type_bad_data LIMIT 1);
-    SET v_code_error_type_no_permission = 'NO_PERMISSION';
-    SET v_id_error_type_no_permission := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_error_type_no_permission LIMIT 1);
-	SET v_guid_permission = UUID();
-	-- SET v_id_user = CURRENT_USER();
-	SET v_id_permission_manufacturing_purchase_order := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_MANUFACTURING_PURCHASE_ORDER' LIMIT 1);
-	SET v_id_access_level_EDIT := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT');
-    
-	-- Argument default values
-    IF a_guid IS NULL THEN 
-		SET a_guid = UUID();
-	END IF;
-	IF a_active IS NULL THEN
-		SET a_active = 0;
-    END IF;
-    
-    -- Temporary tables
-    /*
-    CREATE TABLE tmp_Shop_Supplier_Purchase_Order (
-		id_order INT NOT NULL PRIMARY KEY,
-		id_supplier_ordered INT NOT NULL,
-		CONSTRAINT FK_tmp_Shop_Supplier_Purchase_Order_id_supplier_ordered
-			FOREIGN KEY (id_supplier_ordered) 
-			REFERENCES Shop_Supplier(id_supplier),
-		cost_total_local FLOAT NOT NULL,
-		id_currency_cost INT NOT NULL
-    );
-    */
-    
-    CREATE TABLE tmp_Shop_Manufacturing_Purchase_Order_Product_Link (
-		id_link INT NOT NULL PRIMARY KEY,
-		id_order INT NOT NULL,
-        /*
-		CONSTRAINT FK_tmp_Supplier_Purchase_Order_Product_Link_id_order
-			FOREIGN KEY (id_order) 
-			REFERENCES Shop_Manufacturing_Purchase_Order(id_order),
-		*/
-        id_permutation INT NOT NULL,
-		CONSTRAINT FK_tmp_Manuf_Purch_Order_Product_Link_id_permutation
-			FOREIGN KEY (id_permutation) 
-			REFERENCES Shop_Product_Permutation(id_permutation),
-		cost_total_local FLOAT NOT NULL,
-		id_currency_cost INT NOT NULL,
-        value_produced_total_local FLOAT NOT NULL,
-		quantity_used FLOAT NOT NULL,
-		id_unit_quantity INT NOT NULL,
-		CONSTRAINT FK_tmp_Manuf_Purch_Order_Product_Link_id_unit_quantity
-			FOREIGN KEY (id_unit_quantity)
-			REFERENCES Shop_Unit_Measurement(id_unit_measurement),
-		quantity_produced FLOAT NULL,
-		latency_manufacture_days INT NOT NULL,
-		display_order INT NOT NULL,
-        active BIT NOT NULL,
-        name_error VARCHAR(200) NOT NULL
-    );
-    
-	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
-		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid BINARY(36) NOT NULL,
-		id_type INT NOT NULL,
-		CONSTRAINT FK_tmp_Msg_Error_id_type 
-			FOREIGN KEY (id_type)
-			REFERENCES Shop_Msg_Error_Type (id_type),
-        code VARCHAR(50) NOT NULL,
-        msg VARCHAR(4000) NOT NULL
-	);
-    
-    
-    -- Argument validation
-    # User ID
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF ISNULL(a_id_user) OR NOT EXISTS (SELECT * FROM Shop_User WHERE id_user = a_id_user) THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			VALUES
-				(a_guid, v_id_error_type_bad_data, v_code_error_type_bad_data, CONCAT('Invalid User ID: ', IFNULL(a_id_user, 'NULL')))
-			;
-		END IF;
-    END IF;
-    
-    # Order ID
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF ISNULL(a_id_order) OR ((a_id_order > 0) AND NOT EXISTS (SELECT * FROM Shop_Manufacturing_Purchase_Order WHERE id_order = a_id_order)) THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			VALUES
-				(a_guid, v_id_error_type_bad_data, v_code_error_type_bad_data, CONCAT('Invalid Manufacturing Purchase Order ID: ', IFNULL(a_id_order, 'NULL')))
-			;
-		END IF;
-    END IF;
-    
-    /*
-    # Supplier ID
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF ISNULL(a_id_supplier_ordered) OR NOT EXISTS (SELECT * FROM Shop_Supplier WHERE id_supplier = a_id_supplier_ordered) THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			VALUES
-				(a_guid, v_id_error_type_bad_data, v_code_error_type_bad_data, CONCAT('Invalid supplier ID: ', IFNULL(a_id_supplier_ordered, 'NULL')))
-			;
-		END IF;
-    END IF;
-    */
-    
-    # Currency ID
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF ISNULL(a_id_currency_cost) OR NOT EXISTS (SELECT * FROM Shop_Currency WHERE id_currency = a_id_currency_cost) THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			VALUES
-				(a_guid, v_id_error_type_bad_data, v_code_error_type_bad_data, CONCAT('Invalid currency ID: ', IFNULL(a_id_currency, 'NULL')))
-			;
-		END IF;
-    END IF;
-    
-    # Comment
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF ISNULL(a_comment) OR TRIM(a_comment) = '' THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			VALUES
-				(a_guid, v_id_error_type_bad_data, v_code_error_type_bad_data, 'A comment must be provided.')
-			;
-		END IF;
-    END IF;
-    
-
-	-- Get data from Temp table
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		SET v_is_new_manufacturing_purchase_order := CASE WHEN a_id_order <= 0 THEN 1 ELSE 0 END;
-		
-		INSERT INTO tmp_Shop_Manufacturing_Purchase_Order_Product_Link (
-			id_link, 
-            id_order, 
-            id_permutation, 
-            cost_total_local, 
-            id_currency_cost, 
-            quantity_used, 
-            id_unit_quantity, 
-            quantity_produced, 
-            value_produced_total_local,
-            latency_manufacture_days, 
-            display_order, 
-            active,
-            name_error
+    DECLARE exit handler for SQLEXCEPTION
+    BEGIN
+        -- Get diagnostic information
+        GET DIAGNOSTICS CONDITION 1
+            @sqlstate = RETURNED_SQLSTATE
+            , @errno = MYSQL_ERRNO
+            , @text = MESSAGE_TEXT
+		;
+        
+        -- Rollback the transaction
+        ROLLBACK;
+        
+        -- Select the error information
+        -- SELECT 'Error' AS status, @errno AS error_code, @sqlstate AS sql_state, @text AS message;
+        
+		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
+			display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+			, guid BINARY(36) NOT NULL
+			, id_type INT NULL
+			, code VARCHAR(50) NOT NULL
+			, msg VARCHAR(4000) NOT NULL
+		);
+        INSERT INTO tmp_Msg_Error (
+			guid
+            , id_type
+            , code
+            , msg
 		)
-        /*
-		VALUES 
-			(a_id_supplier, a_name_company, a_name_contact, a_department_contact, a_id_address, a_phone_number, a_fax, a_email, a_website, a_id_currency, a_active)
-		*/
-		SELECT 
-			MPOPL_T.id_link, 
-            MPOPL_T.id_order, 
-            MPOPL_T.id_permutation, 
-            PP.cost_local * MPOPL_T.quantity_used AS cost_total_local, 
-            MPOPL_T.id_currency_cost, 
-            MPOPL_T.quantity_used, 
-            MPOPL_T.id_unit_quantity, 
-            MPOPL_T.quantity_produced, 
-            (PP.cost_local + PP.profit_local_min) * MPOPL_T.quantity_produced AS value_produced_total_local,
-            MPOPL_T.latency_manufacture_days, 
-            MPOPL_T.display_order, 
-            MPOPL_T.active,
-            CONCAT(PP.id_permutation, ' - ', IFNULL(P.name ,'')) AS name_error
-        FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
-        INNER JOIN Shop_Product_Permutation PP ON MPOPL_T.id_permutation = PP.id_permutation
-        INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-		WHERE MPOPL_T.GUID = a_guid
-        -- GROUP BY MPOPL_T.id_order, name_error, MPOPL_T.id_link
-        /*
-        group by 
-			MPOPL_T.id_link, 
-            MPOPL_T.id_order, 
-            MPOPL_T.id_permutation, 
-            cost_total_local, 
-            MPOPL_T.id_currency_cost, 
-            MPOPL_T.quantity_used, 
-            MPOPL_T.id_unit_quantity, 
-            MPOPL_T.quantity_produced, 
-            value_produced_total_local,
-            MPOPL_T.latency_manufacture_days, 
-            MPOPL_T.display_order, 
-            MPOPL_T.active,
-            name_error
-		*/
-        -- GROUP BY id_link, P.id_product, PP.id_permutation
-        -- GROUP BY name_error, ID_LINK, cost_total_local, value_produced_total_local
-        ;
-        DELETE MPOPL_T
-		FROM Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
-		WHERE MPOPL_T.GUID = a_guid
-        ;
+        SELECT 
+			a_guid
+            , NULL
+            , @errno
+            , @text
+		;
+        SELECT *
+        FROM tmp_Msg_Error;
+		DROP TABLE IF EXISTS tmp_Msg_Error;
+    END;
+    
+    SET v_code_type_error_bad_data := 'BAD_DATA';
+    SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_id_access_level_edit := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    
+    SET a_guid := IFNULL(a_guid, UUID());
+    
+    DROP TABLE IF EXISTS tmp_Permutation;
+    
+    CREATE TEMPORARY TABLE tmp_Permutation (
+		id_permutation INT NOT NULL
+		, id_product INT NOT NULL
+		, description VARCHAR(4000) NOT NULL
+		, cost_local FLOAT NOT NULL
+		, id_currency_cost INT NOT NULL
+		, profit_local_min FLOAT NOT NULL
+		, latency_manufacture_days INT NOT NULL
+		, id_unit_measurement_quantity INT NOT NULL
+		, count_unit_measurement_per_quantity_step FLOAT NOT NULL
+		, quantity_min FLOAT NOT NULL
+		, quantity_max FLOAT NOT NULL
+		, quantity_stock FLOAT NOT NULL
+		, is_subscription BIT NOT NULL
+		, id_unit_measurement_interval_recurrence INT
+		, count_interval_recurrence INT
+		, id_stripe_product VARCHAR(100) NULL
+		, does_expire_faster_once_unsealed BIT NOT NULL
+		, id_unit_measurement_interval_expiration_unsealed INT
+		, count_interval_expiration_unsealed INT
+		, active BIT NOT NULL DEFAULT 1
+        , can_view BIT NULL
+        , can_edit BIT NULL
+        , can_admin BIT NULL
+        , name_error VARCHAR(255) NOT NULL
+        , is_new BIT NOT NULL
+    );
+        
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
+		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+        , guid BINARY(36) NOT NULL
+		, id_type INT NULL
+        , code VARCHAR(50) NOT NULL
+        , msg VARCHAR(4000) NOT NULL
+	);
+        
+    
+    -- Get data from Temp table
+    INSERT INTO tmp_Permutation (
+		id_permutation
+		, id_product
+		, description
+		, cost_local
+		, id_currency_cost
+		, profit_local_min
+		, latency_manufacture_days
+		, id_unit_measurement_quantity
+		, count_unit_measurement_per_quantity_step
+		, quantity_min
+		, quantity_max
+		, quantity_stock
+		, is_subscription
+		, id_unit_measurement_interval_recurrence
+		, count_interval_recurrence
+		, id_stripe_product
+		, does_expire_faster_once_unsealed
+		, id_unit_measurement_interval_expiration_unsealed
+		, count_interval_expiration_unsealed
+		, active
+        , name_error
+        , is_new
+	)
+    SELECT 
+		PP_T.id_permutation
+		, IFNULL(PP_T.id_product, PP.id_product) AS id_product
+        , IFNULL(PP_T.description, PP.description) AS description
+		, IFNULL(PP_T.cost_local, PP.cost_local) AS cost_local
+		, IFNULL(PP_T.id_currency_cost, PP.id_currency_cost) AS a_id_currency_cost
+		, IFNULL(PP_T.profit_local_min, PP.profit_local_min) AS profit_local_min
+		, IFNULL(PP_T.latency_manufacture_days, PP.latency_manufacture_days) AS latency_manufacture_days
+		, IFNULL(PP_T.id_unit_measurement_quantity, PP.id_unit_measurement_quantity) AS id_unit_measurement_quantity
+		, IFNULL(PP_T.count_unit_measurement_per_quantity_step, PP.count_unit_measurement_per_quantity_step) AS count_unit_measurement_per_quantity_step
+		, IFNULL(PP_T.quantity_min, PP.quantity_min) AS quantity_min
+		, IFNULL(PP_T.quantity_max, PP.quantity_max) AS quantity_max
+		, IFNULL(PP_T.quantity_stock, PP.quantity_stock) AS quantity_stock
+		, IFNULL(PP_T.is_subscription, PP.is_subscription) AS is_subscription
+		, IFNULL(PP_T.id_unit_measurement_interval_recurrence, PP.id_unit_measurement_interval_recurrence) AS id_unit_measurement_interval_recurrence
+		, IFNULL(PP_T.count_interval_recurrence, PP.count_interval_recurrence) AS count_interval_recurrence
+		, IFNULL(PP_T.id_stripe_product, PP.id_stripe_product) AS id_stripe_product
+		, IFNULL(PP_T.does_expire_faster_once_unsealed, PP.does_expire_faster_once_unsealed) AS does_expire_faster_once_unsealed
+		, IFNULL(PP_T.id_unit_measurement_interval_expiration_unsealed, PP.id_unit_measurement_interval_expiration_unsealed) AS id_unit_measurement_interval_expiration_unsealed
+		, IFNULL(PP_T.count_interval_expiration_unsealed, PP.count_interval_expiration_unsealed) AS count_interval_expiration_unsealed
+        , IFNULL(PP_T.active, PP.active) AS active
+		, fn_shop_get_name_product_permutation(PP_T.id_permutation)
+        , CASE WHEN IFNULL(PP_T.id_category, 0) < 1 THEN 1 ELSE 0 END AS is_new
+	FROM Shop_Product_Permutation_Temp PP_T
+    LEFT JOIN Shop_Product_Permutation PP ON PP_T.id_category = PP.id_category
+    WHERE PP_T.guid = a_guid
+    ;
+    
+    -- Validation
+    -- Missing mandatory fields
+    -- id_product
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.id_product) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, id_product
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a product: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.id_product)
+		;
     END IF;
-    
-    -- Invalid quantity used
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF EXISTS (
-			SELECT * 
-            FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link 
-            WHERE 
-				NOT ISNULL(quantity_used)
-				AND quantity_used < 0
-		) THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			SELECT
-				a_guid, 
-                v_id_error_type_bad_data, 
-                v_code_error_type_bad_data, 
-                CONCAT('Invalid quantity used property for the following permutations: ', GROUP_CONCAT(t_MPOPL.name_error SEPARATOR ', '))
-			FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-            WHERE t_MPOPL.quantity_used < 0
-			;
-        END IF;
+    -- cost_local
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.cost_local) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, cost_local
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a local cost: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.cost_local)
+		;
     END IF;
-    
-    -- Invalid quantity produced
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF EXISTS (
-			SELECT * 
-            FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link 
-            WHERE 
-				NOT ISNULL(quantity_produced)
-				AND quantity_produced < 0
-		) THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			SELECT
-				a_guid, 
-                v_id_error_type_bad_data, 
-                v_code_error_type_bad_data, 
-                CONCAT('Invalid quantity produced property for the following permutations: ', GROUP_CONCAT(t_MPOPL.name_error SEPARATOR ', '))
-			FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-            WHERE t_MPOPL.quantity_produced < 0
-			;
-        END IF;
+    -- profit_local_min 
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.profit_local_min) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, profit_local_min
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a local minimum profit: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.profit_local_min)
+		;
     END IF;
-    
-    -- Duplicates
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF EXISTS (SELECT id_permutation, name_error, COUNT(*) FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL GROUP BY id_permutation HAVING COUNT(*) > 1) THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			SELECT
-				a_guid, 
-                v_id_error_type_bad_data, 
-                v_code_error_type_bad_data, 
-                CONCAT('Duplicate records: ', GROUP_CONCAT(t_MPOPLC.name_error SEPARATOR ', '))
-			FROM (SELECT id_permutation, name_error, COUNT(*) FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL GROUP BY id_permutation HAVING COUNT(*) > 1) t_MPOPLC
-			;
-        END IF;
-	END IF;
-    
+    -- 	latency_manufacture_days
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.latency_manufacture_days) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, latency_manufacture_days
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a manufacturing latency: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.latency_manufacture_days)
+		;
+    END IF;
+    -- id_unit_measurement_quantity
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.id_unit_measurement_quantity) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, id_unit_measurement_quantity
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a unit measurement for stock quantities: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.id_unit_measurement_quantity)
+		;
+    END IF;
+    -- 	count_unit_measurement_per_quantity_step
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.count_unit_measurement_per_quantity_step) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, count_unit_measurement_per_quantity_step
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a count unit measurement per quantity step: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.count_unit_measurement_per_quantity_step)
+		;
+    END IF;
+    -- quantity_min
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.quantity_min) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, quantity_min
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a minimum quantity: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.quantity_min)
+		;
+    END IF;
+    -- 	quantity_max
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.quantity_max) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, quantity_max
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a maximum quantity: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.quantity_max)
+		;
+    END IF;
+    -- is_subscription
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.is_subscription) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, is_subscription
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have an is subscription?: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.is_subscription)
+		;
+    END IF;
+    -- does_expire_faster_once_unsealed
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.does_expire_faster_once_unsealed) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			guid
+			, id_type
+			, does_expire_faster_once_unsealed
+			, msg
+		)
+		SELECT
+			a_guid AS GUID
+			, v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a does expire faster once unsealed: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.does_expire_faster_once_unsealed)
+		;
+    END IF;
     
     -- Permissions
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-        SET v_ids_product := (
-			SELECT GROUP_CONCAT(G.id_product SEPARATOR ',')
-            FROM (
-				SELECT DISTINCT PP.id_product
-				FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPO
-				INNER JOIN Shop_Product_Permutation PP ON t_MPO.id_permutation = PP.id_permutation
-			) G
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN -- (SELECT * FROM tmp_Product WHERE is_new = 0 LIMIT 1) THEN
+        SET v_ids_product_permission := (
+			SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') 
+            FROM Shop_Product P 
+            INNER JOIN tmp_Permutation t_P
+				ON P.id_product = t_P.id_product 
+                -- AND t_P.is_new = 0
 		);
-        
-        CALL p_shop_user_eval(v_guid_permission, a_id_user, 0, v_id_permission_manufacturing_purchase_order, v_id_access_level_edit, v_ids_product);
-        
-        /*
-        UPDATE tmp_Shop_Supplier t_S
-        INNER JOIN Shop_User_Eval_Temp TP
-			ON TP.GUID = v_guid_permission
-        SET tP.can_view = TP.can_view,
-			tP.can_edit = TP.can_edit,
-            tP.can_admin = TP.can_admin;
-		*/
-        /*
-        SET v_has_permission := (
-			SELECT can_edit 
-            FROM Shop_User_Eval_Temp 
-            WHERE 
-				GUID = v_guid_permission
-				AND can_edit = 0
-        );
-        
-        IF v_has_permission = 0 THEN
-			SET v_id_error_type_no_permission := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, msg
-			)
-			SELECT
-				a_guid, 
-				v_id_error_type_no_permission, 
-				CONCAT('You do not have ', name, ' permissions.')
-			FROM Shop_Permission
-            WHERE id_permission = v_id_permission_manufacturing_purchase_order
-			;
-        END IF;
-        */
-        SET v_ids_product_no_permission := (
-			SELECT GROUP_CONCAT(PT.id_product SEPARATOR ',') 
-            FROM Shop_User_Eval_Temp PT 
-            WHERE 
-				PT.can_edit = 0
-				AND NOT ISNULL(PT.id_product)
-        );
-        IF NOT ISNULL(v_ids_product_no_permission) THEN
-			INSERT INTO tmp_Msg_Error ( 
-				guid, id_type, code, msg
-			)
-			VALUES (
-				a_guid, 
-				v_id_error_type_no_permission, 
-                v_code_error_type_no_permission,
-                CONCAT('You do not have permission to edit the following product IDs: ', v_ids_product_no_permission)
-			)
-			;
-        END IF;
-    END IF;
-    
-	-- Transaction    
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		START TRANSACTION;
-			INSERT INTO Shop_Sales_And_Purchasing_Change_Set (
-				comment,
-				updated_last_by,
-				updated_last_on
-			)
-			VALUES (
-				CONCAT(
-					'Save ',
-					CASE WHEN v_is_new_manufacturing_purchase_order = 1 THEN 'new ' ELSE '' END,
-					'Manufacturing Purchase Order - ', 
-					a_comment
-				),
-				a_id_user,
-				CURRENT_TIME()
-			);
+        IF NOT ISNULL(v_ids_product_permission) THEN
+			SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
 			
-			SET v_id_change_set := (SELECT id_change_set FROM Shop_Sales_And_Purchasing_Change_Set ORDER BY id_change_set DESC LIMIT 1);
+			CALL p_shop_user_eval(a_guid, a_id_user, FALSE, v_id_permission_product, v_id_access_level_edit, v_ids_product_permission);
 			
-			IF (v_is_new_manufacturing_purchase_order = 1) THEN
-				INSERT INTO Shop_Manufacturing_Purchase_Order (
-					-- id_supplier_ordered,
-					cost_total_local,
-					id_currency_cost,
-                    value_produced_total_local,
-                    created_by,
-                    id_change_set,
-                    active
+			UPDATE tmp_Permutation t_P
+            INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
+			INNER JOIN Shop_User_Eval_Temp UE_T
+				ON P.id_product = UE_T.id_product
+				AND UE_T.GUID = a_guid
+			SET 
+				t_P.can_view = UE_T.can_view
+				, t_P.can_edit = UE_T.can_edit
+				, t_P.can_admin = UE_T.can_admin
+			;
+			
+			CALL p_clear_shop_user_eval_temp(a_guid);
+
+			IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.can_edit) LIMIT 1) THEN
+				INSERT INTO tmp_Msg_Error (
+					guid
+					, id_type
+					, code
+					, msg
 				)
-                SELECT
-					-- a_id_supplier_ordered,
-					SUM(t_MPOPL.cost_total_local),
-                    a_id_currency_cost,
-					SUM(t_MPOPL.value_produced_total_local),
-                    a_id_user,
-                    v_id_change_set,
-                    a_active
-				FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL
+				SELECT
+					a_guid AS GUID
+					, v_id_type_error_bad_data
+					, v_code_type_error_bad_data
+					, CONCAT('The following product permutation(s) do not have product edit permission: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+				FROM tmp_Permutation t_P
+				WHERE ISNULL(t_P.can_edit)
 				;
-                -- SET v_id_order_new 
-                SET a_id_order := (SELECT id_order FROM Shop_Manufacturing_Purchase_Order ORDER BY id_order DESC LIMIT 1);
-                
-				INSERT INTO Shop_Manufacturing_Purchase_Order_Product_Link (
-					id_order,
-					id_permutation,
-					cost_total_local,
-                    value_produced_total_local,
-					id_currency_cost,
-					quantity_used,
-					id_unit_quantity,
-					quantity_produced,
-					latency_manufacture_days,
-					display_order,
-                    active,
-                    created_by,
-                    id_change_set
-				)
-                SELECT
-					a_id_order, -- v_id_order_new,
-					id_permutation,
-					cost_total_local,
-                    value_produced_total_local,
-					id_currency_cost,
-					quantity_used,
-					id_unit_quantity,
-					quantity_produced,
-					latency_manufacture_days,
-					display_order,
-                    active,
-                    a_id_user,
-                    v_id_change_set
-				FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-				;
-			ELSE
-				UPDATE Shop_Manufacturing_Purchase_Order MPO
-				INNER JOIN tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL ON MPO.id_order = t_MPOPL.id_order
-                SET
-					-- MPO.id_supplier_ordered = a_id_supplier_ordered,
-					MPO.cost_total_local = SUM(t_MPOPL.cost_total_local),
-                    MPO.value_produced_total_local = SUM(t_MPOPL.value_produced_total_local),
-                    MPO.id_currency = a_id_currency_cost,
-                    MPO.id_change_set = v_id_change_set,
-                    MPO.active = a_active
-				WHERE MPO.id_order = a_id_order
-				;
-                IF EXISTS (SELECT * FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL INNER JOIN Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link) THEN
-					UPDATE Shop_Manufacturing_Purchase_Order_Product_Link MPOPL
-					INNER JOIN tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-						ON MPOPL.id_link = t_MPOPL.id_link
-					SET
-						MPOPL.id_order = t_MPOPL.id_order,
-						MPOPL.id_permutation = t_MPOPL.id_permutation,
-						MPOPL.cost_total_local = t_MPOPL.cost_total_local,
-						MPOPL.value_produced_total_local = t_MPOPL.value_produced_total_local,
-						MPOPL.id_currency_cost = t_MPOPL.id_currency_cost,
-						MPOPL.quantity_used = t_MPOPL.quantity_used,
-						MPOPL.id_unit_quantity = t_MPOPL.id_unit_quantity,
-						MPOPL.quantity_produced = t_MPOPL.quantity_produced,
-						MPOPL.latency_manufacture_days = t_MPOPL.latency_manufacture_days,
-						MPOPL.display_order = t_MPOPL.display_order,
-                        MPOPL.active = t_MPOPL.active,
-						MPOPL.id_change_set = v_id_change_set
-					;
-                ELSE
-					INSERT INTO Shop_Manufacturing_Purchase_Order_Product_Link (
-						id_order,
-						id_permutation,
-						cost_total_local,
-                        value_produced_total_local,
-						id_currency_cost,
-						quantity_used,
-						id_unit_quantity,
-						quantity_produced,
-						latency_manufacture_days,
-						display_order,
-                        active,
-                        created_by,
-						id_change_set
-					)
-					SELECT
-						id_order,
-						id_permutation,
-						cost_total_local,
-                        value_produced_total_local,
-						id_currency_cost,
-						quantity_used,
-						id_unit_quantity,
-						quantity_produced,
-						latency_manufacture_days,
-						display_order,
-						active,
-                        a_id_user,
-						v_id_change_set
-					FROM tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-                    WHERE t_MPOPL.id_link < 0
-					;
-                END IF;
 			END IF;
-		
-		IF EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-			ROLLBACK;
-		ELSE
-			COMMIT;
 		END IF;
     END IF;
     
-    -- Returns
-    # SET v_now = NOW();
+    SET v_now := CURRENT_TIMESTAMP();
     
-    # Manufacturing Purchase Orders
-    SELECT *
-    FROM Shop_Manufacturing_Purchase_Order
-    WHERE 
-		id_order = a_id_order
-        -- GUID = a_guid
-    ;
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		START TRANSACTION;
+		
+		IF NOT ISNULL(v_ids_product_permission) THEN
+			INSERT INTO Shop_Product_Change_Set ( comment )
+			VALUES ( a_comment )
+			;
+			
+			SET v_id_change_set := LAST_INSERT_ID();
+			
+			UPDATE Shop_Product_Permutation PP
+			INNER JOIN tmp_Permutation t_P ON PP.id_permutation = t_P.id_permutation
+			SET 
+				PP.id_permutation = t_P.id_permutation
+				, PP.id_product = t_P.id_product
+				, PP.description = t_P.description
+				, PP.cost_local = t_P.cost_local
+				, PP.id_currency_cost = t_P.id_currency_cost
+				, PP.profit_local_min = t_P.profit_local_min
+				, PP.latency_manufacture_days = t_P.latency_manufacture_days
+				, PP.id_unit_measurement_quantity = t_P.id_unit_measurement_quantity
+				, PP.count_unit_measurement_per_quantity_step = t_P.count_unit_measurement_per_quantity_step
+				, PP.quantity_min = t_P.quantity_min
+				, PP.quantity_max = t_P.quantity_max
+				, PP.quantity_stock = t_P.quantity_stock
+				, PP.is_subscription = t_P.is_subscription
+				, PP.id_unit_measurement_interval_recurrence = t_P.id_unit_measurement_interval_recurrence
+				, PP.count_interval_recurrence = t_P.count_interval_recurrence
+				, PP.id_stripe_product = t_P.id_stripe_product
+				, PP.does_expire_faster_once_unsealed = t_P.does_expire_faster_once_unsealed
+				, PP.id_unit_measurement_interval_expiration_unsealed = t_P.id_unit_measurement_interval_expiration_unsealed
+				, PP.count_interval_expiration_unsealed = t_P.count_interval_expiration_unsealed
+				, PP.active = t_P.active
+				, PP.id_change_set = v_id_change_set
+			;
+		END IF;
+		
+		INSERT INTO Shop_Product_Permutation (
+			id_product
+			, description
+			, cost_local
+			, id_currency_cost
+			, profit_local_min
+			, latency_manufacture_days
+			, id_unit_measurement_quantity
+			, count_unit_measurement_per_quantity_step
+			, quantity_min
+			, quantity_max
+			, quantity_stock
+			, is_subscription
+			, id_unit_measurement_interval_recurrence
+			, count_interval_recurrence
+			, id_stripe_product
+			, does_expire_faster_once_unsealed
+			, id_unit_measurement_interval_expiration_unsealed
+			, count_interval_expiration_unsealed
+            , active
+			, display_order
+			, created_by
+			, created_on
+		)
+		SELECT
+			t_P.id_product AS id_product
+			, t_P.description AS description
+			, t_P.cost_local AS cost_local
+			, t_P.id_currency_cost AS id_currency_cost
+			, t_P.profit_local_min AS profit_local_min
+			, t_P.latency_manufacture_days AS latency_manufacture_days
+			, t_P.id_unit_measurement_quantity AS id_unit_measurement_quantity
+			, t_P.count_unit_measurement_per_quantity_step AS count_unit_measurement_per_quantity_step
+			, t_P.quantity_min AS quantity_min
+			, t_P.quantity_max AS quantity_max
+			, t_P.quantity_stock AS quantity_stock
+			, t_P.is_subscription AS is_subscription
+			, t_P.id_unit_measurement_interval_recurrence AS id_unit_measurement_interval_recurrence
+			, t_P.count_interval_recurrence AS count_interval_recurrence
+			, t_P.id_stripe_product AS id_stripe_product
+			, t_P.does_expire_faster_once_unsealed AS does_expire_faster_once_unsealed
+			, t_P.id_unit_measurement_interval_expiration_unsealed AS id_unit_measurement_interval_expiration_unsealed
+			, t_P.count_interval_expiration_unsealed AS count_interval_expiration_unsealed
+			, t_P.active AS active
+			, a_id_user AS created_by
+			, v_now AS created_on
+		FROM tmp_Permutation t_P
+		WHERE 
+			is_new = 1
+			AND active = 1
+		;
+		
+		COMMIT;
+    END IF;
     
-    # Manufacturing Purchase Order Product Links
-    SELECT *
-    FROM Shop_Manufacturing_Purchase_Order_Product_Link
-    WHERE
-		id_order = a_id_order
-        -- GUID = a_guid
-    ;
+    DELETE FROM Shop_Product_Category_Temp
+    WHERE GUID = a_guid;
     
-    # Errors
-    SELECT *
-    FROM tmp_Msg_Error
-	;
+    SELECT * FROM tmp_Msg_Error;
     
-    # DROP TABLE tmp_Shop_Manufacturing_Purchase_Order;
-    DROP TABLE tmp_Shop_Manufacturing_Purchase_Order_Product_Link;
-    DROP TABLE tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Catgory;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
 END //
 DELIMITER ;;
 
@@ -9098,24 +9175,7 @@ DELETE FROM Shop_Manufacturing_Purchase_Order;
 */
 
 
-
-
-/*
-
-CALL p_shop_get_many_product_variation (
-	'', # a_id_user
-    1, # a_get_all_supplier
-	0, # a_get_inactive_variation
-    0, # a_get_first_variation_only
-	'', # a_ids_variation
-);
-
-*/
-
-
--- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
-
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_product_variation (
@@ -9335,32 +9395,33 @@ BEGIN
     END IF;
     
     -- Returns
-    /*
     # Variation Types
     SELECT 
 		t_VT.id_type
         , VT.code
         , VT.name
         , VT.name_plural
+        , VT.display_order
         , VT.active
     FROM tmp_Variation_Type t_VT
     INNER JOIN Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
 	;
-    */
     
     # Variations
     SELECT 
 		t_V.id_variation
+        , t_V.id_type
         , V.code AS code_variation
         , V.name AS name_variation
-        , V.active AS active_variation
 		, V.display_order
-        , t_V.id_type
+        , V.active AS active_variation
+        /*
         , VT.code AS code_variation_type
         , VT.name AS name_variation_type
         , VT.name_plural AS name_plural_variation_type
         , VT.active AS active_variation_type
 		, VT.display_order
+        */
     FROM tmp_Variation t_V
     INNER JOIN Shop_Variation V ON t_V.id_variation = V.id_variation
     INNER JOIN tmp_Variation_Type t_VT ON V.id_type = t_VT.id_type
@@ -9613,17 +9674,17 @@ BEGIN
         price_GBP_full FLOAT NOT NULL,
 		price_GBP_min FLOAT NOT NULL,
 		*
-        , latency_manufacture INT NOT NULL
+        , latency_manufacture_days INT NOT NULL
 		, quantity_min FLOAT NOT NULL
 		, quantity_max FLOAT NOT NULL
 		, quantity_step FLOAT NOT NULL
 		, quantity_stock FLOAT NOT NULL
 		, is_subscription BIT NOT NULL
-		, id_recurrence_interval INT
-		, CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval)
-		, count_recurrence_interval INT
+		, id_unit_measurement_interval_recurrence INT
+		, CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval)
+		, count_interval_recurrence INT
         , id_stripe_product VARCHAR(100)
         , product_has_variations INT NOT NULL
         , can_view BIT
@@ -10797,15 +10858,15 @@ BEGIN
         CURRENCY.code AS code_currency_cost,
         CURRENCY.symbol AS symbol_currency_cost,
         PP.profit_local_min,
-        t_P.latency_manufacture,
+        t_P.latency_manufacture_days,
         t_P.quantity_min,
         t_P.quantity_max,
         t_P.quantity_step,
         t_P.quantity_stock,
         t_P.id_stripe_product,
         t_P.is_subscription,
-        UM.name_singular AS name_recurrence_interval,
-        UM.name_plural AS name_plural_recurrence_interval,
+        UM.name_singular AS name_interval_recurrence,
+        UM.name_plural AS name_plural_interval_recurrence,
         PP.count_interval_recurrence,
         t_P.display_order_category,
         t_P.display_order_product,
@@ -10816,8 +10877,8 @@ BEGIN
     FROM tmp_Shop_Product t_P
     INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
     INNER JOIN Shop_Product_Permutation PP ON t_P.id_permutation = PP.id_permutation
-	-- LEFT JOIN Shop_Recurrence_Interval RI ON t_P.id_interval_recurrence = RI.id_interval
-	LEFT JOIN Shop_Unit_Measurement UM ON PP.id_interval_recurrence = UM.id_unit_measurement
+	-- LEFT JOIN Shop_Interval_Recurrence RI ON t_P.id_unit_measurement_interval_recurrence = RI.id_interval
+	LEFT JOIN Shop_Unit_Measurement UM ON PP.id_unit_measurement_interval_recurrence = UM.id_unit_measurement
     INNER JOIN Shop_Currency CURRENCY ON PP.id_currency_cost = CURRENCY.id_currency
 	ORDER BY t_P.rank_permutation
 	;
@@ -11339,13 +11400,13 @@ BEGIN
 		P.id_stripe_product,
 		P.is_subscription,
 		LOWER(RI.code) AS name_recurring_interval,
-		P.count_recurrence_interval
+		P.count_interval_recurrence
 	FROM tmp_Shop_Product_Currency_Link t_PCL
 	INNER JOIN Shop_Product P
 		ON t_PCL.id_product = P.id_product
 		AND P.active
-	INNER JOIN Shop_Recurrence_Interval RI
-		ON P.id_recurrence_interval = RI.id_interval
+	INNER JOIN Shop_Interval_Recurrence RI
+		ON P.id_unit_measurement_interval_recurrence = RI.id_interval
 		AND RI.active
 	INNER JOIN Shop_Currency C
 		ON t_PCL.id_currency = C.id_currency
@@ -13967,17 +14028,17 @@ BEGIN
         price_GBP_full FLOAT NOT NULL,
 		price_GBP_min FLOAT NOT NULL,
 		*/
-        latency_manufacture INT NOT NULL,
+        latency_manufacture_days INT NOT NULL,
 		quantity_min FLOAT NOT NULL,
 		quantity_max FLOAT NOT NULL,
 		quantity_step FLOAT NOT NULL,
 		quantity_stock FLOAT NOT NULL,
 		is_subscription BIT NOT NULL,
-		id_recurrence_interval INT,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
-		count_recurrence_interval INT,
+		id_unit_measurement_interval_recurrence INT,
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
+		count_interval_recurrence INT,
         id_stripe_product VARCHAR(100),
         product_has_variations INT NOT NULL,
         can_view BIT, 
@@ -14159,14 +14220,14 @@ BEGIN
 				price_GBP_VAT_excl,
 				price_GBP_min,
 				*
-				latency_manufacture,
+				latency_manufacture_days,
 				quantity_min,
 				quantity_max,
 				quantity_step,
 				quantity_stock,
 				is_subscription,
-				id_recurrence_interval,
-				count_recurrence_interval,
+				id_unit_measurement_interval_recurrence,
+				count_interval_recurrence,
 				id_stripe_product,
 				product_has_variations
 				*/
@@ -14191,14 +14252,14 @@ BEGIN
 				PP.price_GBP_VAT_excl,
 				PP.price_GBP_min,
 				*
-				PP.latency_manufacture,
+				PP.latency_manufacture_days,
 				PP.quantity_min,
 				PP.quantity_max,
 				PP.quantity_step,
 				PP.quantity_stock,
 				PP.is_subscription,
-				PP.id_recurrence_interval,
-				PP.count_recurrence_interval,
+				PP.id_unit_measurement_interval_recurrence,
+				PP.count_interval_recurrence,
 				PP.id_stripe_product,
 				P.has_variations
 				*/
@@ -15309,17 +15370,17 @@ BEGIN
 		price_GBP_min FLOAT NOT NULL,
 		*/
         /*
-        latency_manufacture INT NOT NULL,
+        latency_manufacture_days INT NOT NULL,
 		quantity_min FLOAT NOT NULL,
 		quantity_max FLOAT NOT NULL,
 		quantity_step FLOAT NOT NULL,
 		quantity_stock FLOAT NOT NULL,
 		is_subscription BIT NOT NULL,
-		id_recurrence_interval INT,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
-		count_recurrence_interval INT,
+		id_unit_measurement_interval_recurrence INT,
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
+		count_interval_recurrence INT,
         id_stripe_product VARCHAR(100),
         product_has_variations INT NOT NULL,
         */
@@ -15449,14 +15510,14 @@ BEGIN
 				price_GBP_VAT_excl,
 				price_GBP_min,
 				*
-				latency_manufacture,
+				latency_manufacture_days,
 				quantity_min,
 				quantity_max,
 				quantity_step,
 				quantity_stock,
 				is_subscription,
-				id_recurrence_interval,
-				count_recurrence_interval,
+				id_unit_measurement_interval_recurrence,
+				count_interval_recurrence,
 				id_stripe_product,
 				product_has_variations
 				*/
@@ -15481,14 +15542,14 @@ BEGIN
 				PP.price_GBP_VAT_excl,
 				PP.price_GBP_min,
 				*
-				PP.latency_manufacture,
+				PP.latency_manufacture_days,
 				PP.quantity_min,
 				PP.quantity_max,
 				PP.quantity_step,
 				PP.quantity_stock,
 				PP.is_subscription,
-				PP.id_recurrence_interval,
-				PP.count_recurrence_interval,
+				PP.id_unit_measurement_interval_recurrence,
+				PP.count_interval_recurrence,
 				PP.id_stripe_product,
 				P.has_variations
 				*/
@@ -17130,17 +17191,17 @@ BEGIN
 		price_GBP_min FLOAT NOT NULL,
 		*/
         /*
-        latency_manufacture INT NOT NULL,
+        latency_manufacture_days INT NOT NULL,
 		quantity_min FLOAT NOT NULL,
 		quantity_max FLOAT NOT NULL,
 		quantity_step FLOAT NOT NULL,
 		quantity_stock FLOAT NOT NULL,
 		is_subscription BIT NOT NULL,
-		id_recurrence_interval INT,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
-		count_recurrence_interval INT,
+		id_unit_measurement_interval_recurrence INT,
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
+		count_interval_recurrence INT,
         id_stripe_product VARCHAR(100),
         product_has_variations INT NOT NULL,
         */
@@ -17325,14 +17386,14 @@ BEGIN
 				price_GBP_VAT_excl,
 				price_GBP_min,
 				*
-				latency_manufacture,
+				latency_manufacture_days,
 				quantity_min,
 				quantity_max,
 				quantity_step,
 				quantity_stock,
 				is_subscription,
-				id_recurrence_interval,
-				count_recurrence_interval,
+				id_unit_measurement_interval_recurrence,
+				count_interval_recurrence,
 				id_stripe_product,
 				product_has_variations
 				*/
@@ -17357,14 +17418,14 @@ BEGIN
 				PP.price_GBP_VAT_excl,
 				PP.price_GBP_min,
 				*
-				PP.latency_manufacture,
+				PP.latency_manufacture_days,
 				PP.quantity_min,
 				PP.quantity_max,
 				PP.quantity_step,
 				PP.quantity_stock,
 				PP.is_subscription,
-				PP.id_recurrence_interval,
-				PP.count_recurrence_interval,
+				PP.id_unit_measurement_interval_recurrence,
+				PP.count_interval_recurrence,
 				PP.id_stripe_product,
 				P.has_variations
 				*/
@@ -17843,13 +17904,13 @@ VALUES
 
 # Unit of Measurement
 INSERT INTO Shop_Unit_Measurement (
-	name_singular, name_plural, symbol, is_base_unit
+	name_singular, name_plural, symbol, is_base_unit, is_unit_of_distance, is_unit_of_mass, is_unit_of_time, is_unit_of_volume
 )
 VALUES
-	('metre', 'metres', 'm', 1),
-    ('kilogram', 'kilograms', 'kg', 1),
-    ('item', 'items', 'x', 0),
-	('hour', 'hours', 'h', 1)
+	('metre', 'metres', 'm', 1, 1, 0, 0, 0),
+    ('kilogram', 'kilograms', 'kg', 1, 0, 1, 0, 0),
+    ('item', 'items', 'x', 0, 0, 0, 0, 0),
+	('hour', 'hours', 'h', 1, 0, 0, 1, 0)
 ;
 
 /*
@@ -17880,7 +17941,7 @@ VALUES
 
 /*
 # Recurrence Interval
-INSERT INTO Shop_Recurrence_Interval (
+INSERT INTO Shop_Interval_Recurrence (
 	code, name, name_plural
 )
 VALUES 
@@ -17951,18 +18012,19 @@ INSERT INTO Shop_Product_Permutation (
     id_currency_cost,
     profit_local_min,
     # id_currency_profit_min,
-    latency_manufacture,
-	quantity_min,
+    latency_manufacture_days,
+	id_unit_measurement_quantity,
+    count_unit_measurement_per_quantity_step,
+    quantity_min,
 	quantity_max,
-	quantity_step,
 	quantity_stock,
 	is_subscription,
-	id_interval_recurrence,
+	id_unit_measurement_interval_recurrence,
 	count_interval_recurrence,
 	-- id_access_level_required,
 	id_stripe_product
 	, does_expire_faster_once_unsealed
-	, id_interval_expiration_unsealed
+	, id_unit_measurement_interval_expiration_unsealed
 	, count_interval_expiration_unsealed
 )
 VALUES 
@@ -17976,9 +18038,10 @@ VALUES
         # 1,
         14,
 		1,
-		3,
 		1,
+		3,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -17998,9 +18061,10 @@ VALUES
         # 1,
 		14,
 		1,
-		3,
 		1,
+		3,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -18020,9 +18084,10 @@ VALUES
         # 1,
 		14,
 		1,
-		2,
 		1,
+		2,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -18042,9 +18107,10 @@ VALUES
         # 1,
 		14,
 		1,
-		2,
 		1,
+		2,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -18064,9 +18130,10 @@ VALUES
         # 1,
 		14,
 		1,
-		2,
 		1,
+		2,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -18086,9 +18153,10 @@ VALUES
         # 1,
 		14,
 		1,
-		2,
 		1,
+		2,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -18537,8 +18605,8 @@ SELECT * FROM Shop_Unit_Measurement_Conversion_Audit;
 
 /*
 # Recurrence Interval
-SELECT * FROM Shop_Recurrence_Interval;
-SELECT * FROM Shop_Recurrence_Interval_Audit;
+SELECT * FROM Shop_Interval_Recurrence;
+SELECT * FROM Shop_Interval_Recurrence_Audit;
 */
 
 

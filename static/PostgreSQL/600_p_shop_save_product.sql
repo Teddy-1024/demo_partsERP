@@ -211,17 +211,17 @@ BEGIN
         P.id_stripe_product,
         P.id_stripe_price,
         P.is_subscription,
-        RI.name AS name_recurrence_interval,
-        RI.name_plural AS name_plural_recurrence_interval,
-        P.count_recurrence_interval,
+        RI.name AS name_interval_recurrence,
+        RI.name_plural AS name_plural_interval_recurrence,
+        P.count_interval_recurrence,
         tP.can_view,
         tP.can_edit,
         tP.can_admin
     FROM tmp_Shop_Product tP
     INNER JOIN Shop_Product P
 		ON tP.id_product = P.id_product
-		INNER JOIN Shop_Recurrence_Interval RI
-			ON P.id_recurrence_interval = RI.id_interval
+		INNER JOIN Shop_Interval_Recurrence RI
+			ON P.id_unit_measurement_interval_recurrence = RI.id_interval
 	;
     
     -- Variations

@@ -157,8 +157,8 @@ DROP TABLE IF EXISTS Shop_Delivery_Region;
 DROP TABLE IF EXISTS Shop_Region_Audit;
 DROP TABLE IF EXISTS Shop_Region;
 
-DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
-DROP TABLE IF EXISTS Shop_Recurrence_Interval;
+DROP TABLE IF EXISTS Shop_Interval_Recurrence_Audit;
+DROP TABLE IF EXISTS Shop_Interval_Recurrence;
 
 DROP TABLE IF EXISTS Shop_Product_Category_Audit;
 DROP TABLE IF EXISTS Shop_Product_Category;
@@ -503,9 +503,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Audit (
 
 
 
-SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Recurrence_Interval';
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Interval_Recurrence';
 
-CREATE TABLE IF NOT EXISTS Shop_Recurrence_Interval (
+CREATE TABLE IF NOT EXISTS Shop_Interval_Recurrence (
 	id_interval INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	code VARCHAR(50),
 	name VARCHAR(255),
@@ -514,7 +514,7 @@ CREATE TABLE IF NOT EXISTS Shop_Recurrence_Interval (
 	created_on TIMESTAMP,
 	created_by INT,
 	id_change_set INTEGER,
-	CONSTRAINT FK_Shop_Recurrence_Interval_id_change_set
+	CONSTRAINT FK_Shop_Interval_Recurrence_id_change_set
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
@@ -523,20 +523,20 @@ CREATE TABLE IF NOT EXISTS Shop_Recurrence_Interval (
 
 
 
-SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Recurrence_Interval_Audit';
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Interval_Recurrence_Audit';
 
-CREATE TABLE IF NOT EXISTS Shop_Recurrence_Interval_Audit (
+CREATE TABLE IF NOT EXISTS Shop_Interval_Recurrence_Audit (
 	id_audit INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	id_interval INTEGER NOT NULL,
-	CONSTRAINT FK_Shop_Recurrence_Interval_Audit_id_interval
+	CONSTRAINT FK_Shop_Interval_Recurrence_Audit_id_interval
 		FOREIGN KEY (id_interval)
-		REFERENCES Shop_Recurrence_Interval(id_interval)
+		REFERENCES Shop_Interval_Recurrence(id_interval)
 		ON UPDATE RESTRICT,
 	name_field VARCHAR(50),
 	value_prev VARCHAR(256),
 	value_new VARCHAR(256),
 	id_change_set INTEGER NOT NULL,
-	CONSTRAINT FK_Shop_Recurrence_Interval_Audit_id_change_set
+	CONSTRAINT FK_Shop_Interval_Recurrence_Audit_id_change_set
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
@@ -760,11 +760,11 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 	quantity_step REAL,
 	quantity_stock REAL,
 	is_subscription BOOLEAN,
-	id_recurrence_interval INTEGER,
-	CONSTRAINT FK_Shop_Product_id_recurrence_interval
-		FOREIGN KEY (id_recurrence_interval)
-		REFERENCES Shop_Recurrence_Interval(id_interval),
-	count_recurrence_interval INTEGER,
+	id_unit_measurement_interval_recurrence INTEGER,
+	CONSTRAINT FK_Shop_Product_id_unit_measurement_interval_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
+		REFERENCES Shop_Interval_Recurrence(id_interval),
+	count_interval_recurrence INTEGER,
 	*/
     id_access_level_required INTEGER NOT NULL,
     CONSTRAINT FK_Shop_Product_id_access_level_required
@@ -911,17 +911,17 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
     id_currency_cost INTEGER NOT NULL,
 	profit_local_min REAL NOT NULL,
     -- id_currency_profit_min INTEGER NOT NULL,
-	latency_manufacture INTEGER NOT NULL,
+	latency_manufacture_days INTEGER NOT NULL,
 	quantity_min REAL NOT NULL,
 	quantity_max REAL NOT NULL,
 	quantity_step REAL NOT NULL,
 	quantity_stock REAL NOT NULL,
 	is_subscription BOOLEAN NOT NULL,
-	id_recurrence_interval INTEGER,
-	CONSTRAINT FK_Shop_Product_Permutation_id_recurrence_interval
-		FOREIGN KEY (id_recurrence_interval)
-		REFERENCES Shop_Recurrence_Interval(id_interval),
-	count_recurrence_interval INTEGER,
+	id_unit_measurement_interval_recurrence INTEGER,
+	CONSTRAINT FK_Shop_Product_Permutation_id_unit_measurement_interval_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
+		REFERENCES Shop_Interval_Recurrence(id_interval),
+	count_interval_recurrence INTEGER,
     /*
     id_access_level_required INTEGER NOT NULL,
     CONSTRAINT FK_Shop_Product_Permutation_id_access_level_required
@@ -2814,7 +2814,7 @@ EXECUTE FUNCTION before_update_Shop_Product_Category();
 
 -- Shop Recurrence Interval
 
-CREATE OR REPLACE FUNCTION before_insert_Shop_Recurrence_Interval()
+CREATE OR REPLACE FUNCTION before_insert_Shop_Interval_Recurrence()
 RETURNS TRIGGER AS $$
 BEGIN
 	NEW.created_on = CURRENT_TIMESTAMP;
@@ -2824,13 +2824,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Recurrence_Interval
-BEFORE INSERT ON Shop_Recurrence_Interval
+CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Interval_Recurrence
+BEFORE INSERT ON Shop_Interval_Recurrence
 FOR EACH ROW
-EXECUTE FUNCTION before_insert_Shop_Recurrence_Interval();
+EXECUTE FUNCTION before_insert_Shop_Interval_Recurrence();
 
 
-CREATE OR REPLACE FUNCTION before_update_Shop_Recurrence_Interval()
+CREATE OR REPLACE FUNCTION before_update_Shop_Interval_Recurrence()
 RETURNS TRIGGER AS $$
 BEGIN
 	IF OLD.id_change_set IS NOT DISTINCT FROM NEW.id_change_set THEN
@@ -2838,7 +2838,7 @@ BEGIN
 			USING ERRCODE = '45000';
     END IF;
     
-    INSERT INTO Shop_Recurrence_Interval_Audit (
+    INSERT INTO Shop_Interval_Recurrence_Audit (
 		id_interval,
         name_field,
         value_prev,
@@ -2866,10 +2866,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_update_Shop_Recurrence_Interval
-BEFORE UPDATE ON Shop_Recurrence_Interval
+CREATE OR REPLACE TRIGGER tri_before_update_Shop_Interval_Recurrence
+BEFORE UPDATE ON Shop_Interval_Recurrence
 FOR EACH ROW
-EXECUTE FUNCTION before_update_Shop_Recurrence_Interval();
+EXECUTE FUNCTION before_update_Shop_Interval_Recurrence();
 
 -- Shop Delivery Region
 
@@ -3197,11 +3197,11 @@ BEGIN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have subscription status or variations (with subscription statuses).';
 		END IF;
-		IF ISNULL(NEW.id_recurrence_interval) THEN
+		IF ISNULL(NEW.id_unit_measurement_interval_recurrence) THEN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have recurrence interval or variations (with recurrence intervals).';
 		END IF;
-		IF ISNULL(NEW.count_recurrence_interval) THEN
+		IF ISNULL(NEW.count_interval_recurrence) THEN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have recurrence interval count or variations (with recurrence interval counts).';
 		END IF;
@@ -3271,13 +3271,13 @@ BEGIN
 	SELECT NEW.id_product, 'is_subscription', CONVERT(CONVERT(OLD.is_subscription, SIGNED), CHAR), CONVERT(CONVERT(NEW.is_subscription, SIGNED), CHAR), NEW.id_change_set
 		WHERE NOT OLD.is_subscription <=> NEW.is_subscription
 	UNION
-    -- Changed id_recurrence_interval
-	SELECT NEW.id_product, 'id_recurrence_interval', CONVERT(OLD.id_recurrence_interval, CHAR), CONVERT(NEW.id_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.id_recurrence_interval <=> NEW.id_recurrence_interval
+    -- Changed id_unit_measurement_interval_recurrence
+	SELECT NEW.id_product, 'id_unit_measurement_interval_recurrence', CONVERT(OLD.id_unit_measurement_interval_recurrence, CHAR), CONVERT(NEW.id_unit_measurement_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_interval_recurrence <=> NEW.id_unit_measurement_interval_recurrence
     UNION
-    -- Changed count_recurrence_interval
-	SELECT NEW.id_product, 'count_recurrence_interval', CONVERT(OLD.count_recurrence_interval, CHAR), CONVERT(NEW.count_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.count_recurrence_interval <=> NEW.count_recurrence_interval
+    -- Changed count_interval_recurrence
+	SELECT NEW.id_product, 'count_interval_recurrence', CONVERT(OLD.count_interval_recurrence, CHAR), CONVERT(NEW.count_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.count_interval_recurrence <=> NEW.count_interval_recurrence
 	UNION
     -- Changed id_stripe_product
 	SELECT NEW.id_product, 'id_stripe_product', OLD.id_stripe_product, NEW.id_stripe_product, NEW.id_change_set
@@ -3512,9 +3512,9 @@ BEGIN
 		WHERE NOT (OLD.price_GBP_min <=> NEW.price_GBP_min)
 	UNION
     */
-    -- Changed latency_manufacture
-	SELECT NEW.id_product, 'latency_manufacture', CONVERT(OLD.latency_manufacture, CHAR), CONVERT(NEW.latency_manufacture, CHAR), NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
+    -- Changed latency_manufacture_days
+	SELECT NEW.id_product, 'latency_manufacture_days', CONVERT(OLD.latency_manufacture_days, CHAR), CONVERT(NEW.latency_manufacture_days, CHAR), NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
 	UNION
     -- Changed quantity_min
 	SELECT NEW.id_product, 'quantity_min', CONVERT(OLD.quantity_min, CHAR), CONVERT(NEW.quantity_min, CHAR), NEW.id_change_set
@@ -3536,13 +3536,13 @@ BEGIN
 	SELECT NEW.id_product, 'is_subscription', CONVERT(CONVERT(OLD.is_subscription, SIGNED), CHAR), CONVERT(CONVERT(NEW.is_subscription, SIGNED), CHAR), NEW.id_change_set
 		WHERE NOT OLD.is_subscription <=> NEW.is_subscription
 	UNION
-    -- Changed id_recurrence_interval
-	SELECT NEW.id_product, 'id_recurrence_interval', CONVERT(OLD.id_recurrence_interval, CHAR), CONVERT(NEW.id_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.id_recurrence_interval <=> NEW.id_recurrence_interval
+    -- Changed id_unit_measurement_interval_recurrence
+	SELECT NEW.id_product, 'id_unit_measurement_interval_recurrence', CONVERT(OLD.id_unit_measurement_interval_recurrence, CHAR), CONVERT(NEW.id_unit_measurement_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_interval_recurrence <=> NEW.id_unit_measurement_interval_recurrence
     UNION
-    -- Changed count_recurrence_interval
-	SELECT NEW.id_product, 'count_recurrence_interval', CONVERT(OLD.count_recurrence_interval, CHAR), CONVERT(NEW.count_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.count_recurrence_interval <=> NEW.count_recurrence_interval
+    -- Changed count_interval_recurrence
+	SELECT NEW.id_product, 'count_interval_recurrence', CONVERT(OLD.count_interval_recurrence, CHAR), CONVERT(NEW.count_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.count_interval_recurrence <=> NEW.count_interval_recurrence
 	UNION
     -- Changed id_stripe_product
 	SELECT NEW.id_permutation, 'id_stripe_product', OLD.id_stripe_product, NEW.id_stripe_product, NEW.id_change_set
@@ -9749,19 +9749,19 @@ BEGIN
         price_GBP_full REAL NOT NULL,
 		price_GBP_min REAL NOT NULL,
 		*/
-        latency_manufacture INTEGER NOT NULL,
+        latency_manufacture_days INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
 		quantity_stock REAL NOT NULL,
 		is_subscription BOOLEAN NOT NULL,
-		id_recurrence_interval INTEGER,
+		id_unit_measurement_interval_recurrence INTEGER,
 		/*
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
 		*/
-		count_recurrence_interval INTEGER,
+		count_interval_recurrence INTEGER,
         id_stripe_product VARCHAR(100),
         product_has_variations BOOLEAN NOT NULL,
         can_view BOOLEAN, 
@@ -9872,14 +9872,14 @@ BEGIN
 		price_GBP_VAT_excl,
 		price_GBP_min,
 		*/
-        latency_manufacture,
+        latency_manufacture_days,
 		quantity_min,
 		quantity_max,
 		quantity_step,
 		quantity_stock,
 		is_subscription,
-		id_recurrence_interval,
-		count_recurrence_interval,
+		id_unit_measurement_interval_recurrence,
+		count_interval_recurrence,
         id_stripe_product,
         product_has_variations
 	)
@@ -9905,14 +9905,14 @@ BEGIN
 		PP.price_GBP_VAT_excl,
 		PP.price_GBP_min,
 		*/
-        PP.latency_manufacture,
+        PP.latency_manufacture_days,
 		PP.quantity_min,
 		PP.quantity_max,
 		PP.quantity_step,
 		PP.quantity_stock,
 		PP.is_subscription,
-		PP.id_recurrence_interval,
-		PP.count_recurrence_interval,
+		PP.id_unit_measurement_interval_recurrence,
+		PP.count_interval_recurrence,
 		PP.id_stripe_product,
         P.has_variations
 	FROM Shop_Product P
@@ -10412,16 +10412,16 @@ BEGIN
 			PP.cost_local,
 			PP.id_currency_cost,
 			PP.profit_local_min,
-			t_P.latency_manufacture,
+			t_P.latency_manufacture_days,
 			t_P.quantity_min,
 			t_P.quantity_max,
 			t_P.quantity_step,
 			t_P.quantity_stock,
 			t_P.id_stripe_product,
 			t_P.is_subscription,
-			RI.name AS name_recurrence_interval,
-			RI.name_plural AS name_plural_recurrence_interval,
-			t_P.count_recurrence_interval,
+			RI.name AS name_interval_recurrence,
+			RI.name_plural AS name_plural_interval_recurrence,
+			t_P.count_interval_recurrence,
 			t_P.display_order_category,
 			t_P.display_order_product,
 			t_P.display_order_permutation,
@@ -10431,7 +10431,7 @@ BEGIN
 		FROM tmp_Shop_Product t_P
 		INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
 		INNER JOIN Shop_Product_Permutation PP ON t_P.id_permutation = PP.id_permutation
-		LEFT JOIN Shop_Recurrence_Interval RI ON t_P.id_recurrence_interval = RI.id_interval
+		LEFT JOIN Shop_Interval_Recurrence RI ON t_P.id_unit_measurement_interval_recurrence = RI.id_interval
 		ORDER BY t_P.rank_permutation
 		;
     RETURN NEXT result_products;
@@ -11663,13 +11663,13 @@ BEGIN
 			P.id_stripe_product,
 			P.is_subscription,
 			LOWER(RI.code) AS name_recurring_interval,
-			P.count_recurrence_interval
+			P.count_interval_recurrence
 		FROM tmp_Shop_Product_Currency_Link t_PCL
 		INNER JOIN Shop_Product P
 			ON t_PCL.id_product = P.id_product
 			AND P.active
-		INNER JOIN Shop_Recurrence_Interval RI
-			ON P.id_recurrence_interval = RI.id_interval
+		INNER JOIN Shop_Interval_Recurrence RI
+			ON P.id_unit_measurement_interval_recurrence = RI.id_interval
 			AND RI.active
 		INNER JOIN Shop_Currency C
 			ON t_PCL.id_currency = C.id_currency
@@ -12162,17 +12162,17 @@ BEGIN
         price_GBP_full REAL NOT NULL,
 		price_GBP_min REAL NOT NULL,
 		*/
-        latency_manufacture INTEGER NOT NULL,
+        latency_manufacture_days INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
 		quantity_stock REAL NOT NULL,
 		is_subscription BOOLEAN NOT NULL,
-		id_recurrence_interval INTEGER,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
-		count_recurrence_interval INTEGER,
+		id_unit_measurement_interval_recurrence INTEGER,
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
+		count_interval_recurrence INTEGER,
         id_stripe_product VARCHAR(100),
         product_has_variations INTEGER NOT NULL,
         can_view BOOLEAN, 
@@ -12318,14 +12318,14 @@ BEGIN
 			price_GBP_VAT_excl,
 			price_GBP_min,
 			*/
-			latency_manufacture,
+			latency_manufacture_days,
 			quantity_min,
 			quantity_max,
 			quantity_step,
 			quantity_stock,
 			is_subscription,
-			id_recurrence_interval,
-			count_recurrence_interval,
+			id_unit_measurement_interval_recurrence,
+			count_interval_recurrence,
 			id_stripe_product,
 			product_has_variations
 			*/
@@ -12350,14 +12350,14 @@ BEGIN
 			PP.price_GBP_VAT_excl,
 			PP.price_GBP_min,
 			*/
-			PP.latency_manufacture,
+			PP.latency_manufacture_days,
 			PP.quantity_min,
 			PP.quantity_max,
 			PP.quantity_step,
 			PP.quantity_stock,
 			PP.is_subscription,
-			PP.id_recurrence_interval,
-			PP.count_recurrence_interval,
+			PP.id_unit_measurement_interval_recurrence,
+			PP.count_interval_recurrence,
 			PP.id_stripe_product,
 			P.has_variations
 			*/
@@ -12849,17 +12849,17 @@ BEGIN
 		price_GBP_min REAL NOT NULL,
 		*/
         /*
-        latency_manufacture INTEGER NOT NULL,
+        latency_manufacture_days INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
 		quantity_stock REAL NOT NULL,
 		is_subscription BOOLEAN NOT NULL,
-		id_recurrence_interval INTEGER,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
-		count_recurrence_interval INTEGER,
+		id_unit_measurement_interval_recurrence INTEGER,
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
+		count_interval_recurrence INTEGER,
         id_stripe_product VARCHAR(100),
         product_has_variations INTEGER NOT NULL,
         */
@@ -12953,14 +12953,14 @@ BEGIN
 			price_GBP_VAT_excl,
 			price_GBP_min,
 			*/
-			latency_manufacture,
+			latency_manufacture_days,
 			quantity_min,
 			quantity_max,
 			quantity_step,
 			quantity_stock,
 			is_subscription,
-			id_recurrence_interval,
-			count_recurrence_interval,
+			id_unit_measurement_interval_recurrence,
+			count_interval_recurrence,
 			id_stripe_product,
 			product_has_variations
 			*/
@@ -12985,14 +12985,14 @@ BEGIN
 			PP.price_GBP_VAT_excl,
 			PP.price_GBP_min,
 			*/
-			PP.latency_manufacture,
+			PP.latency_manufacture_days,
 			PP.quantity_min,
 			PP.quantity_max,
 			PP.quantity_step,
 			PP.quantity_stock,
 			PP.is_subscription,
-			PP.id_recurrence_interval,
-			PP.count_recurrence_interval,
+			PP.id_unit_measurement_interval_recurrence,
+			PP.count_interval_recurrence,
 			PP.id_stripe_product,
 			P.has_variations
 			*/
@@ -13731,17 +13731,17 @@ BEGIN
 		price_GBP_min REAL NOT NULL,
 		*/
         /*
-        latency_manufacture INTEGER NOT NULL,
+        latency_manufacture_days INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
 		quantity_stock REAL NOT NULL,
 		is_subscription BOOLEAN NOT NULL,
-		id_recurrence_interval INTEGER,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
-		count_recurrence_interval INTEGER,
+		id_unit_measurement_interval_recurrence INTEGER,
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
+		count_interval_recurrence INTEGER,
         id_stripe_product VARCHAR(100),
         product_has_variations INTEGER NOT NULL,
         */
@@ -13887,14 +13887,14 @@ BEGIN
 			price_GBP_VAT_excl,
 			price_GBP_min,
 			*/
-			latency_manufacture,
+			latency_manufacture_days,
 			quantity_min,
 			quantity_max,
 			quantity_step,
 			quantity_stock,
 			is_subscription,
-			id_recurrence_interval,
-			count_recurrence_interval,
+			id_unit_measurement_interval_recurrence,
+			count_interval_recurrence,
 			id_stripe_product,
 			product_has_variations
 			*/
@@ -13919,14 +13919,14 @@ BEGIN
 			PP.price_GBP_VAT_excl,
 			PP.price_GBP_min,
 			*/
-			PP.latency_manufacture,
+			PP.latency_manufacture_days,
 			PP.quantity_min,
 			PP.quantity_max,
 			PP.quantity_step,
 			PP.quantity_stock,
 			PP.is_subscription,
-			PP.id_recurrence_interval,
-			PP.count_recurrence_interval,
+			PP.id_unit_measurement_interval_recurrence,
+			PP.count_interval_recurrence,
 			PP.id_stripe_product,
 			P.has_variations
 			*/
@@ -14345,7 +14345,7 @@ VALUES
 ;
 
 -- Recurrence Interval
-INSERT INTO Shop_Recurrence_Interval (
+INSERT INTO Shop_Interval_Recurrence (
 	code, name, name_plural
 )
 VALUES 
@@ -14468,14 +14468,14 @@ INSERT INTO Shop_Product_Permutation (
     id_currency_cost,
     profit_local_min,
     -- id_currency_profit_min,
-    latency_manufacture,
+    latency_manufacture_days,
 	quantity_min,
 	quantity_max,
 	quantity_step,
 	quantity_stock,
 	is_subscription,
-	id_recurrence_interval,
-	count_recurrence_interval,
+	id_unit_measurement_interval_recurrence,
+	count_interval_recurrence,
 	-- id_access_level_required,
 	id_stripe_product
 )
@@ -14956,8 +14956,8 @@ SELECT * FROM Shop_Product_Category;
 SELECT * FROM Shop_Product_Category_Audit;
 
 -- Recurrence Interval
-SELECT * FROM Shop_Recurrence_Interval;
-SELECT * FROM Shop_Recurrence_Interval_Audit;
+SELECT * FROM Shop_Interval_Recurrence;
+SELECT * FROM Shop_Interval_Recurrence_Audit;
 
 -- Region
 SELECT * FROM Shop_Region;

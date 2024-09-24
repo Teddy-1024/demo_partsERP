@@ -8,27 +8,3 @@
         {% include 'components/common/buttons/_buttons_save_cancel.html' %}
     </div>
 </div>
-
-<script type="module">
-    import Events from "{{ url_for('static', filename='js/lib/events.js') }}";
-    
-    var idOverlayError = "#{{ model.ID_OVERLAY_ERROR}}";
-    function hookupOverlayError() {
-        let overlay = document.querySelector(idOverlayError);
-        let selectorButtonCancel = idOverlayError + ' button.' + flagCancel;
-
-        Events.initialiseEventHandler(selectorButtonCancel, flagInitialised, function(buttonCancel) {
-            buttonCancel.onclick = function() {
-                overlay.style.visibility = 'hidden';
-            };
-        });
-    }
-    hookupOverlayError();
-
-    function showOverlayError(msgError) {
-        let overlay = document.querySelector("#{{ model.ID_OVERLAY_ERROR }}");
-        let labelError = overlay.querySelector('#{{ model.ID_LABEL_ERROR }}');
-        labelError.innerText = msgError;
-        overlay.style.visibility = 'visible';
-    }
-</script>

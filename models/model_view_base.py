@@ -23,7 +23,8 @@ from datastores.datastore_base import DataStore_Base
 from datastores.datastore_user import DataStore_User
 from business_objects.store.store_base import Store_Base
 from business_objects.store.product_category import Product_Category
-from business_objects.store.access_level import Filters_Access_Level
+from forms.access_level import Filters_Access_Level
+from forms.unit_measurement import Filters_Unit_Measurement
 from business_objects.user import User, User_Filters
 # external
 from abc import ABC, abstractmethod
@@ -56,6 +57,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_COMMENT: ClassVar[str] = 'comment'
     FLAG_CONTAINER: ClassVar[str] = 'container'
     FLAG_CONTAINER_INPUT: ClassVar[str] = FLAG_CONTAINER + '-input'
+    FLAG_CURRENCY: ClassVar[str] = 'currency'
     FLAG_DELETE: ClassVar[str] = 'delete'
     FLAG_DESCRIPTION: ClassVar[str] = Store_Base.FLAG_DESCRIPTION
     FLAG_DETAIL: ClassVar[str] = 'detail'
@@ -70,10 +72,12 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_HAMBURGER: ClassVar[str] = 'hamburger'
     FLAG_IMAGE_LOGO: ClassVar[str] = 'image-logo'
     FLAG_INITIALISED: ClassVar[str] = 'initialised'
-    FLAG_KEY_PRIMARY: ClassVar[str] = Store_Base.FLAG_KEY_PRIMARY
+    # FLAG_KEY_PRIMARY: ClassVar[str] = Store_Base.FLAG_KEY_PRIMARY
     FLAG_MESSAGE: ClassVar[str] = 'Message'
     FLAG_MODAL: ClassVar[str] = 'modal'
     FLAG_NAME: ClassVar[str] = Store_Base.FLAG_NAME
+    FLAG_NAME_ATTR_OPTION_TEXT: ClassVar[str] = Store_Base.FLAG_NAME_ATTR_OPTION_TEXT
+    FLAG_NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.FLAG_NAME_ATTR_OPTION_VALUE
     FLAG_NAV_ADMIN_HOME: ClassVar[str] = 'navAdminHome'
     FLAG_NAV_ADMIN_STORE_STRIPE_PRICES: ClassVar[str] = 'navAdminStoreStripePrices'
     FLAG_NAV_ADMIN_STORE_STRIPE_PRODUCTS: ClassVar[str] = 'navAdminStoreStripeProducts'
@@ -289,16 +293,44 @@ class Model_View_Base(BaseModel, ABC):
             return False
     """
 
-    def get_many_access_level(self, filters):
+    def get_many_access_level(self, filters=None):
         _m = 'Model_View_Store.get_many_access_level'
-        av.val_instance(filters, 'filters', _m, Filters_Access_Level)
-        
+        # av.val_instance(filters, 'filters', _m, Filters_Access_Level)
         access_levels, errors = DataStore_Base.get_many_access_level(filters)
-        
         return access_levels
+    def get_many_unit_measurement(self, filters=None):
+        _m = 'Model_View_Store.get_many_unit_measurement'
+        # av.val_instance(filters, 'filters', _m, Filters_Unit_Measurement)
+        units_measurement, errors = DataStore_Base.get_many_unit_measurement(filters)
+        return units_measurement
+    
+    @staticmethod
+    def convert_list_objects_to_json(list_objects):
+        return [obj.to_json() for obj in list_objects]
     @staticmethod
     def convert_list_objects_to_list_options(list_objects):
         return Store_Base.convert_list_objects_to_list_options(list_objects)
+    @staticmethod
+    def convert_list_objects_to_dict_by_attribute_key(list_objects, key):
+        return {getattr(obj, key): obj for obj in list_objects}
+    @staticmethod
+    def convert_list_objects_to_dict_json_by_attribute_key(list_objects, key):
+        return {getattr(obj, key): obj.to_json() for obj in list_objects}
+    @staticmethod
+    def convert_list_objects_to_dict_by_attribute_key_default(list_objects):
+        if len(list_objects) == 0:
+            return {}
+        obj_class = list_objects[0].__class__
+        return Model_View_Base.convert_list_objects_to_dict_by_attribute_key(list_objects, getattr(obj_class, obj_class.FLAG_NAME_ATTR_OPTION_VALUE))
+    @staticmethod
+    def convert_list_objects_to_dict_json_by_attribute_key_default(list_objects):
+        if len(list_objects) == 0:
+            return {}
+        obj_class = list_objects[0].__class__
+        return Model_View_Base.convert_list_objects_to_dict_json_by_attribute_key(list_objects, getattr(obj_class, obj_class.FLAG_NAME_ATTR_OPTION_VALUE))
+    @staticmethod
+    def convert_dict_values_to_json(dict):
+        return {key: dict[key].to_json() for key in dict.keys()}
     @staticmethod
     def join_with_linebreaks(strs):
         str_multiline = ''

@@ -1,4 +1,7 @@
 
+#pageBody > * > * {
+    width: 100%;
+}
 #pageBody > * {
     height: 100%;
 }

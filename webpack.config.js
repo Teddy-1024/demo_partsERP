@@ -7,6 +7,22 @@ module.exports = {
     main: [
       path.resolve(__dirname, 'static/js/app.js'),
       path.resolve(__dirname, 'static/css/main.css'),
+      path.resolve(__dirname, 'static/css/components/button.css'),
+      path.resolve(__dirname, 'static/css/components/card.css'),
+      path.resolve(__dirname, 'static/css/components/dialog.css'),
+      path.resolve(__dirname, 'static/css/components/form.css'),
+      path.resolve(__dirname, 'static/css/components/modal.css'),
+      path.resolve(__dirname, 'static/css/components/navigation.css'),
+      path.resolve(__dirname, 'static/css/components/overlay.css'),
+      path.resolve(__dirname, 'static/css/components/table.css'),
+      path.resolve(__dirname, 'static/css/layouts/header.css'),
+      path.resolve(__dirname, 'static/css/layouts/footer.css'),
+      path.resolve(__dirname, 'static/css/layouts/table-main.css'),
+      path.resolve(__dirname, 'static/css/lib/reset.css'),
+      path.resolve(__dirname, 'static/css/lib/typography.css'),
+      path.resolve(__dirname, 'static/css/lib/utils.css'),
+      path.resolve(__dirname, 'static/css/lib/variables.css'),
+      path.resolve(__dirname, 'static/css/themes/light.css'),
       // ...glob.sync(path.resolve(__dirname, 'static/css/main/**       /*.css')) // Include CSS files for the main page
     ],
     // Core
@@ -40,43 +56,44 @@ module.exports = {
     */
     legal_accessibility_statement: [
       // path.resolve(__dirname, 'static/js/pages/legal/accessibility_statement.js'),
-      path.resolve(__dirname, 'static/css/sections/core.css'),
+      path.resolve(__dirname, 'static/css/sections/legal.css'),
       path.resolve(__dirname, 'static/css/pages/legal/accessibility_statement.css')
     ],
     legal_retention_schedule: [
       // path.resolve(__dirname, 'static/js/pages/legal/retention_schedule.js'),
-      path.resolve(__dirname, 'static/css/sections/core.css'),
+      path.resolve(__dirname, 'static/css/sections/legal.css'),
       path.resolve(__dirname, 'static/css/pages/legal/retention_schedule.css')
     ],
     legal_license: [
       // path.resolve(__dirname, 'static/js/pages/legal/license.js'),
-      path.resolve(__dirname, 'static/css/sections/core.css'),
+      path.resolve(__dirname, 'static/css/sections/legal.css'),
       path.resolve(__dirname, 'static/css/pages/legal/license.css')
     ],
     legal_privacy_policy: [
       // path.resolve(__dirname, 'static/js/pages/legal/privacy_policy.js'),
-      path.resolve(__dirname, 'static/css/sections/core.css'),
+      path.resolve(__dirname, 'static/css/sections/legal.css'),
       path.resolve(__dirname, 'static/css/pages/legal/privacy_policy.css')
     ],
     // Store
     store_home: [
       // path.resolve(__dirname, 'static/js/pages/store/home.js'),
-      path.resolve(__dirname, 'static/css/sections/core.css'),
+      path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/home.css')
     ],
     store_product_categories: [
       // path.resolve(__dirname, 'static/js/pages/store/product_categories.js'),
-      path.resolve(__dirname, 'static/css/sections/core.css'),
+      path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/product_categories.css')
     ],
     store_product_permutations: [
       // path.resolve(__dirname, 'static/js/pages/store/product_permutations.js'),
-      path.resolve(__dirname, 'static/css/sections/core.css'),
+      // path.resolve(__dirname, 'templates/js/sections/store.js'), // templates don't work
+      path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/product_permutations.css')
     ],
     store_stock_items: [
       // path.resolve(__dirname, 'static/js/pages/store/stock_items.js'),
-      path.resolve(__dirname, 'static/css/sections/core.css'),
+      path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/stock_items.css')
     ],
   },

@@ -480,15 +480,15 @@ BEGIN
         CURRENCY.code AS code_currency_cost,
         CURRENCY.symbol AS symbol_currency_cost,
         PP.profit_local_min,
-        t_P.latency_manufacture,
+        t_P.latency_manufacture_days,
         t_P.quantity_min,
         t_P.quantity_max,
         t_P.quantity_step,
         t_P.quantity_stock,
         t_P.id_stripe_product,
         t_P.is_subscription,
-        UM.name_singular AS name_recurrence_interval,
-        UM.name_plural AS name_plural_recurrence_interval,
+        UM.name_singular AS name_interval_recurrence,
+        UM.name_plural AS name_plural_interval_recurrence,
         PP.count_interval_recurrence,
         t_P.display_order_category,
         t_P.display_order_product,
@@ -499,8 +499,8 @@ BEGIN
     FROM tmp_Shop_Product t_P
     INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
     INNER JOIN Shop_Product_Permutation PP ON t_P.id_permutation = PP.id_permutation
-	-- LEFT JOIN Shop_Recurrence_Interval RI ON t_P.id_interval_recurrence = RI.id_interval
-	LEFT JOIN Shop_Unit_Measurement UM ON PP.id_interval_recurrence = UM.id_unit_measurement
+	-- LEFT JOIN Shop_Interval_Recurrence RI ON t_P.id_unit_measurement_interval_recurrence = RI.id_interval
+	LEFT JOIN Shop_Unit_Measurement UM ON PP.id_unit_measurement_interval_recurrence = UM.id_unit_measurement
     INNER JOIN Shop_Currency CURRENCY ON PP.id_currency_cost = CURRENCY.id_currency
 	ORDER BY t_P.rank_permutation
 	;
@@ -764,36 +764,20 @@ DELIMITER ;;
 
 /*
 
-CALL partsltd_prod.p_shop_get_many_product (
-	1, #'auth0|6582b95c895d09a70ba10fef', # a_id_user
-    1, # a_get_all_category
-	1, # a_get_inactive_category
-    0, # a_get_first_category_only
-	'', # a_ids_category
-    1, # a_get_all_product
-	0, # a_get_inactive_product
-    0, # a_get_first_product_only
-	'', # a_ids_product
-    1, # a_get_all_product_permutation
-	0, # a_get_inactive_permutation
-    0, # a_get_first_permutation_only
-	'', # a_ids_permutation
-    1, # a_get_all_image
-    0, # a_get_inactive_image
-    0, # a_get_first_image_only
-	'', # a_ids_image
-    1, # a_get_all_delivery_region
-    0, # a_get_inactive_delivery_region
-    0, # a_get_first_delivery_region_only
-	'', # a_ids_delivery_region
-    1, # a_get_all_currency
-    0, # a_get_inactive_currency
-    0, # a_get_first_currency_only
-	'', # a_ids_currency
-    1, # a_get_all_discount
-    0, # a_get_inactive_discount
-	'', # a_ids_discount
-    1 # a_get_products_quantity_stock_below_minimum
+CALL partsltd_prod.p_shop_get_many_product_price_and_discount_and_delivery_region (
+	IN a_id_user INT,
+    IN a_get_all_product_permutation BIT,
+	IN a_get_inactive_permutation BIT,
+	IN a_ids_permutation VARCHAR(4000),
+    IN a_get_all_delivery_region BIT,
+	IN a_get_inactive_delivery_region BIT,
+    IN a_ids_delivery_region VARCHAR(4000),
+    IN a_get_all_currency BIT,
+	IN a_get_inactive_currency BIT,
+    IN a_ids_currency VARCHAR(4000),
+    IN a_get_all_discount BIT,
+	IN a_get_inactive_discount BIT,
+    IN a_ids_discount VARCHAR(4000)
 );
 
 select * FROM Shop_User_Eval_Temp;

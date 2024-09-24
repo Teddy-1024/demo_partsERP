@@ -61,8 +61,10 @@ class SQLAlchemy_ABC(db.Model, metaclass=SQLAlchemy_ABCMeta):
     @classmethod
     def from_json(cls, json):
         pass
+    """
     def to_json_option(self):
         pass
+    """
     def to_temporary_record(self):
         pass
     def to_object_with_missing_attributes(self, excluded_attributes):

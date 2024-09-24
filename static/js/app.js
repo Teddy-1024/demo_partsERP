@@ -1,3 +1,4 @@
+/*
 // Bundle css imports
 import '../css/lib/reset.css';
 import '../css/lib/typography.css';
@@ -6,6 +7,7 @@ import '../css/lib/utils.css';
 
 import '../css/layouts/header.css';
 import '../css/layouts/footer.css';
+import '../css/layouts/table-main.css'
 
 import '../css/components/button.css';
 import '../css/components/card.css';
@@ -16,7 +18,7 @@ import '../css/components/navigation.css';
 import '../css/components/overlay.css';
 
 import '../css/sections/store.css';
-
+*/
 
 
 // Main entry point for the application
@@ -34,7 +36,6 @@ class App {
     }
 
     initialize() {
-        console.log('Initializing application...');
         this.setupEventListeners();
         this.start();
     }
@@ -51,13 +52,11 @@ class App {
     }
 
     start() {
-        console.log('Starting application...');
         // Additional startup logic
         this.initPageCurrent();
     }
 
     initPageCurrent() {
-        console.log("initPageCurrent");
         /*
         _pageCurrent = Router.getPageCurrent();
         _pageCurrent.initialize();

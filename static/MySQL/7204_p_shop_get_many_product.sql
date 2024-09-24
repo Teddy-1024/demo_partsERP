@@ -95,11 +95,11 @@ BEGIN
     );
     
     CREATE TEMPORARY TABLE tmp_Permutation (
-		-- id_category INT NOT NULL,
-		id_product INT NOT NULL,
-		id_permutation INT NULL,
-        active BIT NOT NULL,
-        display_order INT NOT NULL
+		id_permutation INT NULL
+        -- id_category INT NOT NULL,
+		, id_product INT NOT NULL
+        , active BIT NOT NULL
+        -- , display_order INT NOT NULL
     );
     
     CREATE TEMPORARY TABLE tmp_Image (
@@ -178,18 +178,18 @@ BEGIN
     ;
     
 	INSERT INTO tmp_Permutation (
+		id_permutation
 		-- id_category,
-		id_product,
-		id_permutation,
-        active,
-        display_order
+		, id_product
+        , active
+        -- , display_order
 	)
     SELECT 
+		PP.id_permutation
 		-- P.id_category,
-		PP.id_product,
-		PP.id_permutation,
-        PP.active,
-        PP.display_order
+		, PP.id_product
+        , PP.active
+        -- , RANK() OVER (ORDER BY VT.display_order, V.display_order)
 	FROM Shop_Product_Permutation PP
     INNER JOIN tmp_Product t_P ON PP.id_product = t_P.id_product
 	WHERE (
@@ -370,19 +370,35 @@ BEGIN
         PP.id_currency_cost,
         C.code AS code_currency_cost,
         C.symbol AS symbol_currency_cost,
-        PP.profit_local_min,
-        PP.latency_manufacture,
+        -- PP.profit_local_min,
+        PP.latency_manufacture_days,
+        PP.id_unit_measurement_quantity,
+        UM_Q.symbol AS symbol_unit_measurement_quantity,
+        UM_Q.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_quantity,
+        UM_Q.name_singular AS name_singular_unit_measurement_quantity,
+        UM_Q.name_plural AS name_plural_unit_measurement_quantity,
+        PP.count_unit_measurement_per_quantity_step,
         PP.quantity_min,
         PP.quantity_max,
-        PP.quantity_step,
         PP.quantity_stock,
-        PP.id_stripe_product,
         PP.is_subscription,
-        UM.name_singular AS name_recurrence_interval,
-        UM.name_plural AS name_plural_recurrence_interval,
+        PP.id_unit_measurement_interval_recurrence,
+        UM_R.symbol AS symbol_unit_measurement_interval_recurrence,
+        UM_R.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_interval_recurrence,
+        UM_R.name_singular AS name_singular_unit_measurement_interval_recurrence,
+        UM_R.name_plural AS name_plural_unit_measurement_interval_recurrence,
         PP.count_interval_recurrence,
+        PP.id_stripe_product,
+        PP.does_expire_faster_once_unsealed,
+        PP.id_unit_measurement_interval_expiration_unsealed,
+        UM_X.symbol AS symbol_unit_measurement_interval_expiration_unsealed,
+        UM_X.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed,
+        UM_X.name_singular AS name_singular_unit_measurement_interval_expiration_unsealed,
+        UM_X.name_plural AS name_plural_unit_measurement_interval_expiration_unsealed,
+        PP.count_interval_expiration_unsealed,
+        NOT ISNULL(PPVL.id_permutation) AS has_variations,
         PP.active,
-        PP.display_order,
+        -- PP.display_order,
         IFNULL(t_P.can_view, 0) AS can_view,
         IFNULL(t_P.can_edit, 0) AS can_edit,
         IFNULL(t_P.can_admin, 0) AS can_admin
@@ -391,26 +407,28 @@ BEGIN
     INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
     INNER JOIN Shop_Product P ON t_PP.id_product = P.id_product
     INNER JOIN Shop_Product_Category PC ON P.id_category = PC.id_category
-	-- LEFT JOIN Shop_Recurrence_Interval RI ON t_P.id_interval_recurrence = RI.id_interval
-	LEFT JOIN Shop_Unit_Measurement UM ON PP.id_interval_recurrence = UM.id_unit_measurement
+    LEFT JOIN Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+	LEFT JOIN Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
+	LEFT JOIN Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
+	LEFT JOIN Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
     INNER JOIN Shop_Currency C ON PP.id_currency_cost = C.id_currency
     GROUP BY PC.id_category, P.id_product, PP.id_permutation, t_P.can_view, t_P.can_edit, t_P.can_admin
-	ORDER BY PC.display_order, P.display_order, PP.display_order
+	ORDER BY PC.display_order, P.display_order -- , t_PP.display_order
 	;
     
     # Variations
     SELECT 
 		V.id_variation
+        , V.id_type
         , V.code AS code_variation
         , V.name AS name_variation
+		, V.display_order AS display_order_variation
         , V.active AS active_variation
-		, V.display_order
-        , V.id_type
         , VT.code AS code_variation_type
         , VT.name AS name_variation_type
         , VT.name_plural AS name_plural_variation_type
+		, VT.display_order AS display_order_variation_type
         , VT.active AS active_variation_type
-		, VT.display_order
         , t_P.id_product
         , t_PP.id_permutation
         , t_C.id_category
@@ -458,7 +476,7 @@ BEGIN
 	INNER JOIN tmp_Permutation t_PP ON t_I.id_permutation = t_PP.id_permutation
     INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
     INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
-	ORDER BY t_C.display_order, t_P.display_order, t_PP.display_order, I.display_order
+	ORDER BY t_C.display_order, t_P.display_order, I.display_order
 	;
     
     # Errors
@@ -514,7 +532,7 @@ DELIMITER ;;
 CALL partsltd_prod.p_shop_get_many_product (
 	1 #'auth0|6582b95c895d09a70ba10fef', # a_id_user
     , 1 # a_get_all_product_category
-	, 1 # a_get_inactive_product_category
+	, 0 # a_get_inactive_product_category
 	, '' # a_ids_product_category
     , 1 # a_get_all_product
 	, 0 # a_get_inactive_product
@@ -525,7 +543,7 @@ CALL partsltd_prod.p_shop_get_many_product (
     , 1 # a_get_all_image
     , 0 # a_get_inactive_image
 	, '' # a_ids_image
-    , 1 # a_get_products_quantity_stock_below_minimum
+    , 0 # a_get_products_quantity_stock_below_minimum
 );
 
 select * FROM Shop_User_Eval_Temp;

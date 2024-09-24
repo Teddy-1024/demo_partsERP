@@ -31,8 +31,8 @@ SELECT * FROM Shop_Product_Category;
 SELECT * FROM Shop_Product_Category_Audit;
 
 -- Recurrence Interval
-SELECT * FROM Shop_Recurrence_Interval;
-SELECT * FROM Shop_Recurrence_Interval_Audit;
+SELECT * FROM Shop_Interval_Recurrence;
+SELECT * FROM Shop_Interval_Recurrence_Audit;
 
 -- Region
 SELECT * FROM Shop_Region;

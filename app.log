@@ -1,37 +1,4 @@
-Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
-Request: 127.0.0.1 GET http /login_callback?code=JMmHntUooZqn-PHB_xXhxkzf0lBMA6CcFQC1whmN23xUb&state=%2F Host: 127.0.0.1:5000
-Connection: keep-alive
-Pragma: no-cache
-Cache-Control: no-cache
-Dnt: 1
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-Sec-Fetch-Site: cross-site
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Sec-Ch-Ua: "Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"
-Sec-Ch-Ua-Mobile: ?0
-Sec-Ch-Ua-Platform: "Windows"
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: en-GB,en-US;q=0.9,en;q=0.8
-Cookie: session=.eJxtkG1rwjAQx79LwL7R9SG2aVooww2cCJvMMX1ZYnq10ZrUND5M2XdfKmNsMHLhwt3_cj_-V5S3hhnI2cFUfu6h9IoKZliXpZIcUIoeJrMZDquFv6mO7-PqeCrDCA2QhkJo4CY_aGFVlTFN6nkBjl3fniCNfN_3arUWMuesrleMb-3UQdff4taqCzjeyRPbYp8QKElFxVm6h9a90bhc7bzupbS4wL2GtlGyhdx8NJBxVYDDawHS5KLI1k-bD7N_eV4-Vm_ivJ_FeP56WUyWIwbT6WUunN-0Wbe-Nxz18NjGD7GtdMy29JfaabmyG-2Voug3WpWihj7smKidm3mZHXFubmX_evU5QHBuUBrEmETJMKSBGyUUUxLaDm91mRu1BWl9CUpK4pWPCcEkLjEDUuAoSRJKOUkIJauSch7E9ssvTeiOWA.ZumruQ.WqTz2NgZC14EQFnfvllT6CC2T3U
-
-
-Request data: b''
 Traceback: Traceback (most recent call last):
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\routing\user.py", line 91, in login_callback
-    users, errors = datastore_user.get_many_user(user_filters, user)
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_user.py", line 134, in get_many_user
-    guid = Helper_DB_MySQL.create_guid()
-           ^^^^^^^^^^^^^^^
-NameError: name 'Helper_DB_MySQL' is not defined
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
     response = self.full_dispatch_request()
                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -47,10 +14,38 @@ Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\routing\user.py", line 120, in login_callback
-    return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
-                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\pydantic\_internal\_model_construction.py", line 237, in __getattr__
-    raise AttributeError(item)
-AttributeError: STATUS_FAILURE
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product_category.py", line 57, in categories
+    return render_template('pages/store/_product_categories.html', model = model)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1304, in render
+    self.environment.handle_exception()
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 939, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_categories.html", line 1, in top-level template code
+    {% extends 'layouts/layout.html' %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\layouts\layout.html", line 316, in top-level template code
+    {% block page_body %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_categories.html", line 99, in block 'page_body'
+    var currencies = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.access_levels) | tojson | safe }};
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_base.py", line 330, in convert_list_objects_to_dict_json_by_attribute_key_default
+    return Model_View_Base.convert_list_objects_to_dict_json_by_attribute_key(list_objects, getattr(obj_class, obj_class.FLAG_NAME_ATTR_OPTION_VALUE))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_base.py", line 318, in convert_list_objects_to_dict_json_by_attribute_key
+    return {getattr(obj, key): obj.to_json() for obj in list_objects}
+                               ^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\access_level.py", line 66, in to_json
+    self.FLAG_ACTIVE: av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json')
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\lib\argument_validation.py", line 493, in input_bool
+    raise ValueError(error_msg)
+ValueError: Invalid Access_Level.to_json <class 'bool'> argument active. Type = <class 'str'>. Value = 2
 

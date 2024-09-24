@@ -10,7 +10,7 @@ export default class PageHome extends BasePage {
 
     initialize() {
         this.sharedInitialize();
-        this.hookupButtonNavContact();
+        this.hookupButtonsNavContact();
     }
 
     leave() {

@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement (
     name_singular VARCHAR(255) NOT NULL,
     name_plural VARCHAR(256) NOT NULL,
     symbol VARCHAR(50) NOT NULL,
+    symbol_is_suffix_not_prefix BIT NOT NULL DEFAULT 1,
     is_base_unit BIT NOT NULL DEFAULT 0,
     is_unit_of_distance BIT NOT NULL DEFAULT 0,
     is_unit_of_mass BIT NOT NULL DEFAULT 0,

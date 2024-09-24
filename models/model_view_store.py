@@ -17,19 +17,19 @@ Parent data model for store views
 # IMPORTS
 # internal
 # from context import models
-from models.model_view_base import Model_View_Base
 from business_objects.store.store_base import Store_Base
 from business_objects.store.product import Product, Filters_Product, Product_Permutation # Product_Image_Filters, 
 # from business_objects.store.product_category import Filters_Product_Category
 from business_objects.store.image import Resolution_Level_Enum
-import lib.argument_validation as av
+from business_objects.store.basket import Basket_Item, Basket
+from business_objects.store.product_category import Product_Category
+from business_objects.store.product_variation import Product_Variation_Filters, Product_Variation
 from datastores.datastore_store_base import DataStore_Store_Base
 from datastores.datastore_user import DataStore_User
 from datastores.datastore_store_basket import DataStore_Store_Basket
 from forms.forms import Form_Basket_Edit, Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
-from business_objects.store.basket import Basket_Item, Basket
-from business_objects.store.product_category import Product_Category
-from business_objects.store.product_variation import Product_Variation_Filters, Product_Variation
+import lib.argument_validation as av
+from models.model_view_base import Model_View_Base
 # external
 from flask import send_file, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -37,40 +37,66 @@ import locale
 from typing import ClassVar
 from abc import abstractmethod
 
-# VARIABLE INSTANTIATION
 
-
-# CLASSES
 class Model_View_Store(Model_View_Base):
     # Global constants
     ATTR_FORM_TYPE: ClassVar[str] = 'form-type'
-    ATTR_ID_CATEGORY: ClassVar[str] = Product.ATTR_ID_PRODUCT_CATEGORY
-    # ATTR_ID_PRODUCT_CATEGORY : ClassVar[str] = 'id-product-category'
     ATTR_ID_PRODUCT : ClassVar[str] = Product.ATTR_ID_PRODUCT # 'id-product'
-    ATTR_ID_PERMUTATION : ClassVar[str] = Product.ATTR_ID_PRODUCT_PERMUTATION # 'id-permutation'
-    ATTR_ID_VARIATION : ClassVar[str] = Product_Variation.ATTR_ID_PRODUCT_VARIATION # 'id-variation'
-    ATTR_ID_VARIATION_TYPE : ClassVar[str] = Product_Variation.ATTR_ID_PRODUCT_VARIATION_TYPE # 'id-variation-type'
-    FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_SUBMIT + '.buttonAdd2Basket'
+    ATTR_ID_PRODUCT_CATEGORY: ClassVar[str] = Product.ATTR_ID_PRODUCT_CATEGORY
+    ATTR_ID_PRODUCT_PERMUTATION : ClassVar[str] = Product.ATTR_ID_PRODUCT_PERMUTATION # 'id-permutation'
+    ATTR_ID_PRODUCT_VARIATION : ClassVar[str] = Product_Variation.ATTR_ID_PRODUCT_VARIATION # 'id-variation'
+    ATTR_ID_PRODUCT_VARIATION_TYPE : ClassVar[str] = Product_Variation.ATTR_ID_PRODUCT_VARIATION_TYPE # 'id-variation-type'
+    FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_SUBMIT + '.buttonAddToBasket'
     FLAG_BUTTON_BUY_NOW : ClassVar[str] = 'buttonBuyNow'
-    FLAG_COST_LOCAL_VAT_INCL: ClassVar[str] = 'cost-local-VAT-incl'
-    FLAG_CURRENCY: ClassVar[str] = 'currency'
+    FLAG_COST_LOCAL: ClassVar[str] = Product_Permutation.FLAG_COST_LOCAL
+    # FLAG_COST_LOCAL_VAT_INCL: ClassVar[str] = 'cost-local-VAT-incl'
+    FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
+    FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
+    FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP: ClassVar[str] = Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP
+    FLAG_CURRENCY_COST: ClassVar[str] = Product_Permutation.FLAG_CURRENCY_COST
     FLAG_DATE_CONSUMED: ClassVar[str] = 'date-consumed'
     FLAG_DATE_EXPIRATION: ClassVar[str] = 'date-expiration'
     FLAG_DATE_PURCHASED: ClassVar[str] = 'date-purchased'
     FLAG_DATE_RECEIVED: ClassVar[str] = 'date-received'
     FLAG_DATE_UNSEALED: ClassVar[str] = 'date-unsealed'
+    FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED
+    FLAG_HAS_VARIATIONS: ClassVar[str] = Product_Permutation.FLAG_HAS_VARIATIONS
+    FLAG_ID_STRIPE_PRODUCT: ClassVar[str] = Product_Permutation.FLAG_ID_STRIPE_PRODUCT
     FLAG_IS_NOT_EMPTY: ClassVar[str] = Store_Base.FLAG_IS_NOT_EMPTY
     FLAG_IS_OUT_OF_STOCK: ClassVar[str] = 'is-out-of-stock'
+    FLAG_IS_SUBSCRIPTION: ClassVar[str] = Product_Permutation.FLAG_IS_SUBSCRIPTION
+    FLAG_LATENCY_MANUFACTURE_DAYS: ClassVar[str] = Product_Permutation.FLAG_LATENCY_MANUFACTURE_DAYS
     FLAG_LOCATION_STORAGE: ClassVar[str] = 'storage-location'
-    FLAG_PRODUCT: ClassVar[str] = 'product'
-    FLAG_PRODUCT_CATEGORY: ClassVar[str] = 'category'
+    FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
+    FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
+    FLAG_NAME_PLURAL_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = Product_Permutation.FLAG_NAME_PLURAL_UNIT_MEASUREMENT_QUANTITY
+    FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
+    FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
+    FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = Product_Permutation.FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_QUANTITY
+    FLAG_PRODUCT: ClassVar[str] = Store_Base.FLAG_PRODUCT
+    FLAG_PRODUCT_CATEGORY: ClassVar[str] = Store_Base.FLAG_PRODUCT_CATEGORY
+    FLAG_PRODUCT_PERMUTATION: ClassVar[str] = Store_Base.FLAG_PRODUCT_PERMUTATION
+    FLAG_PRODUCT_VARIATION: ClassVar[str] = Store_Base.FLAG_PRODUCT_VARIATION
+    FLAG_PRODUCT_VARIATIONS: ClassVar[str] = Store_Base.FLAG_PRODUCT_VARIATIONS
+    FLAG_PRODUCT_VARIATION_TYPE: ClassVar[str] = Store_Base.FLAG_PRODUCT_VARIATION_TYPE
+    FLAG_QUANTITY: ClassVar[str] = 'quantity'
     FLAG_QUANTITY_MAX: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_MAX # 'quantity-max'
     FLAG_QUANTITY_MIN: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_MIN # 'quantity-min'
     FLAG_QUANTITY_STOCK: ClassVar[str] = Product_Permutation.FLAG_QUANTITY_STOCK # 'quantity-stock'
     FLAG_PLANT_STORAGE: ClassVar[str] = 'plant-storage'
     FLAG_PRODUCT_CATEGORY: ClassVar[str] = 'category'
+    FLAG_PROFIT_LOCAL_MIN: ClassVar[str] = Product_Permutation.FLAG_PROFIT_LOCAL_MIN
     FLAG_REGION_STORAGE: ClassVar[str] = 'region-storage'
-    FLAG_VARIATIONS: ClassVar[str] = 'variations'
+    FLAG_SYMBOL_CURRENCY_COST: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_CURRENCY_COST
+    FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
+    FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
+    FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_QUANTITY
+    FLAG_SYMBOL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
+    FLAG_SYMBOL_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
+    FLAG_SYMBOL_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_UNIT_MEASUREMENT_QUANTITY
+    FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
+    FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
+    FLAG_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = Product_Permutation.FLAG_UNIT_MEASUREMENT_QUANTITY
     HASH_PAGE_STORE_BASKET : ClassVar[str] = '/store/basket'
     HASH_STORE_BASKET_ADD : ClassVar[str] = '/store/basket_add'
     HASH_STORE_BASKET_DELETE : ClassVar[str] = '/store/basket_delete'
@@ -78,10 +104,10 @@ class Model_View_Store(Model_View_Base):
     HASH_STORE_BASKET_LOAD : ClassVar[str] = '/store/basket_load'
     HASH_GET_STORE_PRODUCT: ClassVar[str] = '/store/product_get'
     HASH_GET_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/category_get'
-    HASH_SAVE_STORE_PRODUCT: ClassVar[str] = '/store/product_save'
+    HASH_SAVE_STORE_PRODUCT: ClassVar[str] = '/store/save_product'
     HASH_GET_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_get'
-    HASH_SAVE_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/category_save'
-    HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_save'
+    HASH_SAVE_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/save_category'
+    HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/save_permutation'
     HASH_STORE_SET_CURRENCY : ClassVar[str] = '/store/set_currency'
     HASH_STORE_SET_DELIVERY_REGION : ClassVar[str] = '/store/set_delivery_region'
     HASH_STORE_SET_IS_INCLUDED_VAT : ClassVar[str] = '/store/set_is_included_VAT'
@@ -91,13 +117,14 @@ class Model_View_Store(Model_View_Base):
     ID_BUTTON_CHECKOUT : ClassVar[str] = 'buttonCheckout'
     ID_BUTTON_BASKET_ADD : ClassVar[str] = 'buttonBasketAdd'
     ID_BUTTON_BUY_NOW : ClassVar[str] = 'buttonBuyNow'
-    ID_CATEGORY_DEFAULT: ClassVar[str] = 1
+    ID_PRODUCT_CATEGORY_DEFAULT: ClassVar[str] = 1
     ID_CURRENCY : ClassVar[str] = Form_Currency.id_id_currency # 'id_currency'
     ID_CURRENCY_DEFAULT : ClassVar[str] = 1
     ID_LABEL_BASKET_EMPTY : ClassVar[str] = 'basketEmpty'
     ID_REGION_DELIVERY : ClassVar[str] = Form_Delivery_Region.id_id_region_delivery # 'id_region_delivery'
     ID_REGION_DELIVERY_DEFAULT : ClassVar[str] = 1
     IS_INCLUDED_VAT_DEFAULT : ClassVar[str] = True
+    """
     KEY_BASKET : ClassVar[str] = Basket.KEY_BASKET # 'basket'
     # KEY_CODE_CURRENCY : ClassVar[str] = 'code_currency'
     # KEY_FORM : ClassVar[str] = 'form'
@@ -107,11 +134,10 @@ class Model_View_Store(Model_View_Base):
     KEY_ID_REGION_DELIVERY : ClassVar[str] = Basket.KEY_ID_REGION_DELIVERY # 'id_region_delivery'
     KEY_IS_INCLUDED_VAT : ClassVar[str] = Basket.KEY_IS_INCLUDED_VAT # 'is_included_VAT'
     KEY_ITEMS : ClassVar[str] = Basket.KEY_ITEMS # 'items'
-    KEY_NAME_VARIATION : ClassVar[str] = Product_Variation.KEY_NAME_VARIATION
-    KEY_NAME_VARIATION_TYPE : ClassVar[str] = Product_Variation.KEY_NAME_VARIATION_TYPE
     KEY_PRICE : ClassVar[str] = 'price'
     KEY_QUANTITY : ClassVar[str] = 'quantity'
     KEY_VALUE_DEFAULT : ClassVar[str] = 'default'
+    """
     TYPE_FORM_BASKET_ADD : ClassVar[str] = 'Form_Basket_Add'
     TYPE_FORM_BASKET_EDIT : ClassVar[str] = 'Form_Basket_Edit'
     # development variables
@@ -136,7 +162,7 @@ class Model_View_Store(Model_View_Base):
         print(f'{_m}\nstarting')
         # av.val_str(id_user, 'id_user', _m)
         # return super().__new__(cls, *args, **kwargs)
-        # cls.FLAG_BUTTON_BASKET_ADD = cls.FLAG_BUTTON_SUBMIT + '.buttonAdd2Basket'
+        # cls.FLAG_BUTTON_BASKET_ADD = cls.FLAG_BUTTON_SUBMIT + '.buttonAddToBasket'
         return super().__new__(cls, db, info_user, app) # Model_View_Store, cls
     """
     @property
@@ -160,7 +186,7 @@ class Model_View_Store(Model_View_Base):
         self.is_included_VAT = is_included_VAT
         self.show_delivery_option = True
         self.form_is_included_VAT = Form_Is_Included_VAT()
-        regions, currencies = self.get_regions_and_currencies()
+        regions, currencies = self.get_many_region_and_currency()
         self.form_currency = Form_Currency(id_currency=self.id_currency)
         self.form_currency.id_currency.choices = [(currency.id_currency, f'{currency.code} - {currency.name}') for currency in currencies]
         self.form_currency.id_currency.data = str(self.id_currency) if len(currencies) > 0 else None
@@ -410,12 +436,18 @@ class Model_View_Store(Model_View_Base):
         # validation conducted by server
         return DataStore_User().get_many_user_order(self.info_user['sub'], ids_order, n_order_max, id_checkout_session)
     
-    def get_regions_and_currencies(self):
-        regions, currencies = DataStore_Store_Base().get_regions_and_currencies()
+    def get_many_currency(self):
+        currencies = DataStore_Store_Base().get_many_currency()
+        return currencies
+    def get_many_region(self):
+        regions = DataStore_Store_Base().get_many_region()
+        return regions
+    def get_many_region_and_currency(self):
+        regions, currencies = DataStore_Store_Base().get_many_region_and_currency()
         return regions, currencies
     
     def get_many_product_variation(self, variation_filters = None):
         if variation_filters is None:
             variation_filters = Product_Variation_Filters.get_default()
-        variations, errors = DataStore_Store_Base().get_many_product_variation(variation_filters)
-        return variations, errors
+        variation_types, variations, errors = DataStore_Store_Base().get_many_product_variation(variation_filters)
+        return variation_types, variations, errors
