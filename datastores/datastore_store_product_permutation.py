@@ -12,21 +12,10 @@ Datastore for Store Product Permutations
 
 # internal
 import lib.argument_validation as av
-from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Product_Category_Container, Product_Category
-from business_objects.store.currency import Currency
-from business_objects.store.image import Image
-from business_objects.store.delivery_option import Delivery_Option
-from business_objects.store.delivery_region import Delivery_Region
-from business_objects.store.discount import Discount
-from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Filters_Product
-from business_objects.sql_error import SQL_Error
-from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
-from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
+from business_objects.store.store_base import Store_Base
+from business_objects.store.product_permutation import Product_Permutation, Product_Permutation_Temp
 from datastores.datastore_store_base import DataStore_Store_Base
-# from helpers.helper_db_mysql import Helper_DB_MySQL
+from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
 # external
@@ -43,35 +32,72 @@ from datetime import datetime
 # db = SQLAlchemy()
 
 
+
 class DataStore_Store_Product_Permutation(DataStore_Store_Base):
     def __init__(self):
         super().__init__()
 
-    def save_permutations(self, comment, permutations):
-        _m = 'DataStore_Store_Base.save_permutations'
+    @classmethod
+    def save_permutations(cls, comment, permutations):
+        _m = 'DataStore_Store_Product_Permutation.save_permutations'
         av.val_str(comment, 'comment', _m)
-        av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
+        # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
 
-        guid = Helper_DB_MySQL.create_guid()
+        guid = Helper_DB_MySQL.create_guid_str()
         now = datetime.now()
-        user = self.get_user_session()
+        user = cls.get_user_session()
+        rows = []
         for permutation in permutations:
-            setattr(permutation, 'guid', guid)
-            setattr(permutation, 'created_on', now)
-            setattr(permutation, 'created_by', user.id_user)
+            # row = permutation.to_temporary_record()
+            row = Product_Permutation_Temp.from_product_permutation(permutation)
+            row.guid = guid
+            rows.append(row)
         
-        cursor = self.db.cursor()
+        print(f'rows: {rows}')
+        
+        """
+        cursor = db.cursor()
+        print('cursor created')
         cursor.executemany(
-            'INSERT INTO Shop_Product_Permutation_Temp (id_permutation, id_product, description, cost_local, id_currency_cost, profit_local_min, latency_manufacture, quantity_min, quantity_max, quantity_step, quantity_stock, is_subscription, id_recurrence_interval, count_recurrence_interval, id_stripe_product, active, display_order, guid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-            permutations
+            '''INSERT INTO Shop_Product_Permutation_Temp (
+                id_permutation, 
+                id_product, 
+                description, 
+                cost_local, 
+                id_currency_cost, 
+                profit_local_min, 
+                latency_manufacture_days,
+                id_unit_measurement_quantity,
+                count_unit_measurement_quantity,
+                quantity_min, 
+                quantity_max, 
+                quantity_stock, 
+                is_subscription, 
+                id_unit_measurement_interval_recurrence, 
+                count_interval_recurrence, 
+                id_stripe_product,
+                does_expire_faster_once_unsealed,
+                id_unit_measurement_interval_expiration_unsealed,
+                count_interval_expiration_unsealed,
+                active,
+                guid
+            ) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+            rows
         )
-        self.db.commit()
-        
+        print('cursor executed')
+        db.commit()
+        print('cursor committed')
+        cursor.close()
+        print('cursor closed')
+        """
+        DataStore_Store_Base.upload_bulk(Product_Permutation_Temp.__tablename__, rows, 1000)
+        print('bulk uploaded')
+
         argument_dict_list = {
             'a_id_user': user.id_user,
             'a_comment': comment,
             'a_guid': guid
         }
-        self.db_procedure_execute('p_shop_save_permutation', argument_dict_list)
-        
-        cursor.close()
+        cls.db_procedure_execute('p_shop_save_product_permutation', argument_dict_list)
+        print('saved product permutations')

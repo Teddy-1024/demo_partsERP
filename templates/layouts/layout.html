@@ -68,6 +68,7 @@
         // var flagContactUs = "{{ model.FLAG_CONTACT_US }}";
         var flagContainer = "{{ model.FLAG_CONTAINER }}";
         var flagContainerInput = "{{ model.FLAG_CONTAINER_INPUT }}";
+        var flagCurrency = "{{ model.FLAG_CURRENCY }}";
         var flagDelete = "{{ model.FLAG_DELETE }}";
         var flagDescription = "{{ model.FLAG_DESCRIPTION }}";
         var flagDetail = "{{ model.FLAG_DETAIL }}";
@@ -82,10 +83,12 @@
         var flagAccessLevelRequired = "{{ model.FLAG_ACCESS_LEVEL_REQUIRED }}";
         var flagImageLogo = "{{ model.FLAG_IMAGE_LOGO }}";
         var flagInitialised = "{{ model.FLAG_INITIALISED }}";
-        var flagKeyPrimary = "{{ model.FLAG_KEY_PRIMARY }}";
+        // var flagKeyPrimary = "{{ model.FLAG_KEY_PRIMARY }}";
         var flagMessage = "{{ model.FLAG_MESSAGE }}";
         var flagMove = "move";
         var flagName = "{{ model.FLAG_NAME }}";
+        var flagNameAttrOptionText = "{{ model.FLAG_NAME_ATTR_OPTION_TEXT}}";
+        var flagNameAttrOptionValue = "{{ model.FLAG_NAME_ATTR_OPTION_VALUE }}";
         var flagNavAdminHome = "{{ model.FLAG_NAV_ADMIN_HOME }}";
         var flagNavAdminStoreStripePrices = "{{ model.FLAG_NAV_ADMIN_STORE_STRIPE_PRICES }}";
         var flagNavAdminStoreStripeProducts = "{{ model.FLAG_NAV_ADMIN_STORE_STRIPE_PRODUCTS }}";
@@ -188,6 +191,8 @@
         var keyPrice = "{{ model.KEY_PRICE }}";
         var keyQuantity = "{{ model.KEY_QUANTITY }}";
         var keyShared = "shared";
+        var nameAttrOptionText = "{{ model.NAME_ATTR_OPTION_TEXT }}";
+        var nameAttrOptionValue = "{{ model.NAME_ATTR_OPTION_VALUE }}";
         var nameCSRFToken = "{{ model.NAME_CSRF_TOKEN }}";
         var _pathHost = "{{ model.get_url_host() }}";
         var _rowBlank = null;
@@ -198,7 +203,7 @@
     <!-- Stylesheets 
     <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css"/>
     -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/main.bundle.css') }}">
 </head>
 <body data-page="{{ model.hash_page_current }}">
 {% set user = model.get_user_session() %}

@@ -5,12 +5,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/product_categories.css') }}">
     -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_product_categories.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_product_categories.bundle.css') }}">
     
     <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product_category.save_category') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }} {{ model.FLAG_IS_NOT_EMPTY }}">
                 {{ model.form_filters.is_not_empty.label }}
                 {{ model.form_filters.is_not_empty() }}
                 {% for error in model.form_filters.is_not_empty.errors %}
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }} {{ model.FLAG_ACTIVE }}">
                 {{ model.form_filters.active.label }}
                 {{ model.form_filters.active() }}
                 {% for error in model.form_filters.active.errors %}
@@ -27,6 +27,7 @@
                 {% endfor %}
             </div>
         </div>
+        {#
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
             <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
                 {% set block_id = 'button_apply_filters' %}
@@ -59,6 +60,9 @@
             </div>
         </div>
         -->
+        #}
+        {% set block_id = 'buttons_table_default' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
     </form>
 
 
@@ -91,10 +95,11 @@
     <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/store/product_categories.js') }}"></script>
     -->
+    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
 
     <script>
         // pass arguments from model to JS
         var flagIsNotEmpty = "{{ model.FLAG_IS_NOT_EMPTY }}";
-        var optionsAccessLevel = {{ model.convert_list_objects_to_list_options(model.access_levels) | tojson | safe }};
+        var accessLevels = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.access_levels) | tojson | safe }};
     </script>
 {% endblock %}

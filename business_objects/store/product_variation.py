@@ -19,123 +19,102 @@ Business object for product variation
 # internal
 import lib.argument_validation as av
 from business_objects.store.store_base import Store_Base
+from business_objects.store.product_variation_type import Product_Variation_Type
 from extensions import db
 # external
 from dataclasses import dataclass
 from typing import ClassVar
 from pydantic import BaseModel
+from itertools import filterfalse
+from operator import attrgetter
 
 
-# CLASSES
 class Product_Variation(db.Model, Store_Base):
-    KEY_ACTIVE_VARIATION: ClassVar[str] = 'active_variation'
-    KEY_ACTIVE_VARIATION_TYPE: ClassVar[str] = 'active_variation_type'
-    KEY_CODE_VARIATION: ClassVar[str] = 'code_variation'
-    KEY_CODE_VARIATION_TYPE: ClassVar[str] = 'code_variation_type'
-    KEY_DISPLAY_ORDER_VARIATION: ClassVar[str] = 'display_order_variation'
-    KEY_DISPLAY_ORDER_VARIATION_TYPE: ClassVar[str] = 'display_order_variation_type'
-    KEY_NAME_VARIATION: ClassVar[str] = 'name_variation'
-    KEY_NAME_VARIATION_TYPE: ClassVar[str] = 'name_variation_type'
-    
+    NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT_VARIATION
+    NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME
+
     id_variation = db.Column(db.Integer, primary_key=True)
-    code_variation = db.Column(db.String(50))
-    name_variation = db.Column(db.String(255))
-    active_variation = db.Column(db.Boolean)
-    display_order_variation = db.Column(db.Integer)
     id_type = db.Column(db.Integer)
-    code_variation_type = db.Column(db.String(50))
-    name_variation_type = db.Column(db.String(255))
-    name_plural_variation_type = db.Column(db.String(255))
-    active_variation_type = db.Column(db.Boolean)
-    display_order_variation_type = db.Column(db.Integer)
-    id_product = db.Column(db.Integer)
-    id_permutation = db.Column(db.Integer)
-    id_category = db.Column(db.Integer)
+    code = db.Column(db.String(50))
+    name = db.Column(db.String(255))
+    display_order = db.Column(db.Integer)
+    active = db.Column(db.Boolean)
     
+    id_permutation = db.Column(db.Integer)
+    id_product = db.Column(db.Integer)
+    id_category = db.Column(db.Integer)
+
     def __init__(self):
         super().__init__()
-        Store_Base.__init__(self)
+        self.variation_type = None
     
-    def from_DB_get_many_product_catalogue(query_row):
-        variation = Product_Variation.from_DB_variation(query_row)
+    @classmethod
+    def from_DB_get_many_product_catalogue(cls, query_row):
+        variation = Product_Variation.from_DB_get_many_product_variation(query_row)
         variation.id_product = query_row[11]
         variation.id_permutation = query_row[12]
         variation.id_category = query_row[13]
+        variation.variation_type = Product_Variation_Type.from_DB_get_many_product_catalogue(query_row)
         return variation
 
-    def from_DB_variation(query_row):
-        _m = 'Product_Variation.from_DB_variation'
-        variation = Product_Variation()
+    @classmethod
+    def from_DB_get_many_product_variation(cls, query_row):
+        variation = cls()
         variation.id_variation = query_row[0]
-        variation.code_variation = query_row[1]
-        variation.name_variation = query_row[2]
-        variation.active_variation = av.input_bool(query_row[3], 'active_variation', _m)
-        variation.display_order_variation = query_row[4]
-        variation.id_type = query_row[5]
-        variation.code_variation_type = query_row[6]
-        variation.name_variation_type = query_row[7]
-        variation.name_plural_variation_type = query_row[8]
-        variation.active_variation_type = av.input_bool(query_row[9], 'active_variation', _m)
-        variation.display_order_variation_type = query_row[10]
+        variation.id_type = query_row[1]
+        variation.code = query_row[2]
+        variation.name = query_row[3]
+        variation.display_order = query_row[4]
+        variation.active = av.input_bool(query_row[5], cls.FLAG_ACTIVE, f'{cls.__name__}.from_DB_get_many_product_variation')
         return variation
     
     @classmethod
     def from_json(cls, json):
         variation = cls()
-        variation.id_variation = json[cls.ATTR_ID_VARIATION]
+        variation.id_variation = json[cls.ATTR_ID_PRODUCT_VARIATION]
+        variation.code = json[cls.FLAG_CODE]
+        variation.name = json[cls.FLAG_NAME]
+        variation.display_order = json[cls.FLAG_DISPLAY_ORDER]
+        variation.active = json[cls.FLAG_ACTIVE]
+        variation.id_permutation = json[cls.ATTR_ID_PRODUCT_PERMUTATION]
         variation.id_product = json[cls.ATTR_ID_PRODUCT]
-        variation.id_permutation = json[cls.ATTR_ID_PERMUTATION]
-        variation.id_category = json[cls.ATTR_ID_CATEGORY]
-        variation.name_variation_type = json[cls.KEY_NAME_VARIATION_TYPE]
-        variation.name_variation = json[cls.KEY_NAME_VARIATION]
+        variation.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
         return variation
 
     def __repr__(self):
         return f'''
-            id: {self.id_variation}
-            id_product: {self.id_product}
+            {self.__class__.__name__}
+            id_variation: {self.id_variation}
+            id_type: {self.id_type}
+            code: {self.code}
+            name: {self.name}
+            display_order: {self.display_order}
+            active: {self.active}
             id_permutation: {self.id_permutation}
+            id_product: {self.id_product}
             id_category: {self.id_category}
-            code_variation_type: {self.code_variation_type}
-            name_variation_type: {self.name_variation_type}
-            code_variation: {self.code_variation}
-            name_variation: {self.name_variation}
-            active_variation: {self.active_variation}
-            active_variation_type: {self.active_variation_type}
-            display_order_variation: {self.display_order_variation}
-            display_order_variation_type: {self.display_order_variation_type}
+            variation_type: {self.variation_type}
             '''
     
     def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             self.ATTR_ID_PRODUCT_VARIATION: self.id_variation,
+            self.ATTR_ID_PRODUCT_VARIATION_TYPE: self.id_type,
+            self.FLAG_CODE: self.code,
+            self.FLAG_NAME: self.name,
+            self.FLAG_DISPLAY_ORDER: self.display_order,
+            self.FLAG_ACTIVE: self.active,
             self.ATTR_ID_PRODUCT: self.id_product,
             self.ATTR_ID_PRODUCT_PERMUTATION: self.id_permutation,
             self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
-            self.ATTR_ID_PRODUCT_VARIATION_TYPE: self.id_type,
-            self.KEY_CODE_VARIATION_TYPE: self.code_variation_type,
-            self.KEY_CODE_VARIATION: self.code_variation,
-            self.KEY_DISPLAY_ORDER_VARIATION_TYPE: self.display_order_variation_type,
-            self.KEY_DISPLAY_ORDER_VARIATION: self.display_order_variation,
-            self.KEY_NAME_VARIATION_TYPE: self.name_variation_type,
-            self.KEY_NAME_VARIATION: self.name_variation,
-            self.KEY_ACTIVE_VARIATION_TYPE: self.active_variation_type,
-            self.KEY_ACTIVE_VARIATION: self.active_variation,
         }
     def to_json_option(self):
         return {
             'value': self.id_variation,
-            'text': self.name_variation
+            'text': self.name
         }
-    
-    def to_json_variation_type(self):
-        return {
-            self.ATTR_ID_PRODUCT_VARIATION_TYPE: self.id_type,
-            self.KEY_CODE_VARIATION_TYPE: self.code_variation_type,
-            self.KEY_DISPLAY_ORDER_VARIATION_TYPE: self.display_order_variation_type,
-            self.KEY_NAME_VARIATION_TYPE: self.name_variation_type,
-            self.KEY_ACTIVE_VARIATION_TYPE: self.active_variation_type,
-        }
+
 
 @dataclass
 class Product_Variation_Filters():
@@ -198,30 +177,35 @@ class Product_Variation_Filters():
             get_first_variation = False,
             ids_variation = ''
         )
-    
-class Product_Variation_List(BaseModel):
+
+
+class Product_Variation_Container(BaseModel):
+    variation_types: list = []
     variations: list = []
 
+    def add_product_variation_type(self, variation_type):
+        av.val_instance(variation_type, 'variation_type', 'Product_Variation_Container.add_product_variation_type', Product_Variation_Type)
+        self.variations.append(variation_type)
     def add_product_variation(self, variation):
-        av.val_instance(variation, 'variation', 'Product_Variation_List.add_product_variation', Product_Variation)
+        av.val_instance(variation, 'variation', 'Product_Variation_Container.add_product_variation', Product_Variation)
+        if variation.variation_type is None:
+            variation_type = next(filterfalse(lambda x: x.id_type != variation.id_type, self.variation_types), None)
+            if variation_type is not None:
+                variation.variation_type = variation_type
         self.variations.append(variation)
 
     def __repr__(self):
-        return f'variations: {self.variations}'
+        return f'Product_Variation_Container:\nvariations_types: {self.variation_types}\nvariations: {self.variations}'
     
-    def to_list_variations(self):
+    def to_list_variation_options(self):
         list_variations = []
         for variation in self.variations:
-            list_variations.append(variation.to_json())
+            list_variations.append(variation.to_json_option())
         print(f'list_variations: {list_variations}')
         return list_variations
-    
-    def to_list_variation_types(self):
+    def to_list_variation_type_options(self):
         list_variation_types = []
-        list_variation_ids = []
-        for variation in self.variations:
-            if variation.id_type not in list_variation_ids:
-                list_variation_ids.append(variation.id_type)
-                list_variation_types.append(variation.to_json_variation_type())
+        for variation_type in self.variation_types:
+            list_variation_types.append(variation_type.to_json_option())
         return list_variation_types
     

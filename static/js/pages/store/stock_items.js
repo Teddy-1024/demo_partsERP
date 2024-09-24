@@ -45,7 +45,7 @@ export default class PageStoreStockItems extends BasePage {
         let filterProduct = document.querySelectorAll(idFilterProduct);
         Events.initialiseEventHandler(filterProduct, flagInitialised, function() {
             listProducts.forEach(function(product) {
-                if (product[attrIdCategory] != getElementCurrentValue(document.querySelectorAll(idFilterCategory))) return;
+                if (product[attrIdProductCategory] != DOM.getElementValueCurrent(document.querySelectorAll(idFilterCategory))) return;
                 /*
                 let option = document.createElement('option');
                 option.value = product.value;
@@ -87,11 +87,11 @@ export default class PageStoreStockItems extends BasePage {
         ajaxData[keyForm] = convertForm2JSON(elForm);
         ajaxData.csrf_token = ajaxData[keyForm].csrf_token;
         /*
-        ajaxData[attrIdCategory] = getElementCurrentValue(document.querySelectorAll(idFilterCategory));
-        ajaxData[attrIdProduct] = getElementCurrentValue(document.querySelectorAll(idFilterProduct));
-        ajaxData[flagIsOutOfStock] = getElementCurrentValue(document.querySelectorAll(idFilterIsOutOfStock));
-        ajaxData[flagQuantityMin] = getElementCurrentValue(document.querySelectorAll(idFilterQuantityMin));
-        ajaxData[flagQuantityMax] = getElementCurrentValue(document.querySelectorAll(idFilterQuantityMax));
+        ajaxData[attrIdProductCategory] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterCategory));
+        ajaxData[attrIdProduct] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterProduct));
+        ajaxData[flagIsOutOfStock] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterIsOutOfStock));
+        ajaxData[flagQuantityMin] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterQuantityMin));
+        ajaxData[flagQuantityMax] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterQuantityMax));
         */
 
         console.log('ajaxData:'); console.log(ajaxData);
@@ -115,22 +115,22 @@ export default class PageStoreStockItems extends BasePage {
             row = document.querySelectorAll(row);
             row.classList.remove(flagRowNew);
             console.log("applying data row: ", dataRow);
-            dllCategory = row.querySelector('td.' + flagCategory + ' select');
-            dllCategory.val(dataRow[attrIdCategory]);
+            dllCategory = row.querySelector('td.' + flagProductCategory + ' select');
+            dllCategory.val(dataRow[attrIdProductCategory]);
             ddlProduct = row.querySelector('td.' + flagProduct + ' select');
             listProducts.forEach(function(product) {
-                if (product[attrIdCategory] != dataRow[attrIdCategory]) return;
+                if (product[attrIdProductCategory] != dataRow[attrIdProductCategory]) return;
                 ddlProduct.appendChild(document.createElement('<option>', product));
             });
             ddlProduct.val(dataRow[attrIdProduct]);
-            row.querySelector('td.' + flagVariations + ' textarea').value = dataRow[flagVariations];
+            row.querySelector('td.' + flagProductVariations + ' textarea').value = dataRow[flagProductVariations];
             row.querySelector('td.' + flagQuantityStock + ' input').value = dataRow[flagQuantityStock];
             row.querySelector('td.' + flagQuantityMin + ' input').value = dataRow[flagQuantityMin];
             row.querySelector('td.' + flagQuantityMax + ' input').value = dataRow[flagQuantityMax];
             row.querySelector('td.' + flagCostLocal).innerHTML = dataRow[flagCostLocal];
-            row.attr(attrIdCategory, dataRow[flagCategory]);
-            row.attr(attrIdProduct, dataRow[flagProduct]);
-            row.attr(attrIdPermutation, dataRow[attrIdPermutation]);
+            row.setAttribute(attrIdProductCategory, dataRow[flagProductCategory]);
+            row.setAttribute(attrIdProduct, dataRow[flagProduct]);
+            row.setAttribute(attrIdPermutation, dataRow[attrIdPermutation]);
             bodyTable.appendChild(row);
         });
         
@@ -190,21 +190,21 @@ export default class PageStoreStockItems extends BasePage {
             row = document.querySelectorAll(row);
             if (dirtyOnly && !row.classList.contains(flagDirty)) return;
 
-            ddlCategory = row.querySelector('td.' + flagCategory + ' select');
+            ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
             ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-            variations = row.querySelector('td.' + flagVariations + ' textarea');
+            variations = row.querySelector('td.' + flagProductVariations + ' textarea');
             quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
             quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
             quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
 
             permutation = {};
-            permutation[attrIdCategory] = ddlCategory.attr(attrValueCurrent);
-            permutation[attrIdProduct] = ddlProduct.attr(attrValueCurrent);
-            permutation[attrIdPermutation] = row.attr(attrIdPermutation)
-            permutation[flagVariations] = variations.attr(attrValueCurrent);
-            permutation[flagQuantityStock] = quantityStock.attr(attrValueCurrent);
-            permutation[flagQuantityMin] = quantityMin.attr(attrValueCurrent);
-            permutation[flagQuantityMax] = quantityMax.attr(attrValueCurrent);
+            permutation[attrIdProductCategory] = ddlCategory.getAttribute(attrValueCurrent);
+            permutation[attrIdProduct] = ddlProduct.getAttribute(attrValueCurrent);
+            permutation[attrIdPermutation] = row.getAttribute(attrIdPermutation)
+            permutation[flagProductVariations] = variations.getAttribute(attrValueCurrent);
+            permutation[flagQuantityStock] = quantityStock.getAttribute(attrValueCurrent);
+            permutation[flagQuantityMin] = quantityMin.getAttribute(attrValueCurrent);
+            permutation[flagQuantityMax] = quantityMax.getAttribute(attrValueCurrent);
             permutations.push(permutation);
         });
         return permutations;
@@ -227,14 +227,14 @@ export default class PageStoreStockItems extends BasePage {
         table.querySelector('tbody tr').each(function(index, row) {
             console.log("hooking up row ", index);
             row = document.querySelectorAll(row);
-            ddlCategory = row.querySelector('td.' + flagCategory + ' select');
+            ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
             ddlProduct = row.querySelector('td.' + flagProduct + ' select');
             
             optionsCategory.clone().appendTo(ddlCategory);
 
             /*
             listProducts.forEach(function(product) {
-                if (product[attrIdCategory] != getElementCurrentValue(ddlCategory)) return;
+                if (product[attrIdProductCategory] != DOM.getElementValueCurrent(ddlCategory)) return;
                 ddlProduct.appendChild(document.createElement('<option>', product));
             });
             *
@@ -245,9 +245,9 @@ export default class PageStoreStockItems extends BasePage {
         table.querySelector('tbody tr').each(function(index, row) {
             console.log("hooking up row ", index);
             row = document.querySelectorAll(row);
-            ddlCategory = row.querySelector('td.' + flagCategory + ' select');
+            ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
             ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-            variations = row.querySelector('td.' + flagVariations + ' textarea');
+            variations = row.querySelector('td.' + flagProductVariations + ' textarea');
             quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
             quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
             quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
@@ -256,8 +256,8 @@ export default class PageStoreStockItems extends BasePage {
                 // ddlCategory = document.querySelectorAll(ddlCategory);
                 ddlCategory.addEventListener('change', function() {
                     /*
-                    ddlCategory.attr(attrValuePrevious, ddlCategory.attr(attrValueCurrent));
-                    ddlCategory.attr(attrValueCurrent, ddlCategory.val());
+                    ddlCategory.setAttribute(attrValuePrevious, ddlCategory.getAttribute(attrValueCurrent));
+                    ddlCategory.setAttribute(attrValueCurrent, ddlCategory.val());
                     */
                     handleChangeInputPermutations(this);
                     ddlCategory = this;
@@ -267,7 +267,7 @@ export default class PageStoreStockItems extends BasePage {
                     ddlProduct.querySelector('option').remove();
                     ddlProduct.appendChild(document.createElement('<option>', {value: '', text: 'Select Product'}));
                     listProducts.forEach(function(product) {
-                        if (product[attrIdCategory] != getElementCurrentValue(ddlCategory)) return;
+                        if (product[attrIdProductCategory] != DOM.getElementValueCurrent(ddlCategory)) return;
                         ddlProduct.appendChild(document.createElement('<option>', product));
                     });
                     handleChangeInputPermutations(ddlProduct);
@@ -320,14 +320,14 @@ export default class PageStoreStockItems extends BasePage {
         let row = getRowFromElement(objJQuery);
         let buttonCancel = document.querySelectorAll(idButtonCancel);
         let buttonSave = document.querySelectorAll(idButtonSave);
-        let wasDirty = isElementDirty(objJQuery);
+        let wasDirty = updateAndCheckIsElementDirty(objJQuery);
 
-        if (objJQuery.classList.contains(flagVariations)) {
-            objJQuery.attr(attrValueCurrent, getVariationsCurrentValue(objJQuery));
+        if (objJQuery.classList.contains(flagProductVariations)) {
+            objJQuery.setAttribute(attrValueCurrent, getVariationsCurrentValue(objJQuery));
         } else {
-            objJQuery.attr(attrValueCurrent, getElementCurrentValue(objJQuery));
+            objJQuery.setAttribute(attrValueCurrent, DOM.getElementValueCurrent(objJQuery));
         }
-        let isDirty = isElementDirty(objJQuery);
+        let isDirty = updateAndCheckIsElementDirty(objJQuery);
         if (wasDirty != isDirty) {
             isRowDirty(row);
             let permutationsDirty = getPermutations(true);
@@ -342,14 +342,14 @@ export default class PageStoreStockItems extends BasePage {
     }
 
     isRowDirty(row) {
-        let ddlCategory = row.querySelector('td.' + flagCategory + ' select');
+        let ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
         let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-        let variations = row.querySelector('td.' + flagVariations + ' textarea');
+        let variations = row.querySelector('td.' + flagProductVariations + ' textarea');
         let quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
         let quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
         let quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
         
-        // return isElementDirty(ddlCategory) || isElementDirty(ddlProduct) || isElementDirty(variations) || isElementDirty(quantityStock) || isElementDirty(quantityMin) || isElementDirty(quantityMax);
+        // return updateAndCheckIsElementDirty(ddlCategory) || updateAndCheckIsElementDirty(ddlProduct) || updateAndCheckIsElementDirty(variations) || updateAndCheckIsElementDirty(quantityStock) || updateAndCheckIsElementDirty(quantityMin) || updateAndCheckIsElementDirty(quantityMax);
         let isDirty = ddlCategory.classList.contains(flagDirty) || ddlProduct.classList.contains(flagDirty) || variations.classList.contains(flagDirty) || 
             quantityStock.classList.contains(flagDirty) || quantityMin.classList.contains(flagDirty) || quantityMax.classList.contains(flagDirty);
         if (isDirty) {
@@ -421,21 +421,21 @@ export class PageStoreProductCategories extends TableBasePage {
         let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
 
         sliderDisplayOrder.setAttribute(attrValueCurrent, rowJson[flagDisplayOrder]);
-        DOM.setElementValuePrevious(sliderDisplayOrder, rowJson[flagDisplayOrder]);
+        DOM.setElementAttributeValuePrevious(sliderDisplayOrder, rowJson[flagDisplayOrder]);
         DOM.setElementValueCurrent(textareaCode, rowJson[flagCode]);
-        DOM.setElementValuePrevious(textareaCode, rowJson[flagCode]);
+        DOM.setElementAttributeValuePrevious(textareaCode, rowJson[flagCode]);
         DOM.setElementValueCurrent(textareaName, rowJson[flagName]);
-        DOM.setElementValuePrevious(textareaName, rowJson[flagName]);
+        DOM.setElementAttributeValuePrevious(textareaName, rowJson[flagName]);
         DOM.setElementValueCurrent(textareaDescription, rowJson[flagDescription]);
-        DOM.setElementValuePrevious(textareaDescription, rowJson[flagDescription]);
+        DOM.setElementAttributeValuePrevious(textareaDescription, rowJson[flagDescription]);
         tdAccessLevel.setAttribute(attrIdAccessLevel, rowJson[attrIdAccessLevel]);
         tdAccessLevel.setAttribute(flagAccessLevelRequired, rowJson[flagAccessLevelRequired]);
         divAccessLevel.setAttribute(attrIdAccessLevel, rowJson[attrIdAccessLevel]);
         DOM.setElementValueCurrent(divAccessLevel, rowJson[attrIdAccessLevel]);
-        DOM.setElementValuePrevious(divAccessLevel, rowJson[attrIdAccessLevel]);
+        DOM.setElementAttributeValuePrevious(divAccessLevel, rowJson[attrIdAccessLevel]);
         divAccessLevel.textContent = rowJson[flagAccessLevelRequired];
         DOM.setElementValueCurrent(inputActive, rowJson[flagActive]);
-        DOM.setElementValuePrevious(inputActive, rowJson[flagActive]);
+        DOM.setElementAttributeValuePrevious(inputActive, rowJson[flagActive]);
         row.setAttribute(rowJson[flagKeyPrimary], rowJson[rowJson[flagKeyPrimary]]);
         
         let table = this.getTableMain();
@@ -452,7 +452,7 @@ export class PageStoreProductCategories extends TableBasePage {
         let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
 
         let jsonCategory = {};
-        jsonCategory[attrIdCategory] = row.getAttribute(attrIdCategory);
+        jsonCategory[attrIdProductCategory] = row.getAttribute(attrIdProductCategory);
         jsonCategory[flagCode] = DOM.getElementValueCurrent(textareaCode);
         jsonCategory[flagName] = DOM.getElementValueCurrent(textareaName);
         jsonCategory[flagDescription] = DOM.getElementValueCurrent(textareaDescription);
@@ -475,14 +475,14 @@ export class PageStoreProductCategories extends TableBasePage {
 
     isRowDirty(row) {
         if (row == null) return;
-        let ddlCategory = row.querySelector('td.' + flagCategory + ' select');
+        let ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
         let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-        let variations = row.querySelector('td.' + flagVariations + ' textarea');
+        let variations = row.querySelector('td.' + flagProductVariations + ' textarea');
         let quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
         let quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
         let quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
         
-        // return isElementDirty(ddlCategory) || isElementDirty(ddlProduct) || isElementDirty(variations) || isElementDirty(quantityStock) || isElementDirty(quantityMin) || isElementDirty(quantityMax);
+        // return updateAndCheckIsElementDirty(ddlCategory) || updateAndCheckIsElementDirty(ddlProduct) || updateAndCheckIsElementDirty(variations) || updateAndCheckIsElementDirty(quantityStock) || updateAndCheckIsElementDirty(quantityMin) || updateAndCheckIsElementDirty(quantityMax);
         let isDirty = ddlCategory.classList.contains(flagDirty) || ddlProduct.classList.contains(flagDirty) || variations.classList.contains(flagDirty) || 
             quantityStock.classList.contains(flagDirty) || quantityMin.classList.contains(flagDirty) || quantityMax.classList.contains(flagDirty);
         if (isDirty) {

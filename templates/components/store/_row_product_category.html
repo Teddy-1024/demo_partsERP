@@ -1,5 +1,5 @@
 {% if is_blank_row %}
-    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_CATEGORY }}>
+    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_PRODUCT_CATEGORY }}>
         <td class="{{ model.FLAG_DISPLAY_ORDER }}">
             {% include 'components/common/buttons/_slider_display_order.html' %}
         </td>
@@ -12,8 +12,8 @@
         <td class="{{ model.FLAG_DESCRIPTION }}">
             <textarea class="{{ model.FLAG_DESCRIPTION }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
         </td>
-        <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="View">
-            <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1">View</div>
+        <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}="1">
+            <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}="1">View</div>
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
             <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="true" {{ model.ATTR_VALUE_PREVIOUS }}="true">
@@ -34,8 +34,8 @@
         <td class="{{ model.FLAG_DESCRIPTION }}">
             <textarea class="{{ model.FLAG_DESCRIPTION }}" {{ model.ATTR_VALUE_CURRENT }}="{{ category.description }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.description }}">{{ category.description }}</textarea>
         </td>
-        <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="{{ category.name_access_level_required }}">
-            <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="{{ category.id_access_level_required }}" {{ model.ATTR_VALUE_CURRENT }}="{{ category.id_access_level_required }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.id_access_level_required }}">{{ category.name_access_level_required }}</div>
+        <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_VALUE_CURRENT }}="{{ category.id_access_level_required }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.id_access_level_required }}">
+            <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_VALUE_CURRENT }}="{{ category.id_access_level_required }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.id_access_level_required }}">{{ category.name_access_level_required }}</div>
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
             <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {% if category.active %}checked{% endif %} {{ model.ATTR_VALUE_CURRENT }}="{{ category.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.active | lower }}">

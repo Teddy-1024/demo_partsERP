@@ -16,19 +16,18 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_access_level;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_access_level (
-	IN a_id_user INT,
 	IN a_get_inactive_access_level BIT
 )
 BEGIN
 	SET a_get_inactive_access_level = IFNULL(a_get_inactive_access_level, 0);
     
 	SELECT 
-		AL.id_access_level,
-		AL.code,
-		AL.name,
-		AL.active,
-		AL.priority,
-		AL.display_order
+		AL.id_access_level
+		, AL.code
+		, AL.name
+		, AL.active
+		, AL.priority
+		, AL.display_order
 	FROM Shop_Access_Level AL
 	WHERE 
 		a_get_inactive_access_level = 1

@@ -1,0 +1,17 @@
+
+
+{% with _is_blank_row = (is_blank_row or model.currencies | length == 0 or currency is none) %}
+    {% if not _is_blank_row %}
+        <div 
+            class="{{ model.FLAG_CURRENCY }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ currency.id_currency }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ currency.id_currency }}"
+        >{{ currency.symbol }}</div>
+    {% else %}
+        <div 
+            class="{{ model.FLAG_CURRENCY }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="" 
+            {{ model.ATTR_VALUE_PREVIOUS }}=""
+        ></div>
+    {% endif %}
+{% endwith %}

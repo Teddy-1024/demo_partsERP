@@ -1,10 +1,15 @@
 
+import BusinessObjects from "../lib/business_objects.js";
 import Events from "../lib/events.js";
 import LocalStorage from "../lib/local_storage.js";
 import Validation from "../lib/validation.js";
 import BasePage from "./base.js";
 import API from "../api.js";
 import DOM from "../dom.js";
+import Utils from "../lib/utils.js";
+
+import OverlayConfirm from "../components/common/temporary/overlay_confirm.js";
+import OverlayError from "../components/common/temporary/overlay_error.js";
 
 export default class TableBasePage extends BasePage {
     // callFilterTableContent
@@ -24,7 +29,6 @@ export default class TableBasePage extends BasePage {
         this.loadRowTable(null);
         this.getJsonRow(null);
         // this.hookupTableMain();
-        this.isDirtyRow(null);
         this.getTableRecords();
         this.leave();
         */
@@ -35,20 +39,25 @@ export default class TableBasePage extends BasePage {
         this.dragSrcEl = null;
         this.dragSrcRow = null;
 
+        this.hookupTableCellDdls = this.hookupTableCellDdls.bind(this);
     }
     
     initialize(isPopState = false) {
-        if (this.constructor === TableBasePage) {
-            throw new Error("Must implement initialize() method.");
-        }
+        throw new Error("Must implement initialize() method.");
+    }
+    sharedInitialize(isPopState = false, isSinglePageApp = false) {
         if (!isPopState) {
-            this.sharedInitialize();
+            super.sharedInitialize();
             this.hookupFilters();
             this.hookupButtonsAddSaveCancel();
             this.hookupTableMain();
-            hookupOverlayConfirm(() => {
-                this.leave();
-                this.saveRecordsTableDirty();
+            OverlayConfirm.hookup(() => {
+                if (isSinglePageApp) {
+                    this.saveRecordsTableDirtySinglePageApp();
+                }
+                else {
+                    this.saveRecordsTableDirty();
+                }
             });
         } else {
             let dataPage = this.getLocalStoragePage();
@@ -56,7 +65,7 @@ export default class TableBasePage extends BasePage {
             let formFilters = this.getFormFilters();
             let filtersDefault = DOM.convertForm2JSON(formFilters);
             if (!Validation.areEqualDicts(filters, filtersDefault)) {
-
+                this.callFilterTableContent(filters);
             }
         }
     }
@@ -64,17 +73,19 @@ export default class TableBasePage extends BasePage {
         if (this.constructor === TableBasePage) {
             throw new Error("Subclass of TableBasePage must implement method hookupFilters().");
         }
+    }
+    sharedHookupFilters() {
         this.hookupButtonApplyFilters();
     }
     hookupFilterActive() {
-        Events.initialiseEventHandler(idFormFilters + '.' + flagActive, flagInitialised, (filter) => {
-            filter.addEventListener("change", (event) => {
-                TableBasePage.isDirtyFilter(filter);
-            });
-        });
+        this.hookupFilter(flagActive);
+    }
+    hookupFilter(filterFlag, handler = (event, filter) => { return TableBasePage.isDirtyFilter(filter); }) {
+        let filterSelector = idFormFilters + ' .' + filterFlag;
+        this.hookupEventHandler("change", filterSelector, handler);
     }
     static isDirtyFilter(filter) {
-        let isDirty = DOM.isElementDirty(filter);
+        let isDirty = DOM.updateAndCheckIsElementDirty(filter);
         if (isDirty) {
             let tbody = document.querySelector(idTableMain + ' tbody');
             tbody.querySelectorAll('tr').remove();
@@ -83,23 +94,16 @@ export default class TableBasePage extends BasePage {
         return isDirty;
     }
     hookupButtonApplyFilters() {
-        Events.initialiseEventHandler(idButtonApplyFilters, flagInitialised, (button) => {
-            button.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.getAndLoadFilteredTableContent();
-            });
+        this.hookupEventHandler("click", idButtonApplyFilters, (event, button) => {
+            event.stopPropagation();
+            this.getAndLoadFilteredTableContent();
         });
     }
     getAndLoadFilteredTableContent() {
         let formFilters = this.getFormFilters();
         let filtersJson = DOM.convertForm2JSON(formFilters);
+        this.leave();
         this.callFilterTableContent(filtersJson)
-        /*
-            .then(data => {
-                console.log('Table data received:', data);
-                this.callbackLoadTableContent(data);
-            })
-        */
             .catch(error => console.error('Error:', error));
     }
     getFormFilters() {
@@ -122,15 +126,26 @@ export default class TableBasePage extends BasePage {
     loadRowTable(rowJson) {
         throw new Error("Subclass of TableBasePage must implement method loadRowTable().");
     }
+    getAndLoadFilteredTableContentSinglePageApp() {
+        let formFilters = this.getFormFilters();
+        let filtersJson = DOM.convertForm2JSON(formFilters);
+        this.callFilterTableContent(filtersJson)
+            .then(data => {
+                console.log('Table data received:', data);
+                this.callbackLoadTableContent(data);
+            })
+            .catch(error => console.error('Error:', error));
+    }
     hookupButtonsAddSaveCancel() {
+        this.hookupButtonAddRowTable();
         this.hookupButtonSave();
         this.hookupButtonCancel();
-        this.hookupButtonAddRowTable();
+        this.toggleShowButtonsSaveCancel(false);
     }
     saveRecordsTableDirty() {
         let records = this.getTableRecords(true);
         if (records.length == 0) {
-            showOverlayError('No records to save');
+            OverlayError.show('No records to save');
             return;
         }
         let formElement = this.getFormFilters();
@@ -138,12 +153,13 @@ export default class TableBasePage extends BasePage {
         this.callSaveTableContent(records, formElement, comment)
             .then(data => {
                 if (data[flagStatus] == flagSuccess) {
-                    console.log('Data received:', data);
-                    this.callbackLoadTableContent(data);
                     console.log('Records saved!');
+                    console.log('Data received:', data);
+                    this.getAndLoadFilteredTableContent();
                 }
                 else {
-                    showOverlayError(data[flagMessage]);
+                    console.log("error: ", data[flagMessage]);
+                    OverlayError.show(data[flagMessage]);
                 }
             })
             .catch(error => console.error('Error:', error));
@@ -162,6 +178,28 @@ export default class TableBasePage extends BasePage {
     getJsonRow(row) {
         throw new Error("Subclass of TableBasePage must implement method getJsonRow().");
     }
+    saveRecordsTableDirtySinglePageApp() {
+        let records = this.getTableRecords(true);
+        if (records.length == 0) {
+            OverlayError.show('No records to save');
+            return;
+        }
+        let formElement = this.getFormFilters();
+        let comment = DOM.getElementValueCurrent(document.querySelector(idTextareaConfirm));
+        this.callSaveTableContent(records, formElement, comment)
+            .then(data => {
+                if (data[flagStatus] == flagSuccess) {
+                    console.log('Records saved!');
+                    console.log('Data received:', data);
+                    this.callbackLoadTableContent(data);
+                }
+                else {
+                    console.log("error: ", data[flagMessage]);
+                    OverlayError.show(data[flagMessage]);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
     hookupButtonCancel() {
         Events.initialiseEventHandler(idFormFilters + ' button.' + flagCancel, flagInitialised, function(button) {
             button.addEventListener("click", function(event) {
@@ -172,32 +210,38 @@ export default class TableBasePage extends BasePage {
         });
     }
     hookupButtonAddRowTable() {
-        Events.initialiseEventHandler(idFormFilters + ' button.' + flagAdd, flagInitialised, (button) => {
-            button.addEventListener("click", (event) => {
-                event.stopPropagation();
-                let tbody = document.querySelector(idTableMain + ' tbody');
-                let row = _rowBlank.cloneNode(true);
-                row.classList.remove(flagInitialised);
-                row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
-                    element.classList.remove(flagInitialised);
-                });
-                let newDisplayOrder = parseInt(tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider).getAttribute(attrValueCurrent)) + 1;
-                tbody.appendChild(row);
-                let slider = tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
-                if (slider) {
-                    slider.setAttribute(attrValueCurrent, newDisplayOrder);
-                    slider.setAttribute(attrValuePrevious, newDisplayOrder);
-                }
-                this.hookupTableMain();
+        this.hookupEventHandler("click", idFormFilters + ' button.' + flagAdd, (event, button) => {
+            event.stopPropagation();
+            let tbody = document.querySelector(idTableMain + ' tbody');
+            let row = _rowBlank.cloneNode(true);
+            row.classList.remove(flagInitialised);
+            row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
+                element.classList.remove(flagInitialised);
             });
+            /* Shared nethods
+            let newDisplayOrder = parseInt(tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider).getAttribute(attrValueCurrent)) + 1;
+            let slider = tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
+            if (slider) {
+                slider.setAttribute(attrValueCurrent, newDisplayOrder);
+                slider.setAttribute(attrValuePrevious, newDisplayOrder);
+            }
+            */
+            this.initialiseRowNew(row);
+            tbody.appendChild(row);
+            this.hookupTableMain();
         });
+    }
+    initialiseRowNew(row) {
+        throw new Error("Subclass of TableBasePage must implement method initialiseRowNew().");
     }
     hookupTableMain() {
         if (this.constructor === TableBasePage) {
             throw new Error("Must implement hookupTableMain() method.");
         }
         if (_rowBlank == null) {
-            this.cacheRowBlank();
+            Events.initialiseEventHandler(idTableMain, flagInitialised, (table) => {
+               this.cacheRowBlank();
+            });
         }
     }
     cacheRowBlank() {
@@ -211,6 +255,7 @@ export default class TableBasePage extends BasePage {
     }
     hookupSlidersDisplayOrderTable() {
         let selectorDisplayOrder = idTableMain + ' tbody tr td.' + flagDisplayOrder + ' input.' + flagSlider + '.' + flagDisplayOrder;
+        /*
         Events.initialiseEventHandler(selectorDisplayOrder, flagInitialised, (sliderDisplayOrder) => {
             /*
             sliderDisplayOrder.setAttribute('draggable', true);
@@ -220,12 +265,53 @@ export default class TableBasePage extends BasePage {
             sliderDisplayOrder.addEventListener('dragleave', this.handleDragSliderLeave.bind(this), false);
             sliderDisplayOrder.addEventListener('drop', this.handleDropSlider.bind(this), false);
             sliderDisplayOrder.addEventListener('dragend', this.handleDragSliderEnd.bind(this), false);
-            */
+            *
             sliderDisplayOrder.addEventListener('change', (event) => {
                 console.log("slider change event");
                 this.handleChangeElementCellTable(sliderDisplayOrder);
             });
         });
+        */
+        this.hookupChangeHandlerTableCells(selectorDisplayOrder);
+    }
+    hookupChangeHandlerTableCells(inputSelector, handler = (event, element) => { this.handleChangeElementCellTable(event, element); }) {
+        /*
+        Events.initialiseEventHandler(inputSelector, flagInitialised, (input) => {
+            input.addEventListener("change", (event) => {
+                handler(event, input);
+            });
+        });
+        */
+        this.hookupEventHandler("change", inputSelector, handler);
+    }
+    handleChangeElementCellTable(event, element) {
+        let row = DOM.getRowFromElement(element);
+        let td = DOM.getCellFromElement(element);
+        console.log("td: ", td);
+        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
+        let wasDirtyElement = element.classList.contains(flagDirty);
+        let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
+        console.log("isDirtyElement: ", isDirtyElement);
+        console.log("wasDirtyElement: ", wasDirtyElement);
+        if (isDirtyElement != wasDirtyElement) {
+            DOM.handleDirtyElement(td, isDirtyElement);
+            let isNowDirtyRow = DOM.hasDirtyChildrenContainer(row);
+            console.log("isNowDirtyRow: ", isNowDirtyRow);
+            console.log("wasDirtyRow: ", wasDirtyRow);
+            if (isNowDirtyRow != wasDirtyRow) {
+                DOM.handleDirtyElement(row, isNowDirtyRow);
+                let rows = this.getTableRecords(true);
+                let existsDirtyRecord = rows.length > 0;
+                console.log("dirty records:", rows);
+                console.log("existsDirtyRecord:", existsDirtyRecord);
+                this.toggleShowButtonsSaveCancel(existsDirtyRecord);
+            }
+        }
+    }
+    hookupChangeHandlerTableCellsWhenNotCollapsed(inputSelector, handler = (event, element) => {
+        if (!element.classList.contains(flagCollapsed)) this.handleChangeElementCellTable(event, element);
+    }) {
+        this.hookupEventHandler("change", inputSelector, handler);
     }
     /* ToDo: Fix this slider drag and drop functionality
     handleDragSliderStart(event) {
@@ -286,158 +372,65 @@ export default class TableBasePage extends BasePage {
     }
     */
     hookupTextareasCodeTable() {
-        let selectorCode = idTableMain + ' tbody tr td.' + flagCode + ' textarea';
-        Events.initialiseEventHandler(selectorCode, flagInitialised, (textareaCode) => {
-            textareaCode.addEventListener("change", (event) => {
-                console.log("textarea change event");
-                this.handleChangeElementCellTable(textareaCode);
-            });
-        });
-    }
-    handleChangeElementCellTable(element) {
-        let row = DOM.getRowFromElement(element);
-        let td = DOM.getCellFromElement(element);
-        console.log("td: ", td);
-        let wasDirtyRow = this.isDirtyRow(row);
-        let wasDirtyElement = element.classList.contains(flagDirty);
-        let isDirtyElement = DOM.isElementDirty(element);
-        console.log("isDirtyElement: ", isDirtyElement);
-        console.log("wasDirtyElement: ", wasDirtyElement);
-        if (isDirtyElement != wasDirtyElement) {
-            DOM.handleDirtyElement(td, isDirtyElement);
-            let isNowDirtyRow = this.isDirtyRow(row);
-            console.log("isNowDirtyRow: ", isNowDirtyRow);
-            console.log("wasDirtyRow: ", wasDirtyRow);
-            if (isNowDirtyRow != wasDirtyRow) {
-                DOM.handleDirtyElement(row, isNowDirtyRow);
-                let rows = this.getTableRecords(true);
-                let existsDirtyRecord = rows.length > 0;
-                console.log("dirty records:", rows);
-                console.log("existsDirtyRecord:", existsDirtyRecord);
-                this.toggleShowButtonsSaveCancel(existsDirtyRecord);
-            }
-        }
-    }
-    isDirtyRow(row) {
-        throw new Error("Subclass of TableBasePage must implement method isDirtyRow().");
-    }
-    toggleShowButtonsSaveCancel(show, buttonSave = null, buttonCancel = null) {
-        if (buttonSave == null) buttonSave = document.querySelector(idFormFilters + ' button.' + flagSave);
-        if (buttonCancel == null) buttonCancel = document.querySelector(idFormFilters + ' button.' + flagCancel);
-        if (show) {
-            buttonCancel.classList.remove(flagCollapsed);
-            buttonSave.classList.remove(flagCollapsed);
-        } else {
-            buttonCancel.classList.add(flagCollapsed);
-            buttonSave.classList.add(flagCollapsed);
-        }
-    }
-    handleChangeSelectCellTable(element) {
-        let row = DOM.getRowFromElement(element);
-        let td = DOM.getCellFromElement(element);
-        console.log("td: ", td);
-        let wasDirtyRow = this.isDirtyRow(row);
-        let wasDirtyElement = element.classList.contains(flagDirty);
-        let isDirtyElement = DOM.isElementDirty(element);
-        console.log("isDirtyElement: ", isDirtyElement);
-        console.log("wasDirtyElement: ", wasDirtyElement);
-        if (isDirtyElement != wasDirtyElement) {
-            DOM.handleDirtyElement(td, isDirtyElement);
-            let optionSelected = element.options[element.selectedIndex];
-            td.setAttribute(attrIdAccessLevel, optionSelected.value);
-            td.setAttribute(flagAccessLevelRequired, optionSelected.textcontent);
-            let isNowDirtyRow = this.isDirtyRow(row);
-            console.log("isNowDirtyRow: ", isNowDirtyRow);
-            console.log("wasDirtyRow: ", wasDirtyRow);
-            if (isNowDirtyRow != wasDirtyRow) {
-                DOM.handleDirtyElement(row, isNowDirtyRow);
-                let rows = this.getTableRecords(true);
-                let existsDirtyRecord = rows.length > 0;
-                console.log("dirty records:", rows);
-                console.log("existsDirtyRecord:", existsDirtyRecord);
-                this.toggleShowButtonsSaveCancel(existsDirtyRecord);
-            }
-        }
+        this.hookupChangeHandlerTableCells(idTableMain + ' tbody tr td.' + flagCode + ' textarea');
     }
     hookupTextareasNameTable() {
-        let selectorName = idTableMain + ' tbody tr td.' + flagName + ' textarea';
-        Events.initialiseEventHandler(selectorName, flagInitialised, (textareaName) => {
-            textareaName.addEventListener("change", (event) => {
-                console.log("textarea change event");
-                this.handleChangeElementCellTable(textareaName);
-            });
-        });
+        this.hookupChangeHandlerTableCells(idTableMain + ' tbody tr td.' + flagName + ' textarea');
     }
     hookupTextareasDescriptionTable() {
-        let selectorDescription = idTableMain + ' tbody tr td.' + flagDescription + ' textarea';
-        Events.initialiseEventHandler(selectorDescription, flagInitialised, (textareaDescription) => {
-            textareaDescription.addEventListener("change", (event) => {
-                console.log("textarea change event");
-                this.handleChangeElementCellTable(textareaDescription);
-            });
-        });
+        this.hookupChangeHandlerTableCells(idTableMain + ' tbody tr td.' + flagDescription + ' textarea');
     }
     hookupInputsActiveTable() {
-        let selectorActive = idTableMain + ' tbody tr td.' + flagActive + ' input[type="checkbox"]';
-        Events.initialiseEventHandler(selectorActive, flagInitialised, (inputActive) => {
-            inputActive.addEventListener("change", (event) => {
-                console.log("input change event");
-                this.handleChangeElementCellTable(inputActive);
-            });
-        });
+        this.hookupChangeHandlerTableCells(idTableMain + ' tbody tr td.' + flagActive + ' input[type="checkbox"]');
     }
     hookupTdsAccessLevel() {
-        Events.initialiseEventHandler(idTableMain + ' tbody td.' + flagAccessLevel, flagInitialised, (tdAccessLevel) => {
-            tdAccessLevel.addEventListener("click", (event) => { this.handleClickTdAccessLevel(event); } );
+        let cellSelector = idTableMain + ' tbody td.' + flagAccessLevel;
+        this.hookupTableCellDdlPreviews(cellSelector, Utils.getListFromDict(accessLevels));
+    }
+    hookupTableCellDdlPreviews(cellSelector, optionList, ddlHookup = (event, element) => { this.hookupTableCellDdls(event, element); }) {
+        this.hookupEventHandler("click", cellSelector, (event, td) => {
+            // if (td.querySelector('select')) return;
+            this.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, (event, element) => { ddlHookup(event, element); });
         });
     }
-    handleClickTdAccessLevel(event) {
-        console.log("tdAccessLevel clicked");
-        event.stopPropagation();
-        let tdAccessLevel = DOM.getCellFromElement(event.target);
-        console.log("tdAccessLevel: ", tdAccessLevel);
-        let row = DOM.getRowFromElement(tdAccessLevel);
-        let idAccessLevelSelected = tdAccessLevel.querySelector('div.' + flagAccessLevel).getAttribute(attrIdAccessLevel);
-        let ddlAccessLevel = document.createElement('select');
-        ddlAccessLevel.classList.add(flagAccessLevel);
-        ddlAccessLevel.setAttribute(attrValueCurrent, idAccessLevelSelected);
-        ddlAccessLevel.setAttribute(attrValuePrevious, idAccessLevelSelected);
-        optionsAccessLevel.forEach((accessLevel) => {
-            let option = document.createElement('option');
-            option.value = accessLevel.value;
-            option.textContent = accessLevel.text;
-            if (accessLevel.value == idAccessLevelSelected) option.selected = true;
-            ddlAccessLevel.appendChild(option);
-        });
-        let tdAccessLevelNew = tdAccessLevel.cloneNode(true);
-        tdAccessLevelNew.innerHTML = '';
-        tdAccessLevelNew.appendChild(ddlAccessLevel);
-        row.replaceChild(tdAccessLevelNew, tdAccessLevel);
-        this.hookupDdlsAccessLevelTable();
+    hookupTableCellDdls(ddlSelector) {
+        this.hookupEventHandler("change", ddlSelector, (event, element) => { this.handleChangeTableCellDdl(event, element); });
     }
-    hookupDdlsAccessLevelTable() {
-        Events.initialiseEventHandler(idTableMain + ' tbody select.' + flagAccessLevel, flagInitialised, (ddlAccessLevel) => {
-            ddlAccessLevel.addEventListener("change", (event) => {
-                event.stopPropagation();
-                this.handleChangeDdlAccessLevelTable(ddlAccessLevel);
-            });
+    handleClickTableCellDdlPreview(event, td, optionObjectList, cellSelector, ddlHookup = (event, element) => { this.hookupTableCellDdls(event, element); }) {
+        if (td.querySelector('select')) return;
+        // td.removeEventListener("click", ddlHookup);
+        console.log("click table cell ddl preview");
+        let tdNew = td.cloneNode(true);
+        td.parentNode.replaceChild(tdNew, td);
+        let idSelected = tdNew.getAttribute(attrValueCurrent);
+        tdNew.innerHTML = '';
+        let ddl = document.createElement('select');
+        DOM.setElementValuesCurrentAndPrevious(ddl, DOM.getElementAttributeValueCurrent(tdNew));
+        let optionJson, option;
+        console.log({optionObjectList, cellSelector});
+        optionObjectList.forEach((optionObjectJson) => {
+            optionJson = BusinessObjects.getOptionJsonFromObjectJson(optionObjectJson, idSelected);
+            option = DOM.createOption(optionJson);
+            ddl.appendChild(option);
         });
+        tdNew.appendChild(ddl);
+        let ddlSelector = cellSelector + ' select';
+        ddlHookup(ddlSelector);
     }
-    handleChangeDdlAccessLevelTable(ddlAccessLevel) {
-        let row = DOM.getRowFromElement(ddlAccessLevel);
-        let td = DOM.getCellFromElement(ddlAccessLevel);
+    handleChangeTableCellDdl(event, ddl) {
+        let row = DOM.getRowFromElement(ddl);
+        let td = DOM.getCellFromElement(ddl);
         console.log("td: ", td);
-        let wasDirtyRow = this.isDirtyRow(row);
-        let wasDirtyElement = ddlAccessLevel.classList.contains(flagDirty);
-        let isDirtyElement = DOM.isElementDirty(ddlAccessLevel);
+        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
+        let wasDirtyElement = ddl.classList.contains(flagDirty);
+        let isDirtyElement = DOM.updateAndCheckIsElementDirty(ddl);
         console.log("isDirtyElement: ", isDirtyElement);
         console.log("wasDirtyElement: ", wasDirtyElement);
         if (isDirtyElement != wasDirtyElement) {
             DOM.handleDirtyElement(td, isDirtyElement);
-            let optionSelected = ddlAccessLevel.options[ddlAccessLevel.selectedIndex];
-            td.setAttribute(attrIdAccessLevel, optionSelected.value);
-            td.setAttribute(flagAccessLevelRequired, optionSelected.textcontent);
-            let isNowDirtyRow = this.isDirtyRow(row);
+            let optionSelected = ddl.options[ddl.selectedIndex];
+            DOM.setElementAttributeValueCurrent(td, optionSelected.value);
+            let isNowDirtyRow = DOM.hasDirtyChildrenContainer(row);
             console.log("isNowDirtyRow: ", isNowDirtyRow);
             console.log("wasDirtyRow: ", wasDirtyRow);
             if (isNowDirtyRow != wasDirtyRow) {
@@ -449,6 +442,13 @@ export default class TableBasePage extends BasePage {
                 this.toggleShowButtonsSaveCancel(existsDirtyRecord);
             }
         }
+    }
+    hookupTableCellDDlPreviewsWhenNotCollapsed(cellSelector, optionList, ddlHookup = (event, element) => { this.hookupTableCellDdls(event, element); }) {
+        this.hookupEventHandler("click", cellSelector, (event, td) => {
+            let div = td.querySelector('div');
+            if (!div || div.classList.contains(flagCollapsed)) return;
+            this.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, (event, element) => { ddlHookup(event, element); });
+        });
     }
     leave() {
         if (this.constructor === TableBasePage) {
@@ -459,7 +459,19 @@ export default class TableBasePage extends BasePage {
         let dataPage = {};
         dataPage[flagFormFilters] = DOM.convertForm2JSON(formFilters);
         this.setLocalStoragePage(dataPage);
-        _rowBlank = null;
+        // _rowBlank = null;
+    }
+
+    toggleColumnHasClassnameFlag(columnFlag, isRequiredFlag, classnameFlag) {
+        let table = this.getTableMain();
+        let columnTh = table.querySelector('th.' + columnFlag);
+        let columnThHasFlag = columnTh.classList.contains(classnameFlag);
+        if (isRequiredFlag == columnThHasFlag) return;
+        let columnTds = table.querySelectorAll('td.' + columnFlag);
+        DOM.toggleElementHasClassnameFlag(columnTh, isRequiredFlag, classnameFlag);
+        columnTds.forEach((columnTd) => {
+            DOM.toggleElementHasClassnameFlag(columnTd, isRequiredFlag, classnameFlag);
+        });
     }
 }
 
@@ -478,6 +490,7 @@ export class PageStoreProductCategories extends TableBasePage {
     hookupFilters() {}
     loadRowTable(rowJson) {}
     getJsonRow(row) {}
+    initialiseRowNew(row) {}
     hookupTableMain() {}
     isDirtyRow(row) {}
     leave() {}

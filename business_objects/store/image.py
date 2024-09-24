@@ -11,8 +11,9 @@ Business object for product image
 """
 
 # internal
-import lib.argument_validation as av
+from business_objects.store.store_base import Store_Base
 from extensions import db
+import lib.argument_validation as av
 # external
 from enum import Enum
 
@@ -46,7 +47,7 @@ class Resolution_Level_Enum(Enum):
         return Resolution_Level_Enum.HIGH
 
 
-class Image(db.Model):
+class Image(db.Model, Store_Base):
     id_image = db.Column(db.Integer, primary_key=True)
     id_product = db.Column(db.Integer)
     id_permutation = db.Column(db.Integer)
@@ -93,6 +94,15 @@ class Image(db.Model):
             url: {self.url}
             display_order: {self.display_order}
             '''
+    def to_json(self):
+        return {
+            **self.get_shared_json_attributes(self),
+            self.ATTR_ID_PRODUCT_IMAGE: self.id_image,
+            self.ATTR_ID_PRODUCT: self.id_product,
+            self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
+            self.FLAG_URL: self.url,
+            self.FLAG_DISPLAY_ORDER: self.display_order
+        }
 
 
 class Product_Image_Filters():

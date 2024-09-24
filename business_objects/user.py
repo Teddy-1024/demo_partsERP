@@ -8,6 +8,7 @@ Feature:    User Business Object
 """
 
 # internal
+from business_objects.base import Base
 import lib.argument_validation as av
 from forms.forms import Form_Filters_User
 from extensions import db
@@ -16,8 +17,10 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 
-class User(db.Model):
+class User(db.Model, Base):
     KEY_USER: ClassVar[str] = 'authorisedUser' # 'user' already used
+    NAME_ATTR_OPTION_VALUE: ClassVar[str] = Base.ATTR_ID_USER
+    NAME_ATTR_OPTION_TEXT: ClassVar[str] = 'email'
 
     id_user = db.Column(db.Integer, primary_key=True)
     id_user_auth0 = db.Column(db.String(255))
@@ -200,8 +203,9 @@ class User_Filters():
     ids_access_level: str
     ids_product: str
 
-    def to_json(self):
+        def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             'a_ids_user': self.ids_user,
             'a_get_inactive_users': self.get_inactive_users,
             'a_ids_permission': self.ids_permission,

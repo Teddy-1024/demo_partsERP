@@ -1,23 +1,58 @@
 
+#formFilters {
+    width: 50vh;
+}
 
-td.display-order, th.display-order {
-    width: 8% !important;
+#formFilters .container {
+    max-width: fit-content;
 }
-td.code, th.code {
-    width: 15% !important;
+
+#formFilters .container-input.filter.is_not_empty {
+    width: 10vh;
+} 
+
+#formFilters .container-input.filter.active {
+    width: 8vh;
 }
-td.name, th.name {
-    width: 25% !important;
+
+#tableMain {
+    max-width: min(calc(1vh * 79), calc(1vw * 90));
 }
-td.description, th.description {
-    width: 35% !important;
+
+/*
+#tableMain thead tr th, #tableMain tbody tr td {
+    margin-left: 1vh;
+    margin-right: 1vh;
 }
-td.access_level, th.access_level {
-    width: 10% !important;
+*/
+
+#tableMain tbody tr td.display_order, #tableMain thead tr th.display_order {
+    width: 5vh;
+    min-width: 5vh;
 }
-td.active, th.active {
-    width: 7% !important;
+#tableMain tbody tr td.code, #tableMain thead tr th.code {
+    width: 10vh;
+    min-width: 10vh;
 }
+#tableMain tbody tr td.name, #tableMain thead tr th.name {
+    width: 15vh;
+    min-width: 15vh;
+}
+#tableMain tbody tr td.description, #tableMain thead tr th.description {
+    width: 25vh;
+    min-width: 25vh;
+}
+#tableMain tbody tr td.access_level, #tableMain thead tr th.access_level {
+    width: 7vh;
+    min-width: 7vh;
+}
+#tableMain tbody tr td.active, #tableMain thead tr th.active {
+    width: 5vh;
+    min-width: 5vh;
+}
+/*
+nips
+*/
 
 /*
 .row-new {
@@ -26,15 +61,15 @@ td.active, th.active {
 */
 
 textarea {
-    width: 95% !important;
+    width: 95%;
 }
 
 select {
-    width: 100% !important;
+    width: 100%;
 }
 
 input {
-    width: 90% !important;
+    width: 90%;
 }
 
 td > input, td > select, td > textarea, .container-input > input, .container-input > select, .container-input > textarea {

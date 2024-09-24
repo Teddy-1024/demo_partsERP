@@ -78,9 +78,9 @@ BEGIN
 		WHERE NOT (OLD.price_GBP_min <=> NEW.price_GBP_min)
 	UNION
     */
-    -- Changed latency_manufacture
-	SELECT NEW.id_product, 'latency_manufacture', CONVERT(OLD.latency_manufacture, CHAR), CONVERT(NEW.latency_manufacture, CHAR), NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
+    -- Changed latency_manufacture_days
+	SELECT NEW.id_product, 'latency_manufacture_days', CONVERT(OLD.latency_manufacture_days, CHAR), CONVERT(NEW.latency_manufacture_days, CHAR), NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
 	UNION
     -- Changed quantity_min
 	SELECT NEW.id_product, 'quantity_min', CONVERT(OLD.quantity_min, CHAR), CONVERT(NEW.quantity_min, CHAR), NEW.id_change_set
@@ -102,13 +102,13 @@ BEGIN
 	SELECT NEW.id_product, 'is_subscription', CONVERT(CONVERT(OLD.is_subscription, SIGNED), CHAR), CONVERT(CONVERT(NEW.is_subscription, SIGNED), CHAR), NEW.id_change_set
 		WHERE NOT OLD.is_subscription <=> NEW.is_subscription
 	UNION
-    -- Changed id_recurrence_interval
-	SELECT NEW.id_product, 'id_recurrence_interval', CONVERT(OLD.id_recurrence_interval, CHAR), CONVERT(NEW.id_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.id_recurrence_interval <=> NEW.id_recurrence_interval
+    -- Changed id_unit_measurement_interval_recurrence
+	SELECT NEW.id_product, 'id_unit_measurement_interval_recurrence', CONVERT(OLD.id_unit_measurement_interval_recurrence, CHAR), CONVERT(NEW.id_unit_measurement_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_interval_recurrence <=> NEW.id_unit_measurement_interval_recurrence
     UNION
-    -- Changed count_recurrence_interval
-	SELECT NEW.id_product, 'count_recurrence_interval', CONVERT(OLD.count_recurrence_interval, CHAR), CONVERT(NEW.count_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.count_recurrence_interval <=> NEW.count_recurrence_interval
+    -- Changed count_interval_recurrence
+	SELECT NEW.id_product, 'count_interval_recurrence', CONVERT(OLD.count_interval_recurrence, CHAR), CONVERT(NEW.count_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.count_interval_recurrence <=> NEW.count_interval_recurrence
 	UNION
     -- Changed id_stripe_product
 	SELECT NEW.id_permutation, 'id_stripe_product', OLD.id_stripe_product, NEW.id_stripe_product, NEW.id_change_set

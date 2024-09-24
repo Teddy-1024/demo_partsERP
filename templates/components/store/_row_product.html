@@ -1,16 +1,16 @@
 {% if is_blank_row %}
-    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_CATEGORY }}>
+    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_PRODUCT_CATEGORY }}>
         <td class="{{ model.FLAG_DISPLAY_ORDER }}">
             {% include 'components/common/buttons/_slider_display_order.html' %}
         </td>
         <td class="{{ model.FLAG_PRODUCT_CATEGORY }}">
-            <textarea class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_ID_CATEGORY }} {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+            <textarea class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_ID_PRODUCT_CATEGORY }} {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
         </td>
         <td class="{{ model.FLAG_NAME }}">
             <textarea class="{{ model.FLAG_NAME }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
         </td>
-        <td class="{{ model.FLAG_VARIATIONS }}">
-            <textarea class="{{ model.FLAG_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        <td class="{{ model.FLAG_PRODUCT_VARIATIONS }}">
+            <textarea class="{{ model.FLAG_PRODUCT_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
         </td>
         <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="View">
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1">View</div>
@@ -31,9 +31,9 @@
         <td class="{{ model.FLAG_NAME }}">
             <textarea class="{{ model.FLAG_NAME }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.name }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.name }}">{{ product.name }}</textarea>
         </td>
-        <td class="{{ model.FLAG_VARIATIONS }}">
+        <td class="{{ model.FLAG_PRODUCT_VARIATIONS }}">
             {% include 'components/common/inputs/_textarea_product_variation_types.html' %}
-            <textarea class="{{ model.FLAG_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.description }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.description }}">{{ product.description }}</textarea>
+            <textarea class="{{ model.FLAG_PRODUCT_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.description }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.description }}">{{ product.description }}</textarea>
         </td>
         <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="{{ product.name_access_level_required }}">
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.id_access_level_required }}">{{ product.name_access_level_required }}</div>

@@ -1,7 +1,5 @@
 
 
-
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_save_category;
 DROP PROCEDURE IF EXISTS p_shop_save_category;

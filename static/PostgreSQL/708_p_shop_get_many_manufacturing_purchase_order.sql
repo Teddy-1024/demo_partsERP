@@ -147,17 +147,17 @@ BEGIN
 		price_GBP_min REAL NOT NULL,
 		*/
         /*
-        latency_manufacture INTEGER NOT NULL,
+        latency_manufacture_days INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
 		quantity_stock REAL NOT NULL,
 		is_subscription BOOLEAN NOT NULL,
-		id_recurrence_interval INTEGER,
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
-		count_recurrence_interval INTEGER,
+		id_unit_measurement_interval_recurrence INTEGER,
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
+		count_interval_recurrence INTEGER,
         id_stripe_product VARCHAR(100),
         product_has_variations INTEGER NOT NULL,
         */
@@ -251,14 +251,14 @@ BEGIN
 			price_GBP_VAT_excl,
 			price_GBP_min,
 			*/
-			latency_manufacture,
+			latency_manufacture_days,
 			quantity_min,
 			quantity_max,
 			quantity_step,
 			quantity_stock,
 			is_subscription,
-			id_recurrence_interval,
-			count_recurrence_interval,
+			id_unit_measurement_interval_recurrence,
+			count_interval_recurrence,
 			id_stripe_product,
 			product_has_variations
 			*/
@@ -283,14 +283,14 @@ BEGIN
 			PP.price_GBP_VAT_excl,
 			PP.price_GBP_min,
 			*/
-			PP.latency_manufacture,
+			PP.latency_manufacture_days,
 			PP.quantity_min,
 			PP.quantity_max,
 			PP.quantity_step,
 			PP.quantity_stock,
 			PP.is_subscription,
-			PP.id_recurrence_interval,
-			PP.count_recurrence_interval,
+			PP.id_unit_measurement_interval_recurrence,
+			PP.count_interval_recurrence,
 			PP.id_stripe_product,
 			P.has_variations
 			*/

@@ -24,7 +24,7 @@ from business_objects.store.product import Product, Product_Permutation, Product
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
+from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container
 # from datastores.datastore_base import Table_Shop_Product_Category, Table_Shop_Product_Category_Temp
 from datastores.datastore_store_base import DataStore_Store_Base
 from helpers.helper_db_mysql import Helper_DB_MySQL
@@ -83,7 +83,7 @@ class Row_Shop_Product_Temp(db.Model):
             'id_category': self.id_category,
             'name': self.name,
             'id_access_level_required': self.id_access_level_required,
-            'active': self.active,
+            'active': av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json'),
             'display_order': self.display_order,
             'guid': self.guid,
         }

@@ -140,13 +140,13 @@ VALUES
 
 # Unit of Measurement
 INSERT INTO Shop_Unit_Measurement (
-	name_singular, name_plural, symbol, is_base_unit
+	name_singular, name_plural, symbol, is_base_unit, is_unit_of_distance, is_unit_of_mass, is_unit_of_time, is_unit_of_volume
 )
 VALUES
-	('metre', 'metres', 'm', 1),
-    ('kilogram', 'kilograms', 'kg', 1),
-    ('item', 'items', 'x', 0),
-	('hour', 'hours', 'h', 1)
+	('metre', 'metres', 'm', 1, 1, 0, 0, 0),
+    ('kilogram', 'kilograms', 'kg', 1, 0, 1, 0, 0),
+    ('item', 'items', 'x', 0, 0, 0, 0, 0),
+	('hour', 'hours', 'h', 1, 0, 0, 1, 0)
 ;
 
 /*
@@ -177,7 +177,7 @@ VALUES
 
 /*
 # Recurrence Interval
-INSERT INTO Shop_Recurrence_Interval (
+INSERT INTO Shop_Interval_Recurrence (
 	code, name, name_plural
 )
 VALUES 
@@ -248,18 +248,19 @@ INSERT INTO Shop_Product_Permutation (
     id_currency_cost,
     profit_local_min,
     # id_currency_profit_min,
-    latency_manufacture,
-	quantity_min,
+    latency_manufacture_days,
+	id_unit_measurement_quantity,
+    count_unit_measurement_per_quantity_step,
+    quantity_min,
 	quantity_max,
-	quantity_step,
 	quantity_stock,
 	is_subscription,
-	id_interval_recurrence,
+	id_unit_measurement_interval_recurrence,
 	count_interval_recurrence,
 	-- id_access_level_required,
 	id_stripe_product
 	, does_expire_faster_once_unsealed
-	, id_interval_expiration_unsealed
+	, id_unit_measurement_interval_expiration_unsealed
 	, count_interval_expiration_unsealed
 )
 VALUES 
@@ -273,9 +274,10 @@ VALUES
         # 1,
         14,
 		1,
-		3,
 		1,
+		3,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -295,9 +297,10 @@ VALUES
         # 1,
 		14,
 		1,
-		3,
 		1,
+		3,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -317,9 +320,10 @@ VALUES
         # 1,
 		14,
 		1,
-		2,
 		1,
+		2,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -339,9 +343,10 @@ VALUES
         # 1,
 		14,
 		1,
-		2,
 		1,
+		2,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -361,9 +366,10 @@ VALUES
         # 1,
 		14,
 		1,
-		2,
 		1,
+		2,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,
@@ -383,9 +389,10 @@ VALUES
         # 1,
 		14,
 		1,
-		2,
 		1,
+		2,
 		99,
+		1,
 		0,
 		NULL,
 		NULL,

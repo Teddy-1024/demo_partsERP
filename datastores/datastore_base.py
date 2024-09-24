@@ -13,7 +13,8 @@ Datastore for Store
 # internal
 # from routes import bp_home
 import lib.argument_validation as av
-from business_objects.store.access_level import Access_Level, Filters_Access_Level
+from business_objects.store.access_level import Access_Level
+"""
 from business_objects.store.basket import Basket, Basket_Item
 from business_objects.store.product_category import Product_Category_Container, Product_Category
 from business_objects.store.currency import Currency
@@ -23,13 +24,17 @@ from business_objects.store.delivery_region import Delivery_Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
 from business_objects.store.product import Product, Product_Permutation, Product_Price, Filters_Product # Permutation_Variation_Link
+"""
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
+from business_objects.unit_measurement import Unit_Measurement
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_List
+# from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container
 # from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
+from forms.access_level import Filters_Access_Level
+from forms.unit_measurement import Filters_Unit_Measurement
 # external
 # from abc import ABC, abstractmethod, abstractproperty
 from flask_sqlalchemy import SQLAlchemy
@@ -105,8 +110,8 @@ class DataStore_Base(BaseModel):
         while cursor.nextset():
             print(f'new result set: {cursor.fetchall()}')
     @classmethod
-    def get_regions_and_currencies(cls):
-        _m  = 'DataStore_Base.get_regions_and_currencies'
+    def get_many_region_and_currency(cls):
+        _m  = 'DataStore_Base.get_many_region_and_currency'
         _m_db_currency = 'p_shop_get_many_currency'
         _m_db_region = 'p_shop_get_many_region'
 
@@ -168,20 +173,45 @@ class DataStore_Base(BaseModel):
     def upload_bulk(permanent_table_name, records, batch_size):
         _m = 'DataStore_Base.upload_bulk'
         print(f'{_m}\nstarting...')
+        print(f'permanent_table_name: {permanent_table_name}')
+        if db.session.dirty or db.session.new or db.session.deleted:
+            print("Session is not clean")
+            return
+        # Assuming `permanent_table_name` is a string representing the table name
+        table_object = db.metadata.tables.get(permanent_table_name)
+        if table_object is None:
+            print(f"Table {permanent_table_name} not found in metadata.")
+            return
+        else:
+            expected_columns = set(column.name for column in db.inspect(table_object).columns)
+            print(f'expected_columns: {expected_columns}')
+
         try:
             for i in range(0, len(records), batch_size):
                 batch = records[i:i+batch_size]
+                print(f'batch: {batch}')
+                db.session.bulk_save_objects(batch)
+                """
                 data = [object.to_json() for object in batch]
-                print(f'batch: {batch}\ndata: {data}')
-                db.session.bulk_insert_mappings(permanent_table_name, data)
+                print(f'data: {data}')
+                for row in data:
+                    row_keys = set(row.keys())
+                    if row_keys != expected_columns:
+                        print(f"Column mismatch in row: {row}")
+                        print(f'missing columns: {expected_columns - row_keys}')
+                        print(f'extra columns: {row_keys - expected_columns}')
+                # db.session.bulk_insert_mappings(permanent_table_name, data)
+                """
             db.session.commit()
         except Exception as e:
             print(f'{_m}\n{e}')
             db.session.rollback()
             raise e
     @classmethod
-    def get_many_access_level(cls, filters):
+    def get_many_access_level(cls, filters=None):
         _m = 'DataStore_Store_Base.get_many_access_level'
+        if filters is None:
+            filters = Filters_Access_Level()
         av.val_instance(filters, 'filters', _m, Filters_Access_Level) 
         argument_dict = filters.to_json()
         # user = cls.get_user_session()
@@ -214,3 +244,40 @@ class DataStore_Base(BaseModel):
         cursor.close()
 
         return access_levels, errors
+    @classmethod
+    def get_many_unit_measurement(cls, filters=None):
+        _m = 'DataStore_Store_Base.get_many_unit_measurement'
+        if filters is None:
+            filters = Filters_Unit_Measurement()
+        av.val_instance(filters, 'filters', _m, Filters_Unit_Measurement) 
+        argument_dict = filters.to_json()
+        # user = cls.get_user_session()
+        # argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
+        print(f'argument_dict: {argument_dict}')
+        print('executing p_shop_get_many_unit_measurement')
+        result = cls.db_procedure_execute('p_shop_get_many_unit_measurement', argument_dict)
+        cursor = result.cursor
+        print('data received')
+        
+        # units of measurement
+        result_set_1 = cursor.fetchall()
+        print(f'raw units of measurement: {result_set_1}')
+        units = []
+        for row in result_set_1:
+            new_unit = Unit_Measurement.from_DB_unit_measurement(row)
+            units.append(new_unit)
+            
+        # Errors
+        cursor.nextset()
+        result_set_e = cursor.fetchall()
+        print(f'raw errors: {result_set_e}')
+        errors = []
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            for error in errors:
+                print(f"Error [{error.code}]: {error.msg}")
+        
+        DataStore_Base.db_cursor_clear(cursor)
+        cursor.close()
+
+        return units, errors

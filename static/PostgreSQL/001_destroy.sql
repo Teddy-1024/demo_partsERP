@@ -157,8 +157,8 @@ DROP TABLE IF EXISTS Shop_Delivery_Region;
 DROP TABLE IF EXISTS Shop_Region_Audit;
 DROP TABLE IF EXISTS Shop_Region;
 
-DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
-DROP TABLE IF EXISTS Shop_Recurrence_Interval;
+DROP TABLE IF EXISTS Shop_Interval_Recurrence_Audit;
+DROP TABLE IF EXISTS Shop_Interval_Recurrence;
 
 DROP TABLE IF EXISTS Shop_Product_Category_Audit;
 DROP TABLE IF EXISTS Shop_Product_Category;

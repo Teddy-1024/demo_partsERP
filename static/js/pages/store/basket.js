@@ -124,12 +124,12 @@ export default class PageStoreBasket extends BasePage {
         let keys = [keyNameFull, keyPhoneNumber, keyPostcode, keyAddress1, keyAddress2, keyCity, keyCounty];
         console.log('ajaxData:');
         console.log(ajaxData);
-        ajaxData[keyForm][keyInfoIdentical] = getElementCurrentValue(elForm.querySelector('#' + keyInfoIdentical));
+        ajaxData[keyForm][keyInfoIdentical] = getElementValueCurrent(elForm.querySelector('#' + keyInfoIdentical));
         for (var k in keys) {
             if (idOverlayInfo == idOverlayInfoBilling && ajaxData[keyForm][keyInfoIdentical]) {
-                ajaxData[keyForm][keys[k]] = getElementCurrentValue(elFormDelivery.querySelector('#' + keys[k]));
+                ajaxData[keyForm][keys[k]] = getElementValueCurrent(elFormDelivery.querySelector('#' + keys[k]));
             } else {
-                ajaxData[keyForm][keys[k]] = getElementCurrentValue(elForm.querySelector('#' + keys[k]));
+                ajaxData[keyForm][keys[k]] = getElementValueCurrent(elForm.querySelector('#' + keys[k]));
             }
         }
         console.log('ajaxData:');
@@ -181,7 +181,7 @@ export default class PageStoreBasket extends BasePage {
                 let elFormDelivery = document.querySelectorAll(idOverlayInfoDelivery).querySelector('form');
 
                 for (var k in keys) {
-                    elFormBilling.querySelector('#' + keys[k]).value = getElementCurrentValue(elFormDelivery.querySelector('#' + keys[k]));
+                    elFormBilling.querySelector('#' + keys[k]).value = getElementValueCurrent(elFormDelivery.querySelector('#' + keys[k]));
                 }
             });
         });

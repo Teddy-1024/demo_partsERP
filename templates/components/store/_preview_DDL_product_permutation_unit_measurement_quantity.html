@@ -1,0 +1,21 @@
+
+{#
+    <select class="{{ model.FLAG_UNIT_MEASUREMENT_QUANTITY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_unit_measurement_quantity }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_unit_measurement_quantity }}"></select>
+#}
+
+{% with _is_blank_row = (is_blank_row or units_measurement_dict | length == 0 or permutation.id_unit_measurement_quantity is none) %}
+    {% if not _is_blank_row %}
+        {% set interval_recurrence = units_measurement_dict[permutation.id_unit_measurement_quantity] | console_log %}
+        <div 
+            class="{{ model.FLAG_UNIT_MEASUREMENT_QUANTITY }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_unit_measurement_quantity }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_unit_measurement_quantity }}"
+        >{{ interval_recurrence.name_singular }}</div>
+    {% else %}
+        <div 
+            class="{{ model.FLAG_UNIT_MEASUREMENT_QUANTITY }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="" 
+            {{ model.ATTR_VALUE_PREVIOUS }}=""
+        ></div>
+    {% endif %}
+{% endwith %}

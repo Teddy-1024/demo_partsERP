@@ -27,9 +27,10 @@ BEGIN
 		C.id_currency,
         C.code,
         C.name,
+        C.symbol,
         C.factor_from_GBP,
-        C.active,
-        C.display_order
+        C.display_order,
+        C.active
 	FROM Shop_Currency C
 	WHERE a_get_inactive_currency
 		OR C.active

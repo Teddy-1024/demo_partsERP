@@ -1,75 +1,5 @@
 
 
-
-
-
-
-
-
-
-
-
-
-#overlayConfirm {
-    position: absolute;
-    left: 25vw;
-    width: 50vw;
-    height: 50vh;
-}
-.img-product {
-    max-width: 20vh;
-    max-height: 20vh;
-    border-radius: 3vh;
-    justify-self: left;
-}
-
-.img-thumbnail {
-    max-width: 10vh;
-    max-height: 10vh;
-    border-radius: 3vh;
-    justify-self: left;
-}
-
-.buttonAdd2Basket {
-    background-color: var(--c_blue_pastel);
-    color: var(--c_blue_dark);
-    border-color: var(--c_blue_dark);
-}
-
-#buttonCheckout, .buttonBuyNow {
-    background-color: var(--c_purple_pastel);
-    color: var(--c_purple_dark);
-    border-color: var(--c_purple_dark);
-}
-
-.button-increment, .button-decrement {
-    border: 2px solid darkgrey;
-    background-color: lightgray;
-    margin: 1vh 1vh;
-    width: 2.5vh;
-    height: 2.5vh;
-    border-radius: 1.25vh;
-    font-size: 2vh;
-}
-
-.container-input > input {
-    padding: 0vh 1vh;
-    border-radius: 0.5vh;
-    max-width: 7vh;
-}
-
-#basket {
-    max-width: 100%;
-}
-
-
-
-/* Right column */
-.rightcolumn {
-    min-width: fit-content;
-}
-
-/*
 /* Base styles *
 @import 'lib/reset.css';
 @import 'lib/typography.css';
@@ -79,6 +9,7 @@
 /* Layout styles *
 @import 'layouts/header.css';
 @import 'layouts/footer.css';
+@import 'layouts/table-main.css';
 
 /* Component styles *
 @import 'components/button.css';
@@ -91,6 +22,7 @@
 
 /* Section styles *
 @import 'sections/store.css';
+*/
 
 /* Page-specific styles *
 @import 'pages/page_admin.css';
@@ -101,15 +33,14 @@
 @import 'pages/page_store_home.css';
 @import 'pages/page_store_product_permutations.css';
 @import 'pages/page_store_stock_items.css';
-*
+*/
 
 /* Theme styles *
 @import 'themes/light.css';
-/* Uncomment the line below to enable dark theme *
-/* @import 'themes/dark.css'; *
+/* Uncomment the line below to enable dark theme */
+/* @import 'themes/dark.css'; */
 
 
-*/
 
 /* Custom styles */
 /* Add any custom styles or overrides here */
@@ -304,10 +235,9 @@ h5 {
     text-align: center;
     width: 100%;
     align-self: center;
-    font-size: min(20px, calc(1vh * 6));
+    font-size: min(16px, calc(1vh * 4));
 }
 #pageBody > * > * {
-    width: 100%;
     align-self: center;
     padding-top: 1vh;
     padding-bottom: 1vh;
@@ -444,6 +374,7 @@ img.header-logo {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: auto 0;
 }
 
 .row {
@@ -591,10 +522,10 @@ button:hover, input[type="submit"]:hover, #overlayHamburger .row *:hover {
     z-index: 999;
 }
 .overlay.expanded {
-    display: block !important;
+    display: block;
 }
 .collapsed {
-    display: none !important;
+    display: none;
 }
 
 #overlayHamburger {
@@ -663,8 +594,21 @@ td.dirty {
 
 /* Tables */
 #pageBody > *, button {
-    font-size: min(14px, calc(1vh * 5)) !important;
+    font-size: min(12px, calc(1vh * 3));
 }
+
+
+
+
+
+
+#overlayConfirm {
+    position: absolute;
+    left: 25vw;
+    width: 50vw;
+    height: 50vh;
+}
+
 thead, tbody {
     padding-top: 0px !important;
     padding-bottom: 0px !important;
@@ -674,7 +618,7 @@ th {
     
 }
 td {
-    font-size: min(14px, calc(1vh * 5));
+    font-size: min(12px, calc(1vh * 3));
 }
 
 th, td {
@@ -700,3 +644,83 @@ tr {
 }
 */
 
+
+
+button.collapsed {
+    display: block;
+    opacity: 0;
+}
+
+form.filter button.save, form.filter button.button-cancel {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+form.filter button.save, form.filter button.button-cancel {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#tableMain {
+    overflow-x: auto;
+    padding: 1vh 2vh;
+    max-width: min(calc(1vh * 80), calc(1vw * 90));
+    width: fit-content;
+    margin: 1vh 2vh;
+    align-items: normal;
+    justify-content: normal;
+}
+
+#tableMain thead tr th, #tableMain tbody tr td {
+    width: 20vh;
+    min-width: 20vh;
+    padding: 0 0.5vh;
+}
+
+
+
+
+:root {
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --border-color: #dee2e6;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    
+    /* Header */
+    --header-bg: #f8f9fa;
+    --header-text: #333333;
+    
+    /* Footer */
+    --footer-bg: #f8f9fa;
+    --footer-text: #6c757d;
+    
+    /* Navigation */
+    --nav-bg: #ffffff;
+    --nav-text: #333333;
+    --nav-hover-bg: #f1f3f5;
+    --nav-hover-text: #007bff;
+    
+    /* Buttons */
+    --Button-primary-bg: #007bff;
+    --Button-primary-text: #ffffff;
+    --Button-secondary-bg: #6c757d;
+    --Button-secondary-text: #ffffff;
+    
+    /* Forms */
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --input-text: #495057;
+    --input-focus-border: #80bdff;
+    
+    /* Cards */
+    --card-bg: #ffffff;
+    --card-border: #dee2e6;
+    --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}

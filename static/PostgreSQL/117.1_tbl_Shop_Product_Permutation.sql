@@ -18,17 +18,17 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
     id_currency_cost INTEGER NOT NULL,
 	profit_local_min REAL NOT NULL,
     -- id_currency_profit_min INTEGER NOT NULL,
-	latency_manufacture INTEGER NOT NULL,
+	latency_manufacture_days INTEGER NOT NULL,
 	quantity_min REAL NOT NULL,
 	quantity_max REAL NOT NULL,
 	quantity_step REAL NOT NULL,
 	quantity_stock REAL NOT NULL,
 	is_subscription BOOLEAN NOT NULL,
-	id_recurrence_interval INTEGER,
-	CONSTRAINT FK_Shop_Product_Permutation_id_recurrence_interval
-		FOREIGN KEY (id_recurrence_interval)
-		REFERENCES Shop_Recurrence_Interval(id_interval),
-	count_recurrence_interval INTEGER,
+	id_unit_measurement_interval_recurrence INTEGER,
+	CONSTRAINT FK_Shop_Product_Permutation_id_unit_measurement_interval_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
+		REFERENCES Shop_Interval_Recurrence(id_interval),
+	count_interval_recurrence INTEGER,
     /*
     id_access_level_required INTEGER NOT NULL,
     CONSTRAINT FK_Shop_Product_Permutation_id_access_level_required

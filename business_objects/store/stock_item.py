@@ -24,6 +24,8 @@ from datetime import datetime
 
 class Stock_Item(db.Model, Store_Base):
     ATTR_ID_CURRENCY_COST: ClassVar[str] = f'{Store_Base.ATTR_ID_CURRENCY}-cost'
+    NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_CURRENCY
+    NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME
     FLAG_DATE_CONSUMED: ClassVar[str] = 'date-consumed'
     FLAG_DATE_EXPIRATION: ClassVar[str] = 'date-expiration'
     FLAG_DATE_PURCHASED: ClassVar[str] = 'date-purchased'
@@ -175,6 +177,7 @@ class Stock_Item(db.Model, Store_Base):
             '''
     def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             self.ATTR_ID_PRODUCT: {self.id_product},
             self.ATTR_ID_PRODUCT_CATEGORY: {self.id_category},
             self.FLAG_NAME: {self.name},
@@ -183,8 +186,8 @@ class Stock_Item(db.Model, Store_Base):
             self.FLAG_CAN_EDIT: {self.can_edit},
             self.FLAG_CAN_ADMIN: {self.can_admin},
             self.FLAG_HAS_VARIATIONS: {self.has_variations},
-            self.FLAG_PERMUTATIONS: {self.permutations},
-            self.FLAG_VARIATION_TREES: {self.variation_trees},
+            self.FLAG_PRODUCT_PERMUTATION: {self.permutations},
+            self.FLAG_PRODUCT_VARIATION_TREES: {self.variation_trees},
         }
     def has_permutations(self):
         return len(self.permutations) > 0

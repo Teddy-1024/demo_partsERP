@@ -28,6 +28,9 @@ from typing import ClassVar
 
 class Product_Category(SQLAlchemy_ABC, Store_Base):
     FLAG_ACCESS_LEVEL_REQUIRED: ClassVar[str] = 'id_access_level_required'
+    NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT_CATEGORY
+    NAME_ATTR_OPTION_TEXT: ClassVar[str] = Store_Base.FLAG_NAME
+
     __tablename__ = 'Shop_Product_Category_Temp'
     id_category = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(50))
@@ -48,8 +51,9 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         super().__init__()
         Store_Base.__init__(self)
         self.name_access_level_required = None
-    def from_DB_get_many_product_catalogue(query_row):
-        category = Product_Category()
+    @classmethod
+    def from_DB_get_many_product_catalogue(cls, query_row):
+        category = cls()
         category.id_category = query_row[0]
         category.code = query_row[1]
         category.name = query_row[2]
@@ -57,10 +61,10 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         category.id_access_level_required = query_row[4]
         category.name_access_level_required = query_row[5]
         category.display_order = query_row[6]
-        category.active = query_row[7]
-        category.can_view = query_row[8]
-        category.can_edit = query_row[9]
-        category.can_admin = query_row[10]
+        category.active = av.input_bool(query_row[7], cls.FLAG_ACTIVE, f'{cls.__name__}.from_DB_get_many_product_catalogue')
+        category.can_view = av.input_bool(query_row[8], cls.FLAG_CAN_VIEW, f'{cls.__name__}.from_DB_get_many_product_catalogue')
+        category.can_edit = av.input_bool(query_row[9], cls.FLAG_CAN_EDIT, f'{cls.__name__}.from_DB_get_many_product_catalogue')
+        category.can_admin = av.input_bool(query_row[10], cls.FLAG_CAN_ADMIN, f'{cls.__name__}.from_DB_get_many_product_catalogue')
         return category
     """
     def key_product_index_from_ids_product_permutation(id_product, id_permutation):
@@ -178,7 +182,7 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         return list_products
     def to_json(self):
         return {
-            self.FLAG_KEY_PRIMARY: self.ATTR_ID_PRODUCT_CATEGORY,
+            **self.get_shared_json_attributes(self),
             self.ATTR_ID_PRODUCT_CATEGORY: self.id_category[0] if isinstance(self.id_category, tuple) else self.id_category,
             self.FLAG_CODE: self.code[0] if isinstance(self.code, tuple) else self.code,
             self.FLAG_NAME: self.name[0] if isinstance(self.name, tuple) else self.name,
@@ -195,12 +199,12 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
     def from_json(cls, json):
         print(f' Category.from_json: {json}')
         category = cls()
-        category.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY],
-        category.code = json[cls.FLAG_CODE],
-        category.name = json[cls.FLAG_NAME],
-        category.description = json[cls.FLAG_DESCRIPTION],
-        category.id_access_level_required = json[cls.ATTR_ID_ACCESS_LEVEL],
-        category.name_access_level_required = json.get(cls.FLAG_ACCESS_LEVEL_REQUIRED, ''),
+        category.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
+        category.code = json[cls.FLAG_CODE]
+        category.name = json[cls.FLAG_NAME]
+        category.description = json[cls.FLAG_DESCRIPTION]
+        category.id_access_level_required = json[cls.ATTR_ID_ACCESS_LEVEL]
+        category.name_access_level_required = json.get(cls.FLAG_ACCESS_LEVEL_REQUIRED, '')
         category.display_order = json[cls.FLAG_DISPLAY_ORDER]
         category.active = json[cls.FLAG_ACTIVE]
         category.can_view = json.get(cls.FLAG_CAN_VIEW, False)
@@ -258,8 +262,9 @@ class Filters_Product_Category(BaseModel, Store_Base):
             ids_product_category = '',
             ids_product = ''
         )
-    def to_json(self):
+        def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             'a_ids_product_category': self.ids_product_category,
             'a_ids_product': self.ids_product
         }
@@ -282,10 +287,11 @@ class Filters_Product_Category(Get_Many_Parameters_Base):
             is_not_empty = False,
             active = True
         )
-    def to_json(self):
+        def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             self.FLAG_IS_NOT_EMPTY: self.is_not_empty,
-            self.FLAG_ACTIVE: self.active
+            self.FLAG_ACTIVE: av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json')
         }
     @classmethod
     def from_json(cls, json):
@@ -379,13 +385,19 @@ class Product_Category_Container(Store_Base):
         for category in self.categories:
             list_categories.append({'value': category.id_category, 'text': category.name})
         return list_categories
-    def to_product_option_list(self):
+    def get_list_products(self):
         list_products = []
         for category in self.categories:
             # list_products.append(category.to_product_option_list())
+            """
             for product in category.products:
                 list_products.append({'value': product.id_product, 'text': product.name, Product.ATTR_ID_PRODUCT_CATEGORY: product.id_category})
+            """
+            list_products += category.products
         return list_products
+    def to_product_option_list(self):
+        list_products = self.get_list_products()
+        return [{'value': product.id_product, 'text': product.name, Product.ATTR_ID_PRODUCT_CATEGORY: product.id_category} for product in list_products]
     def get_product_option_lists_by_category(self):
         dict_lists_products = {}
         for category in self.categories:
@@ -393,6 +405,7 @@ class Product_Category_Container(Store_Base):
         return dict_lists_products
     def to_json(self):
         return {
+            **self.get_shared_json_attributes(self),
             f'{self.FLAG_ROWS}': [category.to_json() for category in self.categories]
         }
     """
@@ -413,3 +426,63 @@ class Product_Category_Container(Store_Base):
             if column.name not in ['created_on', 'created_by']
         }
         return self.to_object_with_missing_attributes(excluded_attributes)
+    
+    
+"""
+class Table_Shop_Product_Category(db.Model):
+    __tablename__ = 'Shop_Product_Category'
+    id_category: int = db.Column(db.Integer, primary_key=True)
+    code: str = db.Column(db.String(50))
+    name: str = db.Column(db.String(255))
+    description: str = db.Column(db.String(4000))
+    active: bool = db.Column(db.Boolean)
+    display_order: int = db.Column(db.Integer)
+    created_on: datetime = db.Column(db.DateTime)
+    created_by: int = db.Column(db.Integer)
+    id_change_set: int = db.Column(db.Integer)
+"""
+class Product_Category_Temp(db.Model):
+    __tablename__ = 'Shop_Product_Category_Temp'
+    __table_args__ = { 'extend_existing': True }
+    id_category: int = db.Column(db.Integer, primary_key=True)
+    code: str = db.Column(db.String(50))
+    name: str = db.Column(db.String(255))
+    description: str = db.Column(db.String(4000))
+    id_access_level_required: int = db.Column(db.Integer)
+    active: bool = db.Column(db.Boolean)
+    display_order: int = db.Column(db.Integer)
+    guid: str = db.Column(db.BINARY(36))
+    # created_on: datetime = db.Column(db.DateTime)
+    # created_by: int = db.Column(db.Integer)
+
+    @classmethod
+    def from_product_category(cls, product_category):
+        row = cls()
+        row.id_category = product_category.id_category[0] if isinstance(product_category.id_category, tuple) else product_category.id_category
+        row.code = product_category.code[0] if isinstance(product_category.code, tuple) else product_category.code
+        row.name = product_category.name[0] if isinstance(product_category.name, tuple) else product_category.name
+        row.description = product_category.description[0] if isinstance(product_category.description, tuple) else product_category.description
+        row.id_access_level_required = product_category.id_access_level_required[0] if isinstance(product_category.id_access_level_required, tuple) else product_category.id_access_level_required
+        row.active = product_category.active
+        row.display_order = product_category.display_order
+        """
+        row.guid = product_category.guid
+        row.created_on = product_category.created_on
+        row.created_by = product_category.created_by
+        """
+        return row
+    def to_json(self):
+        return {
+            'id_category': self.id_category,
+            'code': self.code,
+            'name': self.name,
+            'description': self.description,
+            'id_access_level_required': self.id_access_level_required,
+            'active': av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json'),
+            'display_order': self.display_order,
+            'guid': self.guid,
+        }
+        """
+        'created_on': self.created_on,
+        'created_by': self.created_by
+        """

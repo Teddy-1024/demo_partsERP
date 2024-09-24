@@ -112,18 +112,15 @@ export default class Router {
         // this.routes[hashPageUserAccount] = (isPopState = false) => this.navigateToHash(hashPageUserAccount, isPopState);
         this.initialize();
     }
-    async loadPage(hashPage, isPopState = false) {
-        console.log("loadPage: " + hashPage);
-        const PageClass = await this.getClassPageFromHash(hashPage);
-        console.log("PageClass: ", PageClass);
+    loadPage(hashPage, isPopState = false) {
+        const PageClass = this.getClassPageFromHash(hashPage);
         this.currentPage = new PageClass(this);
-        console.log("this.currentPage: ", this.currentPage);
         this.currentPage.initialize(isPopState);
+        window.addEventListener('beforeunload', () => this.currentPage.leave());
     }
-    async getClassPageFromHash(hashPage) {
+    getClassPageFromHash(hashPage) {
         
         let pageJson = this.pages[hashPage];
-        console.log("pageJson: ", pageJson);
         try {
             /*
             const module = await pagesContext(pageJson.pathModule);
@@ -133,7 +130,6 @@ export default class Router {
             // const module = await import(pageJson.pathModule); //  pageJson.page;
             // const module = () => import(pageJson.pathModule);
             const module = pageJson.module; // importModule;
-            console.log("module: ", module);
             return module; // [pageJson.name];
         }
         catch (error) {
@@ -160,7 +156,7 @@ export default class Router {
         this.loadPage(hashPageCurrent);
     }
     navigateToHash(hash, data = null, params = null, isPopState = false) {
-        this.beforeLeave();
+        // this.beforeLeave();
         /*
         if (this.routes[hash]) {
             console.log("navigating to hash: " + hash);
@@ -174,13 +170,15 @@ export default class Router {
         history.pushState({data: data, params: params}, '', hash);
         API.goToUrl(url, data);
     }
+    /* beforeunload listener
     async beforeLeave() {
         const ClassPageCurrent = await this.getClassPageFromHash(DOM.getHashPageCurrent());
         const pageCurrent = new ClassPageCurrent(this);
         pageCurrent.leave();
     }
+    */
     navigateToUrl(url, data = null, appendHistory = true) {
-        this.beforeLeave();
+        // this.beforeLeave();
         if (appendHistory) history.pushState(data, '', url);
         url = API.parameteriseUrl(url, data);
         API.goToUrl(url);

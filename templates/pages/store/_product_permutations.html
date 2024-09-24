@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/product_permutations.css') }}">
     -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_product_permutations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_product_permutations.bundle.css') }}">
     
     <!-- HTML content -->
-    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product_permutation.permutation_save') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
+    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product_permutation.save_permutation') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
                 {{ model.form_filters.id_category.label }}
                 {{ model.form_filters.id_category() }}
                 {% for error in model.form_filters.id_category.errors %}
@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
                 {{ model.form_filters.id_product.label }}
                 {{ model.form_filters.id_product() }}
                 {% for error in model.form_filters.id_product.errors %}
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
                 {{ model.form_filters.is_out_of_stock.label }}
                 {{ model.form_filters.is_out_of_stock() }}
                 {% for error in model.form_filters.is_out_of_stock.errors %}
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
                 {{ model.form_filters.quantity_min.label }}
                 {{ model.form_filters.quantity_min() }}
                 {% for error in model.form_filters.quantity_min.errors %}
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
                 {{ model.form_filters.quantity_max.label }}
                 {{ model.form_filters.quantity_max() }}
                 {% for error in model.form_filters.quantity_max.errors %}
@@ -58,11 +58,13 @@
                 {% endfor %}
             </div>
         </div>
-        <!--
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }} {{ model.FLAG_CONTAINER_INPUT }}">
-            { { model.form_filters.submit() }}
+        {#
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
+                {% set block_id = 'button_apply_filters' %}
+                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+            </div>
         </div>
-        -->
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
             <div class="{{ model.FLAG_CONTAINER_INPUT }}">
                 {% set block_id = 'button_add' %}
@@ -87,33 +89,51 @@
             </div>
         </div>
         -->
+        #}
+        {% set block_id = 'buttons_table_default' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
     </form>
     <table id="{{ model.ID_TABLE_MAIN }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
         <thead>
             <tr>
                 <th class="{{ model.FLAG_PRODUCT_CATEGORY }}">Category</th>
                 <th class="{{ model.FLAG_PRODUCT }}">Product</th>
-                <th class="{{ model.FLAG_VARIATIONS }}">Variations</th>
+                <th class="{{ model.FLAG_PRODUCT_VARIATIONS }} {{ model.FLAG_COLLAPSED }}">Variations</th>
+                <th class="{{ model.FLAG_DESCRIPTION }}">Description</th>
                 <th class="{{ model.FLAG_QUANTITY_STOCK }}">Quantity Stock</th>
                 <th class="{{ model.FLAG_QUANTITY_MIN }}">Quantity Min</th>
                 <th class="{{ model.FLAG_QUANTITY_MAX }}">Quantity Max</th>
+                <th class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP }}">Quantity Step</th>
+                <th class="{{ model.FLAG_UNIT_MEASUREMENT_QUANTITY }}">Unit</th>
+                <th class="{{ model.FLAG_IS_SUBSCRIPTION }}">Subscription?</th>
+                <th class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}">Count Recurrence Interval</th>
+                <th class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}">Recurrence Interval</th>
+                <th class="{{ model.FLAG_ID_STRIPE_PRODUCT }}">Stripe Product ID</th>
+                <th class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}">Expires Faster Once Unsealed?</th>
+                <th class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }}">Count Interval Expiration Unsealed</th>
+                <th class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }}">Interval Expiration Unsealed</th>
                 <th class="{{ model.FLAG_COST_LOCAL }}">Cost</th>
-                <!-- <th>Price</th> -->
-                <th class="{{ model.FLAG_DETAIL }}">Link</th>
+                <th class="{{ model.FLAG_CURRENCY_COST }}">Cost Currency</th>
+                <th class="{{ model.FLAG_PROFIT_LOCAL_MIN }}">Profit Local Min</th>
+                <th class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}">Manufacturing Latency</th>
+                <th class="{{ model.FLAG_ACTIVE }}">Active</th>
             </tr>
         </thead>
         <tbody>
+            {% set units_measurement_dict = model.convert_list_objects_to_dict_json_by_attribute_key_default(model.units_measurement) | console_log %}
+            {% set units_measurement_time_dict = model.convert_list_objects_to_dict_json_by_attribute_key_default(model.units_measurement_time) | console_log %}
+
             {% set is_blank_row = False %}
             {% for category in model.category_list.categories %}
                 {% for product in category.products %}
                     {% for permutation in product.permutations %}
-                        {% include 'components/store/_permutation.html' %}
+                        {% include 'components/store/_row_product_permutation.html' %}
                     {% endfor %}
                 {% endfor %}
             {% endfor %}
 
             {% set is_blank_row = True %}
-            {% include 'components/store/_permutation.html' %}
+            {% include 'components/store/_row_product_permutation.html' %}
         </tbody>
     </table>
     
@@ -121,30 +141,30 @@
     {% include 'components/common/temporary/_overlay_error.html' %}
 
     <!-- Include JavaScript
-    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/pages/store/product_permutations.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='dist/js/store_product_permutations.bundle.js') }}"></script>
     -->
+    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
+
     <script>
-        // pass arguments from model to JS
-        /*
-        var idFilterCategory = "#{{ model.ID_FILTER_CATEGORY }}";
-        var idFilterProduct = "#{{ model.ID_FILTER_PRODUCT }}";
-        var idFilterIsOutOfStock = "#{{ model.ID_FILTER_IS_OUT_OF_STOCK }}";
-        var idFilterQuantityMin = "#{{ model.ID_FILTER_QUANTITY_MIN }}";
-        var idFilterQuantityMax = "#{{ model.ID_FILTER_QUANTITY_MAX }}";
-        */
-        // var idFormFiltersPermutations = "#{ { model.ID_FORM_FILTERS_PERMUTATIONS } }";
-        var keyPermutations = "{{ model.KEY_PERMUTATIONS }}";
+        var currencies = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.currencies) | tojson | safe }};
+        var products = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list.get_list_products()) | tojson | safe }};
+        var productCategories = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.categories) | tojson | safe }};
+        var productVariations = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.variations) | tojson | safe }};
+        var productVariationTypes = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.variation_types) | tojson | safe }};
+        var unitMeasurements = {{ units_measurement_dict | tojson | safe }};
+        var unitMeasurementsTime = {{ units_measurement_time_dict | tojson | safe }};
+        var _rowBlankProductVariation = null;
+        {#
         var productsByCategory = {{ model.category_list.get_product_option_lists_by_category() | tojson | safe }};
         var listCategories = {{ model.category_list.to_list_categories() | tojson | safe }};
         var listProducts = {{ model.category_list.to_product_option_list() | tojson | safe }};
         var listVariations = {{ model.variations.to_list_variations() | tojson | safe }};
         var listVariationTypes = {{ model.variations.to_list_variation_types() | tojson | safe }};
-        var dictVariations = Object.fromEntries(listVariations.map((variation, index) => [variation[attrIdVariation], variation]));
-        var dictVariationTypes = Object.fromEntries(listVariationTypes.map((variationType, index) => [variationType[attrIdVariationType], variationType]));
-        listVariations = listVariations.map((variation, index) => { return variation[attrIdVariation]; });
-        listVariationTypes = listVariationTypes.map((variationType, index) => { return variationType[attrIdVariationType]; });
-
+        var dictVariations = Object.fromEntries(listVariations.map((variation, index) => [variation[attrIdProductVariation], variation]));
+        var dictVariationTypes = Object.fromEntries(listVariationTypes.map((variationType, index) => [variationType[attrIdProductVariationType], variationType]));
+        listVariations = listVariations.map((variation, index) => { return variation[attrIdProductVariation]; });
+        listVariationTypes = listVariationTypes.map((variationType, index) => { return variationType[attrIdProductVariationType]; });
+        #}
         /*
         // hookup elements
         $(document).ready(function() {

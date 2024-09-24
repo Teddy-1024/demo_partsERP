@@ -1,0 +1,17 @@
+
+{% with _is_blank_row = (is_blank_row or units_measurement_time_dict | length == 0 or permutation.id_unit_measurement_interval_expiration_unsealed is none) %}
+    {% if not _is_blank_row %}
+        {% set interval_recurrence = units_measurement_time_dict[permutation.id_unit_measurement_interval_expiration_unsealed] %}
+        <div 
+            class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }} {% if not permutation.does_expire_faster_once_unsealed %}{{ model.FLAG_COLLAPSED }}{% endif %}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_unit_measurement_interval_expiration_unsealed }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_unit_measurement_interval_expiration_unsealed }}"
+        >{{ interval_recurrence.name_singular }}</div>
+    {% else %}
+        <div 
+            class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }} {{ model.FLAG_COLLAPSED }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="" 
+            {{ model.ATTR_VALUE_PREVIOUS }}=""
+        ></div>
+    {% endif %}
+{% endwith %}

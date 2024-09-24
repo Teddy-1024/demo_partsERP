@@ -36,8 +36,8 @@ DROP TABLE IF EXISTS Shop_Variation_Type;
 DROP TABLE IF EXISTS Shop_Product_Audit;
 DROP TABLE IF EXISTS Shop_Product;
 
-DROP TABLE IF EXISTS Shop_Recurrence_Interval_Audit;
-DROP TABLE IF EXISTS Shop_Recurrence_Interval;
+DROP TABLE IF EXISTS Shop_Interval_Recurrence_Audit;
+DROP TABLE IF EXISTS Shop_Interval_Recurrence;
 
 DROP TABLE IF EXISTS Shop_Product_Category_Audit;
 DROP TABLE IF EXISTS Shop_Product_Category;
@@ -342,7 +342,7 @@ SELECT * FROM Shop_Product_Category_Audit;
 
 
 # Recurrence Interval
-CREATE TABLE Shop_Recurrence_Interval (
+CREATE TABLE Shop_Interval_Recurrence (
     id_interval INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50),
     name VARCHAR(255),
@@ -350,14 +350,14 @@ CREATE TABLE Shop_Recurrence_Interval (
     created_on TIMESTAMP,
     created_by INT,
     id_change_set INT,
-    CONSTRAINT FK_Shop_Recurrence_Interval_id_change_set
+    CONSTRAINT FK_Shop_Interval_Recurrence_id_change_set
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
 DELIMITER //
-CREATE TRIGGER before_insert_Shop_Recurrence_Interval
-BEFORE INSERT ON Shop_Recurrence_Interval
+CREATE TRIGGER before_insert_Shop_Interval_Recurrence
+BEFORE INSERT ON Shop_Interval_Recurrence
 FOR EACH ROW
 BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -365,28 +365,28 @@ BEGIN
 END //
 DELIMITER ;;
 
-CREATE TABLE Shop_Recurrence_Interval_Audit (
+CREATE TABLE Shop_Interval_Recurrence_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_interval INT NOT NULL,
-    CONSTRAINT FK_Shop_Recurrence_Interval_Audit_id_interval
+    CONSTRAINT FK_Shop_Interval_Recurrence_Audit_id_interval
 		FOREIGN KEY (id_interval)
-        REFERENCES Shop_Recurrence_Interval(id_interval)
+        REFERENCES Shop_Interval_Recurrence(id_interval)
         ON UPDATE RESTRICT,
     name_field VARCHAR(50),
     value_prev VARCHAR(256),
     value_new VARCHAR(256),
     id_change_set INT NOT NULL,
-    CONSTRAINT FK_Shop_Recurrence_Interval_Audit_id_change_set
+    CONSTRAINT FK_Shop_Interval_Recurrence_Audit_id_change_set
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
 DELIMITER //
-CREATE TRIGGER before_update_Shop_Recurrence_Interval
-BEFORE UPDATE ON Shop_Recurrence_Interval
+CREATE TRIGGER before_update_Shop_Interval_Recurrence
+BEFORE UPDATE ON Shop_Interval_Recurrence
 FOR EACH ROW
 BEGIN
-    INSERT INTO Shop_Recurrence_Interval_Audit (
+    INSERT INTO Shop_Interval_Recurrence_Audit (
 		id_interval,
         name_field,
         value_prev,
@@ -408,7 +408,7 @@ BEGIN
 END //
 DELIMITER ;;
 
-INSERT INTO Shop_Recurrence_Interval (
+INSERT INTO Shop_Interval_Recurrence (
 	code, name, name_plural
 )
 VALUES 
@@ -417,8 +417,8 @@ VALUES
 	('YEAR', 'Year', 'Years')
 ;
 
-SELECT * FROM Shop_Recurrence_Interval;
-SELECT * FROM Shop_Recurrence_Interval_Audit;
+SELECT * FROM Shop_Interval_Recurrence;
+SELECT * FROM Shop_Interval_Recurrence_Audit;
 
 
 
@@ -439,11 +439,11 @@ CREATE TABLE Shop_Product (
     quantity_step FLOAT NOT NULL DEFAULT 1,
     quantity_stock FLOAT NOT NULL DEFAULT 0,
     is_subscription BIT NOT NULL DEFAULT 0,
-    id_recurrence_interval INT,
-    CONSTRAINT FK_Shop_Product_id_recurrence_interval
-		FOREIGN KEY (id_recurrence_interval)
-        REFERENCES Shop_Recurrence_Interval(id_interval),
-    count_recurrence_interval INT,
+    id_unit_measurement_interval_recurrence INT,
+    CONSTRAINT FK_Shop_Product_id_unit_measurement_interval_recurrence
+		FOREIGN KEY (id_unit_measurement_interval_recurrence)
+        REFERENCES Shop_Interval_Recurrence(id_interval),
+    count_interval_recurrence INT,
     id_stripe_product VARCHAR(100),
     id_stripe_price VARCHAR(100),
     active BIT NOT NULL DEFAULT 1,
@@ -534,13 +534,13 @@ BEGIN
 	SELECT NEW.id_product, 'is_subscription', CONVERT(CONVERT(OLD.is_subscription, SIGNED), CHAR), CONVERT(CONVERT(NEW.is_subscription, SIGNED), CHAR), NEW.id_change_set
 		WHERE NOT OLD.is_subscription <=> NEW.is_subscription
 	UNION
-    # Changed id_recurrence_interval
-	SELECT NEW.id_product, 'id_recurrence_interval', CONVERT(OLD.id_recurrence_interval, CHAR), CONVERT(NEW.id_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.id_recurrence_interval <=> NEW.id_recurrence_interval
+    # Changed id_unit_measurement_interval_recurrence
+	SELECT NEW.id_product, 'id_unit_measurement_interval_recurrence', CONVERT(OLD.id_unit_measurement_interval_recurrence, CHAR), CONVERT(NEW.id_unit_measurement_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_interval_recurrence <=> NEW.id_unit_measurement_interval_recurrence
     UNION
-    # Changed count_recurrence_interval
-	SELECT NEW.id_product, 'count_recurrence_interval', CONVERT(OLD.count_recurrence_interval, CHAR), CONVERT(NEW.count_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.count_recurrence_interval <=> NEW.count_recurrence_interval
+    # Changed count_interval_recurrence
+	SELECT NEW.id_product, 'count_interval_recurrence', CONVERT(OLD.count_interval_recurrence, CHAR), CONVERT(NEW.count_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.count_interval_recurrence <=> NEW.count_interval_recurrence
 	UNION
     # Changed id_stripe_product
 	SELECT NEW.id_product, 'id_stripe_product', OLD.id_stripe_product, NEW.id_stripe_product, NEW.id_change_set

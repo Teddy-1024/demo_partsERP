@@ -195,13 +195,13 @@ BEGIN
 		P.id_stripe_product,
 		P.is_subscription,
 		LOWER(RI.code) AS name_recurring_interval,
-		P.count_recurrence_interval
+		P.count_interval_recurrence
 	FROM tmp_Shop_Product_Currency_Link t_PCL
 	INNER JOIN Shop_Product P
 		ON t_PCL.id_product = P.id_product
 		AND P.active
-	INNER JOIN Shop_Recurrence_Interval RI
-		ON P.id_recurrence_interval = RI.id_interval
+	INNER JOIN Shop_Interval_Recurrence RI
+		ON P.id_unit_measurement_interval_recurrence = RI.id_interval
 		AND RI.active
 	INNER JOIN Shop_Currency C
 		ON t_PCL.id_currency = C.id_currency

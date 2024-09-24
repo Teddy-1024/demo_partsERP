@@ -1,8 +1,12 @@
 
+import BusinessObjects from "../lib/business_objects.js";
 import Events from "../lib/events.js";
 import LocalStorage from "../lib/local_storage.js";
 import API from "../api.js";
 import DOM from "../dom.js";
+
+import OverlayConfirm from "../components/common/temporary/overlay_confirm.js";
+import OverlayError from "../components/common/temporary/overlay_error.js";
 
 export default class BasePage {
     constructor(router) {
@@ -45,182 +49,117 @@ export default class BasePage {
     
     hookupNavigation() {
         /* Can be removed: */
-        console.log("hooking up navigation");
         let overlayHamburger = document.querySelector(idOverlayHamburger);
         let hamburgerOptions = overlayHamburger.querySelectorAll('div.' + flagRow);
         let countOptions = hamburgerOptions.length;
-        console.log('count nav options: ', countOptions);
+        // console.log('count nav options: ', countOptions);
         // overlayHamburger.css('height', (countOptions * 27) + 'px');
         /* end of can be removed */
 
-        Events.initialiseEventHandler(idButtonHamburger, flagInitialised, function(buttonToggleOverlayNavigation) {
-            buttonToggleOverlayNavigation.addEventListener("click", function(event) {
-                event.stopPropagation();
-                let overlayHamburger = document.querySelector(idOverlayHamburger);
-                if (overlayHamburger.classList.contains(flagCollapsed)) {
-                    overlayHamburger.classList.remove(flagCollapsed);
-                    overlayHamburger.classList.add(flagExpanded);
-                } else {
-                    overlayHamburger.classList.remove(flagExpanded);
-                    overlayHamburger.classList.add(flagCollapsed);
-                }
-                // overlayHamburger.classList.add(flagInitialised);
-            });
+        this.hookupEventHandler("click", idButtonHamburger, (event, element) => {
+            let overlayHamburger = document.querySelector(idOverlayHamburger);
+            if (overlayHamburger.classList.contains(flagCollapsed)) {
+                overlayHamburger.classList.remove(flagCollapsed);
+                overlayHamburger.classList.add(flagExpanded);
+            } else {
+                overlayHamburger.classList.remove(flagExpanded);
+                overlayHamburger.classList.add(flagCollapsed);
+            }
+            // overlayHamburger.classList.add(flagInitialised);
         });
 
-        this.hookupButtonNavHome();
-        this.hookupButtonNavServices();
-        this.hookupButtonNavContact();
-        this.hookupButtonNavUserAccount();
-        this.hookupButtonNavUserLogout();
-        this.hookupButtonNavUserLogin();
-        this.hookupButtonNavStoreHome();
-        this.hookupButtonNavStoreProductPermutations();
-        this.hookupButtonNavStoreStockItems();
-        this.hookupButtonNavAdminHome();
+        this.hookupButtonsNavHome();
+        this.hookupButtonsNavServices();
+        this.hookupButtonsNavContact();
+        this.hookupButtonsNavUserAccount();
+        this.hookupButtonsNavUserLogout();
+        this.hookupButtonsNavUserLogin();
+        this.hookupButtonsNavStoreHome();
+        this.hookupButtonsNavStoreProductPermutations();
+        this.hookupButtonsNavStoreStockItems();
+        this.hookupButtonsNavAdminHome();
     }
-    hookupButtonNavHome() {
-        Events.initialiseEventHandler('.' + flagNavHome, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
+    hookupEventHandler(eventType, selector, callback) {
+        Events.initialiseEventHandler(selector, flagInitialised, (element) => {
+            element.addEventListener(eventType, (event) => {
                 event.stopPropagation();
-                this.router.navigateToHash(hashPageHome);
+                callback(event, element);
             });
         });
     }
-    hookupButtonNavServices() {        
-        Events.initialiseEventHandler('.' + flagNavServices, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                console.log('going to services page');
-                this.router.navigateToHash(hashPageServices);
+    hookupButtonsNavHome() {
+        this.hookupButtonsNav('.' + flagNavHome, hashPageHome);
+    }
+    hookupButtonsNav(buttonSelector, hashPageNav) {
+        this.hookupEventHandler("click", buttonSelector, (event, button) => { 
+            this.router.navigateToHash(hashPageNav); 
+        });
+    }
+    hookupButtonsNavServices() {
+        this.hookupButtonsNav('.' + flagNavServices, hashPageServices);
+    }
+    hookupButtonsNavContact() {
+        this.hookupButtonsNav('.' + flagNavContact, hashPageContact);
+    }
+    hookupButtonsNavUserAccount() {
+        this.hookupButtonsNav('.' + flagNavUserAccount, hashPageUserAccount);
+    }
+    hookupButtonsNavUserLogout() {
+        this.hookupButtonsNav('.' + flagNavUserLogout, hashPageUserLogout);
+    }
+    hookupButtonsNavUserLogin() {
+        this.hookupEventHandler("click", '.' + flagNavUserLogin, (event, navigator) => { 
+            event.stopPropagation();
+            // this.router.navigateToHash(hashPageUserLogin);
+            /*
+            let dataRequest = {};
+            dataRequest[keyCallback] = hashPageCurrent;
+            console.log('sending data to user login controller: '); 
+            console.log(dataRequest);
+            */
+            // let page = this;
+            API.loginUser()
+                .then((response) => {
+                if (response.Success) {
+                    this.router.navigateToUrl(response[keyCallback], null, false); // window.app.
+                } else {
+                    DOM.alertError("Error", response.Message);
+                }
             });
         });
     }
-    hookupButtonNavContact() {        
-        Events.initialiseEventHandler('.' + flagNavContact, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageContact);
-            });
-        });
+    hookupButtonsNavStoreHome() {
+        this.hookupButtonsNav('.' + flagNavStoreHome, hashPageStoreHome);
     }
-    hookupButtonNavUserAccount() {        
-        Events.initialiseEventHandler('.' + flagNavUserAccount, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageUserAccount);
-            });
-        });
+    hookupButtonsNavStoreProductCategories() {
+        this.hookupButtonsNav('.' + flagNavStoreProductCategories, hashPageStoreProductCategories);
     }
-    hookupButtonNavUserLogout() {        
-        Events.initialiseEventHandler('.' + flagNavUserLogout, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageUserLogout);
-            });
-        });
+    hookupButtonsNavStoreProducts() {
+        this.hookupButtonsNav('.' + flagNavStoreProducts, hashPageStoreProducts);
     }
-    hookupButtonNavUserLogin() {        
-        Events.initialiseEventHandler('.' + flagNavUserLogin, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                // this.router.navigateToHash(hashPageUserLogin);
-                /*
-                let dataRequest = {};
-                dataRequest[keyCallback] = hashPageCurrent;
-                console.log('sending data to user login controller: '); 
-                console.log(dataRequest);
-                */
-                // let page = this;
-                API.loginUser()
-                    .then((response) => {
-                    if (response.Success) {
-                        this.router.navigateToUrl(response[keyCallback], null, false); // window.app.
-                    } else {
-                        DOM.alertError("Error", response.Message);
-                    }
-                });
-            });
-        });
+    hookupButtonsNavStoreProductPermutations() {
+        this.hookupButtonsNav('.' + flagNavStoreProductPermutations, hashPageStoreProductPermutations);
     }
-    hookupButtonNavStoreHome() {        
-        Events.initialiseEventHandler('.' + flagNavStoreHome, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageStoreHome);
-            });
-        });
+    hookupButtonsNavStoreProductPrices() {
+        this.hookupButtonsNav('.' + flagNavStoreProductPrices, hashPageStoreProductPrices);
     }
-    hookupButtonNavStoreProductCategories() {
-        Events.initialiseEventHandler('.' + flagNavStoreProductCategories, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageStoreProductCategories);
-            });
-        });
+    hookupButtonsNavStoreProductVariations() {
+        this.hookupButtonsNav('.' + flagNavStoreProductVariations, hashPageStoreProductVariations);
     }
-    hookupButtonNavStoreProducts() {
-        Events.initialiseEventHandler('.' + flagNavStoreProducts, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageStoreProducts);
-            });
-        });
+    hookupButtonsNavStoreStockItems() {
+        this.hookupButtonsNav('.' + flagNavStoreStockItems, hashPageStoreStockItems);
     }
-    hookupButtonNavStoreProductPermutations() {
-        Events.initialiseEventHandler('.' + flagNavStoreProductPermutations, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageStoreProductPermutations);
-            });
-        });
-    }
-    hookupButtonNavStoreProductPrices() {
-        Events.initialiseEventHandler('.' + flagNavStoreProductPrices, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageStoreProductPrices);
-            });
-        });
-    }
-    hookupButtonNavStoreProductVariations() {
-        Events.initialiseEventHandler('.' + flagNavStoreProductVariations, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageStoreProductVariations);
-            });
-        });
-    }
-    hookupButtonNavStoreStockItems() {
-        Events.initialiseEventHandler('.' + flagNavStoreStockItems, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageStoreStockItems);
-            });
-        });
-    }
-    hookupButtonNavAdminHome() {
-        Events.initialiseEventHandler('.' + flagNavAdminHome, flagInitialised, (navigator) => {
-            navigator.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageAdminHome);
-            });
-        });
+    hookupButtonsNavAdminHome() {
+        this.hookupButtonsNav('.' + flagNavAdminHome, hashPageAdminHome);
     }
 
     hookupImagesLogo() {
-        let selectorImagesLogo = "img." + flagImageLogo;
-        Events.initialiseEventHandler(selectorImagesLogo, flagInitialised, (buttonImageLogo) => {
-            buttonImageLogo.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.router.navigateToHash(hashPageHome);
-            });
-        });
+        this.hookupButtonsNav("img." + flagImageLogo, hashPageHome);
     }
 
     hookupOverlayFromId(idOverlay) {
-        Events.initialiseEventHandler(idOverlay, flagInitialised, function(overlay) {
-            overlay.querySelector('button.' + flagClose).addEventListener("click", function(event) {
+        Events.initialiseEventHandler(idOverlay, flagInitialised, (overlay) => {
+            overlay.querySelector('button.' + flagClose).addEventListener("click", (event) => {
                 event.stopPropagation();
                 overlay.css('display', 'none');
             });
@@ -229,17 +168,18 @@ export default class BasePage {
 
     
     hookupButtonSave() {
-        Events.initialiseEventHandler('form.' + flagFilter + ' button.' + flagSave, flagInitialised, function(button) {
-            button.addEventListener("click", function(event) {
+        Events.initialiseEventHandler('form.' + flagFilter + ' button.' + flagSave, flagInitialised, (button) => {
+            button.addEventListener("click", (event) => {
                 event.stopPropagation();
-                showOverlayConfirm();
+                console.log('saving page: ', this.title);
+                OverlayConfirm.show();
             });
-            button.classList.add(flagCollapsed);
+            // button.classList.add(flagCollapsed);
         });
     }
 
     hookupVideos() {
-        Events.initialiseEventHandler('video', flagInitialised, function(video) {
+        Events.initialiseEventHandler('video', flagInitialised, (video) => {
             video.addEventListener("mouseover", videoPlay(video));
             video.addEventListener("mouseout", videoPause(video));
         });
@@ -252,15 +192,15 @@ export default class BasePage {
         }
     }
     setLocalStoragePage(dataPage) {
-        LocalStorage.setLocalStorage(this.constructor.hash, dataPage);
+        LocalStorage.setLocalStorage(this.hash, dataPage);
     }
     getLocalStoragePage() {
-        return LocalStorage.getLocalStorage(this.constructor.hash);
+        return LocalStorage.getLocalStorage(this.hash);
     }
 
-    toggleShowButtonsSaveCancel(show, buttonSave = null, buttonCancel = null) {
-        if (buttonSave == null) buttonSave = document.querySelector('form.' + flagFilter + ' button.' + flagSave);
-        if (buttonCancel == null) buttonCancel = document.querySelector('form.' + flagFilter + ' button.' + flagCancel);
+    toggleShowButtonsSaveCancel(show) { // , buttonSave = null, buttonCancel = null
+        let buttonSave = document.querySelector('form.' + flagFilter + ' button.' + flagSave);
+        let buttonCancel = document.querySelector('form.' + flagFilter + ' button.' + flagCancel);
         if (show) {
             buttonCancel.classList.remove(flagCollapsed);
             buttonSave.classList.remove(flagCollapsed);
@@ -271,7 +211,7 @@ export default class BasePage {
     }
 
     static isDirtyFilter(filter) {
-        let isDirty = DOM.isElementDirty(filter);
+        let isDirty = DOM.updateAndCheckIsElementDirty(filter);
         if (isDirty) document.querySelectorAll(idTableMain + ' tbody tr').remove();
         return isDirty;
     }

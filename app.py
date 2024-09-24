@@ -37,15 +37,15 @@ from datastores.datastore_store_base import DataStore_Store
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 """
-from routing.core import routes_core
-from routing.legal import routes_legal
-from routing.store.store import routes_store
-from routing.store.product import routes_store_product
-from routing.store.product_category import routes_store_product_category
-from routing.store.product_permutation import routes_store_product_permutation
-from routing.store.stock_item import routes_store_stock_item
-from routing.store.supplier import routes_store_supplier
-from routing.user import routes_user
+from controllers.core import routes_core
+from controllers.legal import routes_legal
+from controllers.store.store import routes_store
+from controllers.store.product import routes_store_product
+from controllers.store.product_category import routes_store_product_category
+from controllers.store.product_permutation import routes_store_product_permutation
+from controllers.store.stock_item import routes_store_stock_item
+from controllers.store.supplier import routes_store_supplier
+from controllers.user import routes_user
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
 # from flask_appconfig import AppConfig
@@ -131,3 +131,10 @@ app.register_blueprint(routes_store_product_permutation)
 app.register_blueprint(routes_store_stock_item)
 app.register_blueprint(routes_store_supplier)
 app.register_blueprint(routes_user)
+
+
+
+@app.template_filter('console_log')
+def console_log(value):
+    print(value)
+    return value

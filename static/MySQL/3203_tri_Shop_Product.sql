@@ -62,11 +62,11 @@ BEGIN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have subscription status or variations (with subscription statuses).';
 		END IF;
-		IF ISNULL(NEW.id_recurrence_interval) THEN
+		IF ISNULL(NEW.id_unit_measurement_interval_recurrence) THEN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have recurrence interval or variations (with recurrence intervals).';
 		END IF;
-		IF ISNULL(NEW.count_recurrence_interval) THEN
+		IF ISNULL(NEW.count_interval_recurrence) THEN
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Product must have recurrence interval count or variations (with recurrence interval counts).';
 		END IF;
@@ -136,13 +136,13 @@ BEGIN
 	SELECT NEW.id_product, 'is_subscription', CONVERT(CONVERT(OLD.is_subscription, SIGNED), CHAR), CONVERT(CONVERT(NEW.is_subscription, SIGNED), CHAR), NEW.id_change_set
 		WHERE NOT OLD.is_subscription <=> NEW.is_subscription
 	UNION
-    # Changed id_recurrence_interval
-	SELECT NEW.id_product, 'id_recurrence_interval', CONVERT(OLD.id_recurrence_interval, CHAR), CONVERT(NEW.id_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.id_recurrence_interval <=> NEW.id_recurrence_interval
+    # Changed id_unit_measurement_interval_recurrence
+	SELECT NEW.id_product, 'id_unit_measurement_interval_recurrence', CONVERT(OLD.id_unit_measurement_interval_recurrence, CHAR), CONVERT(NEW.id_unit_measurement_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement_interval_recurrence <=> NEW.id_unit_measurement_interval_recurrence
     UNION
-    # Changed count_recurrence_interval
-	SELECT NEW.id_product, 'count_recurrence_interval', CONVERT(OLD.count_recurrence_interval, CHAR), CONVERT(NEW.count_recurrence_interval, CHAR), NEW.id_change_set
-		WHERE NOT OLD.count_recurrence_interval <=> NEW.count_recurrence_interval
+    # Changed count_interval_recurrence
+	SELECT NEW.id_product, 'count_interval_recurrence', CONVERT(OLD.count_interval_recurrence, CHAR), CONVERT(NEW.count_interval_recurrence, CHAR), NEW.id_change_set
+		WHERE NOT OLD.count_interval_recurrence <=> NEW.count_interval_recurrence
 	UNION
     # Changed id_stripe_product
 	SELECT NEW.id_product, 'id_stripe_product', OLD.id_stripe_product, NEW.id_stripe_product, NEW.id_change_set

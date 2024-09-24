@@ -203,19 +203,19 @@ BEGIN
         price_GBP_full REAL NOT NULL,
 		price_GBP_min REAL NOT NULL,
 		*/
-        latency_manufacture INTEGER NOT NULL,
+        latency_manufacture_days INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
 		quantity_stock REAL NOT NULL,
 		is_subscription BOOLEAN NOT NULL,
-		id_recurrence_interval INTEGER,
+		id_unit_measurement_interval_recurrence INTEGER,
 		/*
-		CONSTRAINT FK_tmp_Shop_Product_id_recurrence_interval
-			FOREIGN KEY (id_recurrence_interval)
-			REFERENCES Shop_Recurrence_Interval(id_interval),
+		CONSTRAINT FK_tmp_Shop_Product_id_unit_measurement_interval_recurrence
+			FOREIGN KEY (id_unit_measurement_interval_recurrence)
+			REFERENCES Shop_Interval_Recurrence(id_interval),
 		*/
-		count_recurrence_interval INTEGER,
+		count_interval_recurrence INTEGER,
         id_stripe_product VARCHAR(100),
         product_has_variations BOOLEAN NOT NULL,
         can_view BOOLEAN, 
@@ -326,14 +326,14 @@ BEGIN
 		price_GBP_VAT_excl,
 		price_GBP_min,
 		*/
-        latency_manufacture,
+        latency_manufacture_days,
 		quantity_min,
 		quantity_max,
 		quantity_step,
 		quantity_stock,
 		is_subscription,
-		id_recurrence_interval,
-		count_recurrence_interval,
+		id_unit_measurement_interval_recurrence,
+		count_interval_recurrence,
         id_stripe_product,
         product_has_variations
 	)
@@ -359,14 +359,14 @@ BEGIN
 		PP.price_GBP_VAT_excl,
 		PP.price_GBP_min,
 		*/
-        PP.latency_manufacture,
+        PP.latency_manufacture_days,
 		PP.quantity_min,
 		PP.quantity_max,
 		PP.quantity_step,
 		PP.quantity_stock,
 		PP.is_subscription,
-		PP.id_recurrence_interval,
-		PP.count_recurrence_interval,
+		PP.id_unit_measurement_interval_recurrence,
+		PP.count_interval_recurrence,
 		PP.id_stripe_product,
         P.has_variations
 	FROM Shop_Product P
@@ -866,16 +866,16 @@ BEGIN
 			PP.cost_local,
 			PP.id_currency_cost,
 			PP.profit_local_min,
-			t_P.latency_manufacture,
+			t_P.latency_manufacture_days,
 			t_P.quantity_min,
 			t_P.quantity_max,
 			t_P.quantity_step,
 			t_P.quantity_stock,
 			t_P.id_stripe_product,
 			t_P.is_subscription,
-			RI.name AS name_recurrence_interval,
-			RI.name_plural AS name_plural_recurrence_interval,
-			t_P.count_recurrence_interval,
+			RI.name AS name_interval_recurrence,
+			RI.name_plural AS name_plural_interval_recurrence,
+			t_P.count_interval_recurrence,
 			t_P.display_order_category,
 			t_P.display_order_product,
 			t_P.display_order_permutation,
@@ -885,7 +885,7 @@ BEGIN
 		FROM tmp_Shop_Product t_P
 		INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
 		INNER JOIN Shop_Product_Permutation PP ON t_P.id_permutation = PP.id_permutation
-		LEFT JOIN Shop_Recurrence_Interval RI ON t_P.id_recurrence_interval = RI.id_interval
+		LEFT JOIN Shop_Interval_Recurrence RI ON t_P.id_unit_measurement_interval_recurrence = RI.id_interval
 		ORDER BY t_P.rank_permutation
 		;
     RETURN NEXT result_products;

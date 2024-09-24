@@ -3,8 +3,22 @@ import Validation from "./lib/validation.js";
 
 // Module for DOM manipulation
 export default class DOM {
-    static setElementValueCurrent(element, data) {
+    static setElementAttributesValuesCurrentAndPrevious(element, data) {
+        DOM.setElementAttributeValueCurrent(element, data);
+        DOM.setElementAttributeValuePrevious(element, data);
+    }
+    static setElementAttributeValueCurrent(element, data) {
         element.setAttribute(attrValueCurrent, data);
+    }
+    static setElementAttributeValuePrevious(element, data) {
+        element.setAttribute(attrValuePrevious, data);
+    }
+    static setElementValuesCurrentAndPrevious(element, data) {
+        DOM.setElementValueCurrent(element, data);
+        DOM.setElementAttributeValuePrevious(element, data);
+    }
+    static setElementValueCurrent(element, data) {
+        DOM.setElementAttributeValueCurrent(element, data);
         if (element.type === "checkbox") {
             element.checked = data;
         }
@@ -15,8 +29,10 @@ export default class DOM {
             element.textContent = data;
         }
     }
-    static setElementValuePrevious(element, data) {
-        element.setAttribute(attrValuePrevious, data);
+    static setElementValueCurrentIfEmpty(element, data) {
+        if (Validation.isEmpty(DOM.getElementValueCurrent(element))) {
+            DOM.setElementValueCurrent(element, data);
+        }
     }
     static getCellFromElement(element) {
         return element.closest('td');
@@ -48,21 +64,32 @@ export default class DOM {
     }
     static getHashPageCurrent() {
         const hashPageCurrent = document.body.dataset.page;
-        console.log("hashPageCurrent: " + hashPageCurrent);
         return hashPageCurrent;
     }
-    static isElementDirty(element) {
+    static updateAndCheckIsElementDirty(element) {
         element.setAttribute(attrValueCurrent, DOM.getElementValueCurrent(element));
+        return DOM.isElementDirty(element);
+    }
+    static isElementDirty(element) {
         let isDirty = element.getAttribute(attrValuePrevious) != element.getAttribute(attrValueCurrent);
         DOM.handleDirtyElement(element, isDirty);
         return isDirty;
     }
     static handleDirtyElement(element, isDirty) {
-        if (isDirty) {
-            element.classList.add(flagDirty);
+        DOM.toggleElementHasClassnameFlag(element, isDirty, flagDirty);
+    }
+    static toggleElementHasClassnameFlag(element, elementHasFlag, flag) {
+        let elementAlreadyHasFlag = element.classList.contains(flag);
+        if (elementHasFlag == elementAlreadyHasFlag) return;
+        if (elementHasFlag) {
+            element.classList.add(flag);
         } else {
-            element.classList.remove(flagDirty);
+            element.classList.remove(flag);
         }
+    }
+    static hasDirtyChildrenContainer(container) {
+        if (container == null) return false;
+        return container.querySelector('.' + flagDirty) != null;
     }
     static getElementValueCurrent(element) {
         let returnVal = '';
@@ -89,8 +116,14 @@ export default class DOM {
     
         return returnVal;
     }
-    static isTableElementDirty(element) {
-        let isDirty = DOM.isElementDirty(element);
+    static getElementAttributeValueCurrent(element) {
+        return element.getAttribute(attrValueCurrent);
+    }
+    static getElementAttributeValuePrevious(element) {
+        return element.getAttribute(attrValuePrevious);
+    }
+    static updateAndCheckIsTableElementDirty(element) {
+        let isDirty = DOM.updateAndCheckIsElementDirty(element);
         let cell = DOM.getCellFromElement(element);
         if (isDirty) {
             cell.classList.add(flagDirty);
@@ -110,11 +143,11 @@ export default class DOM {
     /* non-static method on page object to use
     static handleChangeElement(element) {}
     */
-    scrollToElement(parent, element) {
+    static scrollToElement(parent, element) {
         // REQUIRED: parent has scroll-bar
         parent.scrollTop(parent.scrollTop() + (element.offset().top - parent.offset().top));
     }
-    isElementInContainer(container, element) {
+    static isElementInContainer(container, element) {
 
         if (typeof jQuery === 'function') {
             if (container instanceof jQuery) container = container[0];
@@ -131,7 +164,34 @@ export default class DOM {
             ((elementBounds.left + elementBounds.width) <= (containerBounds.left + containerBounds.width))
         );
     }
-    alertError(errorType, errorText) {
+    static alertError(errorType, errorText) {
         alert(errorType + '\n' + errorText);
+    }
+    static createOptionUnselectedProductVariation() {
+        return {
+            [flagProductVariationType]: {
+                [flagNameAttrOptionText]: [flagName],
+                [flagNameAttrOptionValue]: [attrIdProductVariationType],
+                [flagName]: 'Select Variation Type',
+                [attrIdProductVariationType]: 0,
+            },
+            [flagProductVariation]: {
+                [flagNameAttrOptionText]: [flagName],
+                [flagNameAttrOptionValue]: [attrIdProductVariation],
+                [flagName]: 'Select Variation',
+                [attrIdProductVariation]: 0,
+            },
+        };
+    }
+    static createOption(optionJson) {
+        if (Validation.isEmpty(optionJson)) optionJson = {
+            text: 'Select',
+            value: 0,
+        };
+        let option = document.createElement('option');
+        option.value = optionJson.value;
+        option.textContent = optionJson.text;
+        option.selected = optionJson.selected;
+        return option;
     }
 }
