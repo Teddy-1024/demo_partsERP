@@ -127,15 +127,8 @@ class Form_Supplier(FlaskForm):
 # class Form_Supplier_Purchase_Order(FlaskForm):
 
 
-class Form_Filters_Stock_Item(FlaskForm):
-    id_category = SelectField('Category', validators=[Optional()], choices=[])
-    id_product = SelectField('Product', validators=[Optional()], choices=[])
-    is_out_of_stock = BooleanField('Out of stock only?')
-    quantity_min = FloatField('Min stock')
-    quantity_max = FloatField('Max stock')
-    # submit = SubmitField('Submit')
 
-
+# User 
 class Form_Filters_User(FlaskForm):
     active = BooleanField('Active only?')
     id_user = SelectField('User ID', validators=[Optional()], choices=[])

@@ -5,11 +5,17 @@ DROP PROCEDURE IF EXISTS p_clear_split_temp;
 
 DELIMITER //
 CREATE PROCEDURE p_clear_split_temp (
+	IN a_guid BINARY(36)
 )
 BEGIN
+	CALL p_validate_guid( a_guid );
+
 	START TRANSACTION; 
 	
-	DROP TABLE Split_Temp;
+	-- DROP TABLE IF EXISTS 
+    DELETE FROM Split_Temp
+    WHERE GUID = a_guid
+    ;
 	
 	COMMIT;
 END //
@@ -17,11 +23,7 @@ DELIMITER ;;
 
 /*
 
-CALL p_clear_shop_user_eval_temp (
-	'noods, cheese ' # a_guid
-);
+CALL p_clear_split_temp ( 'nips' );
 
-SELECT *
-FROM Shop_User_Eval_Temp;
 
 */

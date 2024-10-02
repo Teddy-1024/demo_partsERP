@@ -310,11 +310,11 @@ BEGIN
 		INNER JOIN Shop_Product_Permutation PP ON t_MPO.id_permutation = PP.id_permutation
 	);
 	
-	CALL p_shop_user_eval(v_guid_permission, v_id_user, 0, v_id_permission_manufacturing_purchase_order, v_id_access_level_edit, v_ids_product);
+	CALL p_shop_calc_user(v_guid_permission, v_id_user, 0, v_id_permission_manufacturing_purchase_order, v_id_access_level_edit, v_ids_product);
 	
 	/*
 	UPDATE tmp_Shop_Supplier t_S
-	INNER JOIN Shop_User_Eval_Temp TP
+	INNER JOIN Shop_Calc_User_Temp TP
 		ON TP.GUID = v_guid_permission
 	SET tP.can_view = TP.can_view,
 		tP.can_edit = TP.can_edit,
@@ -323,7 +323,7 @@ BEGIN
 	/*
 	v_has_permission := (
 		SELECT can_edit 
-		FROM Shop_User_Eval_Temp 
+		FROM Shop_Calc_User_Temp 
 		WHERE 
 			GUID = v_guid_permission
 			AND can_edit = 0
@@ -345,7 +345,7 @@ BEGIN
 	*/
 	v_ids_product_no_permission := (
 		SELECT STRING_AGG(PT.id_product, ',') 
-		FROM Shop_User_Eval_Temp PT 
+		FROM Shop_Calc_User_Temp PT 
 		WHERE 
 			PT.can_edit = 0
 			AND NOT ISNULL(PT.id_product)

@@ -61,6 +61,7 @@ class Store_Base(Base):
     ATTR_ID_DISCOUNT: ClassVar[str] = 'id_discount'
     ATTR_ID_IMAGE: ClassVar[str] = 'id_image'
     ATTR_ID_LOCATION_STORAGE: ClassVar[str] = 'id_location_storage'
+    ATTR_ID_PLANT: ClassVar[str] = 'id_plant'
     ATTR_ID_PRODUCT: ClassVar[str] = 'id_product'
     ATTR_ID_PRODUCT_CATEGORY: ClassVar[str] = 'id_category'
     ATTR_ID_PRODUCT_IMAGE: ClassVar[str] = 'id_image'

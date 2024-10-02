@@ -4,7 +4,7 @@
 
 
 -- Drop dependencies
-DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+DROP TABLE IF EXISTS Shop_Calc_User_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 DROP TABLE IF EXISTS tmp_Currency;
 DROP TABLE IF EXISTS tmp_Delivery_Region;
@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS tmp_Region;
 DROP TABLE IF EXISTS tmp_Shop_User;
 DROP TABLE IF EXISTS tmp_Shop_Order;
 DROP TABLE IF EXISTS tmp_Shop_Product;
-DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_User_Eval;
+DROP TABLE IF EXISTS tmp_Shop_Product_p_shop_calc_user;
 DROP TABLE IF EXISTS tmp_Shop_Image;
 DROP TABLE IF EXISTS tmp_Shop_Variation;
 DROP TABLE IF EXISTS tmp_Shop_Discount;
@@ -188,9 +188,9 @@ END $$;
 
 
 DROP FUNCTION IF EXISTS fn_shop_user_eval;
-DROP FUNCTION IF EXISTS p_shop_user_eval;
+DROP FUNCTION IF EXISTS p_shop_calc_user;
 DROP PROCEDURE IF EXISTS fn_shop_user_eval;
-DROP PROCEDURE IF EXISTS p_shop_user_eval;
+DROP PROCEDURE IF EXISTS p_shop_calc_user;
 
 DROP FUNCTION IF EXISTS fn_shop_save_product;
 DROP FUNCTION IF EXISTS p_shop_save_product;

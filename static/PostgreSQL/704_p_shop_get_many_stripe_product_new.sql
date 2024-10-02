@@ -166,7 +166,7 @@ BEGIN
 	;
     
     -- Permissions
-	CALL p_shop_user_eval (
+	CALL p_shop_calc_user (
 		v_guid, -- a_guid
 		v_id_user, 	-- a_id_user
 		0,		-- a_get_inactive_users
@@ -176,13 +176,13 @@ BEGIN
 		(SELECT STRING_AGG(id_permutation, ',') From tmp_Shop_Product)		-- a_ids_permutation --  WHERE NOT ISNULL(id_permutation)
 	);
 	
-	IF EXISTS (SELECT can_admin FROM Shop_User_Eval_Temp WHERE guid = v_guid AND NOT can_admin) THEN
+	IF EXISTS (SELECT can_admin FROM Shop_Calc_User_Temp WHERE guid = v_guid AND NOT can_admin) THEN
 		RAISE EXCEPTION 'User ID does not have permission to get all new stripe products.'
 		USING ERRCODE = '42501'
         ;
 	END IF;
 	
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE guid = v_guid
 	;
     
@@ -303,7 +303,7 @@ CALL p_shop_get_many_stripe_product_new (
 select * from shop_product;
 select * from shop_product_permutation_variation_link;
 
-CALL p_shop_user_eval (
+CALL p_shop_calc_user (
 			'ead789a1-c7ac-11ee-a256-b42e9986184a', -- a_guid
 			'auth0|6582b95c895d09a70ba10fef', 	-- a_id_user
 			0,		-- a_get_inactive_users

@@ -25,9 +25,9 @@ BEGIN
 		AL.id_access_level
 		, AL.code
 		, AL.name
-		, AL.active
 		, AL.priority
 		, AL.display_order
+		, AL.active
 	FROM Shop_Access_Level AL
 	WHERE 
 		a_get_inactive_access_level = 1

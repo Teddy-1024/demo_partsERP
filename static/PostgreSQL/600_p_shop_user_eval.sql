@@ -1,7 +1,7 @@
 
 /*
 
-CALL p_shop_user_eval (
+CALL p_shop_calc_user (
 	gen_random_uuid(), -- a_guid
 	'', 	-- a_id_user
 	0,		-- a_get_inactive_users
@@ -12,7 +12,7 @@ CALL p_shop_user_eval (
 
 */
 
-CREATE OR REPLACE PROCEDURE p_shop_user_eval (
+CREATE OR REPLACE PROCEDURE p_shop_calc_user (
 	IN a_guid UUID,
     IN a_id_user INTEGER,
     IN a_get_inactive_users BOOLEAN,
@@ -91,48 +91,48 @@ BEGIN
 	-- Clear previous proc results
 	-- DROP TABLE IF EXISTS tmp_User_Role_Link;
 	-- DROP TEMPORARY TABLE IF EXISTS tmp_User_Role_Link;
-	DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_User_Eval;
-	-- DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+	DROP TABLE IF EXISTS tmp_Shop_Product_p_shop_calc_user;
+	-- DROP TABLE IF EXISTS Shop_Calc_User_Temp;
     
     
     -- Permanent Table
-	CREATE TABLE IF NOT EXISTS Shop_User_Eval_Temp (
+	CREATE TABLE IF NOT EXISTS Shop_Calc_User_Temp (
 		id_row INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 		guid UUID NOT NULL,
 		id_user INTEGER,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_user
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_user
 			FOREIGN KEY (id_user)
 			REFERENCES Shop_User (id_user),
 		id_permission_required INTEGER NOT NULL,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_permission_required
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_permission_required
 			FOREIGN KEY (id_permission_required)
 			REFERENCES Shop_Permission (id_permission),
 		/*
 		id_access_level_required INTEGER NOT NULL,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_access_level_required
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_access_level_required
 			FOREIGN KEY (id_access_level_required)
 			REFERENCES Shop_Access_Level (id_access_level),
 		*/
 		priority_access_level_required INTEGER NOT NULL,
         /*
-		CONSTRAINT FK_Shop_User_Eval_Temp_priority_access_level_required
+		CONSTRAINT FK_Shop_Calc_User_Temp_priority_access_level_required
 			FOREIGN KEY (priority_access_level_required)
 			REFERENCES Shop_Access_Level (priority),
 		*/
 		id_product INTEGER NULL,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_product
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_product
 			FOREIGN KEY (id_product)
 			REFERENCES Shop_Product (id_product),
 		/*
 		id_permutation INTEGER NULL,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_permutation
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_permutation
 			FOREIGN KEY (id_permutation)
 			REFERENCES parts.Shop_Product_Permutation (id_permutation),
 		*/
         is_super_user BOOLEAN NULL,
 		priority_access_level_user INTEGER NULL,
         /*
-		CONSTRAINT FK_Shop_User_Eval_Temp_priority_access_level_minimum
+		CONSTRAINT FK_Shop_Calc_User_Temp_priority_access_level_minimum
 			FOREIGN KEY (priority_access_level_minimum)
 			REFERENCES Shop_Access_Level (priority)
 		*/
@@ -143,19 +143,19 @@ BEGIN
 	);
 	
 	-- Temporary tables
-	CREATE TEMPORARY TABLE tmp_Shop_Product_p_Shop_User_Eval (
+	CREATE TEMPORARY TABLE tmp_Shop_Product_p_shop_calc_user (
 		id_row INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 		id_product INTEGER NOT NULL,
-		CONSTRAINT FK_tmp_Shop_Product_p_Shop_User_Eval_id_product FOREIGN KEY (id_product)
+		CONSTRAINT FK_tmp_Shop_Product_p_shop_calc_user_id_product FOREIGN KEY (id_product)
 			REFERENCES Shop_Product (id_product),
 		/*
 		id_permutation INTEGER NOT NULL,
-		CONSTRAINT FK_tmp_Shop_Product_p_Shop_User_Eval_id_permutation 
+		CONSTRAINT FK_tmp_Shop_Product_p_shop_calc_user_id_permutation 
 			FOREIGN KEY (id_permutation)
 			REFERENCES parts.Shop_Product_Permutation (id_permutation),
 		*/
         id_access_level_required INTEGER NOT NULL,
-		CONSTRAINT FK_tmp_Shop_Product_p_Shop_User_Eval_id_access_level_required 
+		CONSTRAINT FK_tmp_Shop_Product_p_shop_calc_user_id_access_level_required 
 			FOREIGN KEY (id_access_level_required)
 			REFERENCES Shop_Access_Level (id_access_level),
 		guid UUID NOT NULL,
@@ -178,7 +178,7 @@ BEGIN
     
     -- Permission IDs
 	IF v_has_filter_permission THEN
-		-- CALL p_split(v_ids_permission, ',');
+		-- CALL p_split(a_guid, v_ids_permission, ',');
 		
 		-- Invalid
 		IF EXISTS (
@@ -452,7 +452,7 @@ BEGIN
 			;
 		END IF;
 		
-		INSERT INTO tmp_Shop_Product_p_Shop_User_Eval (
+		INSERT INTO tmp_Shop_Product_p_shop_calc_user (
 			id_product,
 			-- id_permutation,
 			id_access_level_required,
@@ -475,17 +475,17 @@ BEGIN
 			-- AND P.active -- not worried as we want users to be able to see their order history
 		;
 		/*
-		DELETE FROM tmp_Shop_Product_p_Shop_User_Eval
+		DELETE FROM tmp_Shop_Product_p_shop_calc_user
 		WHERE rank_permutation > 1
 		;
 		*/
-		-- v_has_filter_product := EXISTS (SELECT * FROM tmp_Shop_Product_p_Shop_User_Eval WHERE v_guid = guid);
+		-- v_has_filter_product := EXISTS (SELECT * FROM tmp_Shop_Product_p_shop_calc_user WHERE v_guid = guid);
 	END IF;
 
 	-- User permissions
 	/*
 	IF v_has_filter_product THEN
-		INSERT INTO Shop_User_Eval_Temp (
+		INSERT INTO Shop_Calc_User_Temp (
 			guid,
 			id_user,
 			id_permission_required,
@@ -524,7 +524,7 @@ BEGIN
 		INNER JOIN Shop_Access_Level AL_U
 			ON RPL.id_access_leveL = AL_U.id_access_level
 			AND AL_U.active
-		INNER JOIN tmp_Shop_Product_p_Shop_User_Eval t_P
+		INNER JOIN tmp_Shop_Product_p_shop_calc_user t_P
 			ON t_P.guid = v_guid
 			AND AL.id_access_level = t_P.id_access_leveL_required
 		INNER JOIN Shop_Access_Level AL_P
@@ -536,7 +536,7 @@ BEGIN
 			AND U.id_user = v_id_user
 		;
 	ELSE
-		INSERT INTO Shop_User_Eval_Temp (--UE_T
+		INSERT INTO Shop_Calc_User_Temp (--UE_T
 			guid,
 			id_user,
 			id_permission_required,
@@ -575,7 +575,7 @@ BEGIN
 		;
 	END IF;
     */
-	INSERT INTO Shop_User_Eval_Temp (--UE_T
+	INSERT INTO Shop_Calc_User_Temp (--UE_T
 		guid,
 		id_user,
 		id_permission_required,
@@ -613,7 +613,7 @@ BEGIN
 	INNER JOIN Shop_Permission Permission
 		ON RPL.id_permission = Permission.id_permission
 		AND Permission.active
-	CROSS JOIN tmp_Shop_Product_p_Shop_User_Eval t_P -- ON t_P.guid = v_guid
+	CROSS JOIN tmp_Shop_Product_p_shop_calc_user t_P -- ON t_P.guid = v_guid
 	INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
 	INNER JOIN Shop_Access_Level AL_P
 		ON t_P.id_access_level_required = AL_P.id_access_level
@@ -645,9 +645,9 @@ BEGIN
 	);
 	*/
 
-    -- select * from tmp_Shop_Product_p_Shop_User_Eval;
+    -- select * from tmp_Shop_Product_p_shop_calc_user;
     -- Clean up
-	DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_User_Eval;
+	DROP TABLE IF EXISTS tmp_Shop_Product_p_shop_calc_user;
     -- DROP TEMPORARY TABLE IF EXISTS tmp_User_Role_Link;
     -- DROP TABLE IF EXISTS tmp_Msg_Error;
 END;
@@ -656,7 +656,7 @@ $$ LANGUAGE plpgsql;
 
 /*
 
-CALL p_shop_user_eval (
+CALL p_shop_calc_user (
 	'56c9dfc1-e22f-11ee-aab4-b42e9986184a', -- v_guid
 	'', 	-- v_id_user -- 'auth0|6582b95c895d09a70ba10fef',
 	false,		-- v_get_inactive_users
@@ -667,10 +667,10 @@ CALL p_shop_user_eval (
 );
 
 SELECT *
-FROM Shop_User_Eval_Temp
+FROM Shop_Calc_User_Temp
 ;
 
-DROP TABLE Shop_User_Eval_Temp;
+DROP TABLE Shop_Calc_User_Temp;
 
 SELECT *
 FROM Shop_Permission

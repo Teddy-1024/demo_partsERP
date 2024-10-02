@@ -68,6 +68,13 @@ def login():
 @routes_user.route("/login_callback") # <path:subpath>/<code>
 def login_callback():
     try:
+        error_state = request.args.get(Model_View_User.FLAG_ERROR_OAUTH)
+        has_error = error_state is not None
+        if has_error:
+            error_description = request.args.get(Model_View_User.FLAG_ERROR_DESCRIPTION_OAUTH)
+            error_text = f'Error: {error_state}: {error_description}'
+            print(error_text)
+            return login()
         # print(f'code: {code}')
         token = None
         try:
@@ -117,7 +124,7 @@ def login_callback():
         print(f'user session: {session[Model_View_Base.KEY_USER]}')
         return redirect(f"{current_app.config['URL_HOST']}{hash_callback}")
     except Exception as e:
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
 
 @routes_user.route("/logout")
 def logout():
@@ -156,7 +163,7 @@ def logout_callback():
         print(f'user session: {session[Model_View_Base.KEY_USER]}')
         return redirect(f'{current_app.URL_HOST}{hash_callback}')
     except Exception as e:
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
 
 
 @routes_user.route("/user")

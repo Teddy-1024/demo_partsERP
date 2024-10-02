@@ -26,6 +26,7 @@ from business_objects.store.stock_item import Stock_Item
 from business_objects.store.product_variation import Product_Variation
 from business_objects.store.product_variation_tree import Product_Variation_Tree
 from extensions import db
+from forms.base import Form_Base
 from forms.store.product import Form_Filters_Product
 # external
 from dataclasses import dataclass
@@ -688,7 +689,7 @@ class Filters_Product(Get_Many_Parameters_Base):
     @staticmethod 
     def from_form_filters_product_permutation(form):
         # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Filters_Product.from_form', Filters_Product_Permutation)
+        # av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Base)
         has_category_filter = not (form.id_category.data is None or form.id_category.data == '0' or form.id_category.data == '')
         has_product_filter = not (form.id_product.data is None or form.id_product.data == '0' or form.id_product.data == '')
         get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Filters_Product.from_form")
@@ -807,3 +808,6 @@ class Filters_Product(Get_Many_Parameters_Base):
             ids_image = '',
             get_products_quantity_stock_below_min = False
         )
+    @classmethod
+    def from_filters_stock_item(cls, filters_stock_item):
+        return cls.from_form_filters_product_permutation(filters_stock_item)

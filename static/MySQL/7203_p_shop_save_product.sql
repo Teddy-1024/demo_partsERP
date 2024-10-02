@@ -170,10 +170,10 @@ BEGIN
         IF NOT ISNULL(v_ids_product_permission) THEN
 			SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
 			
-			CALL p_shop_user_eval(a_guid, a_id_user, v_id_permission_product, v_ids_product_permission);
+			CALL p_shop_calc_user(a_guid, a_id_user, v_id_permission_product, v_ids_product_permission);
 			
 			UPDATE tmp_Product t_P
-			INNER JOIN Shop_User_Eval_Temp UE_T
+			INNER JOIN Shop_Calc_User_Temp UE_T
 				ON t_P.id_product = UE_T.id_product
 				AND UE_T.GUID = a_guid
 			SET 
@@ -182,7 +182,7 @@ BEGIN
 				, t_P.can_admin = UE_T.can_admin
 			;
 			
-			CALL p_shop_user_eval_clear_temp(a_guid);
+			CALL p_shop_calc_user_clear_temp(a_guid);
 		END IF;
     END IF;
     

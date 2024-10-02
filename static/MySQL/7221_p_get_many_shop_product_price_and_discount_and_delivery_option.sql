@@ -400,27 +400,27 @@ BEGIN
         -- SET v_ids_permutation_permission := (SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_permutation));
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        CALL p_shop_user_eval(v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission);
+        CALL p_shop_calc_user(v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         UPDATE tmp_Shop_Product t_P
-        INNER JOIN Shop_User_Eval_Temp UE_T
+        INNER JOIN Shop_Calc_User_Temp UE_T
 			ON t_P.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
         SET t_P.can_view = UE_T.can_view,
 			t_P.can_edit = UE_T.can_edit,
             t_P.can_admin = UE_T.can_admin
 		;
-		-- select * from Shop_User_Eval_Temp;
+		-- select * from Shop_Calc_User_Temp;
 		-- select * from tmp_Shop_Product;
         
         DELETE -- t_P
         FROM tmp_Shop_Product t_P
 		WHERE 
-			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_User_Eval_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_User_Eval_Temp), '%');
+			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_Calc_User_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_Calc_User_Temp), '%');
             OR (
 				ISNULL(t_P.can_view)
 				AND (
@@ -438,10 +438,10 @@ BEGIN
             )
         ;
         
-        CALL p_clear_shop_user_eval_temp(v_guid);
-        # DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+        CALL p_shop_clear_calc_user(v_guid);
+        # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
         /*
-        DELETE FROM Shop_User_Eval_Temp UE_T
+        DELETE FROM Shop_Calc_User_Temp UE_T
         WHERE UE_T.GUID = v_guid
         ;
         */
@@ -780,7 +780,7 @@ CALL partsltd_prod.p_shop_get_many_product_price_and_discount_and_delivery_regio
     IN a_ids_discount VARCHAR(4000)
 );
 
-select * FROM Shop_User_Eval_Temp;
+select * FROM Shop_Calc_User_Temp;
 
 select * from Shop_Product_Permutation;
 select * from shop_product_change_set;
@@ -804,8 +804,8 @@ insert into shop_product_change_set (comment)
 		id_change_set = (select id_change_set from shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
 
-select * FROM Shop_User_Eval_Temp;
+select * FROM Shop_Calc_User_Temp;
 select distinct guid 
 -- DELETE
-FROM Shop_User_Eval_Temp;
+FROM Shop_Calc_User_Temp;
 */

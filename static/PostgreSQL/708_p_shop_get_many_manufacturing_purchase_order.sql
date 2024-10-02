@@ -427,13 +427,13 @@ BEGIN
 	v_ids_product_permission := (SELECT STRING_AGG(P.id_product, ',') FROM (SELECT DISTINCT id_product FROM tmp_Shop_Product WHERE NOT ISNULL(id_product)) P);
 	
 	-- SELECT v_guid, v_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-	-- select * from Shop_User_Eval_Temp;
+	-- select * from Shop_Calc_User_Temp;
 	
-	CALL p_shop_user_eval(v_guid, v_id_user, FALSE, v_ids_permission_manufacturing_purchase_order, v_id_access_level_view, v_ids_product_permission);
+	CALL p_shop_calc_user(v_guid, v_id_user, FALSE, v_ids_permission_manufacturing_purchase_order, v_id_access_level_view, v_ids_product_permission);
 	
-	-- select * from Shop_User_Eval_Temp;
+	-- select * from Shop_Calc_User_Temp;
 	
-	IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 		RAISE EXCEPTION 'You do not have view permissions for %', (
 			SELECT STRING_AGG(name, ', ') 
 			FROM Shop_Permission 
@@ -449,14 +449,14 @@ BEGIN
 		t_P.can_edit = UE_T.can_edit,
 		t_P.can_admin = UE_T.can_admin
 	FROM tmp_Shop_Product t_P
-	INNER JOIN Shop_User_Eval_Temp UE_T
+	INNER JOIN Shop_Calc_User_Temp UE_T
 		ON t_P.id_product = UE_T.id_product -- t_P.id_permutation = UE_T.id_permutation
 		AND UE_T.GUID = v_guid
 	;
 	
-	-- CALL p_shop_user_eval_clear_temp(v_guid);
-	-- DROP TABLE IF EXISTS Shop_User_Eval_Temp;
-	DELETE FROM Shop_User_Eval_Temp
+	-- CALL p_shop_calc_user_clear_temp(v_guid);
+	-- DROP TABLE IF EXISTS Shop_Calc_User_Temp;
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid
 	;
     
@@ -552,7 +552,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Manufacturing_Purchase_Order;
     DROP TABLE IF EXISTS tmp_Shop_Product;
         
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid
 	;
 END;

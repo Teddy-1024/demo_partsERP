@@ -10,8 +10,11 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Temp (
 	, code VARCHAR(50) NOT NULL
 	, name VARCHAR(255) NOT NULL
 	, description VARCHAR(4000) NULL
-	, active BIT NOT NULL
-	, display_order INT NOT NULL
     , id_access_level_required INT NOT NULL DEFAULT 1
+	, display_order INT NOT NULL
+	, active BIT NOT NULL
+	, can_view BIT NULL DEFAULT NULL
+	, can_edit BIT NULL DEFAULT NULL
+	, can_admin BIT NULL DEFAULT NULL
     , guid BINARY(36) NOT NULL
 );

@@ -14,10 +14,11 @@ Data model for store stock items view
 from models.model_view_store import Model_View_Store
 from datastores.datastore_store_stock_item import DataStore_Store_Stock_Item
 from business_objects.store.product_category import Product_Category_Container
-from forms.forms import Form_Filters_Stock_Item
+from forms.store.stock_item import Filters_Stock_Item
 # from routes import bp_home
 from business_objects.store.product import Product, Filters_Product, Product_Permutation
-from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
+from business_objects.store.stock_item import Stock_Item
+from forms.store.stock_item import Filters_Stock_Item
 import lib.argument_validation as av
 
 # external
@@ -25,17 +26,19 @@ from pydantic import BaseModel
 from typing import ClassVar
 
 class Model_View_Store_Stock_Items(Model_View_Store):
+    """
     ID_FILTER_CATEGORY: ClassVar[str] = 'id_category'
     ID_FILTER_PRODUCT: ClassVar[str] = 'id_product'
     ID_FILTER_IS_OUT_OF_STOCK: ClassVar[str] = 'is_out_of_stock'
     ID_FILTER_QUANTITY_MIN: ClassVar[str] = 'quantity_min'
     ID_FILTER_QUANTITY_MAX: ClassVar[str] = 'quantity_max'
     ID_Form_Filters_Permutation: ClassVar[str] = 'Form_Filters_Permutation'
+    """
     KEY_PERMUTATIONS: ClassVar[str] = 'permutations'
 
     category_list: Product_Category_Container = None # (str)
-    filters_stock_item: Stock_Item_Filters
-    form_filters: Form_Filters_Stock_Item = None
+    filters_stock_item: Parameters_Stock_Item
+    form_filters: Filters_Stock_Item = None
     permutation_blank: Product_Permutation = None
 
     @property
@@ -47,11 +50,13 @@ class Model_View_Store_Stock_Items(Model_View_Store):
         print(f'{_m}\nstarting...')
         super().__init__(hash_page_current=hash_page_current, filters_stock_item=filters_stock_item)
         # BaseModel.__init__(self, app=app, filters_stock_item=filters_stock_item, **kwargs)
-        self.form_filters = Form_Filters_Stock_Item()
+        self.form_filters = Filters_Stock_Item()
         datastore_store = DataStore_Store_Stock_Item()
-        self.category_list, errors = datastore_store.get_many_stock_item(filters_stock_item) 
+        tmp_category_list_stock_item, errors = datastore_store.get_many_product(Filters_Product.from_filters_stock_item(filters_stock_item))
+        self.category_list, errors = datastore_store.get_many_stock_item(filters_stock_item, tmp_category_list_stock_item) 
         category_list_filters, errors_filters = datastore_store.get_many_stock_item(
-            Stock_Item_Filters(
+            """
+            Parameters_Stock_Item(
                 # self.info_user['sub'], 
                 True, False, False, '', # get_all_category, get_inactive_category, get_first_category_only, ids_category
                 True, False, False, '', # get_all_product, get_inactive_product, get_first_product_only, ids_product
@@ -65,6 +70,8 @@ class Model_View_Store_Stock_Items(Model_View_Store):
                 False, False, # get_expired_stock_item_only, get_nonexpired_stock_item_only
                 False, False # get_consumed_stock_item_only, get_nonconsumed_stock_item_only
             )
+            """
+            Filters_Stock_Item()
         )
         
         print(f'category_list_filters: {category_list_filters.categories}')

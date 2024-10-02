@@ -97,7 +97,7 @@ BEGIN
 				a_get_inactive_user
                 OR U.active
             )
-		/*Shop_User_Eval_Temp UE_T
+		/*Shop_Calc_User_Temp UE_T
 		WHERE 1=1
 			AND UE_T.guid = v_guid
 			AND UE_T.active = 1
@@ -115,9 +115,9 @@ BEGIN
     -- Permissions
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        CALL p_shop_user_eval(
+        CALL p_shop_calc_user(
 			v_guid, -- guid
             a_id_user, -- ids_user
             FALSE, -- get_inactive_user
@@ -126,11 +126,11 @@ BEGIN
             '' -- ids_product
 		);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         IF NOT EXISTS (
 			SELECT can_view 
-            FROM Shop_User_Eval_Temp UE_T 
+            FROM Shop_Calc_User_Temp UE_T 
             WHERE 1=1
 				AND UE_T.GUID = v_guid
                 AND UE_T.id_permission_required = v_id_permission_user
@@ -180,7 +180,7 @@ BEGIN
 				id_user
 				, id_permission_required
 				, can_admin AS can_admin_store
-			FROM Shop_User_Eval_Temp UE_T_STORE
+			FROM Shop_Calc_User_Temp UE_T_STORE
 			WHERE 1=1
 				AND UE_T_STORE.guid = v_guid
 				AND UE_T_STORE.id_permission_required = v_id_permission_store_admin
@@ -190,7 +190,7 @@ BEGIN
 				id_user
 				, id_permission_required
 				, can_admin AS can_admin_user
-			FROM Shop_User_Eval_Temp UE_T_USER
+			FROM Shop_Calc_User_Temp UE_T_USER
 			WHERE 1=1
 				AND UE_T_USER.guid = v_guid
 				AND UE_T_USER.id_permission_required = v_id_permission_user_admin
@@ -232,10 +232,10 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
 	
 	/*
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid;
 	*/
-	CALL p_clear_shop_user_eval_temp(v_guid);
+	CALL p_shop_clear_calc_user(v_guid);
 END //
 DELIMITER ;;
 
@@ -251,8 +251,8 @@ CALL p_get_many_user (
 	, NULL # a_ids_user
 	, 'auth0|6582b95c895d09a70ba10fef' # a_ids_user_auth0 # ' -- 
 );
-select * from shop_user_eval_temp;
-delete from shop_user_eval_temp;
+select * from Shop_Calc_User_Temp;
+delete from Shop_Calc_User_Temp;
 
 SELECT * 
 FROM SHOP_USER;

@@ -4,7 +4,7 @@
 
 
 # Drop dependencies
-DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+DROP TABLE IF EXISTS Shop_Calc_User_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 DROP TABLE IF EXISTS tmp_Currency;
 DROP TABLE IF EXISTS tmp_Delivery_Region;
@@ -224,7 +224,7 @@ DROP PROCEDURE IF EXISTS p_clear_split_temp;
 DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_name;
 
 DROP PROCEDURE IF EXISTS p_shop_user_eval;
-DROP PROCEDURE IF EXISTS p_clear_shop_user_eval_temp;
+DROP PROCEDURE IF EXISTS p_shop_clear_user_eval_temp;
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_access_level;
 DROP PROCEDURE IF EXISTS p_shop_get_many_unit_measurement;
@@ -5950,12 +5950,12 @@ DELIMITER ;;
 
 /*
 
-CALL p_clear_shop_user_eval_temp (
+CALL p_shop_clear_user_eval_temp (
 	'noods, cheese ' # a_guid
 );
 
 SELECT *
-FROM Shop_User_Eval_Temp;
+FROM Shop_Calc_User_Temp;
 
 */
 
@@ -6004,7 +6004,7 @@ CALL p_shop_user_eval (
 )
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `p_clear_shop_user_eval_temp`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_clear_user_eval_temp`(
 	IN a_guid BINARY(36)
 )
 BEGIN
@@ -6017,7 +6017,7 @@ BEGIN
     
 		START TRANSACTION; -- trans_clear
         
-		DELETE FROM Shop_User_Eval_Temp
+		DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = a_guid
         ;
         
@@ -6073,7 +6073,7 @@ BEGIN
 	# DROP TABLE IF EXISTS tmp_User_Role_Link;
 	# DROP TEMPORARY TABLE IF EXISTS tmp_User_Role_Link;
 	DROP TABLE IF EXISTS tmp_Product_p_Shop_User_Eval;
-	# DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+	# DROP TABLE IF EXISTS Shop_Calc_User_Temp;
     
     
 	-- Parse arguments + get default values
@@ -6085,40 +6085,40 @@ BEGIN
     SET a_ids_product := TRIM(IFNULL(a_ids_product, ''));
     
     -- Permanent Table
-	CREATE TABLE IF NOT EXISTS Shop_User_Eval_Temp (
+	CREATE TABLE IF NOT EXISTS Shop_Calc_User_Temp (
 		id_row INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 		guid BINARY(36) NOT NULL,
 		id_user INT NULL,
 		id_permission_required INT NOT NULL,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_permission_required
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_permission_required
 			FOREIGN KEY (id_permission_required)
 			REFERENCES Shop_Permission (id_permission),
 		/*
 		id_access_level_required INT NOT NULL,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_access_level_required
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_access_level_required
 			FOREIGN KEY (id_access_level_required)
 			REFERENCES Shop_Access_Level (id_access_level),
 		*/
 		priority_access_level_required INT NOT NULL,
         /*
-		CONSTRAINT FK_Shop_User_Eval_Temp_priority_access_level_required
+		CONSTRAINT FK_Shop_Calc_User_Temp_priority_access_level_required
 			FOREIGN KEY (priority_access_level_required)
 			REFERENCES Shop_Access_Level (priority),
 		*/
 		id_product INT NULL,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_product
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_product
 			FOREIGN KEY (id_product)
 			REFERENCES Shop_Product (id_product),
 		/*
 		id_permutation INT NULL,
-		CONSTRAINT FK_Shop_User_Eval_Temp_id_permutation
+		CONSTRAINT FK_Shop_Calc_User_Temp_id_permutation
 			FOREIGN KEY (id_permutation)
 			REFERENCES Shop_Product_Permutation (id_permutation),
 		*/
         is_super_user BIT NULL,
 		priority_access_level_user INT NULL,
         /*
-		CONSTRAINT FK_Shop_User_Eval_Temp_priority_access_level_minimum
+		CONSTRAINT FK_Shop_Calc_User_Temp_priority_access_level_minimum
 			FOREIGN KEY (priority_access_level_minimum)
 			REFERENCES Shop_Access_Level (priority)
 		*/
@@ -6149,7 +6149,7 @@ BEGIN
     -- Parse filters
     SET a_guid := IFNULL(a_guid, UUID());
     /*
-	IF a_guid IS NULL OR EXISTS (SELECT * FROM Shop_User_Eval_Temp WHERE a_guid = guid) THEN
+	IF a_guid IS NULL OR EXISTS (SELECT * FROM Shop_Calc_User_Temp WHERE a_guid = guid) THEN
 		INSERT INTO tmp_Msg_Error (
 			guid,
             id_type,
@@ -6190,7 +6190,7 @@ BEGIN
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE GUID = a_guid) THEN
 		IF v_has_filter_access_level THEN
-			CALL p_split(a_ids_access_level, ',');
+			CALL p_split(a_guid, a_ids_access_level, ',');
             
             IF EXISTS (
 				SELECT ST.substring 
@@ -6305,7 +6305,7 @@ BEGIN
         */
         
 		IF v_has_filter_product THEN
-			CALL p_split(a_ids_product, ',');
+			CALL p_split(a_guid, a_ids_product, ',');
             
 			# Invalid product IDs
             IF EXISTS (SELECT * FROM Split_Temp ST LEFT JOIN Shop_Product P ON ST.substring = P.id_product WHERE ISNULL(P.id_product)) THEN 
@@ -6376,7 +6376,7 @@ BEGIN
     -- Permission IDs
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE GUID = a_guid) THEN
 		IF v_has_filter_permission THEN
-			CALL p_split(a_ids_permission, ',');
+			CALL p_split(a_guid, a_ids_permission, ',');
             
             # Invalid
             IF EXISTS (SELECT PERM.id_permission FROM Split_Temp ST LEFT JOIN Shop_Permission PERM ON ST.substring = PERM.id_permission WHERE ISNULL(PERM.id_permission)) THEN
@@ -6451,7 +6451,7 @@ BEGIN
     
     -- Get users
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE GUID = a_guid) THEN
-		INSERT INTO Shop_User_Eval_Temp (
+		INSERT INTO Shop_Calc_User_Temp (
 			guid,
 			id_user,
 			id_permission_required,
@@ -6484,9 +6484,9 @@ BEGIN
         
         /*
 		IF v_has_filter_permutation THEN
-			SET v_ids_row_delete := (SELECT GROUP_CONCAT(id_row SEPARATOR ',') FROM Shop_User_Eval_Temp WHERE a_guid = guid);
+			SET v_ids_row_delete := (SELECT GROUP_CONCAT(id_row SEPARATOR ',') FROM Shop_Calc_User_Temp WHERE a_guid = guid);
             
-			INSERT INTO Shop_User_Eval_Temp (
+			INSERT INTO Shop_Calc_User_Temp (
 				guid,
 				id_user,
 				id_permission_required,
@@ -6504,20 +6504,20 @@ BEGIN
             INNER JOIN Shop_Access_Level AL
 				ON t_P.id_access_leveL_required = AL.id_access_level
 					AND AL.active
-			CROSS JOIN Shop_User_Eval_Temp UE_T
+			CROSS JOIN Shop_Calc_User_Temp UE_T
 				ON a_ids_user = UE_T.id_user
 				WHERE a_guid = t_P.guid
 			;
             
-			DELETE FROM Shop_User_Eval_Temp 
+			DELETE FROM Shop_Calc_User_Temp 
 			WHERE FIND_IN_SET(id_row, v_ids_row_delete) > 0
 			;
 		END IF;
         */
 		IF v_has_filter_product THEN
-			SET v_ids_row_delete := (SELECT GROUP_CONCAT(id_row SEPARATOR ',') FROM Shop_User_Eval_Temp WHERE a_guid = guid);
+			SET v_ids_row_delete := (SELECT GROUP_CONCAT(id_row SEPARATOR ',') FROM Shop_Calc_User_Temp WHERE a_guid = guid);
             
-			INSERT INTO Shop_User_Eval_Temp (
+			INSERT INTO Shop_Calc_User_Temp (
 				guid,
 				id_user,
 				id_permission_required,
@@ -6535,18 +6535,18 @@ BEGIN
             INNER JOIN Shop_Access_Level AL
 				ON t_P.id_access_leveL_required = AL.id_access_level
 					AND AL.active
-			CROSS JOIN Shop_User_Eval_Temp UE_T
+			CROSS JOIN Shop_Calc_User_Temp UE_T
 				ON a_ids_user = UE_T.id_user
 				WHERE a_guid = t_P.guid
 			;
             
-			DELETE FROM Shop_User_Eval_Temp 
+			DELETE FROM Shop_Calc_User_Temp 
 			WHERE FIND_IN_SET(id_row, v_ids_row_delete) > 0
 			;
 		END IF;
         
 		/*
-		INSERT INTO Shop_User_Eval_Temp (
+		INSERT INTO Shop_Calc_User_Temp (
 			guid,
 			id_user,
 			id_permission_required,
@@ -6598,7 +6598,7 @@ BEGIN
 		*/
 		
         IF v_has_filter_user THEN
-			UPDATE Shop_User_Eval_Temp UE_T
+			UPDATE Shop_Calc_User_Temp UE_T
 			INNER JOIN Shop_User U
 				ON UE_T.id_user = U.id_user
 					AND U.active
@@ -6622,7 +6622,7 @@ BEGIN
 			# GROUP BY UE_T.id_user
 			;
         ELSE
-			UPDATE Shop_User_Eval_Temp UE_T
+			UPDATE Shop_Calc_User_Temp UE_T
 			SET UE_T.priority_access_level_user = v_priority_access_level_view,
 				UE_T.is_super_user = 0,
 				UE_T.can_view = (v_priority_access_level_view <= UE_T.priority_access_level_required),
@@ -6653,16 +6653,16 @@ DELIMITER ;;
 
 CALL p_shop_user_eval ('00550ef3-2bfa-11ef-b83e-b42e9986184a',		NULL, 0,	'2',	'1',	'1,2,3,4,5');
 SELECT *
-FROM Shop_User_Eval_Temp
+FROM Shop_Calc_User_Temp
 ;
 
-DROP TABLE Shop_User_Eval_Temp;
+DROP TABLE Shop_Calc_User_Temp;
 select CURRENT_USER();
 CALL p_shop_user_eval('nips', 'auth0|6582b95c895d09a70ba10fef', 0, '5', '2', '1');
 SELECT *
-FROM Shop_User_Eval_Temp
+FROM Shop_Calc_User_Temp
 ;
-DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+DROP TABLE IF EXISTS Shop_Calc_User_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 select * from tmp_Msg_Error;
 select * from shop_product;
@@ -6679,10 +6679,10 @@ CALL p_shop_user_eval (
 );
 
 SELECT *
-FROM Shop_User_Eval_Temp
+FROM Shop_Calc_User_Temp
 ;
 
-DROP TABLE Shop_User_Eval_Temp;
+DROP TABLE Shop_Calc_User_Temp;
 
 
 SELECT *
@@ -6743,11 +6743,11 @@ WHERE U.id_user = 'auth0|6582b95c895d09a70ba10fef'
 */
 
 -- Clear previous proc
-DROP PROCEDURE IF EXISTS p_clear_shop_user_eval_temp;
+DROP PROCEDURE IF EXISTS p_shop_clear_user_eval_temp;
 
 
 DELIMITER //
-CREATE PROCEDURE p_clear_shop_user_eval_temp (
+CREATE PROCEDURE p_shop_clear_user_eval_temp (
 	IN a_guid BINARY(36)
 )
 BEGIN
@@ -6760,7 +6760,7 @@ BEGIN
     
 		START TRANSACTION; -- trans_clear
         
-		DELETE FROM Shop_User_Eval_Temp
+		DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = a_guid
         ;
         
@@ -6772,12 +6772,12 @@ DELIMITER ;;
 
 /*
 
-CALL p_clear_shop_user_eval_temp (
+CALL p_shop_clear_user_eval_temp (
 	'noods, cheese ' # a_guid
 );
 
 SELECT *
-FROM Shop_User_Eval_Temp;
+FROM Shop_Calc_User_Temp;
 
 */
 
@@ -7149,7 +7149,7 @@ BEGIN
 			
 			UPDATE tmp_Category t_C
             INNER JOIN Shop_Product P ON t_C.id_category = P.id_product
-			INNER JOIN Shop_User_Eval_Temp UE_T
+			INNER JOIN Shop_Calc_User_Temp UE_T
 				ON P.id_product = UE_T.id_product
 				AND UE_T.GUID = a_guid
 			SET 
@@ -7158,7 +7158,7 @@ BEGIN
 				, t_C.can_admin = UE_T.can_admin
 			;
 			
-			CALL p_clear_shop_user_eval_temp(a_guid);
+			CALL p_shop_clear_user_eval_temp(a_guid);
 		END IF;
     END IF;
     
@@ -7411,7 +7411,7 @@ BEGIN
 			
 			UPDATE tmp_Category t_C
             INNER JOIN Shop_Product P ON t_C.id_category = P.id_product
-			INNER JOIN Shop_User_Eval_Temp UE_T
+			INNER JOIN Shop_Calc_User_Temp UE_T
 				ON P.id_product = UE_T.id_product
 				AND UE_T.GUID = a_guid
 			SET 
@@ -7675,7 +7675,7 @@ BEGIN
 			CALL p_shop_user_eval(a_guid, a_id_user, v_id_permission_product, v_ids_product_permission);
 			
 			UPDATE tmp_Product t_P
-			INNER JOIN Shop_User_Eval_Temp UE_T
+			INNER JOIN Shop_Calc_User_Temp UE_T
 				ON t_P.id_product = UE_T.id_product
 				AND UE_T.GUID = a_guid
 			SET 
@@ -8007,21 +8007,21 @@ BEGIN
         -- SET v_ids_permutation_permission := (SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') FROM tmp_Product WHERE NOT ISNULL(id_permutation));
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         UPDATE tmp_Product t_P
-        INNER JOIN Shop_User_Eval_Temp UE_T
+        INNER JOIN Shop_Calc_User_Temp UE_T
 			ON t_P.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
         SET t_P.can_view = UE_T.can_view,
 			t_P.can_edit = UE_T.can_edit,
             t_P.can_admin = UE_T.can_admin
 		;
-		-- select * from Shop_User_Eval_Temp;
+		-- select * from Shop_Calc_User_Temp;
 		-- select * from tmp_Product;
         
         SET v_ids_product_invalid := (
@@ -8050,10 +8050,10 @@ BEGIN
         WHERE FIND_IN_SET(t_PP.id_product, v_ids_product_invalid) > 0
         ;
         
-        CALL p_clear_shop_user_eval_temp(v_guid);
-        # DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+        CALL p_shop_clear_user_eval_temp(v_guid);
+        # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
         /*
-        DELETE FROM Shop_User_Eval_Temp UE_T
+        DELETE FROM Shop_Calc_User_Temp UE_T
         WHERE UE_T.GUID = v_guid
         ;
         */
@@ -8293,7 +8293,7 @@ CALL partsltd_prod.p_shop_get_many_product (
     , 1 # a_get_products_quantity_stock_below_minimum
 );
 
-select * FROM Shop_User_Eval_Temp;
+select * FROM Shop_Calc_User_Temp;
 
 select * from Shop_Product_Category;
 select * from Shop_Product_Permutation;
@@ -8318,10 +8318,10 @@ insert into shop_product_change_set (comment)
 		id_change_set = (select id_change_set from shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
 
-select * FROM Shop_User_Eval_Temp;
+select * FROM Shop_Calc_User_Temp;
 select distinct guid 
 -- DELETE
-FROM Shop_User_Eval_Temp;
+FROM Shop_Calc_User_Temp;
 */
 
 
@@ -8524,7 +8524,7 @@ BEGIN
 			(SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') From tmp_Shop_Product)		# a_ids_permutation --  WHERE NOT ISNULL(id_permutation)
 		);
         
-        IF EXISTS (SELECT can_admin FROM Shop_User_Eval_Temp WHERE guid = v_guid AND NOT can_admin) THEN
+        IF EXISTS (SELECT can_admin FROM Shop_Calc_User_Temp WHERE guid = v_guid AND NOT can_admin) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
 				code,
@@ -8538,7 +8538,7 @@ BEGIN
 			;
         END IF;
         
-        DELETE FROM Shop_User_Eval_Temp
+        DELETE FROM Shop_Calc_User_Temp
         WHERE guid = v_guid
         ;
     END IF;
@@ -8978,7 +8978,7 @@ BEGIN
 			
 			UPDATE tmp_Permutation t_P
             INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
-			INNER JOIN Shop_User_Eval_Temp UE_T
+			INNER JOIN Shop_Calc_User_Temp UE_T
 				ON P.id_product = UE_T.id_product
 				AND UE_T.GUID = a_guid
 			SET 
@@ -8987,7 +8987,7 @@ BEGIN
 				, t_P.can_admin = UE_T.can_admin
 			;
 			
-			CALL p_clear_shop_user_eval_temp(a_guid);
+			CALL p_shop_clear_user_eval_temp(a_guid);
 
 			IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.can_edit) LIMIT 1) THEN
 				INSERT INTO tmp_Msg_Error (
@@ -9256,7 +9256,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_variation = 1 OR a_get_all_variation = 1 OR v_has_filter_variation_type = 1 OR a_get_all_variation_type = 1 THEN
-		CALL p_split(a_ids_variation_type, ',');
+		CALL p_split(a_guid, a_ids_variation_type, ',');
         
 		IF EXISTS (SELECT * FROM Split_Temp S_T LEFT JOIN Shop_Variation_Type VT ON S_T.substring = VT.id_type WHERE ISNULL(VT.id_type)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -9275,7 +9275,7 @@ BEGIN
         
 			CALL p_clear_split_temp;
 
-			CALL p_split(a_ids_variation, ',');
+			CALL p_split(a_guid, a_ids_variation, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp S_T LEFT JOIN Shop_Variation V ON S_T.substring = V.id_variation WHERE ISNULL(V.id_variation)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -9366,13 +9366,13 @@ BEGIN
         SET v_id_permission_variation := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, FALSE, v_id_permission_variation, v_id_access_level_view, '');
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+        IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
 				code,
@@ -9386,7 +9386,7 @@ BEGIN
 			;
         END IF;
         
-        CALL p_clear_shop_user_eval_temp(v_guid);
+        CALL p_shop_clear_user_eval_temp(v_guid);
 	END IF;
     
     IF EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
@@ -10152,14 +10152,14 @@ BEGIN
         -- SET v_ids_permutation_permission := (SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_permutation));
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         UPDATE tmp_Stock_Item t_SI
-        INNER JOIN Shop_User_Eval_Temp UE_T
+        INNER JOIN Shop_Calc_User_Temp UE_T
 			ON t_SI.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
         SET t_SI.can_view = UE_T.can_view,
@@ -10170,7 +10170,7 @@ BEGIN
         DELETE t_SI
 		FROM tmp_Stock_Item t_SI
         /*
-		LEFT JOIN Shop_User_Eval_Temp UE_T
+		LEFT JOIN Shop_Calc_User_Temp UE_T
 			ON t_SI.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
 		*/
@@ -10178,8 +10178,8 @@ BEGIN
 			/*
 			FIND_IN_SET(t_SI.id_product, (
 				SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') 
-				FROM Shop_User_Eval_Temp UET)
-			) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_User_Eval_Temp), '%');
+				FROM Shop_Calc_User_Temp UET)
+			) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_Calc_User_Temp), '%');
 			*/
             /*
 			ISNULL(UE_T.id_product)
@@ -10187,7 +10187,7 @@ BEGIN
             */
             t_SI.id_product NOT IN (
 				SELECT id_product 
-                FROM Shop_User_Eval_Temp UE_T
+                FROM Shop_Calc_User_Temp UE_T
                 WHERE
 					GUID = v_guid
 					AND IFNULL(can_view, 0) = 1
@@ -10195,8 +10195,8 @@ BEGIN
         ;
         
         # CALL p_shop_user_eval_clear_temp(v_guid);
-        # DROP TABLE IF EXISTS Shop_User_Eval_Temp;
-        DELETE FROM Shop_User_Eval_Temp
+        # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = v_guid
         ;
     END IF;
@@ -10778,27 +10778,27 @@ BEGIN
         -- SET v_ids_permutation_permission := (SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_permutation));
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         UPDATE tmp_Shop_Product t_P
-        INNER JOIN Shop_User_Eval_Temp UE_T
+        INNER JOIN Shop_Calc_User_Temp UE_T
 			ON t_P.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
         SET t_P.can_view = UE_T.can_view,
 			t_P.can_edit = UE_T.can_edit,
             t_P.can_admin = UE_T.can_admin
 		;
-		-- select * from Shop_User_Eval_Temp;
+		-- select * from Shop_Calc_User_Temp;
 		-- select * from tmp_Shop_Product;
         
         DELETE -- t_P
         FROM tmp_Shop_Product t_P
 		WHERE 
-			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_User_Eval_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_User_Eval_Temp), '%');
+			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_Calc_User_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_Calc_User_Temp), '%');
             OR (
 				ISNULL(t_P.can_view)
 				AND (
@@ -10816,10 +10816,10 @@ BEGIN
             )
         ;
         
-        CALL p_clear_shop_user_eval_temp(v_guid);
-        # DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+        CALL p_shop_clear_user_eval_temp(v_guid);
+        # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
         /*
-        DELETE FROM Shop_User_Eval_Temp UE_T
+        DELETE FROM Shop_Calc_User_Temp UE_T
         WHERE UE_T.GUID = v_guid
         ;
         */
@@ -11174,7 +11174,7 @@ CALL partsltd_prod.p_shop_get_many_product (
     1 # a_get_products_quantity_stock_below_minimum
 );
 
-select * FROM Shop_User_Eval_Temp;
+select * FROM Shop_Calc_User_Temp;
 
 select * from Shop_Product_Permutation;
 select * from shop_product_change_set;
@@ -11198,10 +11198,10 @@ insert into shop_product_change_set (comment)
 		id_change_set = (select id_change_set from shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
 
-select * FROM Shop_User_Eval_Temp;
+select * FROM Shop_Calc_User_Temp;
 select distinct guid 
 -- DELETE
-FROM Shop_User_Eval_Temp;
+FROM Shop_Calc_User_Temp;
 */
 
 
@@ -11361,7 +11361,7 @@ BEGIN
 		);
 		# SELECT * FROM tmp_Msg_Error LIMIT 1;
         
-        IF EXISTS (SELECT can_admin FROM Shop_User_Eval_Temp WHERE guid = v_guid AND NOT can_admin LIMIT 1) THEN
+        IF EXISTS (SELECT can_admin FROM Shop_Calc_User_Temp WHERE guid = v_guid AND NOT can_admin LIMIT 1) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
 				code,
@@ -11375,7 +11375,7 @@ BEGIN
 			;
         END IF;
         
-        DELETE FROM Shop_User_Eval_Temp
+        DELETE FROM Shop_Calc_User_Temp
         WHERE guid = v_guid
         ;
     END IF;
@@ -11725,7 +11725,7 @@ BEGIN
 				a_get_inactive_user
                 OR U.active
             )
-		/*Shop_User_Eval_Temp UE_T
+		/*Shop_Calc_User_Temp UE_T
 		WHERE 1=1
 			AND UE_T.guid = v_guid
 			AND UE_T.active = 1
@@ -11743,7 +11743,7 @@ BEGIN
     -- Permissions
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(
 			v_guid, -- guid
@@ -11754,11 +11754,11 @@ BEGIN
             '' -- ids_product
 		);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         IF NOT EXISTS (
 			SELECT can_view 
-            FROM Shop_User_Eval_Temp UE_T 
+            FROM Shop_Calc_User_Temp UE_T 
             WHERE 1=1
 				AND UE_T.GUID = v_guid
                 AND UE_T.id_permission_required = v_id_permission_user
@@ -11808,7 +11808,7 @@ BEGIN
 				id_user
 				, id_permission_required
 				, can_admin AS can_admin_store
-			FROM Shop_User_Eval_Temp UE_T_STORE
+			FROM Shop_Calc_User_Temp UE_T_STORE
 			WHERE 1=1
 				AND UE_T_STORE.guid = v_guid
 				AND UE_T_STORE.id_permission_required = v_id_permission_store_admin
@@ -11818,7 +11818,7 @@ BEGIN
 				id_user
 				, id_permission_required
 				, can_admin AS can_admin_user
-			FROM Shop_User_Eval_Temp UE_T_USER
+			FROM Shop_Calc_User_Temp UE_T_USER
 			WHERE 1=1
 				AND UE_T_USER.guid = v_guid
 				AND UE_T_USER.id_permission_required = v_id_permission_user_admin
@@ -11860,10 +11860,10 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
 	
 	/*
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid;
 	*/
-	CALL p_clear_shop_user_eval_temp(v_guid);
+	CALL p_shop_clear_user_eval_temp(v_guid);
 END //
 DELIMITER ;;
 
@@ -11879,8 +11879,8 @@ CALL p_get_many_user (
 	, NULL # a_ids_user
 	, 'auth0|6582b95c895d09a70ba10fef' # a_ids_user_auth0 # ' -- 
 );
-select * from shop_user_eval_temp;
-delete from shop_user_eval_temp;
+select * from Shop_Calc_User_Temp;
+delete from Shop_Calc_User_Temp;
 
 SELECT * 
 FROM SHOP_USER;
@@ -12277,7 +12277,7 @@ BEGIN
     -- String product id, permutation id, quantity list
     IF NOT EXISTS (SELECT * FROM tmp_Shop_Basket WHERE active LIMIT 1) AND NOT EXISTS (SELECT msg FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN -- NOT v_has_filter_user AND
 		# Get product ids
-		CALL p_split(a_ids_permutation_basket, ',');
+		CALL p_split(a_guid, a_ids_permutation_basket, ',');
 		INSERT INTO tmp_Shop_Product (
 			id_product, id_permutation, display_order
 		)
@@ -12295,7 +12295,7 @@ BEGIN
 		DROP TABLE Split_Temp;
 		
 		# Get product quantities
-		CALL p_split(a_quantities_permutation_basket, ',');
+		CALL p_split(a_guid, a_quantities_permutation_basket, ',');
 		INSERT INTO tmp_Shop_Quantity (
 			quantity, display_order
 		)
@@ -12890,13 +12890,13 @@ BEGIN
         
         /*
         UPDATE tmp_Shop_Supplier t_S
-        INNER JOIN Shop_User_Eval_Temp TP
+        INNER JOIN Shop_Calc_User_Temp TP
 			ON TP.GUID = v_guid_permission
         SET tP.can_view = TP.can_view,
 			tP.can_edit = TP.can_edit,
             tP.can_admin = TP.can_admin;
 		*/
-        SET v_has_permission := (SELECT can_edit FROM Shop_User_Eval_Temp WHERE GUID = v_guid_permission);
+        SET v_has_permission := (SELECT can_edit FROM Shop_Calc_User_Temp WHERE GUID = v_guid_permission);
         
         IF v_has_permission = 0 THEN
 			SET v_id_error_type_no_permission := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
@@ -12914,7 +12914,7 @@ BEGIN
         
         -- CALL p_shop_user_eval_clear_temp(v_guid_permission);
         
-        DELETE FROM Shop_User_Eval_Temp
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = a_guid;
     END IF;
     
@@ -13108,7 +13108,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_supplier = 1 OR a_get_all_supplier = 1 THEN
-		CALL p_split(a_ids_supplier, ',');
+		CALL p_split(a_guid, a_ids_supplier, ',');
         
 		IF EXISTS (SELECT * FROM Split_Temp S_T LEFT JOIN Shop_Supplier S ON S_T.substring = S.id_supplier WHERE ISNULL(S.id_supplier)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -13165,13 +13165,13 @@ BEGIN
         SET v_id_permission_supplier := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, FALSE, v_id_permission_supplier, v_id_access_level_view, '');
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+        IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
 				code,
@@ -13551,7 +13551,7 @@ BEGIN
         
         /*
         UPDATE tmp_Shop_Supplier t_S
-        INNER JOIN Shop_User_Eval_Temp TP
+        INNER JOIN Shop_Calc_User_Temp TP
 			ON TP.GUID = v_guid_permission
         SET tP.can_view = TP.can_view,
 			tP.can_edit = TP.can_edit,
@@ -13560,7 +13560,7 @@ BEGIN
         /*
         SET v_has_permission := (
 			SELECT can_edit 
-            FROM Shop_User_Eval_Temp 
+            FROM Shop_Calc_User_Temp 
             WHERE 
 				GUID = v_guid_permission
 				AND can_edit = 0
@@ -13582,7 +13582,7 @@ BEGIN
         */
         SET v_ids_product_no_permission := (
 			SELECT GROUP_CONCAT(PT.id_product SEPARATOR ',') 
-            FROM Shop_User_Eval_Temp PT 
+            FROM Shop_Calc_User_Temp PT 
             WHERE 
 				PT.can_edit = 0
 				AND NOT ISNULL(PT.id_product)
@@ -13600,7 +13600,7 @@ BEGIN
 			;
         END IF;
         
-        DELETE FROM Shop_User_Eval_Temp
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = a_guid;
     END IF;
     
@@ -14070,7 +14070,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_supplier THEN
-		CALL p_split(a_ids_supplier, ',');
+		CALL p_split(a_guid, a_ids_supplier, ',');
         
 		IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Supplier S ON TS.substring = S.id_supplier WHERE ISNULL(S.id_supplier)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -14123,7 +14123,7 @@ BEGIN
     
     IF v_has_filter_category = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_category, ',');
+			CALL p_split(a_guid, a_ids_category, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Category C ON TS.substring = C.id_category WHERE ISNULL(C.id_category)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -14149,7 +14149,7 @@ BEGIN
     
     IF v_has_filter_product = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_product, ',');
+			CALL p_split(a_guid, a_ids_product, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product ON TS.substring = P.id_product WHERE ISNULL(P.id_product)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -14175,7 +14175,7 @@ BEGIN
     
     IF v_has_filter_permutation = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_permutation, ',');
+			CALL p_split(a_guid, a_ids_permutation, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Permutation PP ON TS.substring = PP.id_permutation WHERE ISNULL(PP.id_permutation)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -14308,7 +14308,7 @@ BEGIN
     
     -- Get orders
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-		CALL p_split(a_ids_order, ',');
+		CALL p_split(a_guid, a_ids_order, ',');
         
 		IF v_has_filter_order AND EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Supplier_Purchase_Order SPO ON TS.substring = SPO.id_order WHERE ISNULL(SPO.id_order)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -14414,13 +14414,13 @@ BEGIN
         SET v_ids_product_permission := (SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') FROM (SELECT DISTINCT id_product FROM tmp_Shop_Product WHERE NOT ISNULL(id_product)) P);
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, FALSE, v_ids_permission_supplier_purchase_order, v_id_access_level_view, v_ids_product_permission);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+        IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
                 id_type,
@@ -14439,7 +14439,7 @@ BEGIN
         
         
         UPDATE tmp_Shop_Product t_P
-        INNER JOIN Shop_User_Eval_Temp UE_T
+        INNER JOIN Shop_Calc_User_Temp UE_T
 			ON t_P.id_product = UE_T.id_product -- t_P.id_permutation = UE_T.id_permutation
 			AND UE_T.GUID = v_guid
         SET t_P.can_view = UE_T.can_view,
@@ -14448,8 +14448,8 @@ BEGIN
 		;
         
         # CALL p_shop_user_eval_clear_temp(v_guid);
-        # DROP TABLE IF EXISTS Shop_User_Eval_Temp;
-        DELETE FROM Shop_User_Eval_Temp
+        # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = v_guid
         ;
 	END IF;
@@ -14554,7 +14554,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Supplier;
     DROP TABLE IF EXISTS tmp_Shop_Product;
         
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid
 	;
 END //
@@ -14910,7 +14910,7 @@ BEGIN
         
         /*
         UPDATE tmp_Shop_Supplier t_S
-        INNER JOIN Shop_User_Eval_Temp TP
+        INNER JOIN Shop_Calc_User_Temp TP
 			ON TP.GUID = v_guid_permission
         SET tP.can_view = TP.can_view,
 			tP.can_edit = TP.can_edit,
@@ -14919,7 +14919,7 @@ BEGIN
         /*
         SET v_has_permission := (
 			SELECT can_edit 
-            FROM Shop_User_Eval_Temp 
+            FROM Shop_Calc_User_Temp 
             WHERE 
 				GUID = v_guid_permission
 				AND can_edit = 0
@@ -14941,7 +14941,7 @@ BEGIN
         */
         SET v_ids_product_no_permission := (
 			SELECT GROUP_CONCAT(PT.id_product SEPARATOR ',') 
-            FROM Shop_User_Eval_Temp PT 
+            FROM Shop_Calc_User_Temp PT 
             WHERE 
 				PT.can_edit = 0
 				AND NOT ISNULL(PT.id_product)
@@ -15413,7 +15413,7 @@ BEGIN
     
     IF v_has_filter_category = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_category, ',');
+			CALL p_split(a_guid, a_ids_category, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Category C ON TS.substring = C.id_category WHERE ISNULL(C.id_category)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -15439,7 +15439,7 @@ BEGIN
     
     IF v_has_filter_product = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_product, ',');
+			CALL p_split(a_guid, a_ids_product, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product ON TS.substring = P.id_product WHERE ISNULL(P.id_product)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -15465,7 +15465,7 @@ BEGIN
     
     IF v_has_filter_permutation = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_permutation, ',');
+			CALL p_split(a_guid, a_ids_permutation, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Permutation PP ON TS.substring = PP.id_permutation WHERE ISNULL(PP.id_permutation)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -15598,7 +15598,7 @@ BEGIN
     
     -- Get orders
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-		CALL p_split(a_ids_order, ',');
+		CALL p_split(a_guid, a_ids_order, ',');
         
 		IF v_has_filter_order AND EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Manufacturing_Purchase_Order MPO ON TS.substring = MPO.id_order WHERE ISNULL(MPO.id_order)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -15697,13 +15697,13 @@ BEGIN
         SET v_ids_product_permission := (SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') FROM (SELECT DISTINCT id_product FROM tmp_Shop_Product WHERE NOT ISNULL(id_product)) P);
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, FALSE, v_ids_permission_manufacturing_purchase_order, v_id_access_level_view, v_ids_product_permission);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+        IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
                 id_type,
@@ -15722,7 +15722,7 @@ BEGIN
         
         
         UPDATE tmp_Shop_Product t_P
-        INNER JOIN Shop_User_Eval_Temp UE_T
+        INNER JOIN Shop_Calc_User_Temp UE_T
 			ON t_P.id_product = UE_T.id_product -- t_P.id_permutation = UE_T.id_permutation
 			AND UE_T.GUID = v_guid
         SET t_P.can_view = UE_T.can_view,
@@ -15731,8 +15731,8 @@ BEGIN
 		;
         
         # CALL p_shop_user_eval_clear_temp(v_guid);
-        # DROP TABLE IF EXISTS Shop_User_Eval_Temp;
-        DELETE FROM Shop_User_Eval_Temp
+        # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = v_guid
         ;
 	END IF;
@@ -15819,7 +15819,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Manufacturing_Purchase_Order;
     DROP TABLE IF EXISTS tmp_Shop_Product;
         
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid
 	;
 END //
@@ -16018,13 +16018,13 @@ BEGIN
         
         /*
         UPDATE tmp_Shop_Customer t_S
-        INNER JOIN Shop_User_Eval_Temp TP
+        INNER JOIN Shop_Calc_User_Temp TP
 			ON TP.GUID = v_guid_permission
         SET tP.can_view = TP.can_view,
 			tP.can_edit = TP.can_edit,
             tP.can_admin = TP.can_admin;
 		*/
-        SET v_has_permission := (SELECT can_edit FROM Shop_User_Eval_Temp WHERE GUID = v_guid_permission);
+        SET v_has_permission := (SELECT can_edit FROM Shop_Calc_User_Temp WHERE GUID = v_guid_permission);
         
         IF v_has_permission = 0 THEN
 			SET v_id_error_type_no_permission := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
@@ -16042,7 +16042,7 @@ BEGIN
         
         -- CALL p_shop_user_eval_clear_temp(v_guid_permission);
         
-        DELETE FROM Shop_User_Eval_Temp
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = a_guid;
     END IF;
     
@@ -16266,7 +16266,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_customer = 1 OR a_get_all_customer = 1 THEN
-		CALL p_split(a_ids_customer, ',');
+		CALL p_split(a_guid, a_ids_customer, ',');
         
 		IF EXISTS (SELECT * FROM Split_Temp S_T LEFT JOIN Shop_Customer C ON S_T.substring = C.id_customer WHERE ISNULL(C.id_customer)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -16325,13 +16325,13 @@ BEGIN
         SET v_id_permission_customer := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_CUSTOMER' LIMIT 1);
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, FALSE, v_id_permission_customer, v_id_access_level_view, '');
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+        IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
                 id_type,
@@ -16409,7 +16409,7 @@ BEGIN
     -- Clean up
     DROP TABLE IF EXISTS tmp_Shop_Customer;
         
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid
 	;
 END //
@@ -16705,7 +16705,7 @@ BEGIN
         
         /*
         UPDATE tmp_Shop_Supplier t_S
-        INNER JOIN Shop_User_Eval_Temp TP
+        INNER JOIN Shop_Calc_User_Temp TP
 			ON TP.GUID = v_guid_permission
         SET tP.can_view = TP.can_view,
 			tP.can_edit = TP.can_edit,
@@ -16714,7 +16714,7 @@ BEGIN
         /*
         SET v_has_permission := (
 			SELECT can_edit 
-            FROM Shop_User_Eval_Temp 
+            FROM Shop_Calc_User_Temp 
             WHERE 
 				GUID = v_guid_permission
 				AND can_edit = 0
@@ -16736,7 +16736,7 @@ BEGIN
         */
         SET v_ids_product_no_permission := (
 			SELECT GROUP_CONCAT(PT.id_product SEPARATOR ',') 
-            FROM Shop_User_Eval_Temp PT 
+            FROM Shop_Calc_User_Temp PT 
             WHERE 
 				PT.can_edit = 0
 				AND NOT ISNULL(PT.id_product)
@@ -16754,7 +16754,7 @@ BEGIN
 			;
         END IF;
         
-        DELETE FROM Shop_User_Eval_Temp
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = a_guid;
     END IF;
     
@@ -17232,7 +17232,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_customer = 1 OR a_get_all_customer = 1 THEN
-		CALL p_split(a_ids_customer, ',');
+		CALL p_split(a_guid, a_ids_customer, ',');
         
 		IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Customer S ON TS.substring = S.id_customer WHERE ISNULL(S.id_customer)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -17289,7 +17289,7 @@ BEGIN
     
     IF v_has_filter_category = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_category, ',');
+			CALL p_split(a_guid, a_ids_category, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Category C ON TS.substring = C.id_category WHERE ISNULL(C.id_category)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -17315,7 +17315,7 @@ BEGIN
     
     IF v_has_filter_product = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_product, ',');
+			CALL p_split(a_guid, a_ids_product, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product ON TS.substring = P.id_product WHERE ISNULL(P.id_product)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -17341,7 +17341,7 @@ BEGIN
     
     IF v_has_filter_permutation = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_ids_permutation, ',');
+			CALL p_split(a_guid, a_ids_permutation, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Permutation PP ON TS.substring = PP.id_permutation WHERE ISNULL(PP.id_permutation)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -17474,7 +17474,7 @@ BEGIN
     
     -- Get orders
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-		CALL p_split(a_ids_order, ',');
+		CALL p_split(a_guid, a_ids_order, ',');
         
 		IF v_has_filter_order AND EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Customer_Sales_Order CSO ON TS.substring = CSO.id_order WHERE ISNULL(CSO.id_order)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -17582,13 +17582,13 @@ BEGIN
         SET v_ids_product_permission := (SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') FROM (SELECT DISTINCT id_product FROM tmp_Shop_Product WHERE NOT ISNULL(id_product)) P);
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         CALL p_shop_user_eval(v_guid, a_id_user, FALSE, v_ids_permission_customer_purchase_order, v_id_access_level_view, v_ids_product_permission);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+        IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
                 id_type,
@@ -17607,7 +17607,7 @@ BEGIN
         
         
         UPDATE tmp_Shop_Product t_P
-        INNER JOIN Shop_User_Eval_Temp UE_T
+        INNER JOIN Shop_Calc_User_Temp UE_T
 			ON t_P.id_product = UE_T.id_product -- t_P.id_permutation = UE_T.id_permutation
 			AND UE_T.GUID = v_guid
         SET t_P.can_view = UE_T.can_view,
@@ -17616,8 +17616,8 @@ BEGIN
 		;
         
         # CALL p_shop_user_eval_clear_temp(v_guid);
-        # DROP TABLE IF EXISTS Shop_User_Eval_Temp;
-        DELETE FROM Shop_User_Eval_Temp
+        # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = v_guid
         ;
 	END IF;
@@ -17721,7 +17721,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Customer;
     DROP TABLE IF EXISTS tmp_Shop_Product;
         
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid
 	;
 END //
