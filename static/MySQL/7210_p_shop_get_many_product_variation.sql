@@ -80,7 +80,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_variation = 1 OR a_get_all_variation = 1 OR v_has_filter_variation_type = 1 OR a_get_all_variation_type = 1 THEN
-		CALL p_split(a_ids_variation_type, ',');
+		CALL p_split(a_guid, a_ids_variation_type, ',');
         
 		IF EXISTS (SELECT * FROM Split_Temp S_T LEFT JOIN Shop_Variation_Type VT ON S_T.substring = VT.id_type WHERE ISNULL(VT.id_type)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -99,7 +99,7 @@ BEGIN
         
 			CALL p_clear_split_temp;
 
-			CALL p_split(a_ids_variation, ',');
+			CALL p_split(a_guid, a_ids_variation, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp S_T LEFT JOIN Shop_Variation V ON S_T.substring = V.id_variation WHERE ISNULL(V.id_variation)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -190,13 +190,13 @@ BEGIN
         SET v_id_permission_variation := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        CALL p_shop_user_eval(v_guid, a_id_user, FALSE, v_id_permission_variation, v_id_access_level_view, '');
+        CALL p_shop_calc_user(v_guid, a_id_user, FALSE, v_id_permission_variation, v_id_access_level_view, '');
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+        IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
 				code,
@@ -210,7 +210,7 @@ BEGIN
 			;
         END IF;
         
-        CALL p_clear_shop_user_eval_temp(v_guid);
+        CALL p_shop_clear_calc_user(v_guid);
 	END IF;
     
     IF EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN

@@ -169,17 +169,17 @@ BEGIN
         SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
         SET v_ids_product_permission = (SELECT STRING_AGG(item, '|') FROM tmp_Shop_Product);
         
-        CALL p_shop_user_eval(v_guid_permission, v_id_user, v_id_permission_product, v_ids_product_permission);
+        CALL p_shop_calc_user(v_guid_permission, v_id_user, v_id_permission_product, v_ids_product_permission);
         
         UPDATE tmp_Shop_Product tP
-        INNER JOIN Shop_User_Eval_Temp TP
+        INNER JOIN Shop_Calc_User_Temp TP
 			ON tP.id_product = TP.id_product
 				AND TP.GUID = v_guid_permission
         SET tP.can_view = TP.can_view,
 			tP.can_edit = TP.can_edit,
             tP.can_admin = TP.can_admin;
 		
-        CALL p_shop_user_eval_clear_temp(v_guid_permission);
+        CALL p_shop_calc_user_clear_temp(v_guid_permission);
     END IF;
     
     

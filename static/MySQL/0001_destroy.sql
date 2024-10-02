@@ -4,7 +4,9 @@
 
 
 # Drop dependencies
-DROP TABLE IF EXISTS Shop_User_Eval_Temp;
+DROP TABLE IF EXISTS tmp_Shop_Calc_User;
+DROP TABLE IF EXISTS tmp_Product_Calc_User;
+DROP TABLE IF EXISTS tmp_Product_p_Shop_User_Eval;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 DROP TABLE IF EXISTS tmp_Currency;
 DROP TABLE IF EXISTS tmp_Delivery_Region;
@@ -12,7 +14,8 @@ DROP TABLE IF EXISTS tmp_Region;
 DROP TABLE IF EXISTS tmp_Shop_User;
 DROP TABLE IF EXISTS tmp_Shop_Order;
 DROP TABLE IF EXISTS tmp_Shop_Product;
-DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_User_Eval;
+DROP TABLE IF EXISTS tmp_Shop_Product_p_shop_calc_user;
+DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_Calc_User;
 DROP TABLE IF EXISTS tmp_Shop_Image;
 DROP TABLE IF EXISTS tmp_Shop_Variation;
 DROP TABLE IF EXISTS tmp_Shop_Discount;
@@ -35,6 +38,9 @@ DROP TABLE IF EXISTS tmp_Shop_Customer_Sale_Order;
 
 
 # Delete old tables
+DROP TABLE IF EXISTS Shop_Calc_User_Temp;
+DROP TABLE IF EXISTS Shop_Calc_User_Temp;
+
 DROP TABLE IF EXISTS Shop_Customer_Sales_Order_Product_Link_Temp;
 DROP TABLE IF EXISTS Shop_Customer_Sales_Order_Product_Link_Audit;
 DROP TABLE IF EXISTS Shop_Customer_Sales_Order_Product_Link;
@@ -223,8 +229,10 @@ DROP PROCEDURE IF EXISTS p_clear_split_temp;
 
 DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_name;
 
-DROP PROCEDURE IF EXISTS p_shop_user_eval;
-DROP PROCEDURE IF EXISTS p_clear_shop_user_eval_temp;
+DROP PROCEDURE IF EXISTS p_shop_calc_user;
+DROP PROCEDURE IF EXISTS p_shop_calc_user;
+DROP PROCEDURE IF EXISTS p_shop_clear_user_eval_temp;
+DROP PROCEDURE IF EXISTS p_shop_clear_calc_user;
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_access_level;
 DROP PROCEDURE IF EXISTS p_shop_get_many_unit_measurement;

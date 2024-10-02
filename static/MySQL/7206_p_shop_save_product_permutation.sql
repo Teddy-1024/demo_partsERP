@@ -342,11 +342,11 @@ BEGIN
         IF NOT ISNULL(v_ids_product_permission) THEN
 			SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
 			
-			CALL p_shop_user_eval(a_guid, a_id_user, FALSE, v_id_permission_product, v_id_access_level_edit, v_ids_product_permission);
+			CALL p_shop_calc_user(a_guid, a_id_user, FALSE, v_id_permission_product, v_id_access_level_edit, v_ids_product_permission);
 			
 			UPDATE tmp_Permutation t_P
             INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
-			INNER JOIN Shop_User_Eval_Temp UE_T
+			INNER JOIN Shop_Calc_User_Temp UE_T
 				ON P.id_product = UE_T.id_product
 				AND UE_T.GUID = a_guid
 			SET 
@@ -355,7 +355,7 @@ BEGIN
 				, t_P.can_admin = UE_T.can_admin
 			;
 			
-			CALL p_clear_shop_user_eval_temp(a_guid);
+			CALL p_shop_clear_calc_user(a_guid);
 
 			IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.can_edit) LIMIT 1) THEN
 				INSERT INTO tmp_Msg_Error (

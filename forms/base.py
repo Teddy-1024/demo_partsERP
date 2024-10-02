@@ -26,10 +26,15 @@ class Form_Base(FlaskForm, metaclass=Form_Base_Meta):
     @abstractmethod
     def from_filters(cls, filters):
         pass
-    """
     @abstractmethod
     def __repr__(self):
         pass
+    """
+    def __repr__(self):
+        fields = ', '.join(
+            f"{name}={field.data}" for name, field in self._fields.items()
+        )
+        return f"{self.__class__.__name__}({fields})"
     @classmethod
     @abstractmethod
     def from_json(cls, json):

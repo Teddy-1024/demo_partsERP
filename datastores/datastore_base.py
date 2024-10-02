@@ -26,7 +26,7 @@ from business_objects.store.order import Order
 from business_objects.store.product import Product, Product_Permutation, Product_Price, Filters_Product # Permutation_Variation_Link
 """
 from business_objects.sql_error import SQL_Error
-from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
+from business_objects.store.stock_item import Stock_Item
 from business_objects.unit_measurement import Unit_Measurement
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 # from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container

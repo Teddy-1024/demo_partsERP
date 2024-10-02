@@ -792,39 +792,39 @@ BEGIN
         -- v_ids_permutation_permission := (SELECT STRING_AGG(id_permutation, ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_permutation));
         
         -- SELECT v_guid, v_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission;
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
-        CALL p_shop_user_eval(v_guid, v_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission);
+        CALL p_shop_calc_user(v_guid, v_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission);
         
-        -- select * from Shop_User_Eval_Temp;
+        -- select * from Shop_Calc_User_Temp;
         
         UPDATE tmp_Shop_Product t_P
         SET t_P.can_view = UE_T.can_view,
 			t_P.can_edit = UE_T.can_edit,
             t_P.can_admin = UE_T.can_admin
 		FROM tmp_Shop_Product t_P
-        INNER JOIN Shop_User_Eval_Temp UE_T
+        INNER JOIN Shop_Calc_User_Temp UE_T
 			ON t_P.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
 		;
-		-- select * from Shop_User_Eval_Temp;
+		-- select * from Shop_Calc_User_Temp;
 		-- select * from tmp_Shop_Product;
         
         DELETE FROM tmp_Shop_Product t_P
 		WHERE 
-			-- FIND_IN_SET(t_P.id_product, (SELECT STRING_AGG(UET.id_product, ',') FROM Shop_User_Eval_Temp UET)) = FALSE -- id_product NOT LIKE CONCAT('%', (SELECT STRING_AGG(id_product, '|') FROM Shop_User_Eval_Temp), '%');
+			-- FIND_IN_SET(t_P.id_product, (SELECT STRING_AGG(UET.id_product, ',') FROM Shop_Calc_User_Temp UET)) = FALSE -- id_product NOT LIKE CONCAT('%', (SELECT STRING_AGG(id_product, '|') FROM Shop_Calc_User_Temp), '%');
 			t_P.id_product NOT IN (
 				SELECT id_product
-				FROM Shop_User_Eval_Temp UET
+				FROM Shop_Calc_User_Temp UET
 				WHERE UET.GUID = v_guid
 			)
 			OR ISNULL(t_P.can_view)
 			OR t_P.can_view = FALSE
         ;
         
-        -- CALL p_shop_user_eval_clear_temp(v_guid);
-        -- DROP TABLE IF EXISTS Shop_User_Eval_Temp;
-        DELETE FROM Shop_User_Eval_Temp
+        -- CALL p_shop_calc_user_clear_temp(v_guid);
+        -- DROP TABLE IF EXISTS Shop_Calc_User_Temp;
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = v_guid
         ;
     END IF;

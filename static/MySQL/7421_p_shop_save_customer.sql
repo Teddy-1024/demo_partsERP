@@ -154,17 +154,17 @@ BEGIN
     
     -- Permissions
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-        CALL p_shop_user_eval(v_guid_permission, a_id_user, 0, v_id_permission_customer, v_id_access_level_edit, '');
+        CALL p_shop_calc_user(v_guid_permission, a_id_user, 0, v_id_permission_customer, v_id_access_level_edit, '');
         
         /*
         UPDATE tmp_Shop_Customer t_S
-        INNER JOIN Shop_User_Eval_Temp TP
+        INNER JOIN Shop_Calc_User_Temp TP
 			ON TP.GUID = v_guid_permission
         SET tP.can_view = TP.can_view,
 			tP.can_edit = TP.can_edit,
             tP.can_admin = TP.can_admin;
 		*/
-        SET v_has_permission := (SELECT can_edit FROM Shop_User_Eval_Temp WHERE GUID = v_guid_permission);
+        SET v_has_permission := (SELECT can_edit FROM Shop_Calc_User_Temp WHERE GUID = v_guid_permission);
         
         IF v_has_permission = 0 THEN
 			SET v_id_error_type_no_permission := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
@@ -180,9 +180,9 @@ BEGIN
 			;
         END IF;
         
-        -- CALL p_shop_user_eval_clear_temp(v_guid_permission);
+        -- CALL p_shop_calc_user_clear_temp(v_guid_permission);
         
-        DELETE FROM Shop_User_Eval_Temp
+        DELETE FROM Shop_Calc_User_Temp
         WHERE GUID = a_guid;
     END IF;
     

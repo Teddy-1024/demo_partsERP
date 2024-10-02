@@ -54,12 +54,12 @@ class Filters_Product_Permutation(Form_Base):
         '''
     @classmethod
     def from_json(cls, json):
-        form =  Filters_Product_Permutation()
+        form =  cls()
         form.id_category.choices = [(json[Store_Base.ATTR_ID_PRODUCT_CATEGORY], json[Store_Base.ATTR_ID_PRODUCT_CATEGORY])]
         form.id_category.data = json[Store_Base.ATTR_ID_PRODUCT_CATEGORY]
         form.id_product.choices = [(json[Store_Base.ATTR_ID_PRODUCT], json[Store_Base.ATTR_ID_PRODUCT])]
         form.id_product.data = json[Store_Base.ATTR_ID_PRODUCT]
-        form.is_out_of_stock.data = av.input_bool(json[Store_Base.FLAG_IS_OUT_OF_STOCK], 'is_out_of_stock', 'Filters_Product_Permutation')
+        form.is_out_of_stock.data = av.input_bool(json[Store_Base.FLAG_IS_OUT_OF_STOCK], Store_Base.FLAG_IS_OUT_OF_STOCK, f'{cls.__name__}.from_json')
         form.quantity_min.data = json[Store_Base.FLAG_QUANTITY_MIN]
         form.quantity_max.data = json[Store_Base.FLAG_QUANTITY_MAX]
         return form

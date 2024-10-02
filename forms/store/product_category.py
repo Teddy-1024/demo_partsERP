@@ -40,7 +40,8 @@ class Filters_Product_Category(Form_Base):
         return f'Filters_Product_Category(is_not_empty={self.is_not_empty.data}, active={self.active.data})'
     @classmethod
     def from_json(cls, json):
+        _m = f'{cls.__name__}.from_json'
         form =  Filters_Product_Category() # is_not_empty=json['is_not_empty'], active=json['active'])
-        form.is_not_empty.data = av.input_bool(json[Store_Base.FLAG_IS_NOT_EMPTY], 'is_not_empty', 'Filters_Product_Category')
-        form.active.data = av.input_bool(json[Store_Base.FLAG_ACTIVE], 'active', 'Filters_Product_Category')
+        form.is_not_empty.data = av.input_bool(json[Store_Base.FLAG_IS_NOT_EMPTY], 'is_not_empty', _m)
+        form.active.data = av.input_bool(json[Store_Base.FLAG_ACTIVE], 'active', _m)
         return form

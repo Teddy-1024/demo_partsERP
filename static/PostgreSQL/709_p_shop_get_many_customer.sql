@@ -123,13 +123,13 @@ BEGIN
 	v_id_permission_customer := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_CUSTOMER' LIMIT 1);
 	
 	-- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_permutation_permission;
-	-- select * from Shop_User_Eval_Temp;
+	-- select * from Shop_Calc_User_Temp;
 	
-	CALL p_shop_user_eval(v_guid, a_id_user, FALSE, v_id_permission_customer, v_id_access_level_view, '');
+	CALL p_shop_calc_user(v_guid, a_id_user, FALSE, v_id_permission_customer, v_id_access_level_view, '');
 	
-	-- select * from Shop_User_Eval_Temp;
+	-- select * from Shop_Calc_User_Temp;
 	
-	IF NOT EXISTS (SELECT can_view FROM Shop_User_Eval_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 		RAISE EXCEPTION 'You do not have view permissions for %', (
 			SELECT COALESCE(STRING_AGG(name, ', '), 'NULL') 
 			FROM Shop_Permission 
@@ -209,7 +209,7 @@ BEGIN
     -- Clean up
     DROP TABLE IF EXISTS tmp_Shop_Customer;
         
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid
 	;
 END;

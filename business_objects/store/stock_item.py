@@ -11,7 +11,8 @@ Feature:    Stock Item Business Object
 # internal
 import lib.argument_validation as av
 from lib import data_types
-from forms.forms import Form_Filters_Stock_Item
+from forms.store.stock_item import Filters_Stock_Item
+from business_objects.db_base import Get_Many_Parameters_Base
 from business_objects.store.product_price import Product_Price
 # from business_objects.discount import Discount
 from business_objects.store.store_base import Store_Base
@@ -23,18 +24,18 @@ from datetime import datetime
 
 
 class Stock_Item(db.Model, Store_Base):
-    ATTR_ID_CURRENCY_COST: ClassVar[str] = f'{Store_Base.ATTR_ID_CURRENCY}-cost'
+    ATTR_ID_CURRENCY_COST: ClassVar[str] = f'{Store_Base.ATTR_ID_CURRENCY}_cost'
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_CURRENCY
     NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME
-    FLAG_DATE_CONSUMED: ClassVar[str] = 'date-consumed'
-    FLAG_DATE_EXPIRATION: ClassVar[str] = 'date-expiration'
-    FLAG_DATE_PURCHASED: ClassVar[str] = 'date-purchased'
-    FLAG_DATE_RECEIVED: ClassVar[str] = 'date-received'
-    FLAG_DATE_UNSEALED: ClassVar[str] = 'date-unsealed'
-    FLAG_IS_CONSUMED: ClassVar[str] = 'is-consumed'
-    FLAG_IS_SEALED: ClassVar[str] = 'is-sealed'
-    FLAG_VALUE_LOCAL_VAT_EXCL_COST: ClassVar[str] = f'{Product_Price.FLAG_VALUE_LOCAL_VAT_EXCL}-cost'
-    FLAG_VALUE_LOCAL_VAT_INCL_COST: ClassVar[str] = f'{Product_Price.FLAG_VALUE_LOCAL_VAT_INCL}-cost'
+    FLAG_DATE_CONSUMED: ClassVar[str] = 'date_consumed'
+    FLAG_DATE_EXPIRATION: ClassVar[str] = 'date_expiration'
+    FLAG_DATE_PURCHASED: ClassVar[str] = 'date_purchased'
+    FLAG_DATE_RECEIVED: ClassVar[str] = 'date_received'
+    FLAG_DATE_UNSEALED: ClassVar[str] = 'date_unsealed'
+    FLAG_IS_CONSUMED: ClassVar[str] = 'is_consumed'
+    FLAG_IS_SEALED: ClassVar[str] = 'is_sealed'
+    FLAG_VALUE_LOCAL_VAT_EXCL_COST: ClassVar[str] = f'{Product_Price.FLAG_VALUE_LOCAL_VAT_EXCL}_cost'
+    FLAG_VALUE_LOCAL_VAT_INCL_COST: ClassVar[str] = f'{Product_Price.FLAG_VALUE_LOCAL_VAT_INCL}_cost'
 
     id_stock = db.Column(db.Integer, primary_key=True)
     id_permutation = db.Column(db.Integer)
@@ -74,19 +75,19 @@ class Stock_Item(db.Model, Store_Base):
         stock_item.id_category = query_row[3]
         # stock_item.name_category = query_row[4]
         # stock_item.name_product = query_row[5]
-        stock_item.date_purchased = query_row[6]
-        stock_item.date_received = query_row[7]
-        stock_item.id_location_storage = query_row[8]
+        stock_item.date_purchased = query_row[4]
+        stock_item.date_received = query_row[5]
+        stock_item.id_location_storage = query_row[6]
         # stock_item.name_location_storage = query_row[9]
-        stock_item.id_currency_cost = query_row[10]
-        stock_item.cost_local_VAT_incl = query_row[13]
-        stock_item.cost_local_VAT_excl = query_row[14]
-        stock_item.is_sealed = av.input_bool(query_row[15], "is_sealed", _m, v_arg_type=v_arg_type)
-        stock_item.date_unsealed = query_row[16]
-        stock_item.date_expiration = query_row[17]
-        stock_item.is_consumed = av.input_bool(query_row[18], "is_consumed", _m, v_arg_type=v_arg_type)
-        stock_item.date_consumed = query_row[19]
-        stock_item.active = av.input_bool(query_row[20], "active", _m, v_arg_type=v_arg_type)
+        stock_item.id_currency_cost = query_row[7]
+        stock_item.cost_local_VAT_incl = query_row[8]
+        stock_item.cost_local_VAT_excl = query_row[9]
+        stock_item.is_sealed = av.input_bool(query_row[10], "is_sealed", _m, v_arg_type=v_arg_type)
+        stock_item.date_unsealed = query_row[11]
+        stock_item.date_expiration = query_row[12]
+        stock_item.is_consumed = av.input_bool(query_row[13], "is_consumed", _m, v_arg_type=v_arg_type)
+        stock_item.date_consumed = query_row[14]
+        stock_item.active = av.input_bool(query_row[15], "active", _m, v_arg_type=v_arg_type)
         """
         stock_item.can_view = av.input_bool(query_row[24], "can_view", _m, v_arg_type=v_arg_type)
         stock_item.can_edit = av.input_bool(query_row[25], "can_edit", _m, v_arg_type=v_arg_type)
@@ -204,174 +205,66 @@ class Stock_Item(db.Model, Store_Base):
         for permutation in self.permutations:
             list_rows.append(permutation.to_row_permutation())
         return list_rows
-    """
     def to_json_option(self):
         return {
             'value': self.id_stock_item,
             'text': self.id_stock_item
         }
+    """
 
-@dataclass
-class Stock_Item_Filters():
-    # id_user: str
-    get_all_category: bool
-    get_inactive_category: bool
-    get_first_category_only: bool
-    ids_category: str
-    get_all_product: bool
-    get_inactive_product: bool
-    get_first_product_only: bool
-    ids_product: str
-    get_all_permutation: bool
-    get_inactive_permutation: bool
-    get_first_permutation_only: bool
-    ids_permutation: str
-    get_all_stock_item: bool
-    get_inactive_stock_item: bool
-    get_first_stock_item_only: bool
-    ids_stock_item: str
-    get_all_region_storage: bool
-    get_inactive_region_storage: bool
-    get_first_region_storage_only: bool
-    ids_region_storage: str
-    get_all_plant_storage: bool
-    get_inactive_plant_storage: bool
-    get_first_plant_storage_only: bool
-    ids_plant_storage: str
-    get_all_location_storage: bool
-    get_inactive_location_storage: bool
-    get_first_location_storage_only: bool
-    ids_location_storage: str
-    date_received_to: datetime
-    get_sealed_stock_item_only: bool
-    get_unsealed_stock_item_only: bool
-    get_expired_stock_item_only: bool
-    get_nonexpired_stock_item_only: bool
-    get_consumed_stock_item_only: bool
-    get_nonconsumed_stock_item_only: bool
-
-    def to_json(self):
-        return {
-            'a_id_user': None,
-            'a_get_all_category': self.get_all_category,
-            'a_get_inactive_category': self.get_inactive_category,
-            'a_get_first_category_only': self.get_first_category_only,
-            'a_ids_category': self.ids_category,
-            'a_get_all_product': self.get_all_product,
-            'a_get_inactive_product': self.get_inactive_product,
-            'a_get_first_product_only': self.get_first_product_only,
-            'a_ids_product': self.ids_product,
-            'a_get_all_permutation': self.get_all_permutation,
-            'a_get_inactive_permutation': self.get_inactive_permutation,
-            'a_get_first_permutation_only': self.get_first_permutation_only,
-            'a_ids_permutation': self.ids_permutation,
-            'a_get_all_stock_item': self.get_all_stock_item,
-            'a_get_inactive_stock_item': self.get_inactive_stock_item,
-            'a_get_first_stock_item_only': self.get_first_stock_item_only,
-            'a_ids_stock_item': self.ids_stock_item,
-            'a_get_all_delivery_region_storage': self.get_all_region_storage,
-            'a_get_inactive_delivery_region_storage': self.get_inactive_region_storage,
-            'a_get_first_delivery_region_storage_only': self.get_first_region_storage_only,
-            'a_ids_delivery_region_storage': self.ids_region_storage,
-            'a_get_all_plant_storage': self.get_all_plant_storage,
-            'a_get_inactive_plant_storage': self.get_inactive_plant_storage,
-            'a_get_first_plant_storage_only': self.get_first_plant_storage_only,
-            'a_ids_plant_storage': self.ids_plant_storage,
-            'a_get_all_location_storage': self.get_all_location_storage,
-            'a_get_inactive_location_storage': self.get_inactive_location_storage,
-            'a_get_first_location_storage_only': self.get_first_location_storage_only,
-            'a_ids_location_storage': self.ids_location_storage,
-            'a_date_received_to': self.date_received_to,
-            'a_get_sealed_stock_item_only': self.get_sealed_stock_item_only,
-            'a_get_unsealed_stock_item_only': self.get_unsealed_stock_item_only,
-            'a_get_expired_stock_item_only': self.get_expired_stock_item_only,
-            'a_get_nonexpired_stock_item_only': self.get_nonexpired_stock_item_only,
-            'a_get_consumed_stock_item_only': self.get_consumed_stock_item_only,
-            'a_get_nonconsumed_stock_item_only': self.get_nonconsumed_stock_item_only
-        }
+class Parameters_Stock_Item(Get_Many_Parameters_Base):
+    a_get_all_product_permutation: bool
+    a_get_inactive_product_permutation: bool
+    a_ids_product_permutation: str
+    a_get_all_stock_item: bool
+    a_get_inactive_stock_item: bool
+    a_ids_stock_item: str
+    a_get_all_region_storage: bool
+    a_get_inactive_region_storage: bool
+    a_ids_region_storage: str
+    a_get_all_plant_storage: bool
+    a_get_inactive_plant_storage: bool
+    a_get_first_plant_storage_only: bool
+    a_ids_plant_storage: str
+    a_get_all_location_storage: bool
+    a_get_inactive_location_storage: bool
+    a_ids_location_storage: str
+    a_date_received_to: datetime
+    a_get_sealed_stock_item_only: bool
+    a_get_unsealed_stock_item_only: bool
+    a_get_expired_stock_item_only: bool
+    a_get_nonexpired_stock_item_only: bool
+    a_get_consumed_stock_item_only: bool
+    a_get_nonconsumed_stock_item_only: bool
     
-    @staticmethod
-    def from_form(form):
-        # if not (form is Form_Filters_Permutations): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Stock_Item)
-        has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
-        has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
-        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Filters_Product.from_form")
-        print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
-        return Stock_Item_Filters(
-            get_all_category = not has_category_filter,
-            get_inactive_category = False,
-            get_first_category_only = False,
-            ids_category = form.id_category.data,
-            get_all_product = not has_product_filter,
-            get_inactive_product = False,
-            get_first_product_only = False,
-            ids_product = form.id_product.data,
-            get_all_permutation = not get_permutations_stock_below_min,
-            get_inactive_permutation = False,
-            get_first_permutation_only = False,
-            ids_permutation = '',
-            get_all_stock_item = False,
-            get_inactive_stock_item = False,
-            get_first_stock_item_only = False,
-            ids_stock_item = '',
-            get_all_region_storage = False,
-            get_inactive_region_storage = False,
-            get_first_region_storage_only = False,
-            ids_region_storage = '',
-            get_all_plant_storage = False,
-            get_inactive_plant_storage = False,
-            get_first_plant_storage_only = False,
-            ids_plant_storage = '',
-            get_all_location_storage = False,
-            get_inactive_location_storage = False,
-            get_first_location_storage_only = False,
-            ids_location_storage = '',
-            date_received_to = None,
-            get_sealed_stock_item_only = False,
-            get_unsealed_stock_item_only = False,
-            get_expired_stock_item_only = False,
-            get_nonexpired_stock_item_only = False,
-            get_consumed_stock_item_only = False,
-            get_nonconsumed_stock_item_only = False
+    @classmethod
+    def get_default(cls, id_user):
+        return cls(
+            a_id_user = id_user,
+            a_get_all_product_permutation = True,
+            a_get_inactive_product_permutation = False,
+            a_ids_product_permutation = '',
+            a_get_all_stock_item = True,
+            a_get_inactive_stock_item = False,
+            a_ids_stock_item = '',
+            a_get_all_region_storage = True,
+            a_get_inactive_region_storage = False,
+            a_ids_region_storage = '',
+            a_get_all_plant_storage = True,
+            a_get_inactive_plant_storage = False,
+            a_ids_plant_storage = '',
+            a_get_all_location_storage = True,
+            a_get_inactive_location_storage = False,
+            a_ids_location_storage = '',
+            a_date_received_to = None,
+            a_get_sealed_stock_item_only = False,
+            a_get_unsealed_stock_item_only = False,
+            a_get_expired_stock_item_only = False,
+            a_get_nonexpired_stock_item_only = False,
+            a_get_consumed_stock_item_only = False,
+            a_get_nonconsumed_stock_item_only = False
         )
     
-    @staticmethod
-    def get_default():
-        return Stock_Item_Filters(
-            get_all_category = True,
-            get_inactive_category = False,
-            get_first_category_only = False,
-            ids_category = '',
-            get_all_product = True,
-            get_inactive_product = False,
-            get_first_product_only = False,
-            ids_product = '',
-            get_all_permutation = True,
-            get_inactive_permutation = False,
-            get_first_permutation_only = False,
-            ids_permutation = '',
-            get_all_stock_item = True,
-            get_inactive_stock_item = False,
-            get_first_stock_item_only = False,
-            ids_stock_item = '',
-            get_all_region_storage = True,
-            get_inactive_region_storage = False,
-            get_first_region_storage_only = False,
-            ids_region_storage = '',
-            get_all_plant_storage = True,
-            get_inactive_plant_storage = False,
-            get_first_plant_storage_only = False,
-            ids_plant_storage = '',
-            get_all_location_storage = True,
-            get_inactive_location_storage = False,
-            get_first_location_storage_only = False,
-            ids_location_storage = '',
-            date_received_to = None,
-            get_sealed_stock_item_only = False,
-            get_unsealed_stock_item_only = False,
-            get_expired_stock_item_only = False,
-            get_nonexpired_stock_item_only = False,
-            get_consumed_stock_item_only = False,
-            get_nonconsumed_stock_item_only = False
-        )
+    @classmethod
+    def from_form_stock_item(cls, id_user, form):
+        return cls.get_default(id_user)

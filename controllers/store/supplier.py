@@ -13,8 +13,8 @@ Initializes the Flask application, sets the configuration based on the environme
 
 # internal
 from business_objects.store.product import Product, Filters_Product, Product_Permutation
-from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
-from forms.forms import Form_Supplier, Form_Filters_Stock_Item
+from business_objects.store.stock_item import Stock_Item
+from forms.forms import Form_Supplier
 from models.model_view_base import Model_View_Base
 from models.model_view_store import Model_View_Store
 from models.model_view_store_supplier import Model_View_Store_Supplier
@@ -59,10 +59,10 @@ def supplier():
             permutation_id, quantity = model.import_JSON_basket_item(data, form)
             model.basket_item_edit(permutation_id, quantity, False) # new_basket = 
         except Exception as e:
-            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
+            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
         # return jsonify(Success = True, data = { html_block: render_template(), Model_View_Store.key_basket: new_basket })
         # html_block = render_template('_block_store_basket.html', model = model)
         # print(f'html_block:\n{html_block}')
         # return jsonify(Success = True, data = { 'html_block': html_block, 'basket': {'items': model.basket.to_json_list()}})
         return render_template('pages/store/_supplier.html', model = model)
-    return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.STATUS_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Invalid supplier details.\n{form.errors}'})
+    return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Invalid supplier details.\n{form.errors}'})

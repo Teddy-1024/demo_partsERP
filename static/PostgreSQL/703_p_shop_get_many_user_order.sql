@@ -94,7 +94,7 @@ BEGIN
 	END IF;
     
     -- Permissions
-	CALL p_shop_user_eval (
+	CALL p_shop_calc_user (
 		v_guid, -- a_guid
 		a_id_user, 	-- a_id_user
 		0,		-- a_get_inactive_users
@@ -104,13 +104,13 @@ BEGIN
 		''		-- a_ids_permutation
 	);
 	
-	IF NOT (SELECT can_edit FROM Shop_User_Eval_Temp WHERE guid = v_guid) THEN
+	IF NOT (SELECT can_edit FROM Shop_Calc_User_Temp WHERE guid = v_guid) THEN
 		RAISE EXCEPTION 'User ID does not have permission to access orders.'
 		USING ERRCODE = '42501'
 		;
 	END IF;
 	
-	DELETE FROM Shop_User_Eval_Temp
+	DELETE FROM Shop_Calc_User_Temp
 	WHERE guid = v_guid
 	;
     

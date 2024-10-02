@@ -145,7 +145,7 @@ BEGIN
     -- Permissions
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
 		# SELECT * FROM tmp_Msg_Error LIMIT 1;
-		CALL p_shop_user_eval (
+		CALL p_shop_calc_user (
 			v_guid, # a_guid
 			a_id_user, 	# a_id_user
 			0,		# a_get_inactive_users
@@ -156,7 +156,7 @@ BEGIN
 		);
 		# SELECT * FROM tmp_Msg_Error LIMIT 1;
         
-        IF EXISTS (SELECT can_admin FROM Shop_User_Eval_Temp WHERE guid = v_guid AND NOT can_admin LIMIT 1) THEN
+        IF EXISTS (SELECT can_admin FROM Shop_Calc_User_Temp WHERE guid = v_guid AND NOT can_admin LIMIT 1) THEN
 			INSERT INTO tmp_Msg_Error (
 				guid,
 				code,
@@ -170,7 +170,7 @@ BEGIN
 			;
         END IF;
         
-        DELETE FROM Shop_User_Eval_Temp
+        DELETE FROM Shop_Calc_User_Temp
         WHERE guid = v_guid
         ;
     END IF;

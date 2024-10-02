@@ -380,7 +380,7 @@ BEGIN
     -- String product id, permutation id, quantity list
     IF NOT EXISTS (SELECT * FROM tmp_Shop_Basket WHERE active LIMIT 1) AND NOT EXISTS (SELECT msg FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN -- NOT v_has_filter_user AND
 		-- Get product ids
-		CALL p_split(a_ids_permutation_basket, ',');
+		CALL p_split(a_guid, a_ids_permutation_basket, ',');
 		INSERT INTO tmp_Shop_Product (
 			id_product, id_permutation, display_order
 		)
@@ -398,7 +398,7 @@ BEGIN
 		DROP TABLE Split_Temp;
 		
 		-- Get product quantities
-		CALL p_split(a_quantities_permutation_basket, ',');
+		CALL p_split(a_guid, a_quantities_permutation_basket, ',');
 		INSERT INTO tmp_Shop_Quantity (
 			quantity, display_order
 		)

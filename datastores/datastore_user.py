@@ -14,7 +14,7 @@ Datastore for Users
 # from routes import bp_home
 import lib.argument_validation as av
 from business_objects.sql_error import SQL_Error
-from business_objects.store.stock_item import Stock_Item, Stock_Item_Filters
+from business_objects.store.stock_item import Stock_Item
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from datastores.datastore_base import DataStore_Base
 from helpers.helper_db_mysql import Helper_DB_MySQL
@@ -143,7 +143,7 @@ class DataStore_User(DataStore_Base):
         # argument_dict_list['a_guid'] = guid
         result = self.db_procedure_execute('p_get_many_user', argument_dict_list)
         """
-        query = text(f"SELECT * FROM Shop_User_Eval_Temp UE_T WHERE UE_T.guid = '{guid}'")
+        query = text(f"SELECT * FROM Shop_Calc_User_Temp UE_T WHERE UE_T.guid = '{guid}'")
         result = self.db.session.execute(query)
         """
         cursor = result.cursor
