@@ -208,6 +208,8 @@ BEGIN
 		END IF;
 	END IF;
     
+    DELETE FROM tmp_Split;
+    
     -- Products
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
@@ -281,6 +283,8 @@ BEGIN
 			;
 		END IF;
 	END IF;
+    
+    DELETE FROM tmp_Split;
         
 	-- Permutations
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
@@ -361,6 +365,8 @@ BEGIN
 			;
 		END IF;
 	END IF;
+    
+    DELETE FROM tmp_Split;
     
 	-- Permissions
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN

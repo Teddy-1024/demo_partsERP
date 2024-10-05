@@ -105,8 +105,8 @@ DROP TABLE IF EXISTS Shop_Discount_Region_Currency_Link;
 DROP TABLE IF EXISTS Shop_Discount_Audit;
 DROP TABLE IF EXISTS Shop_Discount;
 
-DROP TABLE IF EXISTS Shop_Product_Delivery_Option_Link_Audit;
-DROP TABLE IF EXISTS Shop_Product_Delivery_Option_Link;
+DROP TABLE IF EXISTS Shop_Product_Permutation_Delivery_Option_Link_Audit;
+DROP TABLE IF EXISTS Shop_Product_Permutation_Delivery_Option_Link;
 
 DROP TABLE IF EXISTS Shop_Delivery_Option_Audit;
 DROP TABLE IF EXISTS Shop_Delivery_Option;

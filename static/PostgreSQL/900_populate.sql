@@ -380,7 +380,7 @@ VALUES
 	(2, 'SIGNED_1', 'First Class Signed-For', 2, 4, 0, 1)
 ;
 
-INSERT INTO Shop_Product_Delivery_Option_Link (
+INSERT INTO Shop_Product_Permutation_Delivery_Option_Link (
 	display_order, id_product, id_permutation, id_delivery_option, id_region, id_currency, price_local
 )
 VALUES 

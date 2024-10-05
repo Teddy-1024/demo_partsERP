@@ -1,34 +1,42 @@
 -- USE partsltd_prod;
 
 -- Clear previous proc
-DROP PROCEDURE IF EXISTS p_shop_get_many_product_price_and_discount_and_delivery_region;
+DROP PROCEDURE IF EXISTS p_shop_get_many_product_price_and_discount_and_delivery_option;
 
 DELIMITER //
-CREATE PROCEDURE p_shop_get_many_product_price_and_discount_and_delivery_region (
-	IN a_id_user INT,
-    IN a_get_all_product_permutation BIT,
-	IN a_get_inactive_permutation BIT,
-	IN a_ids_permutation VARCHAR(4000),
-    IN a_get_all_delivery_region BIT,
-	IN a_get_inactive_delivery_region BIT,
-    IN a_ids_delivery_region VARCHAR(4000),
-    IN a_get_all_currency BIT,
-	IN a_get_inactive_currency BIT,
-    IN a_ids_currency VARCHAR(4000),
-    IN a_get_all_discount BIT,
-	IN a_get_inactive_discount BIT,
-    IN a_ids_discount VARCHAR(4000)
+CREATE PROCEDURE p_shop_get_many_product_price_and_discount_and_delivery_option (
+	IN a_id_user INT
+    , IN a_get_all_product_permutation BIT
+	, IN a_get_inactive_product_permutation BIT
+	, IN a_ids_product_permutation TEXT
+    , IN a_get_all_product_price BIT
+	, IN a_get_inactive_product_price BIT
+	, IN a_ids_product_price TEXT
+    , IN a_product_price_min FLOAT
+    , IN a_product_price_max FLOAT
+    , IN a_get_all_currency BIT
+	, IN a_get_inactive_currency BIT
+    , IN a_ids_currency VARCHAR(4000)
+    , IN a_get_all_discount BIT
+	, IN a_get_inactive_discount BIT
+    , IN a_ids_discount TEXT
+    , IN a_get_all_delivery_option BIT
+	, IN a_get_inactive_delivery_option BIT
+    , IN a_ids_delivery_option TEXT
+    , IN a_get_all_delivery_region BIT
+	, IN a_get_inactive_delivery_region BIT
+    , IN a_ids_delivery_region TEXT
+    , IN a_debug BIT
 )
 BEGIN
 	-- Argument redeclaration
 	-- Variable declaration
-    DECLARE v_has_filter_category BIT;
-    DECLARE v_has_filter_product BIT;
-    DECLARE v_has_filter_permutation BIT;
-    DECLARE v_has_filter_image BIT;
-    DECLARE v_has_filter_delivery_region BIT;
+    DECLARE v_has_filter_product_permutation BIT;
+    DECLARE v_has_filter_product_price BIT;
     DECLARE v_has_filter_currency BIT;
     DECLARE v_has_filter_discount BIT;
+    DECLARE v_has_filter_delivery_option BIT;
+    DECLARE v_has_filter_delivery_region BIT;
     DECLARE v_guid BINARY(36);
     # DECLARE v_id_user VARCHAR(100);
     DECLARE v_ids_permutation_unavailable VARCHAR(4000);
@@ -38,7 +46,9 @@ BEGIN
     DECLARE v_id_access_level_view INT;
     -- DECLARE v_now TIMESTAMP;
     DECLARE v_id_minimum INT;
+    DECLARE v_time_start TIMESTAMP(6);
     
+    SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
     SET v_id_access_level_view := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'VIEW');
     
@@ -46,8 +56,8 @@ BEGIN
 	-- Argument validation + default values
     SET a_id_user := TRIM(IFNULL(a_id_user, ''));
 	SET a_get_all_product_permutation := TRIM(IFNULL(a_get_all_product_permutation, 1));
-	SET a_get_inactive_permutation := TRIM(IFNULL(a_get_inactive_permutation, 0));
-	SET a_ids_permutation := TRIM(IFNULL(a_ids_permutation, ''));
+	SET a_get_inactive_product_permutation := TRIM(IFNULL(a_get_inactive_product_permutation, 0));
+	SET a_ids_product_permutation := TRIM(IFNULL(a_ids_product_permutation, ''));
 	SET a_get_all_delivery_region := TRIM(IFNULL(a_get_all_delivery_region, 1));
 	SET a_get_inactive_delivery_region := TRIM(IFNULL(a_get_inactive_delivery_region, 0));
 	SET a_ids_delivery_region := TRIM(IFNULL(a_ids_delivery_region, ''));
@@ -57,6 +67,22 @@ BEGIN
 	SET a_get_all_discount := TRIM(IFNULL(a_get_all_discount, 1));
 	SET a_get_inactive_discount := TRIM(IFNULL(a_get_inactive_discount, 0));
 	SET a_ids_discount := TRIM(IFNULL(a_ids_discount, ''));
+    SET a_debug := IFNULL(a_debug, 0);
+    
+    IF a_debug = 1 THEN
+		SELECT
+			a_id_user
+			, a_get_all_variation_type
+			, a_get_inactive_variation_type
+			, a_get_first_variation_type_only
+			, a_ids_variation_type
+			, a_get_all_variation
+			, a_get_inactive_variation
+			, a_get_first_variation_only
+			, a_ids_variation
+			, a_debug
+		;
+    END IF;
     
     -- Temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_Discount;
@@ -66,52 +92,237 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Variation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_2;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     
-	
-    CREATE TEMPORARY TABLE tmp_Shop_Product_Permutation (
-		id_permutation INT NULL,
-        active_permutation BIT NULL,
-        display_order_permutation INT NULL, 
-        can_view BIT, 
-        can_edit BIT, 
-        can_admin BIT
+    CREATE TEMPORARY TABLE tmp_Category (
+		id_category INT NOT NULL
+        , display_order INT NOT NULL
     );
     
-    CREATE TEMPORARY TABLE tmp_Delivery_Region (
-		id_region INT NOT NULL,
-        active BIT NOT NULL,
-        display_order INT NOT NULL,
-        requires_delivery_option BIT NOT NULL DEFAULT 0
+    CREATE TEMPORARY TABLE tmp_Product (
+		id_category INT NOT NULL
+		, id_product INT NOT NULL
+        , display_order INT NOT NULL
+    );
+    
+    CREATE TEMPORARY TABLE tmp_Permutation (
+		id_permutation INT NULL
+		, id_product INT NOT NULL
+        , can_view BIT
+        , can_edit BIT
+        , can_admin BIT
+    );
+    
+    CREATE TEMPORARY TABLE tmp_Price (
+		id_price INT
+        , id_permutation INT
     );
     
     CREATE TEMPORARY TABLE tmp_Currency (
-		id_currency INT NOT NULL,
-        active BIT NOT NULL,
+		id_currency INT NOT NULl
+        /*
+        active BIT NOT NULL
         display_order INT NOT NULL
+        */
     );
     
     CREATE TEMPORARY TABLE tmp_Discount (
-		id_discount INT NOT NULL,
+		id_discount INT NOT NULL
+        /*
         active BIT NOT NULL,
         display_order INT NOT NULL
+        */
+    );
+    
+    CREATE TEMPORARY TABLE tmp_Delivery_Option (
+		id_option INT NOT NULL
+        /*
+        active BIT NOT NULL,
+        display_order INT NOT NULL,
+        requires_delivery_option BIT NOT NULL DEFAULT 0
+        */
+    );
+    
+    CREATE TEMPORARY TABLE tmp_Delivery_Region (
+		id_region INT NOT NULL
+        /*
+        active BIT NOT NULL,
+        display_order INT NOT NULL,
+        requires_delivery_option BIT NOT NULL DEFAULT 0
+        */
     );
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid BINARY(36) NOT NULL,
-		id_type INT NOT NULL,
+        -- guid BINARY(36) NOT NULL,
+		id_type INT NULL,
         code VARCHAR(50) NOT NULL,
         msg VARCHAR(4000) NOT NULL
 	);
     
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Split (
+		substring VARCHAR(4000) NOT NULL
+        , as_int INT NULL
+	);
+    DELETE FROM tmp_Split;
+    
     
     -- Parse filters
-    SET v_has_filter_permutation = CASE WHEN a_ids_permutation = '' THEN 0 ELSE 1 END;
-    SET v_has_filter_delivery_region = CASE WHEN a_ids_delivery_region = '' THEN 0 ELSE 1 END;
+    SET v_has_filter_product_permutation = CASE WHEN a_ids_product_permutation = '' THEN 0 ELSE 1 END;
+    SET v_has_filter_product_price = CASE WHEN a_ids_product_price = '' THEN 0 ELSE 1 END;
     SET v_has_filter_currency = CASE WHEN a_ids_currency = '' THEN 0 ELSE 1 END;
     SET v_has_filter_discount = CASE WHEN a_ids_discount = '' THEN 0 ELSE 1 END;
+    SET v_has_filter_delivery_option = CASE WHEN a_ids_delivery_option = '' THEN 0 ELSE 1 END;
+    SET v_has_filter_delivery_region = CASE WHEN a_ids_delivery_region = '' THEN 0 ELSE 1 END;
 
-	-- select v_has_filter_product, v_has_filter_permutation;
+	IF a_debug = 1 THEN
+		SELECT
+            v_has_filter_product_permutation
+            , v_has_filter_product_price
+            , v_has_filter_currency
+            , v_has_filter_discount
+            , v_has_filter_delivery_option
+            , v_has_filter_delivery_region
+		;
+    END IF;
+    
+    CALL partsltd_prod.p_shop_calc_product_permutation (
+		a_id_user
+		, 1 -- a_get_all_product_category
+		, 0 -- a_get_inactive_product_category
+		, '' -- a_ids_product_category
+		, 1 -- a_get_all_product
+		, 0 -- a_get_inactive_product
+		, '' -- a_ids_product
+		, a_get_all_product_permutation
+		, a_get_inactive_product_permutation
+		, a_ids_product_permutation
+		, 0 
+		, v_guid -- a_guid
+		, 0 -- a_debug 
+    );
+    
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		INSERT INTO tmp_Category (
+			id_category
+			, display_order
+		)
+		SELECT 
+			PC.id_category
+			, PC.display_order
+		FROM (SELECT * FROM partsltd_prod.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
+		INNER JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+		;
+		
+		INSERT INTO tmp_Product (
+			id_product
+			, id_category
+			, display_order
+		)
+		SELECT 
+			P.id_product
+			, P.id_category
+			, P.display_order
+		FROM (SELECT * FROM partsltd_prod.Shop_Product_Temp WHERE GUID = v_guid) P_T 
+		INNER JOIN partsltd_prod.Shop_Product P ON P.id_product = P_T.id_product
+		;
+		
+		INSERT INTO tmp_Permutation (
+			id_permutation
+			, id_product
+            , can_view
+            , can_edit
+            , can_admin
+		)
+		SELECT 
+			PP.id_permutation
+			, PP.id_product
+            , PP_T.can_view
+            , PP_T.can_edit
+            , PP_T.can_admin
+		FROM (SELECT * FROM partsltd_prod.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
+		INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
+		;
+    
+    # Product Prices
+		CALL partsltd_prod.p_split(v_guid, a_ids_product_price, ',', a_debug);
+        
+        DELETE FROM tmp_Split;
+		
+		INSERT INTO tmp_Split (
+			substring
+			, as_int
+		)
+		SELECT 
+			substring
+			, CONVERT(substring, DECIMAL(10,0)) AS as_int
+		FROM partsltd_prod.Split_Temp
+		WHERE 1=1
+			AND GUID = v_guid
+			AND NOT ISNULL(substring)
+			AND substring != ''
+		;
+		
+		CALL partsltd_prod.p_clear_split_temp( v_guid );
+	END IF;
+    
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		IF EXISTS (
+			SELECT * 
+            FROM tmp_Split t_S 
+            LEFT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+			WHERE 
+				ISNULL(t_S.as_int) 
+                OR ISNULL(PRICE.id_price)
+		) THEN
+			INSERT INTO tmp_Msg_Error (
+				-- guid,
+				id_type,
+				code,
+				msg
+			)
+			SELECT
+				-- v_guid,
+				v_id_type_error_bad_data,
+				v_code_type_error_bad_data, 
+				CONCAT('Invalid or inactive product price IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
+			FROM tmp_Split t_S
+			LEFT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+			WHERE 
+				ISNULL(t_S.as_int) 
+				OR ISNULL(PRICE.id_price)
+			;
+		ELSE
+			INSERT INTO tmp_Price (
+				id_price
+                , id_permutation
+			)
+			SELECT 
+				PRICE.id_price
+                , PRICE.id_permutation
+			FROM tmp_Split t_S
+			RIGHT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+            INNER JOIN tmp_Permutation t_PP ON SI.id_permutation = t_PP.id_permutation
+			WHERE 
+				(
+					a_get_all_stock_item = 1
+					OR (
+						v_has_filter_stock_item = 1
+						AND NOT ISNULL(t_S.as_int)
+					)
+				)
+				AND (
+					a_get_inactive_stock_item = 1
+					OR SI.active = 1
+				)
+			;
+		END IF;
+	END IF;
+    
+    DELETE FROM tmp_Split;
+    
     
 	INSERT INTO tmp_Shop_Product (
 		id_permutation,
@@ -132,8 +343,8 @@ BEGIN
 		(
 			a_get_all_product_permutation 
 			OR (
-				v_has_filter_permutation 
-				AND FIND_IN_SET(PP.id_permutation, a_ids_permutation) > 0
+				v_has_filter_product_permutation 
+				AND FIND_IN_SET(PP.id_permutation, a_ids_product_permutation) > 0
 			)
 			OR (
 				a_get_products_quantity_stock_below_min = 1
@@ -141,7 +352,7 @@ BEGIN
 			)
 		)
 		AND (
-			a_get_inactive_permutation 
+			a_get_inactive_product_permutation 
 			OR PP.active
 		)
     ;
@@ -208,7 +419,7 @@ BEGIN
 		)*
 		FIND_IN_SET(t_P.id_category, a_ids_category) > 0
 		OR FIND_IN_SET(t_P.id_product, a_ids_product) > 0
-		OR FIND_IN_SET(t_P.id_permutation, a_ids_permutation) > 0
+		OR FIND_IN_SET(t_P.id_permutation, a_ids_product_permutation) > 0
 	;
     */
     
@@ -226,7 +437,7 @@ BEGIN
 					)*/
 					FIND_IN_SET(t_P.id_category, a_ids_category) > 0
 					OR FIND_IN_SET(t_P.id_product, a_ids_product) > 0
-					OR FIND_IN_SET(t_P.id_permutation, a_ids_permutation) > 0
+					OR FIND_IN_SET(t_P.id_permutation, a_ids_product_permutation) > 0
 			) t_P
 			LEFT JOIN (
 				SELECT *
@@ -320,7 +531,7 @@ BEGIN
 						)*/
 						FIND_IN_SET(t_P.id_category, a_ids_category) > 0
 						OR FIND_IN_SET(t_P.id_product, a_ids_product) > 0
-						OR FIND_IN_SET(t_P.id_permutation, a_ids_permutation) > 0
+						OR FIND_IN_SET(t_P.id_permutation, a_ids_product_permutation) > 0
 				) t_P
 				INNER JOIN (
 					SELECT *
@@ -432,8 +643,8 @@ BEGIN
                     OR FIND_IN_SET(t_P.id_product, a_ids_product) = 0
                 )
                 AND (
-					NOT v_has_filter_permutation 
-                    OR FIND_IN_SET(t_P.id_permutation, a_ids_permutation) = 0
+					NOT v_has_filter_product_permutation 
+                    OR FIND_IN_SET(t_P.id_permutation, a_ids_product_permutation) = 0
 				)
             )
         ;
@@ -573,7 +784,7 @@ BEGIN
 	INNER JOIN tmp_Delivery_Region t_DR ON PCRL.id_region_purchase = t_DR.id_region
     WHERE (
         a_get_inactive_product 
-        AND a_get_inactive_permutation
+        AND a_get_inactive_product_permutation
         AND a_get_inactive_currency
         AND a_get_inactive_delivery_region
         OR PCRL.active
@@ -631,7 +842,7 @@ BEGIN
 		PDOL.price_local,
 		PDOL.display_order
 	FROM Shop_Delivery_Option _DO
-    INNER JOIN Shop_Product_Delivery_Option_Link PDOL
+    INNER JOIN Shop_Product_Permutation_Delivery_Option_Link PDOL
 		ON _DO.id_option = PDOL.id_delivery_option
 		AND (
 			a_get_inactive_delivery_region
@@ -715,37 +926,12 @@ BEGIN
     
     # Errors
     SELECT 
-		t_ME.display_order,
-		t_ME.guid,
-        t_ME.id_type,
-        t_ME.msg,
-        MET.code, 
-        MET.name,
-        MET.description
+        *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN Shop_Msg_Error_Type MET
-		ON t_ME.id_type = MET.id_type
-    WHERE guid = v_guid
+    INNER JOIN Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    -- WHERE guid = v_guid
     ;
     
-    /*
-    # Return arguments for test
-    SELECT
-	a_ids_category,
-	a_get_inactive_category,
-	a_ids_product,
-	a_get_inactive_product,
-    a_get_first_product_only,
-    a_get_all_product,
-	a_ids_image,
-	a_get_inactive_image,
-    a_get_first_image_only,
-    a_get_all_image
-    ;
-    */
-    
-    # select 'other outputs';
-    # select * from tmp_Shop_Product;
     
     -- Clean up
     DROP TEMPORARY TABLE IF EXISTS tmp_Discount;
@@ -757,18 +943,27 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_2;
     DROP TEMPORARY TABLE IF EXISTS tmp_Shop_Product_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     
+    
+	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+    
+    IF a_debug = 1 THEN
+		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+    END IF;
 END //
 DELIMITER ;;
 
 
 /*
 
-CALL partsltd_prod.p_shop_get_many_product_price_and_discount_and_delivery_region (
+CALL partsltd_prod.p_shop_get_many_product_price_and_discount_and_delivery_option (
 	IN a_id_user INT,
     IN a_get_all_product_permutation BIT,
-	IN a_get_inactive_permutation BIT,
-	IN a_ids_permutation VARCHAR(4000),
+	IN a_get_inactive_product_permutation BIT,
+	IN a_ids_product_permutation VARCHAR(4000),
     IN a_get_all_delivery_region BIT,
 	IN a_get_inactive_delivery_region BIT,
     IN a_ids_delivery_region VARCHAR(4000),

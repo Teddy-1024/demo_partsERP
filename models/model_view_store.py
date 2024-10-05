@@ -18,7 +18,7 @@ Parent data model for store views
 # internal
 # from context import models
 from business_objects.store.store_base import Store_Base
-from business_objects.store.product import Product, Filters_Product, Product_Permutation # Product_Image_Filters, 
+from business_objects.store.product import Product, Parameters_Product, Product_Permutation # Product_Image_Filters, 
 # from business_objects.store.product_category import Filters_Product_Category
 from business_objects.store.image import Resolution_Level_Enum
 from business_objects.store.basket import Basket_Item, Basket
@@ -106,8 +106,10 @@ class Model_View_Store(Model_View_Base):
     HASH_GET_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/category_get'
     HASH_SAVE_STORE_PRODUCT: ClassVar[str] = '/store/save_product'
     HASH_GET_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_get'
+    HASH_GET_STORE_STOCK_ITEM: ClassVar[str] = '/store/stock_item_get'
     HASH_SAVE_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/save_category'
     HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/save_permutation'
+    HASH_SAVE_STORE_STOCK_ITEM: ClassVar[str] = '/store/save_stock_item'
     HASH_STORE_SET_CURRENCY : ClassVar[str] = '/store/set_currency'
     HASH_STORE_SET_DELIVERY_REGION : ClassVar[str] = '/store/set_delivery_region'
     HASH_STORE_SET_IS_INCLUDED_VAT : ClassVar[str] = '/store/set_is_included_VAT'
@@ -197,7 +199,7 @@ class Model_View_Store(Model_View_Base):
 
     def get_many_product(self, product_filters): # category_ids = '', product_ids = '', get_all_category = True, get_all_product = True, max_products_per_category = -1):
         _m = 'Model_View_Store.get_many_product'
-        av.val_instance(product_filters, 'product_filters', _m, Filters_Product)
+        av.val_instance(product_filters, 'product_filters', _m, Parameters_Product)
         """
         av.val_str(category_ids, 'category_ids', _m)
         av.val_str(product_ids, 'product_ids', _m)
@@ -327,7 +329,7 @@ class Model_View_Store(Model_View_Base):
         is_included_VAT = basket[self.KEY_IS_INCLUDED_VAT]
         print(f'json basket items: {items}')
         product_ids, permutation_ids, item_index_dict = self._get_json_basket_id_CSVs_product_permutation(items)
-        category_list, errors = DataStore_Store_Base().get_many_product(Filters_Product(
+        category_list, errors = DataStore_Store_Base().get_many_product(Parameters_Product(
             self.id_user, # :a_id_user
             True, '', False, # :a_get_all_category, :a_ids_category, :a_get_inactive_category
             False, product_ids, False, False, # :a_get_all_product, :a_ids_product, :a_get_inactive_product, :a_get_first_product_only
@@ -374,7 +376,7 @@ class Model_View_Store(Model_View_Base):
         """
         ids_permutation_unavailable = self.basket.get_ids_permutation_unavailable()
         if len(ids_permutation_unavailable) > 0:
-            category_list_unavailable, errors_unavailable = DataStore_Store().get_many_product(Filters_Product(
+            category_list_unavailable, errors_unavailable = DataStore_Store().get_many_product(Parameters_Product(
                 self.id_user, # :a_id_user
                 True, '', False, # :a_get_all_category, :a_ids_category, :a_get_inactive_category
                 False, '', False, False, # :a_get_all_product, :a_ids_product, :a_get_inactive_product, :a_get_first_product_only

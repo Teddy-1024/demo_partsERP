@@ -142,7 +142,7 @@ class Product_Variation_Filters():
     """
     @staticmethod
     def from_form(form):
-        av.val_instance(form, 'form', 'User_Filters.from_form', Form_Filters_Product_Variation)
+        av.val_instance(form, 'form', 'User_Filters.from_form', Filters_Product_Variation)
         get_inactive = av.input_bool(form.active.data, "active", "User_Filters.from_form")
         id_user = form.id_user.data
         return User_Filters(

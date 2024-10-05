@@ -27,7 +27,7 @@ from business_objects.store.product_variation import Product_Variation
 from business_objects.store.product_variation_tree import Product_Variation_Tree
 from extensions import db
 from forms.base import Form_Base
-from forms.store.product import Form_Filters_Product
+from forms.store.product import Filters_Product
 # external
 from dataclasses import dataclass
 from typing import ClassVar, List
@@ -352,8 +352,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
     """
 
 
-@dataclass
-class Filters_Product():
+class Parameters_Product(Get_Many_Parameters_Base):
     # id_user: str
     get_all_product_category: bool
     get_inactive_product_category: bool
@@ -388,7 +387,7 @@ class Filters_Product():
 
     def to_json(self):
         return {
-            'a_id_user': None,
+            # 'a_id_user': None,
             'a_get_all_product_category': self.get_all_product_category,
             'a_get_inactive_product_category': self.get_inactive_product_category,
             # 'a_get_first_product_category_only': self.get_first_product_category_only,
@@ -422,15 +421,15 @@ class Filters_Product():
     @staticmethod
     def from_form_filters_product(form):
         # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Product)
+        av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product)
         has_filter_category = not (form.id_category.data == '0' or form.id_category.data == '')
-        is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Filters_Product.from_form_filters_product")
-        active = av.input_bool(form.active.data, "active", "Filters_Product.from_form_filters_product")
-        return Filters_Product(
+        is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Parameters_Product.from_form_filters_product")
+        active = av.input_bool(form.active.data, "active", "Parameters_Product.from_form_filters_product")
+        return Parameters_Product(
             get_all_product_category = not has_filter_category,
             get_inactive_product_category = not active,
             # get_first_product_category_only = False,
-            ids_product_category = form.id_category.data,
+            ids_product_category = form.id_category.data if form.id_category.data is not None else '',
             get_all_product = True,
             get_inactive_product = not active,
             # get_first_product_only = False,
@@ -459,12 +458,12 @@ class Filters_Product():
     @staticmethod
     def from_form_filters_product_permutation(form):
         # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Filters_Product.from_form', Filters_Product_Permutation)
+        av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product_Permutation)
         has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
         has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
-        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Filters_Product.from_form")
+        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form")
         print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
-        return Filters_Product(
+        return Parameters_Product(
             get_all_product_category = not has_category_filter,
             get_inactive_product_category = False,
             # get_first_product_category_only = False,
@@ -497,7 +496,7 @@ class Filters_Product():
     
     @staticmethod
     def get_default():
-        return Filters_Product(
+        return Parameters_Product(
             get_all_product_category = True,
             get_inactive_product_category = False,
             # get_first_product_category_only = False,
@@ -579,8 +578,8 @@ class Filters_Product():
             get_products_quantity_stock_below_min = False
         )
     
-
-class Filters_Product(Get_Many_Parameters_Base):
+"""
+class Parameters_Product(Get_Many_Parameters_Base):
     # id_user: str
     get_all_product_category: bool
     get_inactive_product_category: bool
@@ -598,7 +597,7 @@ class Filters_Product(Get_Many_Parameters_Base):
     get_inactive_image: bool
     # get_first_image_only: bool
     ids_image: str
-    """
+    ""
     get_all_region: bool
     get_inactive_region: bool
     get_first_region_only: bool
@@ -610,15 +609,15 @@ class Filters_Product(Get_Many_Parameters_Base):
     get_all_discount: bool
     get_inactive_discount: bool
     ids_discount: str
-    """
+    ""
     get_products_quantity_stock_below_min: bool
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, a_id_user, **kwargs):
+        super().__init__(a_id_user, **kwargs)
 
     def to_json(self):
         return {
-            'a_id_user': None,
+            'a_id_user': self.a_id_user,
             'a_get_all_product_category': self.get_all_product_category,
             'a_get_inactive_product_category': self.get_inactive_product_category,
             # 'a_get_first_product_category_only': self.get_first_product_category_only,
@@ -650,13 +649,14 @@ class Filters_Product(Get_Many_Parameters_Base):
         }
     
     @staticmethod
-    def from_form_filters_product(form):
+    def from_form_filters_product(form, id_user):
         # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Filters_Product)
+        av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product)
         has_filter_category = not (form.id_category.data == '0' or form.id_category.data == '')
-        is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Filters_Product.from_form_filters_product")
-        active = av.input_bool(form.active.data, "active", "Filters_Product.from_form_filters_product")
-        return Filters_Product(
+        is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Parameters_Product.from_form_filters_product")
+        active = av.input_bool(form.active.data, "active", "Parameters_Product.from_form_filters_product")
+        return Parameters_Product(
+            a_id_user = id_user,
             get_all_product_category = not has_filter_category,
             get_inactive_product_category = not active,
             # get_first_product_category_only = False,
@@ -689,12 +689,12 @@ class Filters_Product(Get_Many_Parameters_Base):
     @staticmethod 
     def from_form_filters_product_permutation(form):
         # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        # av.val_instance(form, 'form', 'Filters_Product.from_form', Form_Base)
+        # av.val_instance(form, 'form', 'Parameters_Product.from_form', Form_Base)
         has_category_filter = not (form.id_category.data is None or form.id_category.data == '0' or form.id_category.data == '')
         has_product_filter = not (form.id_product.data is None or form.id_product.data == '0' or form.id_product.data == '')
-        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Filters_Product.from_form")
+        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form")
         print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
-        return Filters_Product(
+        return Parameters_Product(
             get_all_product_category = not has_category_filter,
             get_inactive_product_category = False,
             # get_first_product_category_only = False,
@@ -725,9 +725,10 @@ class Filters_Product(Get_Many_Parameters_Base):
             get_products_quantity_stock_below_min = get_permutations_stock_below_min
         )
     
-    @staticmethod
-    def get_default():
-        return Filters_Product(
+    @classmethod
+    def get_default(cls, id_user):
+        return cls(
+            a_id_user = id_user,
             get_all_product_category = True,
             get_inactive_product_category = False,
             # get_first_product_category_only = False,
@@ -811,3 +812,4 @@ class Filters_Product(Get_Many_Parameters_Base):
     @classmethod
     def from_filters_stock_item(cls, filters_stock_item):
         return cls.from_form_filters_product_permutation(filters_stock_item)
+"""

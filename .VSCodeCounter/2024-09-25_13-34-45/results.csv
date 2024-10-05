@@ -86,7 +86,7 @@
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product.py", "Python", 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 12, 67
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product_category.py", "Python", 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 55
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product_permutation.py", "Python", 81, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 9, 96
-"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_stock_items.py", "Python", 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 81
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\Model_View_Store_Stock_Item.py", "Python", 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 81
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_supplier.py", "Python", 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 8, 39
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_user.py", "Python", 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 27
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\package-lock.json", "JSON", 0, 0, 0, 0, 0, 0, 4383, 0, 0, 0, 0, 1, 4384
@@ -160,8 +160,8 @@
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1225_tbl_Shop_Product_Image_Audit.sql", "SQL", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 5, 21
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1227_tbl_Shop_Delivery_Option.sql", "SQL", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 6, 26
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1228_tbl_Shop_Delivery_Option_Audit.sql", "SQL", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 5, 22
-"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1230_tbl_Shop_Product_Delivery_Option_Link.sql", "SQL", 0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 5, 44
-"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1231_tbl_Shop_Product_Delivery_Option_Link_Audit.sql", "SQL", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 5, 22
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1230_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql", "SQL", 0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 5, 44
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1231_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql", "SQL", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 5, 22
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1233_tbl_Shop_Discount.sql", "SQL", 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 12, 6, 49
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1234_tbl_Shop_Discount_Audit.sql", "SQL", 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 5, 23
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\1236_tbl_Shop_Discount_Region_Currency_Link.sql", "SQL", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 5, 32
@@ -228,7 +228,7 @@
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\3221_tri_Shop_Product_Price.sql", "SQL", 0, 0, 0, 58, 0, 0, 0, 0, 0, 0, 19, 11, 88
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\3224_tri_Shop_Product_Image.sql", "SQL", 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 10, 9, 73
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\3227_tri_Shop_Delivery_Option.sql", "SQL", 0, 0, 0, 62, 0, 0, 0, 0, 0, 0, 0, 9, 71
-"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\3230_tri_Shop_Product_Delivery_Option_Link.sql", "SQL", 0, 0, 0, 42, 0, 0, 0, 0, 0, 0, 18, 9, 69
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\3230_tri_Shop_Product_Permutation_Delivery_Option_Link.sql", "SQL", 0, 0, 0, 42, 0, 0, 0, 0, 0, 0, 18, 9, 69
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\3233_tri_Shop_Discount.sql", "SQL", 0, 0, 0, 74, 0, 0, 0, 0, 0, 0, 0, 10, 84
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\3236_tri_Shop_Discount_Region_Currency_Link.sql", "SQL", 0, 0, 0, 34, 0, 0, 0, 0, 0, 0, 10, 9, 53
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\3300_tri_Shop_Permission_Group.sql", "SQL", 0, 0, 0, 46, 0, 0, 0, 0, 0, 0, 0, 9, 55
@@ -327,8 +327,8 @@
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\121_tbl_Shop_Image_Audit.sql", "SQL", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 1, 5, 21
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\122_tbl_Shop_Delivery_Option.sql", "SQL", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 1, 6, 26
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\123_tbl_Shop_Delivery_Option_Audit.sql", "SQL", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 5, 22
-"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\124_tbl_Shop_Product_Delivery_Option_Link.sql", "SQL", 0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 1, 5, 44
-"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\125_tbl_Shop_Product_Delivery_Option_Link_Audit.sql", "SQL", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 5, 22
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\124_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql", "SQL", 0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 1, 5, 44
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\125_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql", "SQL", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 5, 22
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\130.4_tbl_Shop_Discount.sql", "SQL", 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 13, 6, 49
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\131_tbl_Shop_Discount_Audit.sql", "SQL", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 1, 5, 23
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\132_tbl_Shop_Discount_Region_Currency_Link.sql", "SQL", 0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 1, 5, 32
@@ -396,7 +396,7 @@
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\318_tri_Shop_Image_Type.sql", "SQL", 0, 0, 0, 48, 0, 0, 0, 0, 0, 0, 6, 10, 64
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\320_tri_Shop_Image.sql", "SQL", 0, 0, 0, 58, 0, 0, 0, 0, 0, 0, 8, 10, 76
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\322_tri_Shop_Delivery_Option.sql", "SQL", 0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 9, 10, 76
-"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\324_tri_Shop_Product_Delivery_Option_Link.sql", "SQL", 0, 0, 0, 46, 0, 0, 0, 0, 0, 0, 22, 10, 78
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\324_tri_Shop_Product_Permutation_Delivery_Option_Link.sql", "SQL", 0, 0, 0, 46, 0, 0, 0, 0, 0, 0, 22, 10, 78
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\330_tri_Shop_Discount.sql", "SQL", 0, 0, 0, 66, 0, 0, 0, 0, 0, 0, 12, 10, 88
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\332_tri_Shop_Discount_Region_Currency_Link.sql", "SQL", 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 12, 10, 62
 "c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL\353_tri_Shop_Permission_Group.sql", "SQL", 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 5, 10, 64

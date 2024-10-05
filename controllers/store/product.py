@@ -11,8 +11,9 @@ Initializes the Flask application, sets the configuration based on the environme
 """
 
 # internal
-from business_objects.store.product import Product, Filters_Product
-from forms.store.product import Form_Filters_Product
+from business_objects.store.product import Product, Parameters_Product
+from datastores.datastore_store_product import DataStore_Store_Product
+from forms.store.product import Filters_Product
 from models.model_view_store_product import Model_View_Store_Product
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
@@ -27,12 +28,13 @@ from urllib.parse import quote, urlparse, parse_qs
 
 routes_store_product = Blueprint('routes_store_product', __name__)
 
-
+"""
 @routes_store_product.route(Model_View_Store_Product.HASH_PAGE_STORE_PRODUCTS, methods=['GET'])
 def products():
     print('products')
     print(f'request.args={request.args}')
-    filters = Filters_Product.get_default()
+    user = DataStore_Store_Product.get_user_session()
+    filters = Parameters_Product.get_default(user.id_user)
     have_changed_filters = False
     arg_filter_is_not_empty = request.args.get(Model_View_Store_Product.FLAG_IS_NOT_EMPTY, None)
     have_changed_filters = have_changed_filters or arg_filter_is_not_empty is None
@@ -53,19 +55,19 @@ def filter():
     data = Helper_App.get_request_data(request)
     # form_filters = None
     try:
-        form_filters = get_Form_Filters_Product(data)
+        form_filters = get_Filters_Product(data)
         if not form_filters.validate_on_submit():
-            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'})
+            return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, Model_View_Store_Product.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'})
         # ToDo: manually validate category, product
-        filters_form = Filters_Product.from_form_filters_product(form_filters)
+        filters_form = Parameters_Product.from_form_filters_product(form_filters)
         model = Model_View_Store_Product(filters = filters_form)
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model.category_list.to_json()})
+        return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 'Success': True, Model_View_Store_Product.KEY_DATA: model.category_list.to_json()})
     except Exception as e:
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
+        return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, Model_View_Store_Product.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
 
-def get_Form_Filters_Product(data_request):
+def get_Filters_Product(data_request):
     data_form = data_request[Model_View_Store_Product.KEY_FORM]
-    form_filters = Form_Filters_Product(**data_form)
+    form_filters = Filters_Product(**data_form)
     form_filters.is_not_empty.data = av.input_bool(data_form['is_not_empty'], 'is_not_empty', 'filter')
     form_filters.active.data = av.input_bool(data_form['active'], 'active', 'filter')
     return form_filters
@@ -76,14 +78,14 @@ def save():
     # form_filters = None
     print(f'data={data}')
     try:
-        form_filters = get_Form_Filters_Product(data)
+        form_filters = get_Filters_Product(data)
         if not form_filters.validate_on_submit():
-            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'})
-        filters_form = Filters_Product.from_form(form_filters)
+            return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, Model_View_Store_Product.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'})
+        filters_form = Parameters_Product.from_form(form_filters)
         
         categories = data[Model_View_Store_Product.FLAG_PRODUCT]
         if len(categories) == 0:
-            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'No categories.'})
+            return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, Model_View_Store_Product.FLAG_MESSAGE: f'No categories.'})
         objsCategory = []
         for category in categories:
             objsCategory.append(Product.from_json(category))
@@ -93,7 +95,80 @@ def save():
 
         model_return = Model_View_Store_Product(filters=filters_form)
         print('nips')
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model_return.category_list.to_json()})
+        return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 'Success': True, Model_View_Store_Product.KEY_DATA: model_return.category_list.to_json()})
     except Exception as e:
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
+        return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, Model_View_Store_Product.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
+"""
+
+
+@routes_store_product.route(Model_View_Store_Product.HASH_PAGE_STORE_PRODUCTS, methods=['GET'])
+def products():
+    print('products')
+    try:
+        form_filters = Filters_Product.from_json(request.args)
+    except Exception as e:
+        print(f'Error: {e}')
+        form_filters = Filters_Product()
+    print(f'form_filters={form_filters}')
+    model = Model_View_Store_Product(form_filters)
+    return render_template('pages/store/_products.html', model = model)
+
+@routes_store_product.route(Model_View_Store_Product.HASH_GET_STORE_PRODUCT, methods=['POST'])
+def filter_product():
+    data = Helper_App.get_request_data(request)
+    try:
+        form_filters = Filters_Product.from_json(data)
+        if not form_filters.validate_on_submit():
+            return jsonify({
+                Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, 
+                Model_View_Store_Product.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
+            })
+        model = Model_View_Store_Product(form_filters = form_filters)
+        return jsonify({
+            Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 
+            Model_View_Store_Product.KEY_DATA: model.category_list.to_json()
+        })
+    except Exception as e:
+        return jsonify({
+            Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, 
+            Model_View_Store_Product.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
+        })
+
+@routes_store_product.route(Model_View_Store_Product.HASH_SAVE_STORE_PRODUCT, methods=['POST'])
+def save_product():
+    data = Helper_App.get_request_data(request)
+    try:
+        form_filters = Filters_Product.from_json(data[Model_View_Store_Product.FLAG_FORM_FILTERS])
+        if not form_filters.validate_on_submit():
+            return jsonify({
+                Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, 
+                Model_View_Store_Product.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'
+            })
+        # filters_form = Filters_Product.from_form(form_filters)
+        print(f'form_filters: {form_filters}')
+
+        products = data[Model_View_Store_Product.FLAG_PRODUCT]
+        if len(products) == 0:
+            return jsonify({
+                Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, 
+                Model_View_Store_Product.FLAG_MESSAGE: f'No products.'
+            })
+        objsProduct = []
+        for product in products:
+            objsProduct.append(Product.from_json(product))
+        # model_save = Model_View_Store_Product() # filters_product=filters_form)
+        print(f'objsProduct={objsProduct}')
+        Model_View_Store_Product.save_products(data.get('comment', 'No comment'), objsProduct)
+
+        model_return = Model_View_Store_Product(form_filters=form_filters)
+        print('nips')
+        return jsonify({
+            Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 
+            Model_View_Store_Product.KEY_DATA: model_return.category_list.to_json()
+        })
+    except Exception as e:
+        return jsonify({
+            Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, 
+            Model_View_Store_Product.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
+        })
     

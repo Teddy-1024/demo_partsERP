@@ -86,7 +86,7 @@ BEGIN
 	
 	CREATE TEMPORARY TABLE tmp_Product_Calc_User (
 		-- id_row INT PRIMARY KEY AUTO_INCREMENT NOT NULL
-		id_product INT NOT NULL
+		id_product INT NULL
         , id_access_level_required INT NOT NULL
         , priority_access_level_required INT NOT NULL
 		-- guid BINARY(36) NOT NULL,
@@ -130,8 +130,6 @@ BEGIN
 			, v_priority_access_level_admin
 		;
     END IF;
-    
-    CALL partsltd_prod.p_validate_guid ( a_guid );
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
 		IF v_has_filter_access_level THEN
@@ -205,7 +203,7 @@ BEGIN
 	DELETE FROM tmp_Split;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF v_has_filter_product THEN
+		IF v_has_filter_product = 1 THEN
 			CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
             
             INSERT INTO tmp_Split (
@@ -245,56 +243,55 @@ BEGIN
                     OR P.active = 0
 				;
             END IF;
-            
-			IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-				IF EXISTS (SELECT * FROM tmp_Split) THEN
-					INSERT INTO tmp_Product_Calc_User (
-						id_product,
-						-- id_permutation,
-						id_access_level_required,
-						priority_access_level_required
-					)
-					SELECT 
-						DISTINCT P.id_product,
-						-- PP.id_permutation,
-						CASE WHEN AL_P.priority < AL_C.priority THEN AL_P.id_access_level ELSE AL_C.id_access_level END AS id_access_level_required,
-						CASE WHEN AL_P.priority < AL_C.priority THEN AL_P.priority ELSE AL_C.priority END AS priority_access_level_required
-					FROM tmp_Split t_S
-					INNER JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product # Shop_Product_Permutation PP
-					INNER JOIN partsltd_prod.Shop_Access_Level AL_P
-						ON P.id_access_level_required = AL_P.id_access_level
-						AND AL_P.active
-					INNER JOIN partsltd_prod.Shop_Product_Category C ON P.id_category = C.id_category
-					INNER JOIN partsltd_prod.Shop_Access_Level AL_C
-						ON C.id_access_level_required = AL_C.id_access_level
-						AND AL_C.active
-					;
-					
-					SET v_has_filter_product = EXISTS (SELECT * FROM tmp_Product_Calc_User);
-					/*
-					UPDATE tmp_Product_Calc_User t_P
-					INNER JOIN partsltd_prod.Shop_Product P ON t_P.id_product = P.id_product
-					INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
-					INNER JOIN partsltd_prod.Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
-					SET 
-						t_P.id_access_level_required = CASE WHEN t_P.priority_access_level_required <= AL.priority THEN t_P.id_access_level_required ELSE AL.id_access_level END
-						, t_P.priority_access_level_required = LEAST(t_P.priority_access_level_required, AL.priority)
-					;
-					*/
-				ELSE
-					INSERT INTO tmp_Product_Calc_User (
-						id_product,
-						-- id_permutation,
-						id_access_level_required,
-						priority_access_level_required
-					)
-                    VALUES (
-						NULL
-                        , v_id_access_level_view
-                        , v_priority_access_level_view
-					);
-                END IF;
-			END IF;
+		END IF;
+	END IF;
+	IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
+		IF (v_has_filter_product = 1 AND EXISTS (SELECT * FROM tmp_Split)) THEN
+			INSERT INTO tmp_Product_Calc_User (
+				id_product,
+				-- id_permutation,
+				id_access_level_required,
+				priority_access_level_required
+			)
+			SELECT 
+				DISTINCT P.id_product,
+				-- PP.id_permutation,
+				CASE WHEN AL_P.priority < AL_C.priority THEN AL_P.id_access_level ELSE AL_C.id_access_level END AS id_access_level_required,
+				CASE WHEN AL_P.priority < AL_C.priority THEN AL_P.priority ELSE AL_C.priority END AS priority_access_level_required
+			FROM tmp_Split t_S
+			INNER JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product # Shop_Product_Permutation PP
+			INNER JOIN partsltd_prod.Shop_Access_Level AL_P
+				ON P.id_access_level_required = AL_P.id_access_level
+				AND AL_P.active
+			INNER JOIN partsltd_prod.Shop_Product_Category C ON P.id_category = C.id_category
+			INNER JOIN partsltd_prod.Shop_Access_Level AL_C
+				ON C.id_access_level_required = AL_C.id_access_level
+				AND AL_C.active
+			;
+			
+			SET v_has_filter_product = EXISTS (SELECT * FROM tmp_Product_Calc_User);
+			/*
+			UPDATE tmp_Product_Calc_User t_P
+			INNER JOIN partsltd_prod.Shop_Product P ON t_P.id_product = P.id_product
+			INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
+			INNER JOIN partsltd_prod.Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
+			SET 
+				t_P.id_access_level_required = CASE WHEN t_P.priority_access_level_required <= AL.priority THEN t_P.id_access_level_required ELSE AL.id_access_level END
+				, t_P.priority_access_level_required = LEAST(t_P.priority_access_level_required, AL.priority)
+			;
+			*/
+		ELSE
+			INSERT INTO tmp_Product_Calc_User (
+				id_product,
+				-- id_permutation,
+				id_access_level_required,
+				priority_access_level_required
+			)
+			VALUES (
+				NULL
+				, v_id_access_level_view
+				, v_priority_access_level_view
+			);
 		END IF;
 	END IF;
     
@@ -457,6 +454,8 @@ BEGIN
 		END IF;
 	END IF;
     
+    DELETE FROM tmp_Split;
+    
     -- Calculated fields
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
 		UPDATE tmp_Calc_User t_U
@@ -530,10 +529,29 @@ CALL partsltd_prod.p_shop_calc_user (
 	, '1,2,3,4,5'
     , 0
 );
+        
+        
+        
 -- SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
 SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
 CALL partsltd_prod.p_shop_clear_calc_user ( 'chips                               ', 0 );
 -- SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
+
+        CALL p_shop_calc_user(
+			'chips                               '
+            , 1
+            , FALSE -- a_get_inactive_users
+            , 2
+            , 1
+            , '' -- a_ids_product
+            , 0 -- a_debug
+		);
+SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
+CALL partsltd_prod.p_shop_clear_calc_user ( 'chips                               ', 0 );
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+SELECT * FROM partsltd_prod.shop_user_role_link;
+SELECT * FROM partsltd_prod.shop_role_permission_link;
 
 */

@@ -35,7 +35,7 @@ class Product_Price(db.Model, Store_Base):
     name_currency = db.Column(db.String(255))
     symbol_currency = db.Column(db.String(50))
     """
-    id_region = db.Column(db.Integer)
+    # id_region = db.Column(db.Integer)
     value_local_VAT_incl = db.Column(db.Float)
     value_local_VAT_excl = db.Column(db.Float)
     display_order = db.Column(db.Float)
@@ -60,7 +60,7 @@ class Product_Price(db.Model, Store_Base):
         price.name_currency = query_row[6]
         price.symbol_currency = query_row[7]
         """
-        price.id_region = query_row[8]
+        # price.id_region = query_row[8]
         price.value_local_VAT_incl = query_row[9]
         price.value_local_VAT_excl = query_row[10]
         price.display_order = query_row[11]
@@ -73,7 +73,6 @@ class Product_Price(db.Model, Store_Base):
             id_product: {self.id_product}
             id_category: {self.id_category}
             currency: {self.currency}
-            id_region: {self.id_region}
             value_local (VAT incl): {self.value_local_VAT_incl}
             value_local (VAT excl): {self.value_local_VAT_excl}
             display_order (UID): {self.display_order}
@@ -88,7 +87,7 @@ class Product_Price(db.Model, Store_Base):
             self.ATTR_ID_PRODUCT: self.id_product,
             self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
             self.FLAG_CURRENCY: self.currency.to_json(),
-            Delivery_Region.ATTR_ID_DELIVERY_REGION: self.id_region,
+            # Delivery_Region.ATTR_ID_DELIVERY_REGION: self.id_region,
             self.FLAG_VALUE_LOCAL_VAT_INCL: self.value_local_VAT_incl,
             self.FLAG_VALUE_LOCAL_VAT_EXCL: self.value_local_VAT_excl,
             self.FLAG_DISPLAY_ORDER: self.display_order
@@ -102,7 +101,7 @@ class Product_Price(db.Model, Store_Base):
         price.id_product = json[cls.ATTR_ID_PRODUCT]
         price.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
         price.currency = Currency.from_json(json)
-        price.id_region = json[Delivery_Region.ATTR_ID_DELIVERY_REGION]
+        # price.id_region = json[Delivery_Region.ATTR_ID_DELIVERY_REGION]
         price.value_local_VAT_incl = json[cls.FLAG_VALUE_LOCAL_VAT_INCL]
         price.value_local_VAT_excl = json[cls.FLAG_VALUE_LOCAL_VAT_EXCL]
         price.display_order = json[cls.FLAG_DISPLAY_ORDER]

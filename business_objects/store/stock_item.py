@@ -236,11 +236,14 @@ class Parameters_Stock_Item(Get_Many_Parameters_Base):
     a_get_nonexpired_stock_item_only: bool
     a_get_consumed_stock_item_only: bool
     a_get_nonconsumed_stock_item_only: bool
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
     
     @classmethod
-    def get_default(cls, id_user):
+    def get_default(cls):
         return cls(
-            a_id_user = id_user,
+            # a_id_user = id_user,
             a_get_all_product_permutation = True,
             a_get_inactive_product_permutation = False,
             a_ids_product_permutation = '',
@@ -266,5 +269,5 @@ class Parameters_Stock_Item(Get_Many_Parameters_Base):
         )
     
     @classmethod
-    def from_form_stock_item(cls, id_user, form):
-        return cls.get_default(id_user)
+    def from_form_stock_item(cls, form):
+        return cls.get_default()
