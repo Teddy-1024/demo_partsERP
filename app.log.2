@@ -1,21 +1,5 @@
 Exception on /store/products [GET]
 Traceback (most recent call last):
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
-    self.dialect.do_execute(
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 924, in do_execute
-    cursor.execute(statement, parameters)
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
-    res = self._query(mogrified_query)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
-    db.query(q)
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\connections.py", line 261, in query
-    _mysql.connection.query(self, query)
-MySQLdb.OperationalError: (1318, 'Incorrect number of arguments for PROCEDURE partsltd_prod.p_shop_get_many_product_variation; expected 8, got 10')
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
     response = self.full_dispatch_request()
                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -34,56 +18,86 @@ Traceback (most recent call last):
   File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product.py", line 113, in products
     model = Model_View_Store_Product(form_filters)
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product.py", line 115, in __init__
-    self.variation_types, self.variations, errors = self.get_many_product_variation()
-                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store.py", line 454, in get_many_product_variation
-    variation_types, variations, errors = DataStore_Store_Base().get_many_product_variation(variation_filters)
-                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_store_base.py", line 290, in get_many_product_variation
-    result = cls.db_procedure_execute('p_shop_get_many_product_variation', argument_dict_list)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_base.py", line 95, in db_procedure_execute
-    result = db.session.execute(proc_string, argument_dict_list)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\scoping.py", line 778, in execute
-    return self._proxied.execute(
-           ^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
-    return self._execute_internal(
-           ^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2245, in _execute_internal
-    result = conn.execute(
-             ^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1418, in execute
-    return meth(
-           ^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 515, in _execute_on_connection
-    return connection._execute_clauseelement(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1640, in _execute_clauseelement
-    ret = self._execute_context(
-          ^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
-    return self._exec_single_context(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
-    self._handle_dbapi_exception(
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2353, in _handle_dbapi_exception
-    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
-    self.dialect.do_execute(
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 924, in do_execute
-    cursor.execute(statement, parameters)
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
-    res = self._query(mogrified_query)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
-    db.query(q)
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\connections.py", line 261, in query
-    _mysql.connection.query(self, query)
-sqlalchemy.exc.OperationalError: (MySQLdb.OperationalError) (1318, 'Incorrect number of arguments for PROCEDURE partsltd_prod.p_shop_get_many_product_variation; expected 8, got 10')
-[SQL: CALL p_shop_get_many_product_variation(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
-[parameters: (1, 0, True, False, False, '', True, False, False, '')]
-(Background on this error at: https://sqlalche.me/e/20/e3q8)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product.py", line 101, in __init__
+    self.category_list_filters, errors_filters = datastore_store.get_many_product(
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_store_base.py", line 110, in get_many_product
+    category_list.add_product(new_product)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 337, in add_product
+    self.categories[index_category].add_product(product)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 100, in add_product
+    raise ValueError(f"{av.error_msg_str(product, 'product', _m, Product)}\nProduct already in category.")
+ValueError: Invalid Category.add_product <class 'business_objects.store.product.Product'> argument product. Type = <class 'business_objects.store.product.Product'>. Value = Product
+            id_product: 1
+            id_category: 1
+            name: Braille Keyboard Translator
+            display_order: 1
+            can_view: False
+            can_edit: False
+            can_admin: False
+            has_variations: True
+            permutations: []
+            variation trees: []
+            
+Product already in category.
 Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+Request: 127.0.0.1 GET http /store/products? Host: 127.0.0.1:5000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-GB,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Dnt: 1
+Connection: keep-alive
+Cookie: session=.eJytVlmzqkgS_isdRnQ_9fGyKyfixoyKAh5BQWR7IaCqkGJXQIGe-9-n8Nzu2w89W8REuFCVReaXlV8uv83Crk2qO24QvDToPnv_bQbCMghhgcugaas7mr239w79-qft7nXwcxcVIc5n7zMEn-EdzgsMYY7aqmwK3CZ_v07SOaiK2a-zGN-btgwLonBmIQgHsodhALr7HZVgCCCKwy5vZ-9ll-cv0R1dcVX-heATAP3HczA5QRG9r_9_CPySiUQeLEUeUmK4oKKQpmIUTwab4IU4eKA7jjGCs_c4zBv0kuAS5B1EMLBX1g-rn34ScdPVxNSfnW-6-3eHtN_9fjtPjs--kftq7nHQVhkqJ2AxRECkKQQBtVjwUBRYCjIAiSwLUMwxgAc8omiRQOy-hyEEADXNHxrQsE8iGeAj3mehq-LDZp9HhTat11p6YUxK11X8xKGrj2pa4VAxKaBowmEQM9_12qiESTiqTz31cz_1q6OccxHmaTDwCXTNStvwacRQD7Wk5nP69pEeN63Xs9qCtY7SPNPvelBJyWjCRoVL5xS_qcch6jvTfFv64zBIvtZq7DFmesA01INmH8M1UvcX6oPpRemNH24tqHUlTNHxKGin8-3UFH2lItye1Kpiec9glm9e6Ny2fT_y8IFF-Tgm0nmzUFSLSx4XvEykeC1KciuiJyuBvJIr1ts-ojI5yZuyP-XVclPvW1PHhxJFHYkuXgyHoaUT0fKTzEhE1m-kYH3gtos8o07W6iOV2coJ-BAd1K0aLJPuiQqVF_L1QU7PV1_sKnUXMzGIrxqDW3e4sSPd2HveXudvzaa63xB73nXJ5ZwPmmr2sd0v8rTJ8JA8alzRwZFyVsYQO81eFV0uyNvjkG9OaprWhwwgq8TRfC3rqwh_SLorJ9ytrKWjtpQNQgPU1_iOmiAkFKQXzIJb8Cwl_NjHhBRLgaOoVxb8BUvOl1Gldaw2amnyYKMKala79oasi7b2p3VpP5DrX8yM46J0__CVK21nu4O2S2hz2ItzoqwLHf0eFbvWP5MXCjuDzG7wN3wbOmYWyTYVMfwYOTkVvhTzSeRcJuO5r8AEFEZHZJkv9zmUxQ4wdA3lZOUzdBI6z85jxHaiLJDzFCr28GkjoaCyHo94-SDULEGxYzzXTAD-pKfn-gmUd8NhvIy-pBdaalCaBDPdIs4yHqfL3qAzeqJJgNNHE_uSR51YTdSl63NfqiKQQeFLdAUV8wmGy2icL4OJybfQM5IOf06FXMuIrWJHee5-3Ft72XeMDsh8OWGG7jojuHJ_JyZwusxUfRIsrSZlrZb6Fy1VBc26CJqkdZqljs4UiMJuPSdvpvT0HZMlerNDQde-bDa-axIq621I7BsyfJ07FPojOv94z2X9HBR5ETp2pqZ14Tn96J__DylP_PHcSSfBRcEbcs3eymjXYBIrdJPeGslN5TvBzhLXcHb5OauFS5FNJaj2XAMf0y2rpWA8Slee-Dvh5SbCaRYY9NEYdCl7agOJM2vjyQaxRYXSeqmnF04jCac7Gne07EyT8kQf19iztk-_sIsXN5j8E5eja2gLlShLSv3SmtEWjkamF7aUqOedeNEKj7HovW6UYMLVEV6mLz5luu3IKuXRJqex9tYo7Ifv7lL74vVTqasUVbPtymBpJ6WuPCmoSu4bT4aT1Nj4uLjMVcq8K7nM5Iykw5PnYLg2WXtVNxQ2Y1nBNAu45hQssjcufabSJUJ8TDJsOCtKCarTIj6p5rgZF0bAhdZtw36sFXf4WIVUsQKatH8AihMUwHCHmw2b2CrDTblqgnO81LitVfHr5NzXYXuWRy5ERd3E-TVZ9fx221egdsL6Lm8Fz1oeOit-eLlB6tSmaSk6CPEu_bAt2G0dUX-uFS4By_gSX_lYZy05FAWmk-W3Rx7oMtrwxoe9Pev1oQ8_qrRopdUTq3WlC8qyHMaTE-_larMbvVawbCE7DXfTrg8nuiL9mKSgnqzMnbq-YWXTNGi8Bt6T1K8GVPXUGclvieFP9b2KcY5--pwXfp29ClbQDq8zaxTeSdP77H24jKtX_-tIc55d5XRob7rmbJIz7m_HBWMao604qxDt9yS_Z__LCPIvWj8pqd9rLMOJFEsK6u9Fl10uPzeahhhI2rZu3r98gejxVj7DjKEEAcVCssR9Oe-a-Wv6mEx9Iba-Dwb_GVSJQfbvDk9HqhJM8s3FjThg9WwnrVGFbuCyo4m4xqDtpkHtD4TN_HoPH2Eb3l9wPh-_8CxkY4bjqAXkGX4RL7mYWYCQWiwXXAQF7m_NV25J_XL_Wl9_gV9fun5mVz8zO_IBsPzhH1l_qmzIE4LzurxOEcdTwBA49LJcKlf-w8jlZr2JraWiBBYTC0dTW7-o0UX_zazW1TBsyTQ2BWPGUAz3RolvjGAxzDvNv1PsnGZYf_bt27d_Agdyo3I.ZvXc6g.WpR0PQjTMWhM_qBkpa9CVzq95M8
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Sec-Gpc: 1
+Priority: u=0, i
+
+
+Request data: b''
+Traceback: Traceback (most recent call last):
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 178, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product.py", line 113, in products
+    model = Model_View_Store_Product(form_filters)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product.py", line 101, in __init__
+    self.category_list_filters, errors_filters = datastore_store.get_many_product(
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_store_base.py", line 110, in get_many_product
+    category_list.add_product(new_product)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 337, in add_product
+    self.categories[index_category].add_product(product)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 100, in add_product
+    raise ValueError(f"{av.error_msg_str(product, 'product', _m, Product)}\nProduct already in category.")
+ValueError: Invalid Category.add_product <class 'business_objects.store.product.Product'> argument product. Type = <class 'business_objects.store.product.Product'>. Value = Product
+            id_product: 1
+            id_category: 1
+            name: Braille Keyboard Translator
+            display_order: 1
+            can_view: False
+            can_edit: False
+            can_admin: False
+            has_variations: True
+            permutations: []
+            variation trees: []
+            
+Product already in category.
+

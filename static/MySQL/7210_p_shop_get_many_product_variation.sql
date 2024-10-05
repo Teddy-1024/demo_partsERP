@@ -26,14 +26,14 @@ BEGIN
     DECLARE v_id_access_level_view INT;
     DECLARE v_time_start TIMESTAMP(6);
     DECLARE v_id_minimum INT;
-    DECLARE v_code_error_data VARCHAR(50);
-    DECLARE v_id_type_error_data INT;
+    DECLARE v_code_error_bad_data VARCHAR(50);
+    DECLARE v_id_type_error_bad_data INT;
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
     SET v_id_access_level_view := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_error_data := (SELECT code FROM Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_error_data LIMIT 1);
+    SET v_code_error_bad_data := (SELECT code FROM Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_error_bad_data LIMIT 1);
     
 	-- Argument validation + default values
 	SET a_id_user = IFNULL(a_id_user, 0);
@@ -282,8 +282,8 @@ BEGIN
 			)
 			VALUES (
 				-- v_guid,
-				v_id_type_error_data, 
-				v_code_error_data, 
+				v_id_type_error_bad_data, 
+				v_code_error_bad_data, 
 				CONCAT('You do not have view permissions for ', (SELECT name FROM Shop_Permission WHERE id_permission = v_id_permission_variation LIMIT 1))
 			)
 			;

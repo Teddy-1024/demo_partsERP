@@ -20,7 +20,7 @@ from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.delivery_region import Delivery_Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Parameters_Product 
+from business_objects.store.product import Product, Product_Permutation, Parameters_Product 
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
@@ -61,8 +61,15 @@ class DataStore_Store_Base(DataStore_Base):
         av.val_instance(product_filters, 'product_filters', _m, Parameters_Product) 
         argument_dict = product_filters.to_json()
         user = cls.get_user_session()
+        """
         argument_dict['a_id_user'] = user.id_user # 'auth0|6582b95c895d09a70ba10fef' # id_user
         argument_dict['a_debug'] = 0
+        """
+        argument_dict = {
+            'a_id_user': user.id_user
+            , **argument_dict
+            , 'a_debug': 0
+        }
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_product')
         result = cls.db_procedure_execute('p_shop_get_many_product', argument_dict)
@@ -71,77 +78,57 @@ class DataStore_Store_Base(DataStore_Base):
         
         
         category_list = Product_Category_Container()
+        print(f'initial category_list: {category_list}')
+
         # Categories
         result_set_1 = cursor.fetchall()
         print(f'raw categories: {result_set_1}')
-        # categories = [Product_Category(row[0], row[1], row[2], row[3]) for row in result_set_1]
-        # categories = []
-        # category_index = {}
         for row in result_set_1:
-            new_category = Product_Category.from_DB_get_many_product_catalogue(row) # Product_Category(row[0], row[1], row[2], row[3])
-            # category_index[new_category.id_category] = len(categories)
-            # categories.append(new_category)
+            new_category = Product_Category.from_DB_get_many_product_catalogue(row)
+            print(f'new_category: {new_category}')
             category_list.add_product_category(new_category)
-        # print(f'categories: {[c.id_category for c in categories]}')
+
+        print(f'category-loaded category_list: {category_list}')
 
         # Products
         cursor.nextset()
         result_set_2 = cursor.fetchall()
-        # print(f'products: {result_set_2}')
-        # products = [] # [Product(**row) for row in result_set_2]
-        # product_index = {}
+        print(f'raw products: {result_set_2}')
         for row in result_set_2:
-            new_product = Product.from_DB_get_many_product_catalogue(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
-            index_category = category_list.get_index_category_from_id(new_product.id_category)
-            category = category_list.categories[index_category]
-            category_list.add_product(new_product)
-            # products.append(new_product)
-        print(f'category_list: {category_list}')
+            print(f'row: {row}')
+            new_product = Product.from_DB_get_many_product_catalogue(row)
+            print(f'new_product: {new_product}')
+            try:
+                category_list.add_product(new_product)
+            except Exception as e:
+                print(f'Error adding product: {e}')
 
         # Permutations
         cursor.nextset()
         result_set_3 = cursor.fetchall()
-        # print(f'Permutations: {result_set_3}')
-        permutations = [] # [Product(**row) for row in result_set_2]
-        # permutation_index = {}
         for row in result_set_3:
-            new_permutation = Product_Permutation.from_DB_get_many_product_catalogue(row) # (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
-            index_category = category_list.get_index_category_from_id(new_permutation.id_category)
-            category = category_list.categories[index_category]
-            category_list.add_product_permutation(new_permutation)
-        print(f'category_list: {category_list}')
+            new_permutation = Product_Permutation.from_DB_get_many_product_catalogue(row)
+            try:
+                category_list.add_product_permutation(new_permutation)
+            except Exception as e:
+                print(f'Error adding permutation: {e}')
 
         # Product_Variations
         cursor.nextset()
         result_set_4 = cursor.fetchall()
-        # print(f'variations: {result_set_4}')
-        # variations = [Product_Variation(**row) for row in result_set_4]
-        variations = []
         for row in result_set_4:
             new_variation = Product_Variation.from_DB_get_many_product_catalogue(row)
-            variations.append(new_variation)
-            category_list.add_product_variation(new_variation)
-        # print(f'variations: {variations}')
-        # print(f'products: {[p.id_product for p in products]}')
+            try:
+                category_list.add_product_variation(new_variation)
+            except Exception as e:
+                print(f'Error adding variation: {e}')
 
         # Images
         cursor.nextset()
         result_set_5 = cursor.fetchall()
-        # print(f'images: {result_set_5}')
-        # images = [Image(**row) for row in result_set_5]
-        images = []
         for row in result_set_5:
-            new_image = Image.from_DB_get_many_product_catalogue(row) # (row[0], row[1], row[2], row[3], row[4])
-            images.append(new_image)
-            # products[product_index[new_image.id_product]].images.append(new_image)
-            """
-            index_category = category_index[new_image.id_category]
-            index_product = categories[index_category].index_product_from_ids_product_permutation(new_image.id_product, new_image.id_permutation)
-            categories[index_category].products[index_product].images.append(new_image)
-            """
+            new_image = Image.from_DB_get_many_product_catalogue(row)
             category_list.add_product_image(new_image)
-        # print(f'images: {images}')
-        # print(f'products: {[p.id_product for p in products]}')
         
         # Errors
         cursor.nextset()
@@ -181,6 +168,7 @@ class DataStore_Store_Base(DataStore_Base):
         DataStore_Store_Base.db_cursor_clear(cursor)
         cursor.close()
 
+        print(f'get many category_list: {category_list}')
         return category_list, errors # categories, category_index
     
     """
@@ -283,8 +271,8 @@ class DataStore_Store_Base(DataStore_Base):
         argument_dict_list = {
             # 'a_guid': guid
             'a_id_user': user.id_user
-            , 'a_debug': 0
             , **variation_filters.to_json()
+            , 'a_debug': 0
         }
         # argument_dict_list['a_guid'] = guid
         result = cls.db_procedure_execute('p_shop_get_many_product_variation', argument_dict_list)

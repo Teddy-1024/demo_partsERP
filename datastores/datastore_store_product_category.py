@@ -89,9 +89,9 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
         DataStore_Store_Base.upload_bulk(Product_Category_Temp.__tablename__, rows, 1000)
 
         argument_dict_list = {
-            'a_id_user': user.id_user,
-            'a_guid': guid,
             'a_comment': comment,
+            'a_guid': guid,
+            'a_id_user': user.id_user,
         }
         save_result = cls.db_procedure_execute('p_shop_save_product_category', argument_dict_list)
         save_result.close()

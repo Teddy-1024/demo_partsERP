@@ -118,20 +118,36 @@ export default class DOM {
     }
     static getElementAttributeValueCurrent(element) {
         return element.getAttribute(attrValueCurrent);
+        if (!Validation.isEmpty(value) && element.type === "checkbox") {
+            value = (value === 'true');
+        }
+        return value;
     }
     static getElementAttributeValuePrevious(element) {
         return element.getAttribute(attrValuePrevious);
+        if (!Validation.isEmpty(value) && element.type === "checkbox") {
+            value = (value === 'true');
+        }
+        return value;
     }
+    /* base_table.handleChangeElementCellTable
     static updateAndCheckIsTableElementDirty(element) {
+        let wasDirty = DOM.isElementDirty(element);
+        let row = DOM.getRowFromElement(element);
+        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
         let isDirty = DOM.updateAndCheckIsElementDirty(element);
         let cell = DOM.getCellFromElement(element);
-        if (isDirty) {
-            cell.classList.add(flagDirty);
-        } else {
-            cell.classList.remove(flagDirty);
+        console.log({element, row, cell, isDirty, wasDirty});
+        if (isDirty != wasDirty) {
+            DOM.handleDirtyElement(cell, isDirty);
+            let isDirtyRow = DOM.hasDirtyChildrenContainer(row);
+            console.log({isDirtyRow, wasDirtyRow});
+            if (isDirtyRow != wasDirtyRow) {
+                DOM.handleDirtyElement(row, isDirtyRow);
+            }
         }
     }
-    
+    */
     /*
     static updateElement(id, data) {
         const element = document.getElementById(id);

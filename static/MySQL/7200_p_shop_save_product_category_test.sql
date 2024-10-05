@@ -192,7 +192,7 @@ BEGIN
 				, t_C.can_admin = UE_T.can_admin
 			;
 			
-			CALL p_shop_calc_user_clear_temp(a_guid);
+			CALL p_shop_clear_calc_user(a_guid);
 		END IF;
     END IF;
     

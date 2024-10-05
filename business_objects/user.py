@@ -186,7 +186,7 @@ class User_Filters():
     
     @staticmethod
     def get_default(datastore_store):
-        user = datastore_store.get_login_user()
+        user = datastore_store.get_user_session()
         return User_Filters(
             get_all_user = False,
             get_inactive_user = False,

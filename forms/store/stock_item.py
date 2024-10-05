@@ -64,4 +64,5 @@ class Filters_Stock_Item(Form_Base):
     @classmethod
     def get_default(cls):
         filters = cls()
-        filters.id_category.choices = [('', 'Select category')]
+        filters.id_category.choices = cls.get_choices_blank()
+        filters.id_product.choices = cls.get_choices_blank()

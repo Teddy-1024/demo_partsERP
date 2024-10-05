@@ -93,6 +93,9 @@ export default class TableBasePage extends BasePage {
         }
         return isDirty;
     }
+    hookupFilterIsNotEmpty() {
+        this.hookupFilter(flagIsNotEmpty);
+    }
     hookupButtonApplyFilters() {
         this.hookupEventHandler("click", idButtonApplyFilters, (event, button) => {
             event.stopPropagation();
@@ -275,35 +278,27 @@ export default class TableBasePage extends BasePage {
         this.hookupChangeHandlerTableCells(selectorDisplayOrder);
     }
     hookupChangeHandlerTableCells(inputSelector, handler = (event, element) => { this.handleChangeElementCellTable(event, element); }) {
-        /*
         Events.initialiseEventHandler(inputSelector, flagInitialised, (input) => {
             input.addEventListener("change", (event) => {
                 handler(event, input);
             });
+            this.handleChangeElementCellTable(null, input);
         });
-        */
-        this.hookupEventHandler("change", inputSelector, handler);
+        // this.hookupEventHandler("change", inputSelector, handler);
     }
     handleChangeElementCellTable(event, element) {
         let row = DOM.getRowFromElement(element);
         let td = DOM.getCellFromElement(element);
-        console.log("td: ", td);
         let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
         let wasDirtyElement = element.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
-        console.log("isDirtyElement: ", isDirtyElement);
-        console.log("wasDirtyElement: ", wasDirtyElement);
         if (isDirtyElement != wasDirtyElement) {
             DOM.handleDirtyElement(td, isDirtyElement);
             let isNowDirtyRow = DOM.hasDirtyChildrenContainer(row);
-            console.log("isNowDirtyRow: ", isNowDirtyRow);
-            console.log("wasDirtyRow: ", wasDirtyRow);
             if (isNowDirtyRow != wasDirtyRow) {
                 DOM.handleDirtyElement(row, isNowDirtyRow);
                 let rows = this.getTableRecords(true);
                 let existsDirtyRecord = rows.length > 0;
-                console.log("dirty records:", rows);
-                console.log("existsDirtyRecord:", existsDirtyRecord);
                 this.toggleShowButtonsSaveCancel(existsDirtyRecord);
             }
         }

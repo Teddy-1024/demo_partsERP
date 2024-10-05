@@ -8,9 +8,9 @@ DROP PROCEDURE IF EXISTS p_shop_save_product_category;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_save_product_category (
-	IN a_id_user INT,
+    IN a_comment VARCHAR(500),
 	IN a_guid BINARY(36),
-	IN a_comment VARCHAR(500)
+    IN a_id_user INT
 )
 BEGIN
 	DECLARE v_code_type_error_bad_data VARCHAR(100);
@@ -206,58 +206,58 @@ BEGIN
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
-		
-		IF NOT ISNULL(v_ids_product_permission) THEN
-			INSERT INTO Shop_Product_Change_Set ( comment )
-			VALUES ( a_comment )
-			;
 			
-			SET v_id_change_set := LAST_INSERT_ID();
+			IF NOT ISNULL(v_ids_product_permission) THEN
+				INSERT INTO Shop_Product_Change_Set ( comment )
+				VALUES ( a_comment )
+				;
+				
+				SET v_id_change_set := LAST_INSERT_ID();
+				
+				UPDATE Shop_Product_Category PC
+				INNER JOIN tmp_Category t_C ON PC.id_category = t_C.id_category
+				SET 
+					PC.id_category = t_C.id_category
+					, PC.code = t_C.code
+					, PC.name = t_C.name
+					, PC.description = t_C.description
+					, PC.id_access_level_required = t_C.id_access_level_required
+					, PC.active = t_C.active
+					, PC.display_order = t_C.display_order
+					, PC.id_change_set = v_id_change_set
+				;
+			END IF;
 			
-			UPDATE Shop_Product_Category PC
-			INNER JOIN tmp_Category t_C ON PC.id_category = t_C.id_category
-			SET 
-				PC.id_category = t_C.id_category
-				, PC.code = t_C.code
-				, PC.name = t_C.name
-				, PC.description = t_C.description
-                , PC.id_access_level_required = t_C.id_access_level_required
-                , PC.active = t_C.active
-				, PC.display_order = t_C.display_order
-				, PC.id_change_set = v_id_change_set
+			INSERT INTO Shop_Product_Category (
+				code
+				, name
+				, description
+				, id_access_level_required
+				, active
+				, display_order
+				, created_by
+				, created_on
+			)
+			SELECT
+				-- t_C.id_category AS id_category
+				t_C.code AS code
+				, t_C.name AS name
+				, t_C.description AS description
+				, t_C.id_access_level_required AS id_access_level_required
+				, t_C.active AS active
+				, t_C.display_order AS display_order
+				, a_id_user AS created_by
+				, v_now AS created_on
+			FROM tmp_Category t_C
+			WHERE is_new = 1
+				AND active = 1
 			;
-		END IF;
 		
-		INSERT INTO Shop_Product_Category (
-			code
-			, name
-			, description
-            , id_access_level_required
-            , active
-			, display_order
-			, created_by
-			, created_on
-		)
-		SELECT
-			-- t_C.id_category AS id_category
-            t_C.code AS code
-			, t_C.name AS name
-			, t_C.description AS description
-            , t_C.id_access_level_required AS id_access_level_required
-			, t_C.active AS active
-			, t_C.display_order AS display_order
-			, a_id_user AS created_by
-			, v_now AS created_on
-		FROM tmp_Category t_C
-		WHERE is_new = 1
-			AND active = 1
-		;
-		
+			DELETE FROM Shop_Product_Category_Temp
+			WHERE GUID = a_guid;
+			
 		COMMIT;
     END IF;
-    
-    DELETE FROM Shop_Product_Category_Temp
-    WHERE GUID = a_guid;
     
     SELECT * FROM tmp_Msg_Error;
     

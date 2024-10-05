@@ -45,6 +45,12 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
     can_admin = db.Column(db.Boolean)
     created_on = db.Column(db.DateTime)
     created_by = db.Column(db.Integer)
+
+    """
+    products: list = None # []
+    product_index: dict = None # {}
+    """
+
     def __init__(self):
         self.products = []
         self.product_index = {}
@@ -95,6 +101,7 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         # self.product_index[Category.key_product_index_from_ids_product_permutation(product.id_product, product.id_permutation)] = len(self.products)
         try:
             self.get_index_product(product)
+            print(f'category: {self}')
             raise ValueError(f"{av.error_msg_str(product, 'product', _m, Product)}\nProduct already in category.")
         except KeyError:
             self.product_index[product.id_product] = len(self.products)
@@ -441,7 +448,7 @@ class Table_Shop_Product_Category(db.Model):
     created_by: int = db.Column(db.Integer)
     id_change_set: int = db.Column(db.Integer)
 """
-class Product_Category_Temp(db.Model):
+class Product_Category_Temp(db.Model, Store_Base):
     __tablename__ = 'Shop_Product_Category_Temp'
     __table_args__ = { 'extend_existing': True }
     id_category: int = db.Column(db.Integer, primary_key=True)

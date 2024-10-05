@@ -40,9 +40,8 @@ class Form_Base(FlaskForm, metaclass=Form_Base_Meta):
     def from_json(cls, json):
         pass
     @classmethod
-    @abstractmethod
     def get_default(cls):
-        pass
+        return cls()
     """
     @abstractmethod
     def test_69(self):
@@ -55,6 +54,12 @@ class Form_Base(FlaskForm, metaclass=Form_Base_Meta):
         form_filters.active.data = av.input_bool(data_form['active'], 'active', 'filter_category')
         return form_filters
     """
+    @classmethod
+    def get_choices_blank(cls):
+        return [('', 'Select')]
+    @classmethod
+    def get_choice_all(cls):
+        return ('', 'All')
 
 '''
 class Filters_Stored_Procedure_Base(Form_Base):

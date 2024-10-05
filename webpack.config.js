@@ -80,6 +80,11 @@ module.exports = {
       path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/home.css')
     ],
+    store_products: [
+      // path.resolve(__dirname, 'static/js/pages/store/product_categories.js'),
+      path.resolve(__dirname, 'static/css/sections/store.css'),
+      path.resolve(__dirname, 'static/css/pages/store/products.css')
+    ],
     store_product_categories: [
       // path.resolve(__dirname, 'static/js/pages/store/product_categories.js'),
       path.resolve(__dirname, 'static/css/sections/store.css'),

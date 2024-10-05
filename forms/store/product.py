@@ -22,7 +22,7 @@ from flask_wtf.recaptcha import RecaptchaField
 
 
 class Filters_Product(FlaskForm):
-    id_category = SelectField('Category', validators=[Optional()], choices=[])
+    id_category = SelectField('Category', validators=[Optional()], choices=[('', 'All')])
     is_not_empty = BooleanField('Not empty only?')
     active = BooleanField("Active only?")
     @classmethod
@@ -34,3 +34,10 @@ class Filters_Product(FlaskForm):
         return form
     def __repr__(self):
         return f'Filters_Product(id_category={self.id_category}, is_not_empty={self.is_not_empty.data}, active={self.active.data})'
+    @classmethod
+    def from_json(cls, json):
+        filters = cls()
+        filters.id_category.data = json['id_category']
+        filters.is_not_empty.data = json['is_not_empty']
+        filters.active.data = json['active']
+        return filters

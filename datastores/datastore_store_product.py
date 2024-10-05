@@ -12,20 +12,8 @@ Datastore for Store Products
 
 # internal
 import lib.argument_validation as av
-from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Product_Category_Container, Product_Category
-from business_objects.store.currency import Currency
-from business_objects.store.image import Image
-from business_objects.store.delivery_option import Delivery_Option
-from business_objects.store.delivery_region import Delivery_Region
-from business_objects.store.discount import Discount
-from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Parameters_Product 
 from business_objects.sql_error import SQL_Error
-from business_objects.store.stock_item import Stock_Item
-from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container
-# from datastores.datastore_base import Table_Shop_Product_Category, Table_Shop_Product_Category_Temp
+from business_objects.store.product import Product, Product_Permutation, Product_Price, Parameters_Product, Product_Temp
 from datastores.datastore_store_base import DataStore_Store_Base
 from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
@@ -56,6 +44,7 @@ class Table_Shop_Product_Category(db.Model):
     created_by: int = db.Column(db.Integer)
     id_change_set: int = db.Column(db.Integer)
 """
+"""
 class Row_Shop_Product_Temp(db.Model):
     __tablename__ = 'Shop_Product_Temp'
     __table_args__ = { 'extend_existing': True }
@@ -80,50 +69,70 @@ class Row_Shop_Product_Temp(db.Model):
         return row
     def to_json(self):
         return {
+            'id_product': self.id_product,
             'id_category': self.id_category,
             'name': self.name,
+            'has_variations': self.has_variations,
             'id_access_level_required': self.id_access_level_required,
             'active': av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json'),
             'display_order': self.display_order,
             'guid': self.guid,
         }
-
+"""
 
 class DataStore_Store_Product(DataStore_Store_Base):
     def __init__(self):
         super().__init__()
     @classmethod
-    def save_categories(cls, comment, categories):
-        _m = 'DataStore_Store_Product_Category.save_categories'
+    def save_products(cls, comment, products):
+        _m = 'DataStore_Store_Product.save_products'
         print(f'{_m}\nstarting...')
-        print(f'comment: {comment}\ncategories: {categories}')
-        # av.val_str(comment, 'comment', _m)
-        # av.val_list_instances(categories, 'categories', _m, Product_Category, 1)
+        print(f'comment: {comment}\nproducts: {products}')
 
         guid = Helper_DB_MySQL.create_guid()
         user = cls.get_user_session()
         rows = []
-        id_category_new = 0
-        for category in categories:
-            row = Row_Shop_Product_Temp.from_product(category)
-            if row.id_category == '':
-                id_category_new -= 1
-                row.id_category = id_category_new
+        id_product_new = 0
+        for product in products:
+            row = Product_Temp.from_product(product)
+            if row.id_product == '':
+                id_product_new -= 1
+                row.id_product = id_product_new
             else:
-                print(f'row.id_category: {row.id_category}')
+                print(f'row.id_product: {row.id_product}')
             row.guid = guid
             rows.append(row)
         
         print(f'rows: {rows}')
-
-        DataStore_Store_Base.upload_bulk(rows, Row_Shop_Product_Temp, 1000)
+        DataStore_Store_Base.upload_bulk(Product_Temp.__tablename__, rows, 1000)
 
         argument_dict_list = {
-            'a_id_user': user.id_user,
-            'a_guid': guid,
             'a_comment': comment,
+            'a_guid': guid,
+            'a_id_user': user.id_user,
+            'a_debug': 0,
         }
         save_result = cls.db_procedure_execute('p_shop_save_product', argument_dict_list)
+        
+        cursor = save_result # .cursor
+        print('data received')
+        
+        # Errors
+        # cursor.nextset()
+        result_set_e = cursor.fetchall()
+        print(f'raw errors: {result_set_e}')
+        errors = []
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            for error in errors:
+                print(f"Error [{error.code}]: {error.msg}")
+        try:
+            DataStore_Store_Base.db_cursor_clear(cursor)
+        except Exception as e:
+            print(f'Error clearing cursor: {e}')
+        cursor.close()
+
         save_result.close()
         print('save procedure executed')
+        return errors
 

@@ -179,7 +179,7 @@ BEGIN
 			tP.can_edit = TP.can_edit,
             tP.can_admin = TP.can_admin;
 		
-        CALL p_shop_calc_user_clear_temp(v_guid_permission);
+        CALL p_shop_clear_calc_user(v_guid_permission);
     END IF;
     
     

@@ -26,8 +26,8 @@ from abc import ABCMeta, abstractmethod
 
 
 class Filters_Product_Permutation(Form_Base):
-    id_category = SelectField('Category', validators=[Optional()], choices=[])
-    id_product = SelectField('Product', validators=[Optional()], choices=[])
+    id_category = SelectField('Category', validators=[Optional()], choices=[('', 'All')])
+    id_product = SelectField('Product', validators=[Optional()], choices=[('', 'All')])
     is_out_of_stock = BooleanField('Out of stock only?')
     quantity_min = FloatField('Min stock')
     quantity_max = FloatField('Max stock')

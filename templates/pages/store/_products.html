@@ -5,12 +5,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/products.css') }}">
     -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_products.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_products.bundle.css') }}">
     
     <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product.save_product') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_FILTER }}">
                 {{ model.form_filters.id_category.label }}
                 {{ model.form_filters.id_category() }}
                 {% for error in model.form_filters.id_category.errors %}
@@ -77,7 +77,7 @@
                 <th class="{{ model.FLAG_DISPLAY_ORDER }}">Display Order</th>
                 <th class="{{ model.FLAG_PRODUCT_CATEGORY }}">Category</th>
                 <th class="{{ model.FLAG_NAME }}">Name</th>
-                <th class="{{ model.FLAG_PRODUCT_VARIATIONS }}">Variations</th>
+                <th class="{{ model.FLAG_HAS_VARIATIONS }}">Has Variations?</th>
                 <th class="{{ model.FLAG_ACCESS_LEVEL }}">Access Level Required</th>
                 <th class="{{ model.FLAG_ACTIVE}}">Active</th>
             </tr>
@@ -102,10 +102,12 @@
     <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/pages/store/products.js') }}"></script>
     -->
+    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
 
     <script>
         // pass arguments from model to JS
-        var flagIsNotEmpty = "{{ model.FLAG_IS_NOT_EMPTY }}";
         var accessLevels = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.access_levels) | tojson | safe }};
+        {# var products = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list.get_list_products()) | tojson | safe }}; #}
+        var productCategories = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.categories) | tojson | safe }};
     </script>
 {% endblock %}

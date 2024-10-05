@@ -215,7 +215,7 @@ BEGIN
 		;
 	END IF;
 	
-	-- CALL p_shop_calc_user_clear_temp(v_guid_permission);
+	-- CALL p_shop_clear_calc_user(v_guid_permission);
 	
 	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid;
