@@ -15,7 +15,7 @@ import PageStoreHome from './pages/store/home.js';
 import PageStoreProductCategories from './pages/store/product_categories.js';
 import PageStoreProductPermutations from './pages/store/product_permutations.js';
 // import PageStoreProductPrices from './pages/store/product_prices.js';
-// import PageStoreProducts from './pages/store/products.js';
+import PageStoreProducts from './pages/store/products.js';
 // import PageStoreProductVariations from './pages/store/product_variations.js';
 import PageStoreStockItems from './pages/store/stock_items.js';
 // User
@@ -80,7 +80,7 @@ export default class Router {
         this.pages[hashPageStoreProductCategories] = { name: 'PageStoreProductCategories', module: PageStoreProductCategories }; // pathModule: './pages/store/product_categories.js' };
         this.pages[hashPageStoreProductPermutations] = { name: 'PageStoreProductPermutations', module: PageStoreProductPermutations }; // pathModule: './pages/store/product_permutations.js' };
         // this.pages[hashPageStoreProductPrices] = { name: 'PageStoreProductPrices', module: PageStoreProductPrices }; // pathModule: './pages/store/product_prices.js' };
-        // this.pages[hashPageStoreProducts] = { name: 'PageStoreProducts', module: PageStoreProducts }; // pathModule: './pages/store/products.js' };
+        this.pages[hashPageStoreProducts] = { name: 'PageStoreProducts', module: PageStoreProducts }; // pathModule: './pages/store/products.js' };
         // this.pages[hashPageStoreProductVariations] = { name: 'PageStoreProductVariations', module: PageStoreProductVariations }; // pathModule: './pages/store/product_variations.js' };
         this.pages[hashPageStoreStockItems] = { name: 'PageStoreStockItems', module: PageStoreStockItems };
         // User
@@ -106,6 +106,7 @@ export default class Router {
         // this.routes[hashPageStoreProductPrices] = (isPopState = false) => this.navigateToHash(hashPageStoreProductPrices, isPopState);
         this.routes[hashPageStoreProducts] = (isPopState = false) => this.navigateToHash(hashPageStoreProducts, isPopState);
         // this.routes[hashPageStoreProductVariations] = (isPopState = false) => this.navigateToHash(hashPageStoreProductVariations, isPopState);
+        this.routes[hashPageStoreStockItems] = (isPopState = false) => this.navigateToHash(hashPageStoreStockItems, isPopState);
         // User
         // this.routes[hashPageUserLogin] = (isPopState = false) => this.navigateToHash(hashPageUserLogin, isPopState);
         // this.routes[hashPageUserLogout] = (isPopState = false) => this.navigateToHash(hashPageUserLogout, isPopState);

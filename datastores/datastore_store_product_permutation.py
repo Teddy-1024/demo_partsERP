@@ -95,9 +95,9 @@ class DataStore_Store_Product_Permutation(DataStore_Store_Base):
         print('bulk uploaded')
 
         argument_dict_list = {
-            'a_id_user': user.id_user,
             'a_comment': comment,
-            'a_guid': guid
+            'a_guid': guid,
+            'a_id_user': user.id_user,
         }
         cls.db_procedure_execute('p_shop_save_product_permutation', argument_dict_list)
         print('saved product permutations')

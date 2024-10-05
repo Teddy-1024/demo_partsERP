@@ -56,7 +56,7 @@ class Enum_Status_Stock(Enum):
 class Product(SQLAlchemy_ABC, Store_Base):
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT
     NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME
-    FLAG_HAS_VARIATIONS: ClassVar[str] = 'has-variations-product'
+    # FLAG_HAS_VARIATIONS: ClassVar[str] = 'has-variations-product'
     FLAG_INDEX_PERMUTATION_SELECTED: ClassVar[str] = 'index-permutation-selected'
     FLAG_PRODUCT_VARIATION_TREES: ClassVar[str] = 'variation-trees'
 
@@ -73,6 +73,12 @@ class Product(SQLAlchemy_ABC, Store_Base):
     # form_basket_edit: Form_Basket_Edit
     # has_variations: bool
     # index_permutation_selected: int
+
+    """
+    permutations: list = None
+    permutation_index: dict = None
+    variation_trees: list = None
+    """
 
     def __init__(self):
         self.permutations = []
@@ -179,9 +185,25 @@ class Product(SQLAlchemy_ABC, Store_Base):
         permutation = Product_Permutation.from_DB_Stripe_price(query_row)
         product = Product.from_permutation(permutation)
         return product
+    """
     def from_json(json_basket_item, key_id_product, key_id_permutation):
         permutation = Product_Permutation.from_json(json_basket_item, key_id_product, key_id_permutation)
         product = Product.from_permutation(permutation)
+        return product
+    """
+    @classmethod
+    def from_json(cls, json):
+        product = cls()
+        product.id_product = json[cls.ATTR_ID_PRODUCT]
+        product.display_order = json[cls.FLAG_DISPLAY_ORDER]
+        product.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
+        product.name = json[cls.FLAG_NAME]
+        product.has_variations = av.input_bool(json.get(cls.FLAG_HAS_VARIATIONS, None), cls.FLAG_HAS_VARIATIONS, f'{cls.__name__}.from_json')
+        product.id_access_level_required = json.get(cls.ATTR_ID_ACCESS_LEVEL, None)
+        product.active = av.input_bool(json.get(cls.FLAG_ACTIVE, None), cls.FLAG_ACTIVE, f'{cls.__name__}.from_json')
+        product.can_view = json.get(cls.FLAG_CAN_VIEW, None)
+        product.can_edit = json.get(cls.FLAG_CAN_EDIT, None)
+        product.can_admin = json.get(cls.FLAG_CAN_ADMIN, None)
         return product
     def get_permutation_selected(self):
         try:
@@ -288,6 +310,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
         for permutation in self.permutations:
             list_rows.append(permutation.to_row_permutation())
         return list_rows
+    """
     @classmethod
     def from_json(cls, json):
         product = cls()
@@ -307,6 +330,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
         for json_tree in json[cls.FLAG_PRODUCT_VARIATION_TREES]:
             product.variation_trees.append(Product_Variation_Tree.from_json(json_tree))
         return product
+    """
     def to_json(self):
         return {
             **self.get_shared_json_attributes(self),
@@ -422,7 +446,7 @@ class Parameters_Product(Get_Many_Parameters_Base):
     def from_form_filters_product(form):
         # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
         av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product)
-        has_filter_category = not (form.id_category.data == '0' or form.id_category.data == '')
+        has_filter_category = not (form.id_category.data == '0' or form.id_category.data == '' or form.id_category.data is None)
         is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Parameters_Product.from_form_filters_product")
         active = av.input_bool(form.active.data, "active", "Parameters_Product.from_form_filters_product")
         return Parameters_Product(
@@ -813,3 +837,49 @@ class Parameters_Product(Get_Many_Parameters_Base):
     def from_filters_stock_item(cls, filters_stock_item):
         return cls.from_form_filters_product_permutation(filters_stock_item)
 """
+
+class Product_Temp(db.Model, Store_Base):
+    __tablename__ = 'Shop_Product_Temp'
+    __table_args__ = { 'extend_existing': True }
+    id_product: int = db.Column(db.Integer, primary_key=True)
+    id_category: int = db.Column(db.Integer)
+    name: str = db.Column(db.String(255))
+    has_variations: bool = db.Column(db.Boolean)
+    id_access_level_required: int = db.Column(db.Integer)
+    active: bool = db.Column(db.Boolean)
+    display_order: int = db.Column(db.Integer)
+    guid: str = db.Column(db.BINARY(36))
+    # created_on: datetime = db.Column(db.DateTime)
+    # created_by: int = db.Column(db.Integer)
+
+    @classmethod
+    def from_product(cls, product):
+        row = cls()
+        row.id_product = product.id_product[0] if isinstance(product.id_product, tuple) else product.id_product
+        row.id_category = product.id_category[0] if isinstance(product.id_category, tuple) else product.id_category
+        row.name = product.name[0] if isinstance(product.name, tuple) else product.name
+        row.has_variations = product.has_variations
+        row.id_access_level_required = product.id_access_level_required[0] if isinstance(product.id_access_level_required, tuple) else product.id_access_level_required
+        row.active = product.active
+        row.display_order = product.display_order
+        """
+        row.guid = product.guid
+        row.created_on = product.created_on
+        row.created_by = product.created_by
+        """
+        return row
+    def to_json(self):
+        return {
+            'id_product': self.id_product,
+            'id_category': self.id_category,
+            'name': self.name,
+            'has_variations': av.input_bool(self.has_variations, self.FLAG_HAS_VARIATIONS, f'{self.__class__.__name__}.to_json'),
+            'id_access_level_required': self.id_access_level_required,
+            'active': av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json'),
+            'display_order': self.display_order,
+            'guid': self.guid,
+        }
+        """
+        'created_on': self.created_on,
+        'created_by': self.created_by
+        """

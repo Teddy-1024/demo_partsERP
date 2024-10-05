@@ -3,14 +3,24 @@
         <td class="{{ model.FLAG_DISPLAY_ORDER }}">
             {% include 'components/common/buttons/_slider_display_order.html' %}
         </td>
-        <td class="{{ model.FLAG_PRODUCT_CATEGORY }}">
-            <textarea class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_ID_PRODUCT_CATEGORY }} {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
+            <select class="{{ model.FLAG_PRODUCT_CATEGORY}}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
+                {% include 'components/common/inputs/_option_blank.html' %}
+                {% for cat in model.category_list_filters.categories %}
+                    <option value="{{ cat.id_category }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
         </td>
         <td class="{{ model.FLAG_NAME }}">
             <textarea class="{{ model.FLAG_NAME }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
         </td>
+        {#
         <td class="{{ model.FLAG_PRODUCT_VARIATIONS }}">
             <textarea class="{{ model.FLAG_PRODUCT_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        #}
+        <td class="{{ model.FLAG_HAS_VARIATIONS }}">
+            <input class="{{ model.FLAG_HAS_VARIATIONS }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="false" {{ model.ATTR_VALUE_PREVIOUS }}="false">
         </td>
         <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="View">
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1">View</div>
@@ -25,15 +35,21 @@
             {% set display_order = category.display_order %}
             {% include 'components/common/buttons/_slider_display_order.html' %}
         </td>
-        <td class="{{ model.FLAG_CODE }}">
-            <textarea class="{{ model.FLAG_CODE }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.code }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.code }}">{{ product.code }}</textarea>
+        <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.id_category }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.id_category }}">
+            {% include 'components/store/_preview_DDL_product_category.html' %}
         </td>
         <td class="{{ model.FLAG_NAME }}">
             <textarea class="{{ model.FLAG_NAME }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.name }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.name }}">{{ product.name }}</textarea>
         </td>
+        {#
         <td class="{{ model.FLAG_PRODUCT_VARIATIONS }}">
             {% include 'components/common/inputs/_textarea_product_variation_types.html' %}
             <textarea class="{{ model.FLAG_PRODUCT_VARIATIONS }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.description }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.description }}">{{ product.description }}</textarea>
+        </td>
+        #}
+        <td class="{{ model.FLAG_HAS_VARIATIONS }}">
+            <input class="{{ model.FLAG_HAS_VARIATIONS }}" type="checkbox" {% if product.has_variations %}checked{% endif %} 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ product.has_variations | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.has_variations | lower }}">
         </td>
         <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="{{ product.name_access_level_required }}">
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.id_access_level_required }}">{{ product.name_access_level_required }}</div>

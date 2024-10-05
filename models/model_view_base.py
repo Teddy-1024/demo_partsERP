@@ -204,6 +204,7 @@ class Model_View_Base(BaseModel, ABC):
     session: None = None
     is_page_store: bool = None
     is_user_logged_in: bool = None
+    user: User = None
     access_levels: list = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -253,6 +254,7 @@ class Model_View_Base(BaseModel, ABC):
         
         datastore_user = DataStore_User()
         user = datastore_user.get_user_session()
+        self.user = user
         self.is_user_logged_in = user.is_logged_in
         
     def output_bool(self, boolean):
@@ -318,13 +320,13 @@ class Model_View_Base(BaseModel, ABC):
         return {getattr(obj, key): obj.to_json() for obj in list_objects}
     @staticmethod
     def convert_list_objects_to_dict_by_attribute_key_default(list_objects):
-        if len(list_objects) == 0:
+        if list_objects is None or len(list_objects) == 0:
             return {}
         obj_class = list_objects[0].__class__
         return Model_View_Base.convert_list_objects_to_dict_by_attribute_key(list_objects, getattr(obj_class, obj_class.FLAG_NAME_ATTR_OPTION_VALUE))
     @staticmethod
     def convert_list_objects_to_dict_json_by_attribute_key_default(list_objects):
-        if len(list_objects) == 0:
+        if list_objects is None or len(list_objects) == 0:
             return {}
         obj_class = list_objects[0].__class__
         return Model_View_Base.convert_list_objects_to_dict_json_by_attribute_key(list_objects, getattr(obj_class, obj_class.FLAG_NAME_ATTR_OPTION_VALUE))

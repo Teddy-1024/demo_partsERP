@@ -95,6 +95,21 @@ export default class API {
         return await API.request(hashSaveStoreProductCategory, 'POST', dataRequest);
     }
     
+    // products
+    static async getProducts() {
+        return await API.request(hashGetStoreProduct);
+    }
+    static async getProductsByFilters(filtersJson) {
+        API.goToHash(hashPageStoreProducts, filtersJson);
+    }
+    static async saveProducts(products, formFilters, comment) {
+        let dataRequest = {};
+        dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagProduct] = products;
+        dataRequest[flagComment] = comment;
+        return await API.request(hashSaveStoreProduct, 'POST', dataRequest);
+    }
+    
     // product permutations
     static async getProductPermutations() {
         return await API.request(hashGetStoreProductPermutation);

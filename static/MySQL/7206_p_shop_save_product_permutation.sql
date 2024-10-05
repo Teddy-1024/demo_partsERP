@@ -6,9 +6,9 @@ DROP PROCEDURE IF EXISTS p_shop_save_product_permutation;
 
 DELIMITER //
 CREATE PROCEDURE p_shop_save_product_permutation (
-    IN a_id_user INT,
     IN a_comment VARCHAR(500),
-	IN a_guid BINARY(36)
+	IN a_guid BINARY(36),
+    IN a_id_user INT
 )
 BEGIN
     

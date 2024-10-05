@@ -19,6 +19,7 @@ Data model for store product view
 from business_objects.store.product import Product, Parameters_Product
 from business_objects.store.product_category import Product_Category_Container
 from datastores.datastore_store_product import DataStore_Store_Product
+from forms.access_level import Filters_Access_Level
 from forms.store.product import Filters_Product
 from models.model_view_store import Model_View_Store
 # from routes import bp_home
@@ -86,12 +87,17 @@ class Model_View_Store_Product(Model_View_Store):
         return 'Products'
     
     def __init__(self, form_filters, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCTS):
-        _m = 'Model_View_Store_Permutation.__init__'
+        _m = 'Model_View_Store_Product.__init__'
         print(f'{_m}\nstarting...')
         super().__init__(hash_page_current=hash_page_current, form_filters=form_filters)
+        self.access_levels = self.get_many_access_level(Filters_Access_Level())
         parameters_product = Parameters_Product.from_form_filters_product(self.form_filters)
         datastore_store = DataStore_Store_Product()
-        self.category_list, errors = datastore_store.get_many_product(parameters_product) 
+        self.category_list, errors = datastore_store.get_many_product(parameters_product)
+        countProducts = 0
+        for category in self.category_list.categories:
+            countProducts += len(category.products)
+        print(f'category count: {len(self.category_list.categories)}\nproduct count: {countProducts}')
         self.category_list_filters, errors_filters = datastore_store.get_many_product(
             Parameters_Product(
                 get_all_product_category = True,
@@ -110,7 +116,7 @@ class Model_View_Store_Product(Model_View_Store):
             )
         )
         print(f'category filters: {self.category_list_filters.categories}')
-        self.form_filters.id_category.choices = [('0', 'All')] + [(str(category.id_category), category.name) for category in self.category_list_filters.categories]
+        self.form_filters.id_category.choices += [(str(category.id_category), category.name) for category in self.category_list_filters.categories]
         print(f'category options: {self.form_filters.id_category.choices}')
         self.variation_types, self.variations, errors = self.get_many_product_variation()
         self.units_measurement = self.get_many_unit_measurement()
@@ -118,7 +124,8 @@ class Model_View_Store_Product(Model_View_Store):
         self.currencies = self.get_many_currency()
         self.currency_options = [currency.to_json_option() for currency in self.currencies]
 
+        print(f'category count: {len(self.category_list.categories)}\nproduct count: {countProducts}')
     @staticmethod
     def save_products(comment, list_products):
         _m = 'Model_View_Store_Product.save_products'
-        DataStore_Store_Product.save_products(comment, list_products)
+        return DataStore_Store_Product.save_products(comment, list_products)

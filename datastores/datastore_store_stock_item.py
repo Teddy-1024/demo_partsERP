@@ -58,8 +58,15 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         av.val_instance(Parameters_Stock_Item, 'Parameters_Stock_Item', _m, Parameters_Stock_Item)
         argument_dict = Parameters_Stock_Item.to_json()
         user = self.get_user_session()
-        argument_dict['a_id_user'] = user.id_user # 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
+        """
+        argument_dict['a_id_user'] = user.id_user # 'auth0|6582b95c895d09a70ba10fef' # id_user
         argument_dict['a_debug'] = 0
+        """
+        argument_dict = {
+            'a_id_user': user.id_user
+            , **argument_dict
+            , 'a_debug': 0
+        }
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_stock_item')
         result = self.db_procedure_execute('p_shop_get_many_stock_item', argument_dict)

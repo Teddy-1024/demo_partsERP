@@ -34,6 +34,7 @@ db = SQLAlchemy()
 # CLASSES
 class SQL_Error(db.Model):
     display_order = db.Column(db.Integer, primary_key=True)
+    id_type = db.Column(db.Integer)
     code = db.Column(db.String(50))
     msg = db.Column(db.String(4000))
     name = db.Column(db.String(500))
@@ -58,8 +59,9 @@ class SQL_Error(db.Model):
     def from_DB_record(record):
         error = SQL_Error()
         error.display_order = record[0]
-        error.code = record[1]
-        error.msg = record[2]
-        error.name = record[3]
-        error.description = record[4]
+        error.id_type = record[1]
+        error.code = record[2]
+        error.msg = record[3]
+        error.name = record[4]
+        error.description = record[5]
         return error

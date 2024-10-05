@@ -120,22 +120,22 @@ class Product_Variation(db.Model, Store_Base):
 class Product_Variation_Filters():
     get_all_variation_type: bool
     get_inactive_variation_type: bool
-    get_first_variation_type: bool
+    # get_first_variation_type: bool
     ids_variation_type: str
     get_all_variation: bool
     get_inactive_variation: bool
-    get_first_variation: bool
+    # get_first_variation: bool
     ids_variation: str
 
     def to_json(self):
         return {
             'a_get_all_variation_type': self.get_all_variation_type,
             'a_get_inactive_variation_type': self.get_inactive_variation_type,
-            'a_get_first_variation_type': self.get_first_variation_type,
+            # 'a_get_first_variation_type': self.get_first_variation_type,
             'a_ids_variation_type': self.ids_variation_type,
             'a_get_all_variation': self.get_all_variation,
             'a_get_inactive_variation': self.get_inactive_variation,
-            'a_get_first_variation': self.get_first_variation,
+            # 'a_get_first_variation': self.get_first_variation,
             'a_ids_variation': self.ids_variation,
 
         }
@@ -170,11 +170,11 @@ class Product_Variation_Filters():
         return Product_Variation_Filters(
             get_all_variation_type = True,
             get_inactive_variation_type = False,
-            get_first_variation_type = False,
+            # get_first_variation_type = False,
             ids_variation_type = '',
             get_all_variation = True,
             get_inactive_variation = False,
-            get_first_variation = False,
+            # get_first_variation = False,
             ids_variation = ''
         )
 

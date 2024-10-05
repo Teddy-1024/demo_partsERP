@@ -158,7 +158,7 @@ def save_product():
             objsProduct.append(Product.from_json(product))
         # model_save = Model_View_Store_Product() # filters_product=filters_form)
         print(f'objsProduct={objsProduct}')
-        Model_View_Store_Product.save_products(data.get('comment', 'No comment'), objsProduct)
+        save_errors = Model_View_Store_Product.save_products(data.get('comment', 'No comment'), objsProduct)
 
         model_return = Model_View_Store_Product(form_filters=form_filters)
         print('nips')

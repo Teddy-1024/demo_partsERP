@@ -547,7 +547,7 @@ BEGIN
 		AND UE_T.GUID = v_guid
 	;
 	
-	-- CALL p_shop_calc_user_clear_temp(v_guid);
+	-- CALL p_shop_clear_calc_user(v_guid);
 	-- DROP TABLE IF EXISTS Shop_Calc_User_Temp;
 	DELETE FROM Shop_Calc_User_Temp
 	WHERE GUID = v_guid
