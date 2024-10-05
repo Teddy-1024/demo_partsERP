@@ -12,7 +12,7 @@ Initializes the Flask application, sets the configuration based on the environme
 
 
 # internal
-from business_objects.store.product import Product, Filters_Product, Product_Permutation
+from business_objects.store.product import Product, Parameters_Product, Product_Permutation
 from business_objects.store.stock_item import Stock_Item
 from forms.forms import Form_Supplier
 from models.model_view_base import Model_View_Base
@@ -20,7 +20,7 @@ from models.model_view_store import Model_View_Store
 from models.model_view_store_supplier import Model_View_Store_Supplier
 from models.model_view_store_product_category import Model_View_Store_Product_Category
 from models.model_view_store_product_permutation import Model_View_Store_Product_Permutation
-from models.model_view_store_stock_items import Model_View_Store_Stock_Items
+from models.model_view_store_stock_item import Model_View_Store_Stock_Item
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 # external

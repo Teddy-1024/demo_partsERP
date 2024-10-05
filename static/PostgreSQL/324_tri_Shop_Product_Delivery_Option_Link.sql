@@ -1,7 +1,7 @@
 
 -- Shop Product Delivery Option Link
 
-CREATE OR REPLACE FUNCTION before_insert_Shop_Product_Delivery_Option_Link()
+CREATE OR REPLACE FUNCTION before_insert_Shop_Product_Permutation_Delivery_Option_Link()
 RETURNS TRIGGER AS $$
 BEGIN
 	IF NEW.created_on IS NULL THEN
@@ -15,13 +15,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Product_Delivery_Option_Link
-BEFORE INSERT ON Shop_Product_Delivery_Option_Link
+CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Product_Permutation_Delivery_Option_Link
+BEFORE INSERT ON Shop_Product_Permutation_Delivery_Option_Link
 FOR EACH ROW
-EXECUTE FUNCTION before_insert_Shop_Product_Delivery_Option_Link();
+EXECUTE FUNCTION before_insert_Shop_Product_Permutation_Delivery_Option_Link();
 
 
-CREATE OR REPLACE FUNCTION before_update_Shop_Product_Delivery_Option_Link()
+CREATE OR REPLACE FUNCTION before_update_Shop_Product_Permutation_Delivery_Option_Link()
 RETURNS TRIGGER AS $$
 BEGIN
 	IF OLD.id_change_set IS NOT DISTINCT FROM NEW.id_change_set THEN
@@ -29,7 +29,7 @@ BEGIN
 			USING ERRCODE = '45000';
     END IF;
     
-    INSERT INTO Shop_Product_Delivery_Option_Link_Audit (
+    INSERT INTO Shop_Product_Permutation_Delivery_Option_Link_Audit (
 		id_link,
         name_field,
         value_prev,
@@ -71,7 +71,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_update_Shop_Product_Delivery_Option_Link
-BEFORE UPDATE ON Shop_Product_Delivery_Option_Link
+CREATE OR REPLACE TRIGGER tri_before_update_Shop_Product_Permutation_Delivery_Option_Link
+BEFORE UPDATE ON Shop_Product_Permutation_Delivery_Option_Link
 FOR EACH ROW
-EXECUTE FUNCTION before_update_Shop_Product_Delivery_Option_Link();
+EXECUTE FUNCTION before_update_Shop_Product_Permutation_Delivery_Option_Link();

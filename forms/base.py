@@ -39,6 +39,10 @@ class Form_Base(FlaskForm, metaclass=Form_Base_Meta):
     @abstractmethod
     def from_json(cls, json):
         pass
+    @classmethod
+    @abstractmethod
+    def get_default(cls):
+        pass
     """
     @abstractmethod
     def test_69(self):

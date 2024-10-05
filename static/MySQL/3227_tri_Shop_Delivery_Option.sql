@@ -50,6 +50,7 @@ BEGIN
     # Changed latency_delivery_max
 	SELECT NEW.id_option, 'latency_delivery_max', CONVERT(OLD.latency_delivery_max, CHAR), CONVERT(NEW.latency_delivery_max, CHAR), NEW.id_change_set
 		WHERE NOT OLD.latency_delivery_max <=> NEW.latency_delivery_max
+    /*
     UNION
     # Changed quantity_min
 	SELECT NEW.id_option, 'quantity_min', CONVERT(OLD.quantity_min, CHAR), CONVERT(NEW.quantity_min, CHAR), NEW.id_change_set
@@ -58,6 +59,7 @@ BEGIN
     # Changed quantity_max
 	SELECT NEW.id_option, 'quantity_max', CONVERT(OLD.quantity_max, CHAR), CONVERT(NEW.quantity_max, CHAR), NEW.id_change_set
 		WHERE NOT OLD.quantity_max <=> NEW.quantity_max
+    */
     UNION
     # Changed active
 	SELECT NEW.id_option, 'active', CONVERT(OLD.active, CHAR), CONVERT(NEW.active, CHAR), NEW.id_change_set

@@ -1027,7 +1027,7 @@ BEGIN
 			PDOL.price_local,
 			PDOL.display_order
 		FROM Shop_Delivery_Option _DO
-		INNER JOIN Shop_Product_Delivery_Option_Link PDOL
+		INNER JOIN Shop_Product_Permutation_Delivery_Option_Link PDOL
 			ON _DO.id_option = PDOL.id_delivery_option
 			AND (
 				v_get_inactive_delivery_region

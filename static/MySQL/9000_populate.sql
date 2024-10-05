@@ -487,24 +487,24 @@ VALUES
 
 # Delivery Options
 INSERT INTO Shop_Delivery_Option (
-	display_order, code, name, latency_delivery_min, latency_delivery_max, quantity_min, quantity_max
+	display_order, code, name, latency_delivery_min, latency_delivery_max
 )
 VALUES 
-	(1, 'COLLECT', 'Collection', 0, 0, 0, 1),
-	(2, 'SIGNED_1', 'First Class Signed-For', 2, 4, 0, 1)
+	(1, 'COLLECT', 'Collection', 0, 0),
+	(2, 'SIGNED_1', 'First Class Signed-For', 2, 4)
 ;
 
 # Product Delivery Option Links
-INSERT INTO Shop_Product_Delivery_Option_Link (
-	display_order, id_product, id_permutation, id_delivery_option, id_region, id_currency, price_local
+INSERT INTO Shop_Product_Permutation_Delivery_Option_Link (
+	display_order, id_product, id_permutation, id_delivery_option, id_region, id_currency, price_local, quantity_min, quantity_max
 )
 VALUES 
-	(1, 1, 1, 1, 1, 1, 5),
-	(2, 1, 2, 1, 1, 1, 9),
-	(3, 2, NULL, 1, 1, 1, 10),
-	(4, 3, 4, 1, 1, 1, 10),
-	(5, 4, 5, 1, 1, 1, 10),
-	(6, 5, 6, 1, 1, 1, 10)
+	(1, 1, 1, 1, 1, 1, 5, 0, 1),
+	(2, 1, 2, 1, 1, 1, 9, 0, 1),
+	(3, 2, 3, 1, 1, 1, 10, 0, 1),
+	(4, 3, 4, 1, 1, 1, 10, 0, 1),
+	(5, 4, 5, 1, 1, 1, 10, 0, 1),
+	(6, 5, 6, 1, 1, 1, 10, 0, 1)
 ;
 
 # Discounts

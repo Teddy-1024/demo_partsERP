@@ -98,7 +98,7 @@ Total : 575 files,  67395 codes, 18525 comments, 9686 blanks, all 95606 lines
 | [models/model_view_store_product.py](/models/model_view_store_product.py) | Python | 40 | 15 | 12 | 67 |
 | [models/model_view_store_product_category.py](/models/model_view_store_product_category.py) | Python | 37 | 9 | 9 | 55 |
 | [models/model_view_store_product_permutation.py](/models/model_view_store_product_permutation.py) | Python | 81 | 6 | 9 | 96 |
-| [models/model_view_store_stock_items.py](/models/model_view_store_stock_items.py) | Python | 66 | 5 | 10 | 81 |
+| [models/Model_View_Store_Stock_Item.py](/models/Model_View_Store_Stock_Item.py) | Python | 66 | 5 | 10 | 81 |
 | [models/model_view_store_supplier.py](/models/model_view_store_supplier.py) | Python | 26 | 5 | 8 | 39 |
 | [models/model_view_user.py](/models/model_view_user.py) | Python | 16 | 5 | 6 | 27 |
 | [package-lock.json](/package-lock.json) | JSON | 4,383 | 0 | 1 | 4,384 |
@@ -172,8 +172,8 @@ Total : 575 files,  67395 codes, 18525 comments, 9686 blanks, all 95606 lines
 | [static/MySQL/1225_tbl_Shop_Product_Image_Audit.sql](/static/MySQL/1225_tbl_Shop_Product_Image_Audit.sql) | SQL | 16 | 0 | 5 | 21 |
 | [static/MySQL/1227_tbl_Shop_Delivery_Option.sql](/static/MySQL/1227_tbl_Shop_Delivery_Option.sql) | SQL | 20 | 0 | 6 | 26 |
 | [static/MySQL/1228_tbl_Shop_Delivery_Option_Audit.sql](/static/MySQL/1228_tbl_Shop_Delivery_Option_Audit.sql) | SQL | 17 | 0 | 5 | 22 |
-| [static/MySQL/1230_tbl_Shop_Product_Delivery_Option_Link.sql](/static/MySQL/1230_tbl_Shop_Product_Delivery_Option_Link.sql) | SQL | 39 | 0 | 5 | 44 |
-| [static/MySQL/1231_tbl_Shop_Product_Delivery_Option_Link_Audit.sql](/static/MySQL/1231_tbl_Shop_Product_Delivery_Option_Link_Audit.sql) | SQL | 17 | 0 | 5 | 22 |
+| [static/MySQL/1230_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql](/static/MySQL/1230_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql) | SQL | 39 | 0 | 5 | 44 |
+| [static/MySQL/1231_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql](/static/MySQL/1231_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql) | SQL | 17 | 0 | 5 | 22 |
 | [static/MySQL/1233_tbl_Shop_Discount.sql](/static/MySQL/1233_tbl_Shop_Discount.sql) | SQL | 31 | 12 | 6 | 49 |
 | [static/MySQL/1234_tbl_Shop_Discount_Audit.sql](/static/MySQL/1234_tbl_Shop_Discount_Audit.sql) | SQL | 18 | 0 | 5 | 23 |
 | [static/MySQL/1236_tbl_Shop_Discount_Region_Currency_Link.sql](/static/MySQL/1236_tbl_Shop_Discount_Region_Currency_Link.sql) | SQL | 27 | 0 | 5 | 32 |
@@ -240,7 +240,7 @@ Total : 575 files,  67395 codes, 18525 comments, 9686 blanks, all 95606 lines
 | [static/MySQL/3221_tri_Shop_Product_Price.sql](/static/MySQL/3221_tri_Shop_Product_Price.sql) | SQL | 58 | 19 | 11 | 88 |
 | [static/MySQL/3224_tri_Shop_Product_Image.sql](/static/MySQL/3224_tri_Shop_Product_Image.sql) | SQL | 54 | 10 | 9 | 73 |
 | [static/MySQL/3227_tri_Shop_Delivery_Option.sql](/static/MySQL/3227_tri_Shop_Delivery_Option.sql) | SQL | 62 | 0 | 9 | 71 |
-| [static/MySQL/3230_tri_Shop_Product_Delivery_Option_Link.sql](/static/MySQL/3230_tri_Shop_Product_Delivery_Option_Link.sql) | SQL | 42 | 18 | 9 | 69 |
+| [static/MySQL/3230_tri_Shop_Product_Permutation_Delivery_Option_Link.sql](/static/MySQL/3230_tri_Shop_Product_Permutation_Delivery_Option_Link.sql) | SQL | 42 | 18 | 9 | 69 |
 | [static/MySQL/3233_tri_Shop_Discount.sql](/static/MySQL/3233_tri_Shop_Discount.sql) | SQL | 74 | 0 | 10 | 84 |
 | [static/MySQL/3236_tri_Shop_Discount_Region_Currency_Link.sql](/static/MySQL/3236_tri_Shop_Discount_Region_Currency_Link.sql) | SQL | 34 | 10 | 9 | 53 |
 | [static/MySQL/3300_tri_Shop_Permission_Group.sql](/static/MySQL/3300_tri_Shop_Permission_Group.sql) | SQL | 46 | 0 | 9 | 55 |
@@ -339,8 +339,8 @@ Total : 575 files,  67395 codes, 18525 comments, 9686 blanks, all 95606 lines
 | [static/PostgreSQL/121_tbl_Shop_Image_Audit.sql](/static/PostgreSQL/121_tbl_Shop_Image_Audit.sql) | SQL | 15 | 1 | 5 | 21 |
 | [static/PostgreSQL/122_tbl_Shop_Delivery_Option.sql](/static/PostgreSQL/122_tbl_Shop_Delivery_Option.sql) | SQL | 19 | 1 | 6 | 26 |
 | [static/PostgreSQL/123_tbl_Shop_Delivery_Option_Audit.sql](/static/PostgreSQL/123_tbl_Shop_Delivery_Option_Audit.sql) | SQL | 16 | 1 | 5 | 22 |
-| [static/PostgreSQL/124_tbl_Shop_Product_Delivery_Option_Link.sql](/static/PostgreSQL/124_tbl_Shop_Product_Delivery_Option_Link.sql) | SQL | 38 | 1 | 5 | 44 |
-| [static/PostgreSQL/125_tbl_Shop_Product_Delivery_Option_Link_Audit.sql](/static/PostgreSQL/125_tbl_Shop_Product_Delivery_Option_Link_Audit.sql) | SQL | 16 | 1 | 5 | 22 |
+| [static/PostgreSQL/124_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql](/static/PostgreSQL/124_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql) | SQL | 38 | 1 | 5 | 44 |
+| [static/PostgreSQL/125_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql](/static/PostgreSQL/125_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql) | SQL | 16 | 1 | 5 | 22 |
 | [static/PostgreSQL/130.4_tbl_Shop_Discount.sql](/static/PostgreSQL/130.4_tbl_Shop_Discount.sql) | SQL | 30 | 13 | 6 | 49 |
 | [static/PostgreSQL/131_tbl_Shop_Discount_Audit.sql](/static/PostgreSQL/131_tbl_Shop_Discount_Audit.sql) | SQL | 17 | 1 | 5 | 23 |
 | [static/PostgreSQL/132_tbl_Shop_Discount_Region_Currency_Link.sql](/static/PostgreSQL/132_tbl_Shop_Discount_Region_Currency_Link.sql) | SQL | 26 | 1 | 5 | 32 |
@@ -408,7 +408,7 @@ Total : 575 files,  67395 codes, 18525 comments, 9686 blanks, all 95606 lines
 | [static/PostgreSQL/318_tri_Shop_Image_Type.sql](/static/PostgreSQL/318_tri_Shop_Image_Type.sql) | SQL | 48 | 6 | 10 | 64 |
 | [static/PostgreSQL/320_tri_Shop_Image.sql](/static/PostgreSQL/320_tri_Shop_Image.sql) | SQL | 58 | 8 | 10 | 76 |
 | [static/PostgreSQL/322_tri_Shop_Delivery_Option.sql](/static/PostgreSQL/322_tri_Shop_Delivery_Option.sql) | SQL | 57 | 9 | 10 | 76 |
-| [static/PostgreSQL/324_tri_Shop_Product_Delivery_Option_Link.sql](/static/PostgreSQL/324_tri_Shop_Product_Delivery_Option_Link.sql) | SQL | 46 | 22 | 10 | 78 |
+| [static/PostgreSQL/324_tri_Shop_Product_Permutation_Delivery_Option_Link.sql](/static/PostgreSQL/324_tri_Shop_Product_Permutation_Delivery_Option_Link.sql) | SQL | 46 | 22 | 10 | 78 |
 | [static/PostgreSQL/330_tri_Shop_Discount.sql](/static/PostgreSQL/330_tri_Shop_Discount.sql) | SQL | 66 | 12 | 10 | 88 |
 | [static/PostgreSQL/332_tri_Shop_Discount_Region_Currency_Link.sql](/static/PostgreSQL/332_tri_Shop_Discount_Region_Currency_Link.sql) | SQL | 40 | 12 | 10 | 62 |
 | [static/PostgreSQL/353_tri_Shop_Permission_Group.sql](/static/PostgreSQL/353_tri_Shop_Permission_Group.sql) | SQL | 49 | 5 | 10 | 64 |

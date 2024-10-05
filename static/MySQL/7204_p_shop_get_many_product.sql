@@ -26,9 +26,9 @@ BEGIN
     
 	-- Argument redeclaration
 	-- Variable declaration
-    DECLARE v_has_filter_product_category BIT;
-    DECLARE v_has_filter_product BIT;
-    DECLARE v_has_filter_permutation BIT;
+    # DECLARE v_has_filter_product_category BIT;
+    # DECLARE v_has_filter_product BIT;
+    # DECLARE v_has_filter_permutation BIT;
     DECLARE v_has_filter_image BIT;
     DECLARE v_guid BINARY(36);
     # DECLARE v_id_user VARCHAR(100);
@@ -139,10 +139,9 @@ BEGIN
     
     -- Parse filters
     -- CALL p_validate_guid ( v_guid );
-    
-    SET v_has_filter_product_category = CASE WHEN a_ids_product_category = '' THEN 0 ELSE 1 END;
-    SET v_has_filter_product = CASE WHEN a_ids_product = '' THEN 0 ELSE 1 END;
-    SET v_has_filter_permutation = CASE WHEN a_ids_permutation = '' THEN 0 ELSE 1 END;
+    -- SET v_has_filter_product_category = CASE WHEN a_ids_product_category = '' THEN 0 ELSE 1 END;
+    -- SET v_has_filter_product = CASE WHEN a_ids_product = '' THEN 0 ELSE 1 END;
+    -- SET v_has_filter_permutation = CASE WHEN a_ids_permutation = '' THEN 0 ELSE 1 END;
     SET v_has_filter_image = CASE WHEN a_ids_image = '' THEN 0 ELSE 1 END;
 
 	-- select v_has_filter_product, v_has_filter_permutation;
@@ -215,7 +214,7 @@ BEGIN
     ;
     
     # Product Images
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+    IF (v_has_filter_image = 1 AND NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1)) THEN
 		CALL partsltd_prod.p_split(v_guid, a_ids_image, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
@@ -225,7 +224,7 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM Split_Temp
+		FROM partsltd_prod.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
@@ -285,6 +284,8 @@ BEGIN
 			;
 		END IF;
 	END IF;
+    
+    DELETE FROM tmp_Split;
     
     -- Outputs
     # Categories
@@ -446,11 +447,6 @@ BEGIN
     -- WHERE guid = v_guid
     ;
     
-	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
-    
-    IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-    END IF;
     
     -- Clean up
     DROP TEMPORARY TABLE IF EXISTS tmp_Split;
@@ -459,6 +455,11 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     
+	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+    
+    IF a_debug = 1 THEN
+		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+    END IF;
 END //
 DELIMITER ;;
 

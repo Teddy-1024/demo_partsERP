@@ -68,4 +68,7 @@ doc/**/*.pdf
 DEPRECATED/
 
 # Ignore virtual environments
+bot_env/
+bot_web/
+env_test/
 env_web/

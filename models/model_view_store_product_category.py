@@ -19,7 +19,7 @@ from forms.access_level import Filters_Access_Level
 # from forms.store.product_permutation import Filters_Product_Permutation
 from forms.store.product_category import Filters_Product_Category
 # from routes import bp_home
-from business_objects.store.product import Product, Filters_Product, Product_Permutation
+from business_objects.store.product import Product, Parameters_Product, Product_Permutation
 from business_objects.store.product_variation import Product_Variation_Container
 import lib.argument_validation as av
 
@@ -46,7 +46,7 @@ class Model_View_Store_Product_Category(Model_View_Store):
         self.access_levels = self.get_many_access_level(Filters_Access_Level())
         datastore_store = DataStore_Store_Product_Category()
         # self.form_filters = Filters_Product_Category.from_filters(filters_category)
-        filters_product = Filters_Product.from_filters_product_category(self.form_filters)
+        filters_product = Parameters_Product.from_filters_product_category(self.form_filters)
         self.category_list, errors = datastore_store.get_many_product(filters_product) 
 
     @classmethod

@@ -29,7 +29,7 @@ CREATE PROCEDURE p_shop_get_many_stock_item (
 	IN a_get_nonexpired_stock_item_only BIT,
 	IN a_get_consumed_stock_item_only BIT,
 	IN a_get_nonconsumed_stock_item_only BIT,
-    IN a_test BIT
+    IN a_debug BIT
 )
 BEGIN
     DECLARE v_has_filter_permutation BIT;
@@ -45,11 +45,11 @@ BEGIN
     DECLARE v_id_access_level_view INT;
     -- DECLARE v_now TIMESTAMP;
     -- DECLARE v_id_minimum INT;
-	DECLARE v_now TIMESTAMP;
+	DECLARE v_time_start TIMESTAMP(6);
     
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'VIEW');
-    SET v_now := NOW();
+    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW');
+    SET v_time_start := CURRENT_TIMESTAMP(6);
 
     
 	-- Argument validation + default values
@@ -79,60 +79,40 @@ BEGIN
 	SET a_get_nonconsumed_stock_item_only := IFNULL(a_get_nonconsumed_stock_item_only, 0);
 	
     -- Temporary tables
-    DROP TABLE IF EXISTS tmp_Region_Storage;
-    DROP TABLE IF EXISTS tmp_Plant_Storage;
-    DROP TABLE IF EXISTS tmp_Location_Storage;
-	DROP TABLE IF EXISTS tmp_Stock_Item;
-    DROP TABLE IF EXISTS tmp_Permutation;
-	DROP TABLE IF EXISTS tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Region_Storage;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Plant_Storage;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Location_Storage;
+	DROP TEMPORARY TABLE IF EXISTS tmp_Stock_Item;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
+	-- DROP TABLE IF EXISTS tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Category;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     
-
-	CREATE TEMPORARY TABLE tmp_Permutation (
-		id_permutation INT NOT NULL,
-        id_product INT NOT NULL
-        /*
-		CONSTRAINT FK_tmp_Permutation_id_permutation
-			FOREIGN KEY (id_permutation)
-			REFERENCES Shop_Product_Permutation(id_permutation)
-		*/
-        -- , rank_permutation INT NOT NULL
-	);
+    CREATE TEMPORARY TABLE tmp_Category (
+		id_category INT NOT NULL
+        , display_order INT NOT NULL
+    );
+    
+    CREATE TEMPORARY TABLE tmp_Product (
+		id_category INT NOT NULL
+		, id_product INT NOT NULL
+        , display_order INT NOT NULL
+    );
+    
+    CREATE TEMPORARY TABLE tmp_Permutation (
+		id_permutation INT NULL
+		, id_product INT NOT NULL
+        , can_view BIT
+        , can_edit BIT
+        , can_admin BIT
+    );
 	
 	CREATE TEMPORARY TABLE tmp_Stock_Item (
 		id_stock INT NOT NULL PRIMARY KEY
         , id_permutation INT NOT NULL
         , id_product INT NOT NULL
 		, id_location_storage INT NOT NULL
-		-- , id_currency_cost INT NOT NUL
-        /*
-		, date_purchased TIMESTAMP NOT NULL
-		, date_received TIMESTAMP NULL
-        /
-		CONSTRAINT FK_tmp_Stock_Item_id_location_storage
-			FOREIGN KEY (id_location_storage)
-			REFERENCES Shop_Storage_Location(id_location),
-		/
-        /
-		CONSTRAINT FK_tmp_Stock_Item_id_currency
-			FOREIGN KEY (id_currency_cost)
-			REFERENCES Shop_Currency(id_currency),
-		/
-		, cost_local_VAT_incl FLOAT NOT NULL
-		, cost_local_VAT_excl FLOAT NOT NULL
-		, is_sealed BIT NOT NULL DEFAULT 1
-		, date_unsealed TIMESTAMP NULL
-		, date_expiration TIMESTAMP NOT NULL
-		, is_consumed BIT NOT NULL DEFAULT 0
-		, date_consumed TIMESTAMP NULL
-		, active_stock_item BIT NOT NULL DEFAULT 1
-        , active_permutation BIT NOT NULL
-        , active_product BIT NOT NULL
-        , active_category BIT NOT NULL
-        -- , rank_stock_item INT NOT NULL
-        , display_order_permutation INT NOT NULL
-        , display_order_product INT NOT NULL
-        , display_order_category INT NOT NULL
-        */
         , can_view BIT NULL
         , can_edit BIT NULL
 		, can_admin BIT NULL
@@ -172,16 +152,17 @@ BEGIN
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        guid BINARY(36) NOT NULL,
-		id_type INT NOT NULL,
-        /*
-		CONSTRAINT FK_tmp_Msg_Error_id_type 
-			FOREIGN KEY (id_type)
-			REFERENCES Shop_Msg_Error_Type (id_type),
-		*/
+        -- guid BINARY(36) NOT NULL,
+		id_type INT NULL,
         code VARCHAR(50) NOT NULL,
         msg VARCHAR(4000) NOT NULL
 	);
+    
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Split (
+		substring VARCHAR(4000) NOT NULL
+        , as_int INT NULL
+	);
+    DELETE FROM tmp_Split;
     
     
     -- Parse filters
@@ -193,125 +174,274 @@ BEGIN
 
 	-- select v_has_filter_product, v_has_filter_permutation;
     
-    INSERT INTO tmp_Permutation (
-		id_permutation,
-        id_product
-	)
-	SELECT 
-		PP.id_permutation,
-        PP.id_product
-	FROM Shop_Product_Permutation PP
-    -- LEFT JOIN Shop_Product_Permutation_Temp PPT ON PP.id_permutation = PPT.id_permutation
-    WHERE 
-		(
-			a_get_all_product_permutation = 1
-			-- OR PPT.GUID = a_guid_permutations
-			OR FIND_IN_SET(PP.id_permutation, a_ids_product_permutation) > 0
-        )
-        AND (
-			a_get_inactive_product_permutation = 1
-            OR PP.active = 1
-		)
-	;
+    CALL partsltd_prod.p_shop_calc_product_permutation (
+		a_id_user
+		, 1 -- a_get_all_product_category
+		, 0 -- a_get_inactive_product_category
+		, '' -- a_ids_product_category
+		, 1 -- a_get_all_product
+		, 0 -- a_get_inactive_product
+		, '' -- a_ids_product
+		, a_get_all_product_permutation
+		, a_get_inactive_product_permutation
+		, a_ids_product_permutation
+		, 0 
+		, v_guid -- a_guid
+		, 0 -- a_debug 
+    );
     
-	INSERT INTO tmp_Stock_Item (
-		id_stock,
-		id_permutation,
-        id_product,
-        id_location_storage
-	)
-    SELECT 
-		SI.id_stock,
-		t_PP.id_permutation,
-        t_PP.id_product,
-        SI.id_location_storage
-	FROM Shop_Stock_Item SI
-	INNER JOIN tmp_Permutation t_PP ON SI.id_permutation = t_PP.id_permutation
-	WHERE
-		(
-			a_get_all_stock_item = 1
-			OR (
-				v_has_filter_stock_item = 1
-				AND FIND_IN_SET(SI.id_stock, a_ids_stock_item) > 0
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		INSERT INTO tmp_Category (
+			id_category
+			, display_order
+		)
+		SELECT 
+			PC.id_category
+			, PC.display_order
+		FROM (SELECT * FROM partsltd_prod.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
+		INNER JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+		;
+		
+		INSERT INTO tmp_Product (
+			id_product
+			, id_category
+			, display_order
+		)
+		SELECT 
+			P.id_product
+			, P.id_category
+			, P.display_order
+		FROM (SELECT * FROM partsltd_prod.Shop_Product_Temp WHERE GUID = v_guid) P_T 
+		INNER JOIN partsltd_prod.Shop_Product P ON P.id_product = P_T.id_product
+		;
+		
+		INSERT INTO tmp_Permutation (
+			id_permutation
+			, id_product
+            , can_view
+            , can_edit
+            , can_admin
+		)
+		SELECT 
+			PP.id_permutation
+			, PP.id_product
+            , PP_T.can_view
+            , PP_T.can_edit
+            , PP_T.can_admin
+		FROM (SELECT * FROM partsltd_prod.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
+		INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
+		;
+    
+    # Stock Items
+		CALL partsltd_prod.p_split(v_guid, a_ids_stock_item, ',', a_debug);
+        
+        DELETE FROM tmp_Split;
+		
+		INSERT INTO tmp_Split (
+			substring
+			, as_int
+		)
+		SELECT 
+			substring
+			, CONVERT(substring, DECIMAL(10,0)) AS as_int
+		FROM partsltd_prod.Split_Temp
+		WHERE 1=1
+			AND GUID = v_guid
+			AND NOT ISNULL(substring)
+			AND substring != ''
+		;
+		
+		CALL partsltd_prod.p_clear_split_temp( v_guid );
+	END IF;
+    
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		IF EXISTS (
+			SELECT * 
+            FROM tmp_Split t_S 
+            LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
+			WHERE 
+				ISNULL(t_S.as_int) 
+                OR ISNULL(SI.id_stock)
+		) THEN
+			INSERT INTO tmp_Msg_Error (
+				-- guid,
+				id_type,
+				code,
+				msg
 			)
-		)
-		AND (
-			a_get_inactive_stock_item = 1
-			OR SI.active = 1
-		)
-		AND (
-			ISNULL(a_date_received_to)
-			OR SI.date_received <= a_date_received_to
-		)
-		AND (
-			a_get_unsealed_stock_item_only = 0
-			OR SI.is_sealed = 0
-		)
-		AND (
-			a_get_sealed_stock_item_only = 0
-			OR SI.is_sealed = 1
-		)
-		AND (
-			a_get_nonexpired_stock_item_only = 0
-			OR SI.date_expiration > v_now
-		)
-		AND (
-			a_get_expired_stock_item_only = 0
-			OR SI.date_expiration <= v_now
-		)
-		AND (
-			a_get_consumed_stock_item_only = 0
-			OR SI.is_consumed = 1
-		)
-		AND (
-			a_get_nonconsumed_stock_item_only = 0
-			OR SI.is_consumed = 0
-		)
-    ;
+			SELECT
+				-- v_guid,
+				v_id_type_error_bad_data,
+				v_code_type_error_bad_data, 
+				CONCAT('Invalid or inactive stock item IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
+			FROM tmp_Split t_S
+			LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
+			WHERE 
+				ISNULL(t_S.as_int) 
+				OR ISNULL(SI.id_stock)
+			;
+		ELSE
+			INSERT INTO tmp_Stock_Item (
+				id_stock
+                , id_permutation
+                , id_product
+                , id_location_storage
+			)
+			SELECT 
+				SI.id_stock
+                , SI.id_permutation
+                , t_PP.id_product
+                , SI.id_location_storage
+			FROM tmp_Split t_S
+			RIGHT JOIN partsltd_prod.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
+            INNER JOIN tmp_Permutation t_PP ON SI.id_permutation = t_PP.id_permutation
+			WHERE 
+				(
+					a_get_all_stock_item = 1
+					OR (
+						v_has_filter_stock_item = 1
+						AND NOT ISNULL(t_S.as_int)
+					)
+				)
+				AND (
+					a_get_inactive_stock_item = 1
+					OR SI.active = 1
+				)
+				AND (
+					ISNULL(a_date_received_to)
+					OR SI.date_received <= a_date_received_to
+				)
+				AND (
+					a_get_unsealed_stock_item_only = 0
+					OR SI.is_sealed = 0
+				)
+				AND (
+					a_get_sealed_stock_item_only = 0
+					OR SI.is_sealed = 1
+				)
+				AND (
+					a_get_nonexpired_stock_item_only = 0
+					OR SI.date_expiration > v_time_start
+				)
+				AND (
+					a_get_expired_stock_item_only = 0
+					OR SI.date_expiration <= v_time_start
+				)
+				AND (
+					a_get_consumed_stock_item_only = 0
+					OR SI.is_consumed = 1
+				)
+				AND (
+					a_get_nonconsumed_stock_item_only = 0
+					OR SI.is_consumed = 0
+				)
+			;
+		END IF;
+	END IF;
+    
+    DELETE FROM tmp_Split;
     
 	-- Storage Regions
-    INSERT INTO tmp_Region_Storage (
-		id_region
-    )
-    WITH RECURSIVE Recursive_CTE_Region_Storage AS (
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		CALL partsltd_prod.p_split(v_guid, a_ids_region_storage, ',', a_debug);
+        
+        DELETE FROM tmp_Split;
+		
+		INSERT INTO tmp_Split (
+			substring
+			, as_int
+		)
 		SELECT 
-			R.id_region AS id_region_parent,
-            NULL AS id_region_child
-		FROM tmp_Stock_Item t_SI
-		-- INNER JOIN tmp_Stock_Item t_SI ON SL.id_location = t_SI.id_location_storage
-		INNER JOIN Shop_Storage_Location SL ON t_SI.id_location_storage = SL.id_location
-		INNER JOIN Shop_Plant P ON SL.id_plant = P.id_plant
-		INNER JOIN Shop_Address A ON P.id_address = A.id_address
-		INNER JOIN Shop_Region R 
-			ON A.id_region = R.id_region
-			AND (
-				a_get_all_region_storage
-				OR FIND_IN_SET(R.id_region, a_ids_region_storage) > 0
+			substring
+			, CONVERT(substring, DECIMAL(10,0)) AS as_int
+		FROM partsltd_prod.Split_Temp
+		WHERE 1=1
+			AND GUID = v_guid
+			AND NOT ISNULL(substring)
+			AND substring != ''
+		;
+		
+		CALL partsltd_prod.p_clear_split_temp( v_guid );
+	END IF;
+    
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		IF EXISTS (
+			SELECT * 
+            FROM tmp_Split t_S 
+            LEFT JOIN partsltd_prod.Shop_Region R ON t_S.as_int = R.id_region
+			WHERE 
+				ISNULL(t_S.as_int) 
+                OR ISNULL(R.id_region)
+		) THEN
+			INSERT INTO tmp_Msg_Error (
+				-- guid,
+				id_type,
+				code,
+				msg
 			)
-			AND (
-				a_get_inactive_region_storage
-				OR R.active = 1
-			)			
-		UNION
-        SELECT 
-			RB.id_region_parent,
-			RB.id_region_child
-		FROM Shop_Region_Branch RB
-        INNER JOIN Recursive_CTE_Region_Storage r_RS
-			ON RB.id_region_parent = r_RS.id_region_child
-            AND (
-				a_get_inactive_region_storage
-                OR RB.active = 1
-            )
-	)
-    SELECT
-		DISTINCT R.id_region
-	FROM Shop_Region R
-    INNER JOIN Recursive_CTE_Region_Storage r_RS
-		ON R.id_region = r_RS.id_region_parent
-		OR R.id_region = r_RS.id_region_child
-    ;
-
+			SELECT
+				-- v_guid,
+				v_id_type_error_bad_data,
+				v_code_type_error_bad_data, 
+				CONCAT('Invalid or inactive region IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
+			FROM tmp_Split t_S
+			LEFT JOIN partsltd_prod.Shop_Region R ON t_S.as_int = R.id_region
+			WHERE 
+				ISNULL(t_S.as_int) 
+				OR ISNULL(R.id_region)
+			;
+		ELSE
+			INSERT INTO tmp_Region_Storage (
+				id_region
+			)
+			WITH RECURSIVE Recursive_CTE_Region_Storage AS (
+				SELECT 
+					R.id_region AS id_region_parent,
+					NULL AS id_region_child
+				FROM tmp_Split t_S
+				RIGHT JOIN partsltd_prod.Shop_Region R 
+					ON t_S.as_int = R.id_region
+					AND (
+						a_get_all_region_storage = 1
+						OR NOT ISNULL(t_S.as_int)
+					)
+					AND (
+						a_get_inactive_region_storage = 1
+						OR R.active = 1
+					)			
+                INNER JOIN (
+					SELECT
+						A.id_region
+					FROM tmp_Stock_Item t_SI
+					-- INNER JOIN tmp_Stock_Item t_SI ON SL.id_location = t_SI.id_location_storage
+					INNER JOIN partsltd_prod.Shop_Storage_Location SL ON t_SI.id_location_storage = SL.id_location
+					INNER JOIN partsltd_prod.Shop_Plant P ON SL.id_plant = P.id_plant
+					INNER JOIN partsltd_prod.Shop_Address A ON P.id_address = A.id_address
+				) A_SI ON R.id_region = A_SI.id_region
+				UNION
+				SELECT 
+					RB.id_region_parent,
+					RB.id_region_child
+				FROM partsltd_prod.Shop_Region_Branch RB
+				INNER JOIN Recursive_CTE_Region_Storage r_RS
+					ON RB.id_region_parent = r_RS.id_region_child
+					AND (
+						a_get_inactive_region_storage = 1
+						OR RB.active = 1
+					)
+			)
+			SELECT
+				DISTINCT R.id_region
+			FROM partsltd_prod.Shop_Region R
+			INNER JOIN Recursive_CTE_Region_Storage r_RS
+				ON R.id_region = r_RS.id_region_parent
+				OR R.id_region = r_RS.id_region_child
+			;
+		END IF;
+	END IF;
+    
+    DELETE FROM tmp_Split;
+    
 	-- Plants
     INSERT INTO tmp_Plant_Storage (
 		id_plant
@@ -321,69 +451,130 @@ BEGIN
 		DISTINCT P.id_plant
         , A.id_region
 	FROM tmp_Stock_Item t_SI
-	INNER JOIN Shop_Storage_Location SL ON t_SI.id_location_storage = SL.id_location
-	INNER JOIN Shop_Plant P ON SL.id_plant = P.id_plant
-    INNER JOIN Shop_Address A ON P.id_address = A.id_address
+	INNER JOIN partsltd_prod.Shop_Storage_Location SL ON t_SI.id_location_storage = SL.id_location
+	INNER JOIN partsltd_prod.Shop_Plant P ON SL.id_plant = P.id_plant
+    INNER JOIN partsltd_prod.Shop_Address A ON P.id_address = A.id_address
 	;
     
 	-- Storage Locations
-    INSERT INTO tmp_Location_Storage (
-		id_location
-        , id_plant
-    )
-    WITH RECURSIVE Recursive_CTE_Location_Storage AS (
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		CALL partsltd_prod.p_split(v_guid, a_ids_location_storage, ',', a_debug);
+        
+        DELETE FROM tmp_Split;
+		
+		INSERT INTO tmp_Split (
+			substring
+			, as_int
+		)
 		SELECT 
-			SL.id_location AS id_location_parent,
-            NULL AS id_location_child
-		FROM tmp_Stock_Item t_SI
-		-- INNER JOIN tmp_Stock_Item t_SI ON SL.id_location = t_SI.id_location_storage
-		INNER JOIN Shop_Storage_Location SL 
-			ON t_SI.id_location_storage = SL.id_location
-			AND (
-				a_get_all_location_storage
-				OR FIND_IN_SET(SL.id_location, a_ids_location_storage) > 0
+			substring
+			, CONVERT(substring, DECIMAL(10,0)) AS as_int
+		FROM partsltd_prod.Split_Temp
+		WHERE 1=1
+			AND GUID = v_guid
+			AND NOT ISNULL(substring)
+			AND substring != ''
+		;
+		
+		CALL partsltd_prod.p_clear_split_temp( v_guid );
+	END IF;
+    
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		IF EXISTS (
+			SELECT * 
+            FROM tmp_Split t_S 
+            LEFT JOIN partsltd_prod.Shop_Region R ON t_S.as_int = R.id_region
+			WHERE 
+				ISNULL(t_S.as_int) 
+                OR ISNULL(R.id_region)
+		) THEN
+			INSERT INTO tmp_Msg_Error (
+				-- guid,
+				id_type,
+				code,
+				msg
 			)
-			AND (
-				a_get_inactive_location_storage
-				OR SL.active = 1
-			)			
-		UNION
-        SELECT 
-			SLB.id_location_parent,
-			SLB.id_location_child
-		FROM Shop_Storage_Location_Branch SLB
-        INNER JOIN Recursive_CTE_Location_Storage r_LS
-			ON SLB.id_location_parent = r_LS.id_location_child
-            AND (
-				a_get_inactive_location_storage
-                OR SLB.active = 1
-            )
-	)
-    SELECT
-		DISTINCT SL.id_location
-        , SL.id_plant
-	FROM Shop_Storage_Location SL
-    INNER JOIN Recursive_CTE_Location_Storage r_LS
-		ON SL.id_location = r_LS.id_location_parent
-		OR SL.id_location = r_LS.id_location_child
-    ;
-
-
+			SELECT
+				-- v_guid,
+				v_id_type_error_bad_data,
+				v_code_type_error_bad_data, 
+				CONCAT('Invalid or inactive region IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
+			FROM tmp_Split t_S
+			LEFT JOIN partsltd_prod.Shop_Region R ON t_S.as_int = R.id_region
+			WHERE 
+				ISNULL(t_S.as_int) 
+				OR ISNULL(R.id_region)
+			;
+		ELSE
+			INSERT INTO tmp_Location_Storage (
+				id_location
+				, id_plant
+			)
+			WITH RECURSIVE Recursive_CTE_Location_Storage AS (
+				SELECT 
+					SL.id_location AS id_location_parent,
+					NULL AS id_location_child
+				FROM tmp_Split t_S
+				RIGHT JOIN partsltd_prod.Shop_Storage_Location SL 
+					ON t_S.as_int = SL.id_location
+					AND (
+						a_get_all_location_storage = 1
+						OR NOT ISNULL(t_S.as_int)
+					)
+					AND (
+						a_get_inactive_location_storage = 1
+						OR SL.active = 1
+					)
+                INNER JOIN tmp_Stock_Item t_SI ON SL.id_location = t_SI.id_location_storage
+				UNION
+				SELECT 
+					SLB.id_location_parent,
+					SLB.id_location_child
+				FROM partsltd_prod.Shop_Storage_Location_Branch SLB
+				INNER JOIN Recursive_CTE_Location_Storage r_LS
+					ON SLB.id_location_parent = r_LS.id_location_child
+					AND (
+						a_get_inactive_location_storage
+						OR SLB.active = 1
+					)
+			)
+			SELECT
+				DISTINCT SL.id_location
+				, SL.id_plant
+			FROM partsltd_prod.Shop_Storage_Location SL
+			INNER JOIN Recursive_CTE_Location_Storage r_LS
+				ON SL.id_location = r_LS.id_location_parent
+				OR SL.id_location = r_LS.id_location_child
+			;
+		END IF;
+	END IF;
+    
+    DELETE FROM tmp_Split;
+    
+    /*
     -- Permissions
     IF EXISTS (SELECT * FROM tmp_Stock_Item LIMIT 1) THEN
-        SET v_id_permission_product := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
+        SET v_id_permission_product := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
         SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Permutation WHERE NOT ISNULL(id_product));
         -- SET v_ids_permutation_permission := (SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_permutation));
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission;
-        -- select * from Shop_Calc_User_Temp;
+        -- select * FROM partsltd_prod.Shop_Calc_User_Temp;
         
-        CALL p_shop_calc_user(v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission);
+        CALL p_shop_calc_user(
+			v_guid
+            , a_id_user
+            , false -- a_get_inactive_users
+            , v_id_permission_product
+            , v_id_access_level_view
+            , v_ids_product_permission
+            , 0 -- a_debug
+		);
         
-        -- select * from Shop_Calc_User_Temp;
+        -- select * FROM partsltd_prod.Shop_Calc_User_Temp;
         
         UPDATE tmp_Stock_Item t_SI
-        INNER JOIN Shop_Calc_User_Temp UE_T
+        INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
 			ON t_SI.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
         SET t_SI.can_view = UE_T.can_view,
@@ -393,25 +584,25 @@ BEGIN
         
         DELETE t_SI
 		FROM tmp_Stock_Item t_SI
-        /*
-		LEFT JOIN Shop_Calc_User_Temp UE_T
+        / *
+		LEFT JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
 			ON t_SI.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
-		*/
+		* /
 		WHERE 
-			/*
+			/ *
 			FIND_IN_SET(t_SI.id_product, (
 				SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') 
-				FROM Shop_Calc_User_Temp UET)
-			) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_Calc_User_Temp), '%');
-			*/
-            /*
+				FROM partsltd_prod.Shop_Calc_User_Temp UET)
+			) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM partsltd_prod.Shop_Calc_User_Temp), '%');
+			* /
+            / *
 			ISNULL(UE_T.id_product)
 			OR IFNULL(UE_T.can_view, 0) = 0
-            */
+            * /
             t_SI.id_product NOT IN (
 				SELECT id_product 
-                FROM Shop_Calc_User_Temp UE_T
+                FROM partsltd_prod.Shop_Calc_User_Temp UE_T
                 WHERE
 					GUID = v_guid
 					AND IFNULL(can_view, 0) = 1
@@ -420,13 +611,14 @@ BEGIN
         
         # CALL p_shop_calc_user_clear_temp(v_guid);
         # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
-        DELETE FROM Shop_Calc_User_Temp
+        DELETE FROM partsltd_prod.Shop_Calc_User_Temp
         WHERE GUID = v_guid
         ;
     END IF;
+    */
     
     /*
-    select * from shop_stock_item;
+    select * FROM partsltd_prod.Shop_stock_item;
     select * from tmp_Stock_Item;
     select * from tmp_Permutation;
     select * from tmp_Location_Storage;
@@ -463,37 +655,37 @@ BEGIN
 		t_SI.active_product,
 		t_SI.active_category,
 		*/
-        IFNULL(t_SI.can_view, 0),
-        IFNULL(t_SI.can_edit, 0),
-        IFNULL(t_SI.can_admin, 0)
+        t_PP.can_view,
+        t_PP.can_edit,
+        t_PP.can_admin
     FROM tmp_Stock_Item t_SI
-    INNER JOIN Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
+    INNER JOIN partsltd_prod.Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
 	INNER JOIN tmp_Permutation t_PP ON t_SI.id_permutation = t_PP.id_permutation
-    INNER JOIN Shop_Product P ON t_PP.id_product = P.id_product
+    INNER JOIN partsltd_prod.Shop_Product P ON t_PP.id_product = P.id_product
 	INNER JOIN tmp_Location_Storage t_LS ON t_SI.id_location_storage = t_LS.id_location
 	INNER JOIN tmp_Plant_Storage t_PS ON t_LS.id_plant = t_PS.id_plant
-    INNER JOIN Shop_Plant PLANT ON t_PS.id_plant = PLANT.id_plant
-	INNER JOIN Shop_Address A ON PLANT.id_address = A.id_address
+    INNER JOIN partsltd_prod.Shop_Plant PLANT ON t_PS.id_plant = PLANT.id_plant
+	INNER JOIN partsltd_prod.Shop_Address A ON PLANT.id_address = A.id_address
 	INNER JOIN tmp_Region_Storage t_RS ON A.id_region = t_RS.id_region
-	INNER JOIN Shop_Storage_Location SL ON t_LS.id_location = SL.id_location
-    INNER JOIN Shop_Currency CURRENCY ON SI.id_currency_cost = CURRENCY.id_currency
+	INNER JOIN partsltd_prod.Shop_Storage_Location SL ON t_LS.id_location = SL.id_location
+    INNER JOIN partsltd_prod.Shop_Currency CURRENCY ON SI.id_currency_cost = CURRENCY.id_currency
 	WHERE
-		IFNULL(t_SI.can_view, 0) = 1
+		IFNULL(t_PP.can_view, 0) = 1
 	;
     
     # Errors
     SELECT 
 		t_ME.display_order,
-		t_ME.guid,
+		-- t_ME.guid,
         t_ME.id_type,
         t_ME.msg,
         MET.code, 
         MET.name,
         MET.description
     FROM tmp_Msg_Error t_ME
-    INNER JOIN Shop_Msg_Error_Type MET
+    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET
 		ON t_ME.id_type = MET.id_type
-    WHERE guid = v_guid
+    -- WHERE guid = v_guid
     ;
     
     /*
@@ -519,7 +711,13 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Location_Storage;
 	DROP TEMPORARY TABLE IF EXISTS tmp_Stock_Item;
     DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
-	DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+	-- DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+    
+	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+    
+    IF a_debug = 1 THEN
+		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+    END IF;
 END //
 DELIMITER ;;
 
@@ -549,6 +747,7 @@ CALL p_shop_get_many_stock_item (
 	0, # a_get_nonexpired_stock_item_only
 	0, # a_get_consumed_stock_item_only
 	0 # a_get_nonconsumed_stock_item_only
+    , 0 # a_debug
 );
 
 /*
@@ -556,8 +755,8 @@ CALL p_shop_get_many_stock_item (
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-select * from Shop_Storage_Location;
-select * from shop_product;
+select * FROM partsltd_prod.Shop_Storage_Location;
+select * FROM partsltd_prod.Shop_product;
 select * from TMP_MSG_ERROR;
 DROP TABLE TMP_MSG_ERROR;
 
@@ -565,6 +764,6 @@ insert into shop_product_change_set (comment)
     values ('set product not subscription - test bool output to python');
     update shop_product
     set is_subscription = 0,
-		id_change_set = (select id_change_set from shop_product_change_set order by id_change_set desc limit 1)
+		id_change_set = (select id_change_set FROM partsltd_prod.Shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
 */

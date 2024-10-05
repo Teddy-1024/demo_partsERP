@@ -87,8 +87,8 @@ SELECT * FROM Shop_Delivery_Option;
 SELECT * FROM Shop_Delivery_Option_Audit;
 
 -- Delivery Options
-SELECT * FROM Shop_Product_Delivery_Option_Link;
-SELECT * FROM Shop_Product_Delivery_Option_Link_Audit;
+SELECT * FROM Shop_Product_Permutation_Delivery_Option_Link;
+SELECT * FROM Shop_Product_Permutation_Delivery_Option_Link_Audit;
 
 -- Discounts
 SELECT * FROM Shop_Discount;

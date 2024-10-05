@@ -21,16 +21,16 @@ from wtforms.validators import InputRequired, NumberRange, Regexp, DataRequired,
 from flask_wtf.recaptcha import RecaptchaField
 
 
-class Form_Filters_Product(FlaskForm):
+class Filters_Product(FlaskForm):
     id_category = SelectField('Category', validators=[Optional()], choices=[])
     is_not_empty = BooleanField('Not empty only?')
     active = BooleanField("Active only?")
     @classmethod
     def from_filters_product(cls, filters_product):
-        form = Form_Filters_Product()
+        form = Filters_Product()
         form.id_category = filters_product.id_category
         form.is_not_empty.data = filters_product.is_not_empty
         form.active.data = filters_product.active
         return form
     def __repr__(self):
-        return f'Form_Filters_Product(id_category={self.id_category}, is_not_empty={self.is_not_empty.data}, active={self.active.data})'
+        return f'Filters_Product(id_category={self.id_category}, is_not_empty={self.is_not_empty.data}, active={self.active.data})'

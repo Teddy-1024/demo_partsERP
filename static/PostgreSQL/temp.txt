@@ -39,8 +39,8 @@
 121_tbl_Shop_Image_Audit.sql
 122_tbl_Shop_Delivery_Option.sql
 123_tbl_Shop_Delivery_Option_Audit.sql
-124_tbl_Shop_Product_Delivery_Option_Link.sql
-125_tbl_Shop_Product_Delivery_Option_Link_Audit.sql
+124_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql
+125_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql
 130.4_tbl_Shop_Discount.sql
 131_tbl_Shop_Discount_Audit.sql
 132_tbl_Shop_Discount_Region_Currency_Link.sql
@@ -108,7 +108,7 @@
 318_tri_Shop_Image_Type.sql
 320_tri_Shop_Image.sql
 322_tri_Shop_Delivery_Option.sql
-324_tri_Shop_Product_Delivery_Option_Link.sql
+324_tri_Shop_Product_Permutation_Delivery_Option_Link.sql
 330_tri_Shop_Discount.sql
 332_tri_Shop_Discount_Region_Currency_Link.sql
 353_tri_Shop_Permission_Group.sql

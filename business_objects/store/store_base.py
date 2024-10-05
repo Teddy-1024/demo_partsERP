@@ -84,6 +84,7 @@ class Store_Base(Base):
     FLAG_PRODUCT_VARIATION_TYPE: ClassVar[str] = 'product_variation_type'
     FLAG_QUANTITY_MIN: ClassVar[str] = 'quantity_min'
     FLAG_QUANTITY_MAX: ClassVar[str] = 'quantity_max'
+    FLAG_STOCK_ITEM: ClassVar[str] = 'stock_item'
     FLAG_TEXT: ClassVar[str] = 'text'
     FLAG_VALUE_TEXT: ClassVar[str] = 'value_text'
     

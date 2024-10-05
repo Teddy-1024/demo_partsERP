@@ -23,12 +23,12 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 
 
 class Get_Many_Parameters_Base(BaseModel, metaclass=ABCMeta):
-    a_id_user: int
-    def __init__(self, a_id_user, **kwargs):
-        super().__init__(a_id_user=a_id_user, **kwargs)
+    # a_id_user: int
+    def __init__(self, **kwargs): # , a_id_user
+        super().__init__(**kwargs) # a_id_user=a_id_user, 
     @classmethod
     @abstractmethod
-    def get_default(cls, id_user):
+    def get_default(cls): # , id_user
         pass
     """
     @abstractmethod

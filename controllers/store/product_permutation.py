@@ -12,7 +12,7 @@ Initializes the Flask application, sets the configuration based on the environme
 
 
 # internal
-from business_objects.store.product import Filters_Product, Product_Permutation
+from business_objects.store.product import Parameters_Product, Product_Permutation
 from forms.store.product_permutation import Filters_Product_Permutation
 from models.model_view_base import Model_View_Base
 from models.model_view_store import Model_View_Store
@@ -33,7 +33,7 @@ routes_store_product_permutation = Blueprint('routes_store_product_permutation',
 
 @routes_store_product_permutation.route('/store/permutations', methods=['GET'])
 def permutation():
-    filters = Filters_Product.get_default()
+    filters = Parameters_Product.get_default()
     model = Model_View_Store_Product_Permutation(filters_product=filters)
     return render_template('pages/store/_product_permutations.html', model = model)
 
@@ -46,7 +46,7 @@ def permutation_filter():
         if not form_filters.validate_on_submit():
             return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'})
         # ToDo: manually validate category, product
-        filters_form = Filters_Product.from_form(form_filters)
+        filters_form = Parameters_Product.from_form(form_filters)
         model = Model_View_Store_Product_Permutation(filters_product=filters_form)
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model.category_list.to_permutation_row_list()})
     except Exception as e:
@@ -75,7 +75,7 @@ def permutation_save():
             objsPermutation.append(Product_Permutation.from_json(permutation))
 
         # ToDo: manually validate category, product
-        filters_form = Filters_Product.from_form(form_filters)
+        filters_form = Parameters_Product.from_form(form_filters)
         model_save = Model_View_Store_Product_Permutation(filters_product=filters_form)
         model_save.save_permutations(data.comment, objsPermutation)
 

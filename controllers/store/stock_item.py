@@ -11,7 +11,7 @@ Initializes the Flask application, sets the configuration based on the environme
 """
 
 # internal
-from business_objects.store.product import Product, Filters_Product, Product_Permutation
+from business_objects.store.product import Product, Parameters_Product, Product_Permutation
 from business_objects.store.stock_item import Stock_Item
 from forms.store.stock_item import Filters_Stock_Item
 from models.model_view_base import Model_View_Base
@@ -19,7 +19,7 @@ from models.model_view_store import Model_View_Store
 from models.model_view_store_supplier import Model_View_Store_Supplier
 from models.model_view_store_product_category import Model_View_Store_Product_Category
 from models.model_view_store_product_permutation import Model_View_Store_Product_Permutation
-from models.model_view_store_stock_items import Model_View_Store_Stock_Items
+from models.model_view_store_stock_item import Model_View_Store_Stock_Item
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 # external
@@ -33,11 +33,11 @@ from urllib.parse import quote, urlparse, parse_qs
 
 routes_store_stock_item = Blueprint('routes_store_stock_item', __name__)
 
-
+"""
 @routes_store_stock_item.route('/store/stock_items', methods=['GET'])
 def stock():
-    filters = Parameters_Stock_Item.get_default()
-    model = Model_View_Store_Stock_Items(filters_stock_item=filters)
+    filters = Filters_Stock_Item.get_default()
+    model = Model_View_Store_Stock_Item(filters_stock_item=filters)
     return render_template('pages/store/_stock_items.html', model = model)
 
 @routes_store_stock_item.route('/store/stock_item_filter', methods=['POST'])
@@ -49,14 +49,14 @@ def stock_filter():
         if not form_filters.validate_on_submit():
             return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'})
         # ToDo: manually validate category, product
-        filters_form = Parameters_Stock_Item.from_form(form_filters)
-        model = Model_View_Store_Stock_Items(filters_stock_item=filters_form)
+        filters_form = Filters_Stock_Item.from_form(form_filters)
+        model = Model_View_Store_Stock_Item(filters_stock_item=filters_form)
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model.category_list.to_permutation_row_list()})
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
 
 def get_Filters_Stock_Items(data_request):
-    data_form = data_request[Model_View_Store_Stock_Items.KEY_FORM]
+    data_form = data_request[Model_View_Store_Stock_Item.KEY_FORM]
     form_filters = Filters_Stock_Item(**data_form)
     form_filters.is_out_of_stock.data = av.input_bool(data_form['is_out_of_stock'], 'is_out_of_stock', 'permutations_post')
     return form_filters
@@ -64,7 +64,7 @@ def get_Filters_Stock_Items(data_request):
 @routes_store_stock_item.route('/store/stock_item_save', methods=['POST'])
 def stock_save():
     data = Helper_App.get_request_data(request)
-"""
+""
     form_filters = None
     try:
         form_filters = get_Filters_Stock_Items(data)
@@ -89,4 +89,78 @@ def stock_save():
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model_return.category_list.to_permutation_row_list()})
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
+""
 """
+
+
+@routes_store_stock_item.route(Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS, methods=['GET'])
+def permutations():
+    print('permutations')
+    try:
+        form_filters = Filters_Stock_Item.from_json(request.args)
+    except Exception as e:
+        print(f'Error: {e}')
+        form_filters = Filters_Stock_Item()
+    print(f'form_filters={form_filters}')
+    model = Model_View_Store_Stock_Item(form_filters)
+    return render_template('pages/store/_stock_items.html', model = model)
+
+@routes_store_stock_item.route(Model_View_Store_Stock_Item.HASH_GET_STORE_STOCK_ITEM, methods=['POST'])
+def filter_permutation():
+    data = Helper_App.get_request_data(request)
+    try:
+        form_filters = Filters_Stock_Item.from_json(data)
+        if not form_filters.validate_on_submit():
+            return jsonify({
+                Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
+                Model_View_Store_Stock_Item.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
+            })
+        model = Model_View_Store_Stock_Item(form_filters = form_filters)
+        return jsonify({
+            Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_SUCCESS, 
+            Model_View_Store_Stock_Item.KEY_DATA: model.category_list.to_json()
+        })
+    except Exception as e:
+        return jsonify({
+            Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
+            Model_View_Store_Stock_Item.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
+        })
+
+@routes_store_stock_item.route(Model_View_Store_Stock_Item.HASH_SAVE_STORE_STOCK_ITEM, methods=['POST'])
+def save_permutation():
+    data = Helper_App.get_request_data(request)
+    try:
+        form_filters = Filters_Stock_Item.from_json(data[Model_View_Store_Stock_Item.FLAG_FORM_FILTERS])
+        if not form_filters.validate_on_submit():
+            return jsonify({
+                Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
+                Model_View_Store_Stock_Item.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'
+            })
+        # filters_form = Filters_Stock_Item.from_form(form_filters)
+        print(f'form_filters: {form_filters}')
+
+        permutations = data[Model_View_Store_Stock_Item.FLAG_STOCK_ITEM]
+        if len(permutations) == 0:
+            return jsonify({
+                Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
+                Model_View_Store_Stock_Item.FLAG_MESSAGE: f'No permutations.'
+            })
+        objsPermutation = []
+        for permutation in permutations:
+            objsPermutation.append(Stock_Item.from_json(permutation))
+        # model_save = Model_View_Store_Stock_Item() # filters_product=filters_form)
+        print(f'objsPermutation={objsPermutation}')
+        Model_View_Store_Stock_Item.save_permutations(data.get('comment', 'No comment'), objsPermutation)
+
+        model_return = Model_View_Store_Stock_Item(form_filters=form_filters)
+        print('nips')
+        return jsonify({
+            Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_SUCCESS, 
+            Model_View_Store_Stock_Item.KEY_DATA: model_return.category_list.to_json()
+        })
+    except Exception as e:
+        return jsonify({
+            Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
+            Model_View_Store_Stock_Item.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
+        })
+    

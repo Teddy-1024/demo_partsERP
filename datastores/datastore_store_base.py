@@ -20,7 +20,7 @@ from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.delivery_region import Delivery_Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Filters_Product 
+from business_objects.store.product import Product, Product_Permutation, Product_Price, Parameters_Product 
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
@@ -58,10 +58,11 @@ class DataStore_Store_Base(DataStore_Base):
     def get_many_product(cls, product_filters):
         # redundant argument validation? 
         _m = 'DataStore_Store_Base.get_many_product'
-        av.val_instance(product_filters, 'product_filters', _m, Filters_Product) 
+        av.val_instance(product_filters, 'product_filters', _m, Parameters_Product) 
         argument_dict = product_filters.to_json()
         user = cls.get_user_session()
-        argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
+        argument_dict['a_id_user'] = user.id_user # 'auth0|6582b95c895d09a70ba10fef' # id_user
+        argument_dict['a_debug'] = 0
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_product')
         result = cls.db_procedure_execute('p_shop_get_many_product', argument_dict)
@@ -282,6 +283,7 @@ class DataStore_Store_Base(DataStore_Base):
         argument_dict_list = {
             # 'a_guid': guid
             'a_id_user': user.id_user
+            , 'a_debug': 0
             , **variation_filters.to_json()
         }
         # argument_dict_list['a_guid'] = guid

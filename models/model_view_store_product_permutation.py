@@ -16,7 +16,7 @@ from datastores.datastore_store_product_permutation import DataStore_Store_Produ
 from business_objects.store.product_category import Product_Category_Container
 from forms.store.product_permutation import Filters_Product_Permutation
 # from routes import bp_home
-from business_objects.store.product import Product, Filters_Product, Product_Permutation
+from business_objects.store.product import Product, Parameters_Product, Product_Permutation
 from business_objects.store.product_variation import Product_Variation_Container
 import lib.argument_validation as av
 
@@ -25,19 +25,21 @@ from pydantic import BaseModel
 from typing import ClassVar
 
 class Model_View_Store_Product_Permutation(Model_View_Store):
+    """
     ID_FILTER_CATEGORY: ClassVar[str] = 'id_category'
     ID_FILTER_PRODUCT: ClassVar[str] = 'id_product'
     ID_FILTER_IS_OUT_OF_STOCK: ClassVar[str] = 'is_out_of_stock'
     ID_FILTER_QUANTITY_MIN: ClassVar[str] = 'quantity_min'
     ID_FILTER_QUANTITY_MAX: ClassVar[str] = 'quantity_max'
+    """
     # ID_Filters_Product_Permutation: ClassVar[str] = 'Filters_Product_Permutation'
-    KEY_PERMUTATIONS: ClassVar[str] = 'permutations'
+    # KEY_PERMUTATIONS: ClassVar[str] = 'permutations'
 
     category_list: Product_Category_Container = None
     category_list_filters: Product_Category_Container = None
     currencies: list = None
     currency_options: list = None
-    filters_product: Filters_Product = None
+    filters_product: Parameters_Product = None
     form_filters: Filters_Product_Permutation
     list_options_product: list = None
     permutation_blank: Product_Permutation = None
@@ -56,11 +58,11 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
         print(f'{_m}\nstarting...')
         super().__init__(hash_page_current=hash_page_current, form_filters=form_filters)
         # self.form_filters = Filters_Product_Permutation()
-        filters_product = Filters_Product.from_form_filters_product_permutation(self.form_filters)
+        filters_product = Parameters_Product.from_form_filters_product_permutation(self.form_filters)
         datastore_store = DataStore_Store_Product_Permutation()
         self.category_list, errors = datastore_store.get_many_product(filters_product) 
         self.category_list_filters, errors_filters = datastore_store.get_many_product(
-            Filters_Product(
+            Parameters_Product(
                 get_all_product_category = True,
                 get_inactive_product_category = False,
                 ids_product_category = '',
@@ -83,7 +85,6 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
         print(f'product options: {self.list_options_product}')
         self.form_filters.id_product.choices = [('0', 'All')] + [(str(product['value']), product['text']) for product in self.list_options_product]
         self.permutation_blank = Product_Permutation()
-        print(f'category options: {self.form_filters.id_category.choices}')
         self.variation_types, self.variations, errors = self.get_many_product_variation()
         self.units_measurement = self.get_many_unit_measurement()
         self.units_measurement_time = [unit_measurement for unit_measurement in self.units_measurement if unit_measurement.is_unit_of_time]

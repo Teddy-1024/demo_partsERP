@@ -105,8 +105,8 @@ DROP TABLE IF EXISTS Shop_Discount_Region_Currency_Link;
 DROP TABLE IF EXISTS Shop_Discount_Audit;
 DROP TABLE IF EXISTS Shop_Discount;
 
-DROP TABLE IF EXISTS Shop_Product_Delivery_Option_Link_Audit;
-DROP TABLE IF EXISTS Shop_Product_Delivery_Option_Link;
+DROP TABLE IF EXISTS Shop_Product_Permutation_Delivery_Option_Link_Audit;
+DROP TABLE IF EXISTS Shop_Product_Permutation_Delivery_Option_Link;
 
 DROP TABLE IF EXISTS Shop_Delivery_Option_Audit;
 DROP TABLE IF EXISTS Shop_Delivery_Option;
@@ -1219,32 +1219,32 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option_Audit (
 
 
 
-SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Delivery_Option_Link';
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation_Delivery_Option_Link';
 
-CREATE TABLE IF NOT EXISTS Shop_Product_Delivery_Option_Link (
+CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Delivery_Option_Link (
     id_link INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     id_product INTEGER NOT NULL,
-    CONSTRAINT FK_Shop_Product_Delivery_Option_Link_id_product
+    CONSTRAINT FK_Shop_Product_Permutation_Delivery_Option_Link_id_product
 		FOREIGN KEY (id_product)
         REFERENCES Shop_Product(id_product)
         ON UPDATE RESTRICT,
     id_permutation INTEGER,
-    CONSTRAINT FK_Shop_Product_Delivery_Option_Link_id_permutation
+    CONSTRAINT FK_Shop_Product_Permutation_Delivery_Option_Link_id_permutation
 		FOREIGN KEY (id_permutation)
         REFERENCES Shop_Product_Permutation(id_permutation)
         ON UPDATE RESTRICT,
     id_delivery_option INTEGER NOT NULL,
-    CONSTRAINT FK_Shop_Product_Delivery_Option_Link_id_delivery_option
+    CONSTRAINT FK_Shop_Product_Permutation_Delivery_Option_Link_id_delivery_option
 		FOREIGN KEY (id_delivery_option)
         REFERENCES Shop_Delivery_Option(id_option)
         ON UPDATE RESTRICT,
     id_region INTEGER NOT NULL,
-    CONSTRAINT FK_Shop_Product_Delivery_Option_Link_id_region
+    CONSTRAINT FK_Shop_Product_Permutation_Delivery_Option_Link_id_region
 		FOREIGN KEY (id_region)
         REFERENCES Shop_Region(id_region)
         ON UPDATE RESTRICT,
     id_currency INTEGER NOT NULL,
-    CONSTRAINT FK_Shop_Product_Delivery_Option_Link_id_currency
+    CONSTRAINT FK_Shop_Product_Permutation_Delivery_Option_Link_id_currency
 		FOREIGN KEY (id_currency)
         REFERENCES Shop_Currency(id_currency)
         ON UPDATE RESTRICT,
@@ -1254,7 +1254,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Delivery_Option_Link (
     created_on TIMESTAMP,
     created_by INT,
     id_change_set INTEGER,
-    CONSTRAINT FK_Shop_Product_Delivery_Option_Link_id_change_set
+    CONSTRAINT FK_Shop_Product_Permutation_Delivery_Option_Link_id_change_set
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
@@ -1262,20 +1262,20 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Delivery_Option_Link (
 
 
 
-SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Delivery_Option_Link_Audit';
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation_Delivery_Option_Link_Audit';
 
-CREATE TABLE IF NOT EXISTS Shop_Product_Delivery_Option_Link_Audit (
+CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Delivery_Option_Link_Audit (
 	id_audit INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     id_link INTEGER NOT NULL,
-    CONSTRAINT FK_Shop_Product_Delivery_Option_Link_Audit_id_link
+    CONSTRAINT FK_Shop_Product_Permutation_Delivery_Option_Link_Audit_id_link
 		FOREIGN KEY (id_link)
-        REFERENCES Shop_Product_Delivery_Option_Link(id_link)
+        REFERENCES Shop_Product_Permutation_Delivery_Option_Link(id_link)
         ON UPDATE RESTRICT,
     name_field VARCHAR(64) NOT NULL,
     value_prev VARCHAR(10),
     value_new VARCHAR(10),
     id_change_set INTEGER NOT NULL,
-    CONSTRAINT FK_Shop_Product_Delivery_Option_Link_Audit_id_change_set
+    CONSTRAINT FK_Shop_Product_Permutation_Delivery_Option_Link_Audit_id_change_set
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
@@ -3943,7 +3943,7 @@ EXECUTE FUNCTION before_update_Shop_Delivery_Option();
 
 -- Shop Product Delivery Option Link
 
-CREATE OR REPLACE FUNCTION before_insert_Shop_Product_Delivery_Option_Link()
+CREATE OR REPLACE FUNCTION before_insert_Shop_Product_Permutation_Delivery_Option_Link()
 RETURNS TRIGGER AS $$
 BEGIN
 	IF NEW.created_on IS NULL THEN
@@ -3957,13 +3957,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Product_Delivery_Option_Link
-BEFORE INSERT ON Shop_Product_Delivery_Option_Link
+CREATE OR REPLACE TRIGGER tri_before_insert_Shop_Product_Permutation_Delivery_Option_Link
+BEFORE INSERT ON Shop_Product_Permutation_Delivery_Option_Link
 FOR EACH ROW
-EXECUTE FUNCTION before_insert_Shop_Product_Delivery_Option_Link();
+EXECUTE FUNCTION before_insert_Shop_Product_Permutation_Delivery_Option_Link();
 
 
-CREATE OR REPLACE FUNCTION before_update_Shop_Product_Delivery_Option_Link()
+CREATE OR REPLACE FUNCTION before_update_Shop_Product_Permutation_Delivery_Option_Link()
 RETURNS TRIGGER AS $$
 BEGIN
 	IF OLD.id_change_set IS NOT DISTINCT FROM NEW.id_change_set THEN
@@ -3971,7 +3971,7 @@ BEGIN
 			USING ERRCODE = '45000';
     END IF;
     
-    INSERT INTO Shop_Product_Delivery_Option_Link_Audit (
+    INSERT INTO Shop_Product_Permutation_Delivery_Option_Link_Audit (
 		id_link,
         name_field,
         value_prev,
@@ -4013,10 +4013,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER tri_before_update_Shop_Product_Delivery_Option_Link
-BEFORE UPDATE ON Shop_Product_Delivery_Option_Link
+CREATE OR REPLACE TRIGGER tri_before_update_Shop_Product_Permutation_Delivery_Option_Link
+BEFORE UPDATE ON Shop_Product_Permutation_Delivery_Option_Link
 FOR EACH ROW
-EXECUTE FUNCTION before_update_Shop_Product_Delivery_Option_Link();
+EXECUTE FUNCTION before_update_Shop_Product_Permutation_Delivery_Option_Link();
 
 -- Shop Discount
 
@@ -10573,7 +10573,7 @@ BEGIN
 			PDOL.price_local,
 			PDOL.display_order
 		FROM Shop_Delivery_Option _DO
-		INNER JOIN Shop_Product_Delivery_Option_Link PDOL
+		INNER JOIN Shop_Product_Permutation_Delivery_Option_Link PDOL
 			ON _DO.id_option = PDOL.id_delivery_option
 			AND (
 				v_get_inactive_delivery_region
@@ -14650,7 +14650,7 @@ VALUES
 	(2, 'SIGNED_1', 'First Class Signed-For', 2, 4, 0, 1)
 ;
 
-INSERT INTO Shop_Product_Delivery_Option_Link (
+INSERT INTO Shop_Product_Permutation_Delivery_Option_Link (
 	display_order, id_product, id_permutation, id_delivery_option, id_region, id_currency, price_local
 )
 VALUES 
@@ -15012,8 +15012,8 @@ SELECT * FROM Shop_Delivery_Option;
 SELECT * FROM Shop_Delivery_Option_Audit;
 
 -- Delivery Options
-SELECT * FROM Shop_Product_Delivery_Option_Link;
-SELECT * FROM Shop_Product_Delivery_Option_Link_Audit;
+SELECT * FROM Shop_Product_Permutation_Delivery_Option_Link;
+SELECT * FROM Shop_Product_Permutation_Delivery_Option_Link_Audit;
 
 -- Discounts
 SELECT * FROM Shop_Discount;

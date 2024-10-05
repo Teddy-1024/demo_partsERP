@@ -241,13 +241,13 @@ class Filters_Product_Category(BaseModel, Store_Base):
     ids_product: str
     ""
     def __new__(cls, product_ids, product_categories):
-        _m = 'Filters_Product.__new__'
+        _m = 'Parameters_Product.__new__'
         v_arg_type = 'class attribute'
         # av.val_list_instances(product_ids, 'product_ids', _m, str, v_arg_type=v_arg_type)
         # av.val_list_instances(product_categories, 'product_categories', _m, Product_Category_Enum, v_arg_type=v_arg_type)
         av.val_str(product_ids, 'product_ids', _m, v_arg_type=v_arg_type)
         av.val_str(product_categories, 'product_categories', _m, v_arg_type=v_arg_type)
-        return super(Filters_Product_Category, cls).__new__(cls)
+        return super(Parameters_Product_Category, cls).__new__(cls)
     ""
     def __init__(self, ids_product, ids_product_category):
         super().__init__(ids_product=ids_product, ids_product_category=ids_product_category)

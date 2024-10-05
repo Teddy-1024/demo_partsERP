@@ -61,3 +61,7 @@ class Filters_Stock_Item(Form_Base):
             Store_Base.FLAG_QUANTITY_MIN: self.quantity_min.data,
             Store_Base.FLAG_QUANTITY_MAX: self.quantity_max.data
         }
+    @classmethod
+    def get_default(cls):
+        filters = cls()
+        filters.id_category.choices = [('', 'Select category')]
