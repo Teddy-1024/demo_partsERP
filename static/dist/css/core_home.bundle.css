@@ -1,0 +1,36 @@
+
+#pageBody > * > * {
+    width: 100%;
+}
+#pageBody > * {
+    height: 100%;
+}
+#pageBody > * :first-child{
+    margin-top: 25vh;
+}
+#pageBody > * :last-child {
+    margin-bottom: 35vh;
+}
+
+.img-demo {
+    max-width: 50%;
+    min-width: 500px;
+}
+
+.img-featured {
+    width: 100%;
+}
+
+/*
+img {
+  background-image: url("/static/images/Tag_Molly1.png");
+}
+*/
+
+#pageBody h2 {
+    width: 100%;
+}
+#pageBody button.navContact {
+    width: fit-content;
+}
+

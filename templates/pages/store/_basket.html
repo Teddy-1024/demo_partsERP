@@ -1,0 +1,71 @@
+{% extends 'layouts/layout.html' %}
+
+{% block title %}{{ model.title }}{% endblock %}
+
+{% block page_body %}
+    <!-- Include Stylesheets
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/store/basket.css') }}">
+    -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_basket.css') }}">
+
+    <!-- HTML content -->
+    <div class="{{ model.FLAG_CARD }}">
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div id="{{ model.ID_CONTAINER_INFO_DELIVERY }}" class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="border-bottom: 1px black;">
+                <h2>Delivery Information</h2>
+                <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                    Valid delivery information not submitted
+                </div>
+            </div>
+            <div id="{{ model.ID_CONTAINER_INFO_BILLING }}" class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="border-bottom: 1px black;">
+                <h2>Billing Information</h2>
+                <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                    Valid billing information not submitted
+                </div>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }}">
+                <div id="{{ model.ID_BASKET_CONTAINER }}">
+                    {% include 'components/store/_basket.html' %}
+                </div>
+                <!-- Comes with basket block
+                <div class="{{ model.FLAG_CONTAINER }}">
+                    <!-- subtotal --
+                    <h2 id="id_basket_total">Order total: £{{ model.OUTPUT_BASKET_TOTAL() }}</h2>
+                    <!-- checkout button - hidden unless valid details entered everywhere above --
+                    <button type="submit" class="{{ model.FLAG_BTN_SUBMIT }}">Complete Purchase</button>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
+    
+    {% set form = model.form_delivery %}
+    {% set overlay_id = model.id_overlay_info_delivery %}
+    {% set overlay_title = 'Delivery Information' %}
+    {% include 'components/common/temporary/_overlay_address.html' %}
+    
+    {% set form = model.form_billing %}
+    {% set overlay_id = model.id_overlay_info_billing %}
+    {% set overlay_title = 'Billing Information' %}
+    {% include 'components/common/temporary/_overlay_address.html' %}
+
+    
+    <!-- Include JavaScript
+    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/store/basket.js') }}"></script>
+    -->
+    {% set block_id = 'checkout' %}
+    {% include 'layouts/_shared_store.html' %}
+    <!--
+    <script>
+        var hashPageCurrent = "{{ model.HASH_PAGE_STORE_BASKET }}";
+        
+        $(document).ready(function() {
+            console.log('Hooking up store basket review page...');
+            hookupStorePageBasket();
+            // hookupStorePageBilling();
+        });
+    </script>
+    -->
+{% endblock %}

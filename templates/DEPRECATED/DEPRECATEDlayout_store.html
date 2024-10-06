@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+    <title>{% block title %}{% endblock %} - PARTS</title>
+    
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!-- Include jQuery from a CDN -->
+    
+    <script>
+        var flagButtonOverlayClose = "{{ model.flag_btn_overlay_close }}";
+        var flagButtonSubmit = "{{ model.flag_btn_submit }}";
+        var flagCard = "{{ model.flag_card }}";
+        var flagCollapsible = "{{ model.flag_collapsible }}";
+        var flagColumn = "{{ model.flag_column }}";
+        var flagContainer = "{{ model.flag_container }}";
+        var flagContainerInput = "{{ model.flag_container_input }}";
+        var flagRow = "{{ model.flag_row }}";
+        var flagScrollable = "{{ model.flag_scrollable }}";
+        var flagButtonOverlayClose = "{{ model.flag_btn_overlay_close }}";
+        var flagInitialised = "{{ model.flag_initalised }}";
+        var flagSubmitted = "{{ model.flag_submitted }}";
+        var hashPageContact = "{{ model.hash_page_contact }}";
+        var hashPageErrorNoPermission = "{{ model.hash_page_error_no_permission }}";
+        var hashPageHome = "{{ model.hash_page_home }}";
+        var hashPageStoreHome = "{{ model.hash_page_store_home }}";
+        var hashPageStoreProduct = "{{ model.hash_page_store_product }}";
+        var idFormCurrency = "#{{ model.id_form_currency }}";
+        var idFormDeliveryRegion = "#{{ model.id_form_delivery_region }}";
+        var idFormIsIncludedVAT = "#{{ model.id_form_is_included_VAT }}";
+        var idNavContact = "#{{ model.id_nav_contact }}";
+        var idNavHome = "#{{ model.id_nav_home }}";
+        var idNavStoreHome = "#{{ model.id_nav_store_home }}";
+        var idNavStoreProduct = "#{{ model.id_nav_store_product }}";
+        var idPageBody = "#{{ model.id_page_body }}";
+        var isUserLoggedIn = {{ model.output_bool(model.is_user_logged_in) }};
+        var keyBasket = "{{ model.key_basket }}";
+        var keyForm = "{{ model.key_form }}";
+        var keyPrice = "{{ model.key_price }}";
+        var keyQuantity = "{{ model.key_quantity }}";
+        var keyShared = "shared";
+        var _pathHost = "{{ model.url_host }}";
+    </script>
+
+
+    <!-- Stylesheets -->
+    <link href="{{ url_for('static', filename='css/shared.css') }}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+
+<div class="header card">
+    <div class="container">
+        <img class="header-logo" src="{{ url_for('static', filename='images/Logo.png') }}" alt="PARTS logo">
+    </div>
+    <div class="container">
+        <h1>Precision And Research Technology Systems Limited</h1>
+    </div>
+</div>
+
+<div class="topnav container row">
+    <div class="container column">
+        <a id="{{ model.id_nav_home }}">Home</a> <!-- href="{{ url_for('home') }}" -->
+    </div>
+    <div class="container column">
+        <a id="{{ model.id_nav_store_home }}">Store</a>
+    </div>
+    <div class="container column">
+        <!-- <a href="{ url_ for('create_price_dummy') }">Create template price</a> -->
+        <form id="{{ model.id_form_is_included_VAT }}" class="container" action="{{ url_for('set_is_included_VAT') }}" method="POST">
+            {{ model.form_is_included_VAT.hidden_tag() }}
+            <div class="container-input">
+                {{ model.form_is_included_VAT.is_included.label }}
+                {{ model.form_is_included_VAT.is_included() }}
+                {% for error in model.form_is_included_VAT.is_included.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+    <div class="container column">
+        <form id="{{ model.id_form_delivery_region }}" class="container" action="{{ url_for('set_delivery_region') }}" method="POST">
+            {{ model.form_delivery_region.hidden_tag() }}
+            <div class="container-input">
+                {{ model.form_delivery_region.id_region_delivery.label }}
+                {{ model.form_delivery_region.id_region_delivery() }}
+                {% for error in model.form_delivery_region.id_region_delivery.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+    <div class="container column">
+        <form id="{{ model.id_form_currency }}" class="container" action="{{ url_for('set_currency') }}" method="POST">
+            {{ model.form_currency.hidden_tag() }}
+            <div class="container-input">
+                {{ model.form_currency.id_currency.label }}
+                {{ model.form_currency.id_currency() }}
+                {% for error in model.form_currency.id_currency.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+    <div class="container column">
+        <a href="{{ url_for('logout') if model.is_user_logged_in else url_for('login') }}" style="float:right">{{ 'Logout' if model.is_user_logged_in else 'Login' }}</a>
+    </div>
+</div>
+
+<!-- Page body -->
+<div id="{{ model.id_page_body }}" class="container" style="display: block;">
+    {% block page_body %}{% endblock %}
+</div>
+
+
+<div class="footer">
+    <h4>Copyright (C) Precision And Research Technology Systems Limited. All rights reserved.</h4>
+    <h5>Company number 13587499</h5>
+</div>
+
+</body>
+</html>
+
+<!-- Scripts --
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+-->
+<!-- Include jQuery from a CDN --
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+-->
+
+<script>
+    
+
+    $(document).ready(function() {
+        // alert("naughty boy");
+        hookupShared();
+    });
+</script>

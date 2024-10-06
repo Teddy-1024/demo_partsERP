@@ -1,0 +1,145 @@
+{% extends 'layouts/layout.html' %}
+
+{% block page_body %}
+    <!--
+    <script>console.log("test 1");</script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/stock_items.css') }}">
+    -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_stock_items.css') }}">
+
+    <!-- HTML content -->
+    <form id="{{ model.ID_FORM_FILTERS_STOCK }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store.stock_filter') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
+        {{ model.form_filters.hidden_tag() }}
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {{ model.form_filters.id_category.label }}
+                {{ model.form_filters.id_category() }}
+                {% for error in model.form_filters.id_category.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {{ model.form_filters.id_product.label }}
+                {{ model.form_filters.id_product() }}
+                {% for error in model.form_filters.id_product.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {{ model.form_filters.is_out_of_stock.label }}
+                {{ model.form_filters.is_out_of_stock() }}
+                {% for error in model.form_filters.is_out_of_stock.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {{ model.form_filters.quantity_min.label }}
+                {{ model.form_filters.quantity_min() }}
+                {% for error in model.form_filters.quantity_min.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {{ model.form_filters.quantity_max.label }}
+                {{ model.form_filters.quantity_max() }}
+                {% for error in model.form_filters.quantity_max.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <!--
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }} {{ model.FLAG_CONTAINER_INPUT }}">
+            { { model.form_filters.submit() }}
+        </div>
+        -->
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+                {% set block_id = 'button_save' %}
+                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+                {% set block_id = 'button_cancel' %}
+                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+                {% set block_id = 'button_add' %}
+                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+            </div>
+        </div>
+    </form>
+    <!--
+    <div class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+        </div>
+    </div>
+    -->
+    <table id="{{ model.ID_TABLE_MAIN }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
+        <thead>
+            <tr>
+                <th class="{{ model.FLAG_PRODUCT_CATEGORY }}">Category</th>
+                <th class="{{ model.FLAG_PRODUCT }}">Product</th>
+                <th class="{{ model.FLAG_PRODUCT_VARIATIONS }}">Variations</th>
+                <th class="{{ model.FLAG_CURRENCY }}">Currency</th>
+                <th class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}">Cost Local (VAT incl.)</th>
+                <th class="{{ model.FLAG_DATE_PURCHASED}}">Date Purchased</th>
+                <th class="{{ model.FLAG_DATE_RECEIVED }}">Date Received</th>
+                <th class="{{ model.FLAG_LOCATION_STORAGE }}">Storage Location</th>
+                <!--<th class="{{ model.FLAG_IS_SEALED }}">Is Sealed</th>-->
+                <th class="{{ model.FLAG_DATE_UNSEALED }}">Date Unsealed</th>
+                <th class="{{ model.FLAG_DATE_EXPIRATION }}">Date Expiration</th>
+                <!--<th class="{{ model.FLAG_IS_CONSUMED }}">Is Consumed</th>-->
+                <th class="{{ model.FLAG_DATE_CONSUMED }}">Date Consumed</th>
+                <th class="{{ model.FLAG_ACTIVE }}">Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set is_blank_row = False %}
+            {% for category in model.category_list.categories %}
+                {% for product in category.products %}
+                    {% for permutation in product.permutations %}
+                        {% for stock_item in permutation.stock_items %}
+                            {% set is_blank_row = False %}
+                            {% include 'components/store/_stock_item.html' %}
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+
+            {% set is_blank_row = True %}
+            {% include 'components/store/_stock_item.html' %}
+        </tbody>
+    </table>
+    
+    {% include 'components/common/temporary/_overlay_confirm.html' %}
+    {% include 'components/common/temporary/_overlay_error.html' %}
+
+    <!-- Include JavaScript
+    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/store/stock_items.js') }}"></script>
+    -->
+    
+    <script>
+        // pass arguments from model to JS
+        /*
+        var idFilterCategory = "#{{ model.ID_FILTER_CATEGORY }}";
+        var idFilterProduct = "#{{ model.ID_FILTER_PRODUCT }}";
+        var idFilterIsOutOfStock = "#{{ model.ID_FILTER_IS_OUT_OF_STOCK }}";
+        var idFilterQuantityMin = "#{{ model.ID_FILTER_QUANTITY_MIN }}";
+        var idFilterQuantityMax = "#{{ model.ID_FILTER_QUANTITY_MAX }}";
+        */
+        var idFormFiltersPermutations = "#{{ model.ID_FORM_FILTERS_PERMUTATIONS }}";
+        var keyPermutations = "{{ model.KEY_PERMUTATIONS }}";
+        var dictListsProducts = {{ model.category_list.get_product_option_lists_by_category() | tojson | safe }};
+        var listCategories = {{ model.category_list.to_list_categories() | tojson | safe }};
+        var listProducts = {{ model.category_list.to_product_option_list() | tojson | safe }};
+
+        /*
+        // hookup elements
+        $(document).ready(function() {
+            console.log('Hooking up store stock page...');
+            hookupStorePageStockItem();
+        });
+        */
+    </script>
+{% endblock %}

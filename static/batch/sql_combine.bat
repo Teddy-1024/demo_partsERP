@@ -2,11 +2,12 @@
 setlocal enabledelayedexpansion
 
 :: set "test=C:\C:\ \"
-set dir_parent=C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\sql
+set dir_parent=C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL
+:: set dir_parent=C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\PostgreSQL
 set "f_list=file_list.txt"
 set dir_current=%cd%
 set "f_tmp=temp.txt"
-set "f_combine=000_combine.sql"
+set "f_combine=0000_combine.sql"
 set verbose=0
 set "strs_delete_0=920_edit_permissions.sql"
 set "strs_delete_1=910_anal.sql"
@@ -16,7 +17,8 @@ set "strs_delete_4=%f_tmp%"
 set "strs_delete_5=701_p_shop_get_many_role_permission.sql"
 set "strs_delete_6=600_p_shop_save_product.sql"
 set "strs_delete_7=170_ish_tbl_ERP_Order.sql"
-set strs_n_max=7
+set "strs_delete_7=dump.sql"
+set strs_n_max=8
 set strs_list =%strs_delete_0% %strs_delete_1% %strs_delete_2% %strs_delete_3% %strs_delete_4% 
 set "str_true=true"
 set "str_replace="

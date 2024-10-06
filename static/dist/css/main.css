@@ -1,0 +1,702 @@
+
+
+
+
+
+
+
+
+
+
+
+
+#overlayConfirm {
+    position: absolute;
+    left: 25vw;
+    width: 50vw;
+    height: 50vh;
+}
+.img-product {
+    max-width: 20vh;
+    max-height: 20vh;
+    border-radius: 3vh;
+    justify-self: left;
+}
+
+.img-thumbnail {
+    max-width: 10vh;
+    max-height: 10vh;
+    border-radius: 3vh;
+    justify-self: left;
+}
+
+.buttonAddToBasket {
+    background-color: var(--c_blue_pastel);
+    color: var(--c_blue_dark);
+    border-color: var(--c_blue_dark);
+}
+
+#buttonCheckout, .buttonBuyNow {
+    background-color: var(--c_purple_pastel);
+    color: var(--c_purple_dark);
+    border-color: var(--c_purple_dark);
+}
+
+.button-increment, .button-decrement {
+    border: 2px solid darkgrey;
+    background-color: lightgray;
+    margin: 1vh 1vh;
+    width: 2.5vh;
+    height: 2.5vh;
+    border-radius: 1.25vh;
+    font-size: 2vh;
+}
+
+.container-input > input {
+    padding: 0vh 1vh;
+    border-radius: 0.5vh;
+    max-width: 7vh;
+}
+
+#basket {
+    max-width: 100%;
+}
+
+
+
+/* Right column */
+.rightcolumn {
+    min-width: fit-content;
+}
+
+/*
+/* Base styles *
+@import 'lib/reset.css';
+@import 'lib/typography.css';
+@import 'lib/variables.css';
+@import 'lib/utils.css';
+
+/* Layout styles *
+@import 'layouts/header.css';
+@import 'layouts/footer.css';
+
+/* Component styles *
+@import 'components/button.css';
+@import 'components/card.css';
+@import 'components/dialog.css';
+@import 'components/form.css';
+@import 'components/modal.css';
+@import 'components/navigation.css';
+@import 'components/overlay.css';
+
+/* Section styles *
+@import 'sections/store.css';
+
+/* Page-specific styles *
+@import 'pages/page_admin.css';
+@import 'pages/page_contact.css';
+@import 'pages/page_home.css';
+@import 'pages/page_license.css';
+@import 'pages/page_services.css';
+@import 'pages/page_store_home.css';
+@import 'pages/page_store_product_permutations.css';
+@import 'pages/page_store_stock_items.css';
+*
+
+/* Theme styles *
+@import 'themes/light.css';
+/* Uncomment the line below to enable dark theme *
+/* @import 'themes/dark.css'; *
+
+
+*/
+
+/* Custom styles */
+/* Add any custom styles or overrides here */
+
+body {
+    /* Example of using a CSS variable defined in variables.css */
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--font-family-base);
+}
+
+/* You can add more global styles here */
+
+
+:root {
+    /* Declare global variables */
+    --c_purple: #5B29FF;
+    --c_purple_pastel: #D1D1FF;
+    --c_purple_light: #C6BDFF;
+    --c_purple_dark: #4700B3;
+    --c_blue: #0044FF;
+    --c_blue_pastel: #B8E0FF;
+    --c_blue_light: #73E8FF;
+    --c_blue_dark: #003ADB;
+}
+
+*{
+    /*box-sizing: border-box; */
+    margin: 0;
+}
+
+script, link {
+    display: none !important;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: Arial;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: linear-gradient(to bottom right, var(--c_purple), #dc2430); /* var(--c_purple_pastel); */
+    height: 100vh;
+    max-height: 100%;
+}
+
+/*
+h1, h2, h3, h4, h5, p, a, label {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+*/
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 22px;
+}
+
+h3 {
+    font-size: 18px;
+    margin-top: 1vh;
+}
+
+h4 {
+    font-size: 13px;
+    margin: 1vh;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h5 {
+    font-size: 11px;
+    margin: 1vh;
+}
+
+/* Style the top navigation bar */
+.topnav {
+    /* overflow: hidden; */
+    /* background-color: var(--c_purple); */
+    border-bottom-left-radius: 2.5vh;
+    border-bottom-right-radius: 2.5vh;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    flex-direction: row;
+    font-weight: bold;
+    font-size: 1vh;
+    max-height: 15vh;
+    height: 15vh;
+    align-items: flex-start;
+}
+
+/* Style the topnav links */
+.topnav a, .topnav label, .topnav p, .topnav h1 {
+    float: left;
+    display: flex;
+    color: white;
+    text-align: center;
+    /* padding: 14px 16px; */
+    text-decoration: none;
+    width: 100%;
+    max-height: 15vh;
+    font-weight: normal;
+    /* font-size: 20px; */
+    justify-content: center;
+}
+/*
+.topnav a {
+    padding: 3vh 2vw;
+}
+*/
+
+/* Change color on hover */
+.topnav a:hover {
+    background-color: var(--c_purple_light);
+    color: var(--c_purple_dark);
+}
+
+.topnav > .container {
+    max-width: 50%;
+    height: 100%;
+    align-items: center;
+    align-self: center;
+    /* align-content: center; */
+    /* width: fit-content; */
+    display: flex;
+}
+
+.topnav select {
+    padding: 1vh;
+    margin: 1vh;
+    border-radius: 1vh;
+    /* background-color: var(--c_purple_light); */
+    color: var(--c_purple_dark);
+    border: 2px solid white;
+    font-weight: bold;
+    text-align: center;
+}
+.topnav select .collapsed {
+    width: 5vw;
+}
+.topnav select .expanded {
+    width: 25vw;
+}
+
+
+.company-name {
+    font-size: min(28px, calc(1vh * 7));
+    color: white;
+}
+@media screen and (max-width: 450px) {
+    .company-name {
+        font-size: min(24px, calc(1vh * 7));
+    }
+}
+
+
+#pageBody {
+    height: 69vh !important;
+    padding: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    margin: 1vh;
+    margin-left: 0;
+    margin-right: 0;
+    border: 0;
+    align-content: center;
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    width: 98vw;
+
+}
+
+.page-body > * {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    align-self: center;
+    font-size: min(20px, calc(1vh * 6));
+}
+#pageBody > * > * {
+    width: 100%;
+    align-self: center;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    color: var(--c_purple_dark);
+}
+#pageBody > .card {
+    height: fit-content;
+    margin-top: 1vh;
+}
+#pageBody > .card:first-of-type{
+    margin-top: 0vh;
+    top: 0;
+}
+#pageBody > .card:last-of-type {
+    /* margin-bottom: 1vh; */
+}
+/* Create two unequal columns that floats next to each other *
+/* Left column *
+.leftcolumn {   
+    float: left;
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    /* min-width: fit-content; *
+    align-items: center;
+    justify-content: center;
+}
+
+/* Right column *
+.rightcolumn {
+    float: left;
+    width: 30%;
+    display: flex;
+    flex-wrap: wrap;
+    /* min-width: fit-content; only on store?? *
+    /* background-color: #f1f1f1; *
+    padding-left: 20px;
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+}
+*/
+
+/* Fake image */
+.fakeimg {
+    background-color: var(--c_purple_light);
+    width: 100%;
+    padding: 20px;
+}
+
+img, video {
+    border-radius: 3vh;
+}
+
+/* header image */
+img.header-logo {
+    max-height: 15vh;
+    max-width: 20vw;
+    cursor: pointer;
+    border-radius: 5vh !important;
+}
+
+/* icon images */
+.img-icon {
+    max-width: 16vh;
+    max-height: 8vh;
+    border-radius: 0;
+}
+
+.container-icon-label {
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.container-icon-label > * {
+    display: inline-flex;
+    margin-left: 1vh;
+    margin-right: 1vh;
+}
+
+.header > .container:first-of-type {
+    max-width: 25%;
+    justify-self: left;
+}
+.header > .container:last-of-type {
+    max-width: 75%;
+    justify-self: left;
+}
+
+/* Add a card effect for articles */
+.card {
+    background-color: var(--c_purple_pastel);
+    padding: 1vh;
+    margin: 1vh;
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 4vh;
+    /* min-width: fit-content; */
+    position: relative;
+    height: fit-content;
+    max-width: 80vw;
+    padding-left: 2.5vw;
+    padding-right: 2.5vw;
+}
+
+.card.subcard {
+    margin-top: 0;
+}
+
+.header.card {
+    border-radius: 2.5vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.container {
+    flex: 1;
+    margin: 0px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: flex-start;
+    /* max-width: 100%; */
+    /* min-width: fit-content; */
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.row {
+    display: flex; 
+    flex-direction: row;
+    width: 100%;
+    /* min-width: fit-content; */
+}
+
+.container > .card:first-of-type {
+    margin-top: none;
+}
+
+
+/* Clear floats after the columns 
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+*/
+/* Footer */
+.footer {
+    padding: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    text-align: center;
+    margin: 0;
+    height: 8vh !important;
+    overflow-y: auto;
+    background-color: var(--c_purple_pastel);
+    border-top-left-radius: 2.5vh;
+    border-top-right-radius: 2.5vh;
+    position: absolute;
+    /* top: 2.5vh; */
+    bottom: 0;
+    width: 98vw;
+}
+
+.footer > h4, h5 {
+    padding: 0;
+    margin: 0;
+}
+
+/*
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other *
+@media screen and (max-width: 800px) {
+    .leftcolumn, .rightcolumn {   
+        width: 100%;
+        /* padding: 0; *
+    }
+}
+
+/* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other *
+@media screen and (max-width: 400px) {
+    .topnav a {
+        float: none;
+        width: 100%;
+    }
+}
+*/
+
+/* input container 
+    margin-top: 3vh;
+    */
+.container-input {
+    padding: 1vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.container-input > label {
+    width: 100%;
+    margin-bottom: 1vh;
+    margin-top: 0;
+}
+
+.container-input:not(:nth-child(3)) > label {
+    margin-top: 1vh;
+}
+
+.container-input > input, .container-input > textarea {
+    border: 2px solid var(--c_purple);
+    max-width: 66%;
+    min-width: 20%;
+    padding: 1vh;
+}
+
+.label-title {
+    width: 100%;
+}
+
+button, .button-submit, input[type="submit"] {
+    font-size: 20px;
+    font-weight: bold;
+    border: 4px solid;
+    border-radius: 2vh;
+    padding: 1vh 2vh 1vh 2vh;
+    margin: 0.5vh;
+    /*
+    background-color: var(--c_blue_pastel);
+    color: var(--c_blue_dark);
+    border-color: var(--c_blue_dark);
+    */
+    background-color: var(--c_purple_pastel);
+    color: var(--c_purple_dark);
+    border-color: var(--c_purple_dark);
+}
+button.navContactUs {
+    border: 4px solid var(--c_purple_dark);
+    background-color: var(--c_purple_pastel);
+    color: var(--c_purple_dark) !important;
+    border-radius: 2vh;
+    width: 180px !important;
+}
+button:hover, input[type="submit"]:hover, #overlayHamburger .row *:hover {
+    text-decoration: underline;
+}
+#buttonHamburger:hover {
+    text-decoration: none;
+}
+
+.delete {
+    text-decoration: underline;
+}
+
+
+/* Overlay modal */
+.overlay {
+    /*
+    display: none;
+    */
+    position: fixed;
+    top: 15vh;
+    right: 0;
+    width: 100px;
+    /* height: 50%; */ 
+    background: var(--c_purple_pastel);
+    justify-content: right;
+    align-items: right;
+    align-self: right;
+    z-index: 999;
+}
+.overlay.expanded {
+    display: block !important;
+}
+.collapsed {
+    display: none !important;
+}
+
+#overlayHamburger {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 80%;
+}
+.hamburger {
+    border: 2px solid var(--c_purple_dark);
+    border-radius: 4px;
+}
+.hamburger:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+.hamburger:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.hamburger > * {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    color: var(--c_purple_dark);
+    font-weight: bold;
+    font-size: 18px;
+    /* height: 18px; */
+}
+.hamburger > :hover {
+    background-color: var(--c_purple_light);
+    color: var(--c_purple_dark);
+}
+.hamburger > * > * {
+    width: 100%;
+    /*
+    margin-top: 4.5px;
+    margin-bottom: 4.5px;
+    */
+}
+.hamburger > .container {
+    padding-top: 4.5px;
+    padding-bottom: 4.5px;
+}
+
+ul {
+    max-width: 90%;
+}
+li {
+    text-align: left;
+    font-size: 18px;
+}
+
+
+.dirty {
+    /* color: var(--c_purple_dark); */
+    border-color: var(--c_purple_dark);
+}
+td.dirty {
+    background-color: var(--c_purple_dark);
+}
+
+
+/* Tables */
+#pageBody > *, button {
+    font-size: min(14px, calc(1vh * 5)) !important;
+}
+thead, tbody {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+th {
+    
+}
+td {
+    font-size: min(14px, calc(1vh * 5));
+}
+
+th, td {
+    min-width: fit-content;
+}
+tr:not(:last-child) > td {
+    border-bottom: 1px dashed var(--c_purple_dark);
+}
+td > table > tbody > tr > td {
+    border: none !important;
+}
+tr {
+    min-height: 1px;
+    border-bottom: 1px solid var(--c_purple_dark);
+    border-top: 1px solid var(--c_purple_dark);
+    padding-bottom: 1vh;
+    background-color: transparent;
+}
+
+/*
+.row-new {
+    visibility: hidden;
+}
+*/
+

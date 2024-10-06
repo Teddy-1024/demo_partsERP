@@ -1,0 +1,37 @@
+
+
+{% set block_id = 'styles' %}
+{% include 'layouts/_shared_store.html' %}
+<!-- Include Stylesheet -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/store/home.css') }}">
+
+<!-- HTML content -->
+<div class="model.FLAG_ROW">
+    <div class="leftcolumn">
+        {% for cat in model.category_list.categories %}
+            {% if cat.is_available() %}
+                {% include 'components/store/_product_category.html' %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div id="{{ model.ID_BASKET_CONTAINER}}" class="rightcolumn">
+        {% include 'components/store/_basket.html' %}
+    </div>
+</div>
+
+{% set block_id = 'scripts' %}
+{% include 'layouts/_shared_store.html' %}
+<!-- Include JavaScript -->
+<script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
+<script src="{{ url_for('static', filename='js/store/home.js') }}"></script>
+
+<script>
+    var hashPageCurrent = "{{ model.HASH_PAGE_STORE_HOME }}";
+
+    $(document).ready(function() {
+        console.log('Hooking up home page...');
+        hookupStorePageHome();
+        // hookupStore(); // in _shared_store.html
+    });
+</script>

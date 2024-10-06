@@ -1,0 +1,15 @@
+
+
+button.collapsed {
+    display: block;
+    opacity: 0;
+}
+
+form.filter button.save, form.filter button.button-cancel {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+form.filter button.save, form.filter button.button-cancel {
+    margin-top: 0;
+    margin-bottom: 0;
+}

@@ -1,0 +1,15 @@
+#tableMain {
+    overflow-x: auto;
+    padding: 1vh 2vh;
+    max-width: min(calc(1vh * 80), calc(1vw * 90));
+    width: fit-content;
+    margin: 1vh 2vh;
+    align-items: normal;
+    justify-content: normal;
+}
+
+#tableMain thead tr th, #tableMain tbody tr td {
+    width: 20vh;
+    min-width: 20vh;
+    padding: 0 0.5vh;
+}

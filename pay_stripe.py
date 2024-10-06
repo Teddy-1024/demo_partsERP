@@ -169,7 +169,7 @@ def webhook_received():
     if event_type == 'checkout.session.completed':
         print('🔔 Payment succeeded!')
 
-    return jsonify({'status': 'success'})
+    return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS})
 
 
 if __name__ == '__main__':

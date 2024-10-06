@@ -1,0 +1,35 @@
+
+thead, tbody {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+th {
+    
+}
+td {
+    font-size: min(12px, calc(1vh * 3));
+}
+
+th, td {
+    min-width: fit-content;
+}
+tr:not(:last-child) > td {
+    border-bottom: 1px dashed var(--c_purple_dark);
+}
+td > table > tbody > tr > td {
+    border: none !important;
+}
+tr {
+    min-height: 1px;
+    border-bottom: 1px solid var(--c_purple_dark);
+    border-top: 1px solid var(--c_purple_dark);
+    padding-bottom: 1vh;
+    background-color: transparent;
+}
+
+/*
+.row-new {
+    visibility: hidden;
+}
+*/

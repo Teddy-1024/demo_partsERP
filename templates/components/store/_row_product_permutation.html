@@ -1,0 +1,163 @@
+
+{% if is_blank_row %}
+    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_PERMUTATION }}>
+        <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
+            <select class="{{ model.FLAG_PRODUCT_CATEGORY}}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
+                {% include 'components/common/inputs/_option_blank.html' %}
+                {% for cat in model.category_list_filters.categories %}
+                    <option value="{{ cat.id_category }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
+            <select class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
+                {% include 'components/common/inputs/_option_blank.html' %}
+                {% for product in model.category_list_filters.categories[0].products %}
+                    <option value="{{ product.id_product }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td class="{{ model.FLAG_PRODUCT_VARIATIONS }} {{ model.FLAG_COLLAPSED}}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
+            {% include 'components/store/_preview_product_permutation_variations.html' %}
+        </td>
+        <td class="{{ model.FLAG_DESCRIPTION}}">
+            <textarea class="{{ model.FLAG_DESCRIPTION }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_STOCK }}">
+            <input class="{{ model.FLAG_QUANTITY_STOCK }}" type="number" min="0" value="0" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_MIN }}">
+            <input class="{{ model.FLAG_QUANTITY_MIN }}" type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}="1">
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_MAX }}">
+            <input class="{{ model.FLAG_QUANTITY_MAX }}" type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}="1">
+        </td>
+        <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP }}">
+            <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP }}" 
+            type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}="1">
+        </td>
+        <td class="{{ model.FLAG_UNIT_MEASUREMENT_QUANTITY }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
+            {% include 'components/store/_preview_DDL_product_permutation_unit_measurement_quantity.html' %}
+        </td>
+        <td class="{{ model.FLAG_IS_SUBSCRIPTION }}">
+            <input class="{{ model.FLAG_IS_SUBSCRIPTION }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="false" {{ model.ATTR_VALUE_PREVIOUS }}="false">
+        </td>
+        <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}">
+            <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }} {{ model.FLAG_COLLAPSED }}" 
+            type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}="1">
+        </td>
+        <td class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
+            {% include 'components/store/_preview_DDL_product_permutation_interval_recurrence.html' %}
+        </td>
+        <td class="{{ model.FLAG_ID_STRIPE_PRODUCT }}">
+            <input class="{{ model.FLAG_ID_STRIPE_PRODUCT }}" type="text" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
+        </td>
+        <td class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}">
+            <input class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="false" {{ model.ATTR_VALUE_PREVIOUS }}="false">
+        </td>
+        <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }}">
+            <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }} {{ model.FLAG_COLLAPSED }}" 
+            type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}="1">
+        </td>
+        <td class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
+            {% include 'components/store/_preview_DDL_product_permutation_interval_expiration_unsealed.html' %}
+        </td>
+        <td class="{{ model.FLAG_COST_LOCAL }}">
+            <input class="{{ model.FLAG_COST_LOCAL }}" type="number" min="0" step="0.01"
+             value="0" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}>
+        </td>
+        <td class="{{ model.FLAG_CURRENCY_COST }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
+            {% include 'components/store/_preview_DDL_currency.html' %}
+        </td>
+        <td class="{{ model.FLAG_PROFIT_LOCAL_MIN }}">
+            <input class="{{ model.FLAG_PROFIT_LOCAL_MIN }}" type="number" min="0" step="0.01"
+            value="0" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}>
+        </td>
+        <td class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}">
+            <input class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}" type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}>
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="true" {{ model.ATTR_VALUE_PREVIOUS }}="true" checked>
+        </td>
+    </tr>
+{% else %}
+    <tr {{ model.ATTR_ID_PRODUCT_PERMUTATION }}="{{ permutation.id_permutation }}">
+        <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_category }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_category }}">
+            {% include 'components/store/_preview_DDL_product_category.html' %}
+        </td>
+        <td class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_product }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_product }}">
+            {% include 'components/store/_preview_DDL_product.html' %}
+        </td>
+
+        {% set variation_tree = permutation.variation_tree %}
+        {% set str_ids_variations = variation_tree.to_variation_id_pairs_str() if not (variation_tree is none) else '' %}
+        <td class="{{ model.FLAG_PRODUCT_VARIATIONS }} {{ model.FLAG_COLLAPSED }}" {{ model.ATTR_VALUE_CURRENT }}="{{ str_ids_variations }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ str_ids_variations }}">
+            {% include 'components/store/_preview_product_permutation_variations.html' %}
+        </td>
+        <td class="{{ model.FLAG_DESCRIPTION}}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.description }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.description }}">
+            <textarea class="{{ model.FLAG_DESCRIPTION }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.description }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.description }}">{{ permutation.description }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_STOCK }}">
+            <input class="{{ model.FLAG_QUANTITY_STOCK }}" type="number" min="0" value="{{ permutation.quantity_stock }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.quantity_stock }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.quantity_stock }}">
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_MIN }}">
+            <input class="{{ model.FLAG_QUANTITY_MIN }}" type="number" min="0" value="{{ permutation.quantity_min }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.quantity_min }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.quantity_min }}">
+        </td>
+        <td class="{{ model.FLAG_QUANTITY_MAX }}">
+            <input class="{{ model.FLAG_QUANTITY_MAX }}" type="number" min="0" value="{{ permutation.quantity_max }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.quantity_max }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.quantity_max }}">
+        </td>
+        <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP }}">
+            <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP }}" type="number" min="0" value="{{ permutation.count_unit_measurement_per_quantity_step }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.count_unit_measurement_per_quantity_step }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.count_unit_measurement_per_quantity_step }}">
+        </td>
+        <td class="{{ model.FLAG_UNIT_MEASUREMENT_QUANTITY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_unit_measurement_quantity }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_unit_measurement_quantity }}">
+            {% include 'components/store/_preview_DDL_product_permutation_unit_measurement_quantity.html' %}
+        </td>
+        <td class="{{ model.FLAG_IS_SUBSCRIPTION }}">
+            <input class="{{ model.FLAG_IS_SUBSCRIPTION }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.is_subscription }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.is_subscription }}">
+        </td>
+        <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}">
+            {% set value = permutation.count_interval_recurrence if permutation.count_interval_recurrence is not none else '' %}
+            <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }} {% if not permutation.is_subscription %}{{ model.FLAG_COLLAPSED }}{% endif %}" 
+            type="number" min="0" value="{{ value }}" {{ model.ATTR_VALUE_CURRENT }}="{{ value }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}">
+        </td>
+        
+        {% set value = permutation.id_unit_measurement_interval_recurrence if permutation.id_unit_measurement_interval_recurrence is not none else '' %}
+        <td class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}" {{ model.ATTR_VALUE_CURRENT }}="{{ value }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}">
+            {% include 'components/store/_preview_DDL_product_permutation_interval_recurrence.html' %}
+        </td>
+        <td class="{{ model.FLAG_ID_STRIPE_PRODUCT }}">
+            {% set value = permutation.id_stripe_product if permutation.id_stripe_product is not none else '' %}
+            <input class="{{ model.FLAG_ID_STRIPE_PRODUCT }}" type="text" value="{{ value }}" {{ model.ATTR_VALUE_CURRENT }}="{{ value }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}">
+        </td>
+        <td class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}">
+            <input class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.does_expire_faster_once_unsealed }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.does_expire_faster_once_unsealed }}">
+        </td>
+        <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }}">
+            {% set value = permutation.count_interval_expiration_unsealed if permutation.count_interval_expiration_unsealed is not none else '' %}
+            <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }} {% if not permutation.does_expire_faster_once_unsealed %}{{ model.FLAG_COLLAPSED }}{% endif %}" 
+            type="number" min="0" value="{{ value }}" {{ model.ATTR_VALUE_CURRENT }}="{{ value }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}">
+        </td>
+
+        {% set value = permutation.id_unit_measurement_interval_expiration_unsealed if permutation.id_unit_measurement_interval_expiration_unsealed is not none else '' %}
+        <td class="{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }}" {{ model.ATTR_VALUE_CURRENT }}="{{ value }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}">
+            {% include 'components/store/_preview_DDL_product_permutation_interval_expiration_unsealed.html' %}
+        </td>
+        <td class="{{ model.FLAG_COST_LOCAL }}">
+            <input class="{{ model.FLAG_COST_LOCAL }}" type="number" min="0" value="{{ permutation.cost_local }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.cost_local }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.cost_local }}">
+        </td>
+
+        {% set currency = permutation.currency_cost %}
+        <td class="{{ model.FLAG_CURRENCY_COST }}" {{ model.ATTR_VALUE_CURRENT }}="{{ currency.id_currency }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ currency.id_currency }}">
+            {% include 'components/store/_preview_DDL_currency.html' %}
+        </td>
+        <td class="{{ model.FLAG_PROFIT_LOCAL_MIN }}">
+            <input class="{{ model.FLAG_PROFIT_LOCAL_MIN }}" type="number" min="0" value="{{ permutation.profit_local_min }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.profit_local_min }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.profit_local_min }}">
+        </td>
+        <td class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}">
+            <input class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}" type="number" min="0" value="{{ permutation.latency_manufacture_days }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.latency_manufacture_days }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.latency_manufacture_days }}">
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.active }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.active }}" {% if permutation.active %}checked{% endif %}>
+        </td>
+    </tr>
+{% endif %}

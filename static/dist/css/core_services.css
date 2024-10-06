@@ -1,0 +1,38 @@
+
+#pageBody > .card {
+    padding-left: 5vw;
+    padding-right: 5vw;
+    max-width: 80vw;
+}
+#pageBody > .card:first-of-type{
+}
+#pageBody > .card:last-of-type {
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
+#pageBody > .card:not(:first-of-type) {
+}
+
+table {
+    left: 5vw;
+    max-width: 70vw;
+    width: fit-content !important;
+}
+
+/*
+tr th::after {
+    content: "";
+    position: absolute;
+    top: 65px;
+    left: 4%;
+    width: 92%;
+    border-bottom: 2px solid var(--c_purple_dark);
+}
+*/
+
+/*
+img {
+    max-height: 5vh;
+    max-width: 10vw;
+}
+*/
