@@ -1,0 +1,59 @@
+Date : 2024-09-25 13:34:45
+Directory : c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app
+Total : 21 files,  -4735 codes, -617 comments, -860 blanks, all -6212 lines
+
+Languages
++--------------+------------+------------+------------+------------+------------+
+| language     | files      | code       | comment    | blank      | total      |
++--------------+------------+------------+------------+------------+------------+
+| Properties   |          1 |        -30 |          0 |         -3 |        -33 |
+| YAML         |          1 |        -32 |         -3 |         -5 |        -40 |
+| Python       |         10 |       -378 |        -50 |       -104 |       -532 |
+| Markdown     |          4 |       -497 |          0 |       -124 |       -621 |
+| Shell Script |          5 |     -3,798 |       -564 |       -624 |     -4,986 |
++--------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                             | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                                |         21 |     -4,735 |       -617 |       -860 |     -6,212 |
+| git-filter-repo                                                                                                                                  |         21 |     -4,735 |       -617 |       -860 |     -6,212 |
+| git-filter-repo\.github                                                                                                                          |          1 |        -32 |         -3 |         -5 |        -40 |
+| git-filter-repo\.github\workflows                                                                                                                |          1 |        -32 |         -3 |         -5 |        -40 |
+| git-filter-repo\Documentation                                                                                                                    |          3 |       -466 |          0 |       -116 |       -582 |
+| git-filter-repo\contrib                                                                                                                          |          1 |        -31 |          0 |         -8 |        -39 |
+| git-filter-repo\contrib\filter-repo-demos                                                                                                        |          1 |        -31 |          0 |         -8 |        -39 |
+| git-filter-repo\release                                                                                                                          |          2 |        -44 |          0 |        -11 |        -55 |
+| git-filter-repo\t                                                                                                                                |         14 |     -4,162 |       -614 |       -720 |     -5,496 |
+| git-filter-repo\t (Files)                                                                                                                        |          5 |     -3,798 |       -564 |       -624 |     -4,986 |
+| git-filter-repo\t\t9391                                                                                                                          |          9 |       -364 |        -50 |        -96 |       -510 |
++--------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+
+| filename                                                                                                                                         | language     | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\.github\workflows\test.yml                        | YAML         |        -32 |         -3 |         -5 |        -40 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\Documentation\Contributing.md                     | Markdown     |        -69 |          0 |         -8 |        -77 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\Documentation\converting-from-bfg-repo-cleaner.md | Markdown     |       -124 |          0 |        -34 |       -158 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\Documentation\converting-from-filter-branch.md    | Markdown     |       -273 |          0 |        -74 |       -347 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\contrib\filter-repo-demos\README.md               | Markdown     |        -31 |          0 |         -8 |        -39 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\release\setup.cfg                                 | Properties   |        -30 |          0 |         -3 |        -33 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\release\setup.py                                  | Python       |        -14 |          0 |         -8 |        -22 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9390-filter-repo.sh                            | Shell Script |     -1,495 |        -51 |       -297 |     -1,843 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391-filter-repo-lib-usage.sh                  | Shell Script |       -180 |         -3 |        -24 |       -207 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\commit_info.py                            | Python       |        -21 |         -5 |         -9 |        -35 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\create_fast_export_output.py              | Python       |        -98 |         -5 |        -20 |       -123 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\erroneous.py                              | Python       |        -11 |         -1 |         -5 |        -17 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\file_filter.py                            | Python       |        -23 |         -1 |         -7 |        -31 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\print_progress.py                         | Python       |        -32 |         -1 |         -9 |        -42 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\rename-master-to-develop.py               | Python       |        -13 |         -1 |         -5 |        -19 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\splice_repos.py                           | Python       |        -63 |         -7 |        -18 |        -88 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\strip-cvs-keywords.py                     | Python       |        -14 |         -4 |         -5 |        -23 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\unusual.py                                | Python       |        -89 |        -25 |        -18 |       -132 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9392-python-callback.sh                        | Shell Script |       -173 |         -2 |        -22 |       -197 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\test-lib-functions.sh                           | Shell Script |       -868 |       -322 |       -122 |     -1,312 |
+| c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\test-lib.sh                                     | Shell Script |     -1,082 |       -186 |       -159 |     -1,427 |
+| Total                                                                                                                                            |              |     -4,735 |       -617 |       -860 |     -6,212 |
++--------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+

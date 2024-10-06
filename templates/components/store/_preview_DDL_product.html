@@ -1,0 +1,14 @@
+
+{% if not is_blank_row %}
+    <div 
+        class="{{ model.FLAG_PRODUCT }}" 
+        {{ model.ATTR_VALUE_CURRENT }}="{{ product.id_product }}" 
+        {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.id_product }}"
+    >{{ product.name }}</div>
+{% else %}
+    <div 
+        class="{{ model.FLAG_PRODUCT }}" 
+        {{ model.ATTR_VALUE_CURRENT }}="" 
+        {{ model.ATTR_VALUE_PREVIOUS }}=""
+    ></div>
+{% endif %}

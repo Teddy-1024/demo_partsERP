@@ -449,6 +449,7 @@ def input_bool(v_input, v_name, method, suppress_errors = False, suppress_consol
     # optional bool suppress_console_outputs
 # ARGUMENT VALIDATION
     my_f = 'input_bool'
+    if v_input is None: return False
     # suppress_errors
     val_bool(suppress_errors, 'suppress_errors', my_f)
     # suppress_console_outputs
@@ -493,7 +494,7 @@ def input_bool(v_input, v_name, method, suppress_errors = False, suppress_consol
         else:
             return False if v_input == 0 else True
 # RETURNS
-    return v_input
+    return bool(v_input)
 
 def full_val_bool(v_input, v_name, method, suppress_errors = False, suppress_console_outputs = False, v_arg_type = 'argument'):
 # FUNCTION
@@ -909,7 +910,7 @@ def val_list_instances(v_input, v_name, method, v_type = None, min_len = -1, max
     # optional bool allow_nuns
     # optional str v_arg_type
 # ARGUMENT VALIDATION
-    my_f =  'val_list'
+    my_f =  'val_list_instances'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
         print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
@@ -1312,4 +1313,6 @@ def val_DataFrame(v_input, v_name, method, v_types=[], min_col=-1, max_col=-1, c
 
 
 
-
+if __name__ == '__main__':
+    print(input_bool('true', 'input_bool', 'test'))
+    print(input_bool(None, 'input_bool', 'test'))

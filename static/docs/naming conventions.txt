@@ -1,0 +1,119 @@
+Precision and Research Technology Systems Limited
+Naming Conventions
+
+
+Language: CSS
+File naming convention:
+    kebab-case
+    lowercase
+
+
+Language: HTML
+File naming convention:
+    prefix with underscore for templates
+    snake_case
+    lowercase
+
+
+Language: JavaScript
+Variable naming convention:
+    prefix with underscore for private variables
+    camelCase for mutable variables
+    uppercase with underscore spacing for constants
+    top-down heirarchy of objects flows left to right
+    suffix with type for type hinting
+Function naming convention:
+    camelCase
+    verb is first word
+    top-down heirarchy of objects flows left to right
+    suffix with type for type hinting
+Class naming convention:
+    PascalCase (UpperCamelCase)
+    singular noun or noun phrase
+File naming convention:
+    kebab-case
+    lowercase
+    suffix with type for type hinting
+Folder naming convention:
+    kebab-case
+    lowercase
+
+
+Language: MySQL
+Database naming convention:
+    snake_case
+    lowercase
+Variable naming convention:
+    lowercase and prefix with 'v_' for mutable variables
+    uppercase and prefix with 'C_' for constants
+    snake_case
+    top-down heirarchy of objects flows left to right
+    suffix with type for type hinting
+Function, Store Procedure, Trigger, and View naming convention:
+    prefix with 'fn_' for functions
+    prefix with 'vw_' for views
+    prefix with 'p_' for stored procedures
+    prefix with 'tri_' for triggers
+    suffix with action then event timing for triggers
+    lowercase
+    snake_case
+    verb is first word
+    top-down heirarchy of objects flows left to right
+    suffix with type for type hinting
+Table naming convention:
+    prefix with project
+    prefix with 'tmp' for temporary tables
+    singular noun or noun phrase
+    Upper_Snake_Case
+Column naming convention:
+    prefix with project
+    prefix with 'idx_' for indices
+    singular noun or noun phrase
+    snake_case
+    lowercase
+Constraint naming convention:
+    prefix with 'pk_' for primary keys
+    prefix with 'fk_' for foreign keys
+    prefix with 'chk_' for check
+    singular noun or noun phrase
+    snake_case
+    lowercase
+File naming convention:
+    snake_case
+    lowercase
+    suffix with type for type hinting
+Folder naming convention:
+    kebab-case
+    lowercase
+
+
+Language: Python
+Variable naming convention:
+    prefix with underscore for private variables
+    prefix with double underscore for private variables that are not inherited
+    lowercase for mutable variables
+    uppercase for constants
+    snake_case
+    top-down heirarchy of objects flows left to right
+    suffix with type for type hinting
+Function naming convention:
+    lowercase
+    snake_case
+    verb is first word
+    top-down heirarchy of objects flows left to right
+    suffix with type for type hinting
+Class naming convention:
+    suffix with 'Base' for base classes
+    prefix with 'Abstract' for abstract classes
+    prefix with 'Abstract' for abstract classes
+    PascalCase (UpperCamelCase)
+    singular noun or noun phrase
+File naming convention:
+    snake_case
+    lowercase
+    suffix with type for type hinting
+Folder naming convention:
+    snake_case
+    lowercase
+
+

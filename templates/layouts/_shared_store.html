@@ -1,0 +1,31 @@
+{% if block_id == 'block1' %}
+    <div class="common-block" id="block1">
+        <h1>Feckin common block boi</h1>
+    </div>
+{% elif block_id == 'checkout' %}
+<!-- Variables from Model_View_Store + model-->
+<script>
+    var hashPageStoreCheckout = "{{ model.HASH_PAGE_STORE_CHECKOUT }}";
+    var hashPageStoreCheckoutSession = "{{ model.HASH_PAGE_STORE_CHECKOUT_SESSION }}";
+    var hashStoreBasketInfo = "{{ model.HASH_STORE_BASKET_INFO }}";
+    var idOverlayInfoBilling = "#{{ model.ID_OVERLAY_INFO_BILLING }}";
+    var idOverlayInfoDelivery = "#{{ model.ID_OVERLAY_INFO_DELIVERY }}";
+    var idContainerInfoBilling = "#{{ model.ID_CONTAINER_INFO_BILLING }}";
+    var idContainerInfoDelivery = "#{{ model.ID_CONTAINER_INFO_DELIVERY }}";
+    var keyIdCheckout = "{{ model.KEY_ID_CHECKOUT }}";
+    var keyInfoBilling = "{{ model.KEY_INFO_BILLING }}";
+    var keyInfoDelivery = "{{ model.KEY_INFO_DELIVERY }}";
+    var keyInfoIdentical = "{{ model.KEY_INFO_IDENTICAL }}";
+    var keyInfoType = "{{ model.KEY_INFO_TYPE }}";
+    var keyIsSubscription = "{{ model.KEY_IS_SUBSCRIPTION }}";
+    var keyAddress1 = "{{ model.KEY_ADDRESS1 }}";
+    var keyAddress2 = "{{ model.KEY_ADDRESS2 }}";
+    var keyCity = "{{ model.KEY_CITY }}";
+    var keyCounty = "{{ model.KEY_COUNTY }}";
+    var keyNameFull = "{{ model.KEY_NAME_FULL }}";
+    var keyPhoneNumber = "{{ model.KEY_PHONE_NUMBER }}";
+    var keyPostcode = "{{ model.KEY_POSTCODE }}";
+    var keyRegion = "{{ model.KEY_REGION }}";
+    var keyUrlCheckout = "{{ model.KEY_URL_CHECKOUT }}";
+</script>
+{% endif %}

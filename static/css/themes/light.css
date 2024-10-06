@@ -1,0 +1,45 @@
+:root {
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --border-color: #dee2e6;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    
+    /* Header */
+    --header-bg: #f8f9fa;
+    --header-text: #333333;
+    
+    /* Footer */
+    --footer-bg: #f8f9fa;
+    --footer-text: #6c757d;
+    
+    /* Navigation */
+    --nav-bg: #ffffff;
+    --nav-text: #333333;
+    --nav-hover-bg: #f1f3f5;
+    --nav-hover-text: #007bff;
+    
+    /* Buttons */
+    --Button-primary-bg: #007bff;
+    --Button-primary-text: #ffffff;
+    --Button-secondary-bg: #6c757d;
+    --Button-secondary-text: #ffffff;
+    
+    /* Forms */
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --input-text: #495057;
+    --input-focus-border: #80bdff;
+    
+    /* Cards */
+    --card-bg: #ffffff;
+    --card-border: #dee2e6;
+    --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}

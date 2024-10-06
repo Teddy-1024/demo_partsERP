@@ -1,0 +1,74 @@
+
+# Ignore Git files
+git-filter-repo/
+
+# Ignore compiled files
+*.class
+*.o
+*.pyc
+
+# Ignore logs and databases
+*.log
+
+# Ignore logs and databases
+# *.sql
+# *.sqlite
+
+# Ignore OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+
+# Ignore package management directories
+node_modules/
+jspm_packages/
+bower_components/
+
+# Ignore build directories
+build/
+dist/
+out/
+
+# Ignore environment and config files
+.env
+config.js
+secrets.yaml
+
+# Ignore dependency lock files (uncomment if you want to ignore)
+# package-lock.json
+# yarn.lock
+
+# Ignore personal TODO lists
+TODO.md
+
+# Ignore all files in a directory
+temp_files/
+
+# Ignore all .txt files in the doc/ directory
+doc/*.txt
+
+# But don't ignore doc/important.txt, even though we're ignoring .txt files above
+!doc/important.txt
+
+# Ignore all .pdf files in the doc/ directory and any of its subdirectories
+doc/**/*.pdf
+
+# Ignore deprecated files
+DEPRECATED/
+
+# Ignore virtual environments
+bot_env/
+bot_web/
+env_test/
+env_web/

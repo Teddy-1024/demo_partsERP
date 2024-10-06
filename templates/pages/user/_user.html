@@ -1,0 +1,32 @@
+<!-- v2a -->
+
+{% extends 'layouts/layout.html' %}
+
+{% block page_body %}
+    <!-- Include Stylesheet
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/user.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/user.css') }}" />
+    -->
+    <!-- HTML content -->
+    <div>
+        {% set firstname = 'new user' if user.firstname is none else user.firstname %}
+        <h2 style="font-size: 24px; color: white; font-weight: normal;">Welcome, {{ firstname }}</h2>
+        {% set block_id = 'button_get_in_touch' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+    </div>
+    
+    <!-- Include JavaScript
+    <script type="module" src="{{ url_for('static', filename='js/sections/user.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/pages/user.js') }}"></script>
+    -->
+    
+    <!--
+    <script>
+        var hashPageCurrent = "{{ model.HASH_PAGE_USER_ACCOUNT }}";
+
+        $(document).ready(function() {
+            hookupPageUserAccount();
+        });
+    </script>
+    -->
+{% endblock %}

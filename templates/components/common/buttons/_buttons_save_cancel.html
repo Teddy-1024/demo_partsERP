@@ -1,0 +1,48 @@
+{% if block_id == 'button_save' %}
+<button id="{{ model.ID_BUTTON_SAVE }}" type="button" class="{{ model.FLAG_SUBMIT }} {{ model.FLAG_SAVE }}">Save</button>
+{% elif block_id == 'button_cancel' %}
+<button id="{{ model.ID_BUTTON_CANCEL }}" type="button" class="{{ model.FLAG_CANCEL }}">Cancel</button>
+{% elif block_id == 'button_add' %}
+<button id="{{ model.ID_BUTTON_ADD }}" type="button" class="{{ model.FLAG_ADD }}">Add new</button>
+{% elif block_id == 'button_confirm' %}
+<button id="{{ model.ID_BUTTON_CONFIRM }}" type="button" class="{{ model.FLAG_SUBMIT }}">Confirm</button>
+{% elif block_id == 'button_get_in_touch' %}
+<button class="{{ model.FLAG_NAV_CONTACT }}" alt="Get in touch" aria-label="Get in touch">Get in touch</button>
+{% elif block_id == 'button_apply_filters' %}
+<button id="{{ model.ID_BUTTON_APPLY_FILTERS }}" type="button" class="{{ model.FLAG_SUBMIT }}">Apply filters</button>
+{% elif block_id == 'button_clear_filters' %}
+{% elif block_id == 'buttons_table_default' %}
+<div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+    <div class="{{ model.FLAG_ROW }}">
+    <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_COLUMN }}">
+        {% set block_id = 'button_apply_filters' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+    </div>
+    <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_COLUMN }}">
+        {% set block_id = 'button_add' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+    </div>
+    <div class="{{ model.FLAG_COLUMN }}">
+        <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+            {% set block_id = 'button_save' %}
+            {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+        </div>
+        <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+            {% set block_id = 'button_cancel' %}
+            {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+        </div>
+    </div>
+</div>
+</div>
+{% elif block_id == 'container_buttons_save_cancel' %}
+<div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+    <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+        {% set block_id = 'button_save' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+    </div>
+    <div class="{{ model.FLAG_CONTAINER_INPUT }}">
+        {% set block_id = 'button_cancel' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+    </div>
+</div>
+{% endif %}

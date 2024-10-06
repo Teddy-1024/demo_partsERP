@@ -3,22 +3,13 @@ flask
 flask_wtf
 flask_sqlalchemy
 flask_cors
+flask_mail
 authlib
 jwt
 mysqlclient
+stripe
+python_dotenv
+authlib
+pydantic
+# psycopg2
 
-
-# environment variables
-# KEY_SECRET_FLASK = 'random secret key'
-# # KEY_PUBLIC_FLASK = ''
-# ID_AUTH0_CLIENT = ''
-# ID_AUTH0_CLIENT_SECRET = ''
-# DOMAIN_AUTH0=dev-nwak2066ef6h8ixn.us.auth0.com
-# SQLALCHEMY_DATABASE_URI = 'mysql://username:password@localhost/dbname'
-    # Replace 'username', 'password', 'localhost', and 'dbname' with your actual database credentials
-
-# run with:
-# python -m flask run
-
-# not env var:
-# auth0 recovery key: S92HY59VU5J9YDVYWCRHSKJ8

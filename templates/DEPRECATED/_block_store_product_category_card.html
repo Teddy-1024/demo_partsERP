@@ -1,0 +1,9 @@
+<!-- Store Product Category Card -->
+<div class="card" {{ model.attr_product_category_id }}="{{ cat.id_category }}">
+    <h3 style="width: 100%; justify-self: left; margin-left: 3vh; display: inline-flex;">{{ cat.name }}</h4>
+    <div class="container">
+        {% for product in cat.products %}
+            {% include 'components/store/_product.html' %}
+        {% endfor %}
+    </div>
+</div>

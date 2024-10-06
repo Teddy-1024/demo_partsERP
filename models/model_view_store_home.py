@@ -18,37 +18,33 @@ Data model for store home view
 # internal
 from models.model_view_store import Model_View_Store
 # from routes import bp_home
-from business_objects.product import Product
-from forms import Form_Basket_Add, Form_Basket_Edit # Form_Product
+from business_objects.store.product import Product
+from forms.forms import Form_Basket_Add, Form_Basket_Edit # Form_Product
 # external
-
+from typing import ClassVar
 
 # VARIABLE INSTANTIATION
 
 
 # CLASSES
 class Model_View_Store_Home(Model_View_Store):
+    # Global constants
+    MAX_PRODUCTS_PER_CATEGORY: ClassVar[int] = -1
     # Attributes
     product_categories: list # (str)
     forms_product: dict
     forms_basket: dict
-    # Global constants
     # category_products: dict { category_enum_id: List[Product] }
     # Attributes
     @property
     def title(self):
         return 'Store Home'
-    max_products_per_category = -1
 
-    def __new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
-        # Initialiser - validation
-        return super(Model_View_Store_Home, cls).__new__(cls, db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
-    
-    def __init__(self, db, id_user, app, id_currency, id_region_delivery, is_included_VAT):
+    def __init__(self, id_currency, id_region_delivery, is_included_VAT, hash_page_current=Model_View_Store.HASH_PAGE_STORE_HOME):
         # Constructor
-        super().__init__(db, id_user, app, id_currency, id_region_delivery, is_included_VAT)
-        # self.categories = Model_View_Store_Home.get_many_product_category(self.db, get_all_category = True, get_all_product = True)
-        # self.get_many_product_category(get_all_category = True, get_all_product = True)
+        super().__init__(id_currency, id_region_delivery, is_included_VAT)
+        # self.categories = Model_View_Store_Home.get_many_product(self.db, get_all_category = True, get_all_product = True)
+        # self.get_many_product(get_all_category = True, get_all_product = True)
         """
         self.forms_product = {}
         for cat in self.product_categories:

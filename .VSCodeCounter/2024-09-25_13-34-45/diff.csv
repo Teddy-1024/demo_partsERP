@@ -1,0 +1,23 @@
+"filename", "language", "Shell Script", "Markdown", "Properties", "Python", "YAML", "comment", "blank", "total"
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\.github\workflows\test.yml", "YAML", 0, 0, 0, 0, -32, -3, -5, -40
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\Documentation\Contributing.md", "Markdown", 0, -69, 0, 0, 0, 0, -8, -77
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\Documentation\converting-from-bfg-repo-cleaner.md", "Markdown", 0, -124, 0, 0, 0, 0, -34, -158
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\Documentation\converting-from-filter-branch.md", "Markdown", 0, -273, 0, 0, 0, 0, -74, -347
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\contrib\filter-repo-demos\README.md", "Markdown", 0, -31, 0, 0, 0, 0, -8, -39
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\release\setup.cfg", "Properties", 0, 0, -30, 0, 0, 0, -3, -33
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\release\setup.py", "Python", 0, 0, 0, -14, 0, 0, -8, -22
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9390-filter-repo.sh", "Shell Script", -1495, 0, 0, 0, 0, -51, -297, -1843
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391-filter-repo-lib-usage.sh", "Shell Script", -180, 0, 0, 0, 0, -3, -24, -207
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\commit_info.py", "Python", 0, 0, 0, -21, 0, -5, -9, -35
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\create_fast_export_output.py", "Python", 0, 0, 0, -98, 0, -5, -20, -123
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\erroneous.py", "Python", 0, 0, 0, -11, 0, -1, -5, -17
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\file_filter.py", "Python", 0, 0, 0, -23, 0, -1, -7, -31
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\print_progress.py", "Python", 0, 0, 0, -32, 0, -1, -9, -42
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\rename-master-to-develop.py", "Python", 0, 0, 0, -13, 0, -1, -5, -19
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\splice_repos.py", "Python", 0, 0, 0, -63, 0, -7, -18, -88
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\strip-cvs-keywords.py", "Python", 0, 0, 0, -14, 0, -4, -5, -23
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9391\unusual.py", "Python", 0, 0, 0, -89, 0, -25, -18, -132
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\t9392-python-callback.sh", "Shell Script", -173, 0, 0, 0, 0, -2, -22, -197
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\test-lib-functions.sh", "Shell Script", -868, 0, 0, 0, 0, -322, -122, -1312
+"c:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\git-filter-repo\t\test-lib.sh", "Shell Script", -1082, 0, 0, 0, 0, -186, -159, -1427
+"Total", "-", -3798, -497, -30, -378, -32, -617, -860, -6212

@@ -1,0 +1,142 @@
+
+#formFilters {
+    width: 50vh;
+}
+
+#formFilters .container {
+    max-width: fit-content;
+}
+
+
+#tableMain {
+    max-width: 90vw;
+}
+#tableMain thead tr th.category, #tableMain tbody tr td.category {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain thead tr th.product, #tableMain tbody tr td.product {
+    width: 10vh;
+    min-width: 10vh;
+}
+#tableMain thead tr th.product_variations.collapsed, #tableMain tbody tr td.product_variations.collapsed {
+    width: 10vh;
+    min-width: 10vh;
+    display: table-cell !important;
+}
+#tableMain thead tr th.product_variations, #tableMain tbody tr td.product_variations {
+    width: 20vh;
+    min-width: 20vh;
+}
+#tableMain tbody tr td.product_variations table thead tr th, #tableMain tbody tr td.product_variations table tbody tr td {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain tbody tr td.product_variations table thead tr th:last-of-type, #tableMain tbody tr td.product_variations table tbody tr td:last-of-type {
+    width: 4vh;
+    min-width: 4vh;
+}
+#tableMain thead tr th.description, #tableMain tbody tr td.description {
+}
+#tableMain thead tr th.quantity_stock, #tableMain tbody tr td.quantity_stock {
+    width: 6vh;
+    min-width: 6vh;
+}
+#tableMain thead tr th.quantity_min, #tableMain tbody tr td.quantity_min {
+    width: 6vh;
+    min-width: 6vh;
+}
+#tableMain thead tr th.quantity_max, #tableMain tbody tr td.quantity_max {
+    width: 6vh;
+    min-width: 6vh;
+}
+#tableMain thead tr th.count_unit_measurement_per_quantity_step, #tableMain tbody tr td.count_unit_measurement_per_quantity_step {
+    width: 6vh;
+    min-width: 6vh;
+}
+#tableMain thead tr th.id_unit_measurement_quantity, #tableMain tbody tr td.id_unit_measurement_quantity {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain thead tr th.is_subscription, #tableMain tbody tr td.is_subscription {
+    width: 9vh;
+    min-width: 9vh;
+}
+#tableMain thead tr th.count_interval_recurrence, #tableMain tbody tr td.count_interval_recurrence {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain thead tr th.id_unit_measurement_interval_recurrence, #tableMain tbody tr td.id_unit_measurement_interval_recurrence {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain thead tr th.id_stripe_product, #tableMain tbody tr td.id_stripe_product {
+    width: 10vh;
+    min-width: 10vh;
+}
+#tableMain thead tr th.does_expire_faster_once_unsealed, #tableMain tbody tr td.does_expire_faster_once_unsealed {
+    width: 7vh;
+    min-width: 7vh;
+}
+#tableMain thead tr th.count_interval_expiration_unsealed, #tableMain tbody tr td.count_interval_expiration_unsealed {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain thead tr th.id_unit_measurement_interval_expiration_unsealed, #tableMain tbody tr td.id_unit_measurement_interval_expiration_unsealed {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain thead tr th.cost_local, #tableMain tbody tr td.cost_local {
+    width: 9vh;
+    min-width: 9vh;
+}
+#tableMain thead tr th.id_currency_cost, #tableMain tbody tr td.id_currency_cost {
+    width: 6vh;
+    min-width: 6vh;
+}
+#tableMain thead tr th.profit_local_min, #tableMain tbody tr td.profit_local_min {
+    width: 9vh;
+    min-width: 9vh;
+}
+#tableMain thead tr th.latency_manufacture_days, #tableMain tbody tr td.latency_manufacture_days {
+    width: 9vh;
+    min-width: 9vh;
+}
+#tableMain thead tr th.active, #tableMain tbody tr td.active {
+    width: 6vh;
+    min-width: 6vh;
+}
+
+textarea {
+    width: 95% !important;
+}
+
+select {
+    width: 100% !important;
+}
+
+input {
+    width: 90% !important;
+}
+
+td > input, td > select, td > textarea, .container-input > input, .container-input > select, .container-input > textarea {
+    border: 2px solid var(--c_purple);
+    border-radius: 0.5vh;
+}
+
+#tableMain tbody tr td button {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    text-decoration: none;
+}
+
+#tableMain tbody tr td table thead tr th.id_variation_type, #tableMain tbody tr td table tbody tr td.id_variation_type, #tableMain tbody tr td table thead tr th.id_variation, #tableMain tbody tr td table tbody tr td.id_variation {
+    width: 47.5%;
+}
+
+/*
+select.id_variation, select.id_variation_type {
+    max-width: 40% !important;
+}
+*/
