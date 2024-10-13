@@ -25,8 +25,8 @@ from flask_wtf.recaptcha import RecaptchaField
 from abc import ABCMeta, abstractmethod
 
 class Filters_Stock_Item(Form_Base):
-    id_category = SelectField('Category', validators=[Optional()], choices=[])
-    id_product = SelectField('Product', validators=[Optional()], choices=[])
+    id_category = SelectField('Category', choices=[Form_Base.get_choice_all()], default='')
+    id_product = SelectField('Product', choices=[Form_Base.get_choice_all()], default='')
     is_out_of_stock = BooleanField('Out of stock only?')
     quantity_min = FloatField('Min stock')
     quantity_max = FloatField('Max stock')
@@ -45,9 +45,9 @@ class Filters_Stock_Item(Form_Base):
     @classmethod
     def from_json(cls, json):
         form =  cls()
-        form.id_category.choices = [(json[Store_Base.ATTR_ID_PRODUCT_CATEGORY], json[Store_Base.ATTR_ID_PRODUCT_CATEGORY])]
+        # form.id_category.choices = [(json[Store_Base.ATTR_ID_PRODUCT_CATEGORY], json[Store_Base.ATTR_ID_PRODUCT_CATEGORY])]
         form.id_category.data = json[Store_Base.ATTR_ID_PRODUCT_CATEGORY]
-        form.id_product.choices = [(json[Store_Base.ATTR_ID_PRODUCT], json[Store_Base.ATTR_ID_PRODUCT])]
+        # form.id_product.choices = [(json[Store_Base.ATTR_ID_PRODUCT], json[Store_Base.ATTR_ID_PRODUCT])]
         form.id_product.data = json[Store_Base.ATTR_ID_PRODUCT]
         form.is_out_of_stock.data = av.input_bool(json[Store_Base.FLAG_IS_OUT_OF_STOCK], Store_Base.FLAG_IS_OUT_OF_STOCK, f'{cls.__name__}.from_json')
         form.quantity_min.data = json[Store_Base.FLAG_QUANTITY_MIN]
@@ -66,3 +66,11 @@ class Filters_Stock_Item(Form_Base):
         filters = cls()
         filters.id_category.choices = cls.get_choices_blank()
         filters.id_product.choices = cls.get_choices_blank()
+    """
+    def import_values(self, form_filters):
+        self.id_category.data = form_filters.id_category.data
+        self.id_product.data = form_filters.id_product.data
+        self.is_out_of_stock.data = form_filters.is_out_of_stock.data
+        self.quantity_min.data = form_filters.quantity_min.data
+        self.quantity_max.data = form_filters.quantity_max.data
+    """

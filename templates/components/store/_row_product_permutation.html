@@ -2,20 +2,10 @@
 {% if is_blank_row %}
     <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_PERMUTATION }}>
         <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
-            <select class="{{ model.FLAG_PRODUCT_CATEGORY}}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
-                {% include 'components/common/inputs/_option_blank.html' %}
-                {% for cat in model.category_list_filters.categories %}
-                    <option value="{{ cat.id_category }}">{{ cat.name }}</option>
-                {% endfor %}
-            </select>
+            {% include 'components/store/_preview_DDL_product_category.html' %}
         </td>
         <td class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
-            <select class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
-                {% include 'components/common/inputs/_option_blank.html' %}
-                {% for product in model.category_list_filters.categories[0].products %}
-                    <option value="{{ product.id_product }}">{{ product.name }}</option>
-                {% endfor %}
-            </select>
+            {% include 'components/store/_preview_DDL_product.html' %}
         </td>
         <td class="{{ model.FLAG_PRODUCT_VARIATIONS }} {{ model.FLAG_COLLAPSED}}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
             {% include 'components/store/_preview_product_permutation_variations.html' %}
@@ -40,7 +30,7 @@
             {% include 'components/store/_preview_DDL_product_permutation_unit_measurement_quantity.html' %}
         </td>
         <td class="{{ model.FLAG_IS_SUBSCRIPTION }}">
-            <input class="{{ model.FLAG_IS_SUBSCRIPTION }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="false" {{ model.ATTR_VALUE_PREVIOUS }}="false">
+            <input class="{{ model.FLAG_IS_SUBSCRIPTION }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_FALSE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_FALSE }}">
         </td>
         <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}">
             <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }} {{ model.FLAG_COLLAPSED }}" 
@@ -53,7 +43,7 @@
             <input class="{{ model.FLAG_ID_STRIPE_PRODUCT }}" type="text" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}>
         </td>
         <td class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}">
-            <input class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="false" {{ model.ATTR_VALUE_PREVIOUS }}="false">
+            <input class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_FALSE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_FALSE }}">
         </td>
         <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }}">
             <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }} {{ model.FLAG_COLLAPSED }}" 
@@ -77,7 +67,7 @@
             <input class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}" type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}>
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="true" {{ model.ATTR_VALUE_PREVIOUS }}="true" checked>
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}" checked>
         </td>
     </tr>
 {% else %}
@@ -113,12 +103,16 @@
             {% include 'components/store/_preview_DDL_product_permutation_unit_measurement_quantity.html' %}
         </td>
         <td class="{{ model.FLAG_IS_SUBSCRIPTION }}">
-            <input class="{{ model.FLAG_IS_SUBSCRIPTION }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.is_subscription }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.is_subscription }}">
+            <input class="{{ model.FLAG_IS_SUBSCRIPTION }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.is_subscription | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.is_subscription | lower }}">
         </td>
         <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}">
-            {% set value = permutation.count_interval_recurrence if permutation.count_interval_recurrence is not none else '' %}
+            {% set value = permutation.count_interval_recurrence if permutation.count_interval_recurrence is not none else 1 %}
             <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }} {% if not permutation.is_subscription %}{{ model.FLAG_COLLAPSED }}{% endif %}" 
-            type="number" min="0" value="{{ value }}" {{ model.ATTR_VALUE_CURRENT }}="{{ value }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}">
+                type="number" min="0" 
+                value="{% if value is not none %}{{ value }}{% else %}{{ 1 }}{% endif %}" 
+                {{ model.ATTR_VALUE_CURRENT }}="{% if value is not none %}{{ value }}{% else %}{{ 1 }}{% endif %}" 
+                {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}"
+            />
         </td>
         
         {% set value = permutation.id_unit_measurement_interval_recurrence if permutation.id_unit_measurement_interval_recurrence is not none else '' %}
@@ -130,12 +124,16 @@
             <input class="{{ model.FLAG_ID_STRIPE_PRODUCT }}" type="text" value="{{ value }}" {{ model.ATTR_VALUE_CURRENT }}="{{ value }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}">
         </td>
         <td class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}">
-            <input class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.does_expire_faster_once_unsealed }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.does_expire_faster_once_unsealed }}">
+            <input class="{{ model.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.does_expire_faster_once_unsealed | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.does_expire_faster_once_unsealed | lower }}">
         </td>
         <td class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }}">
-            {% set value = permutation.count_interval_expiration_unsealed if permutation.count_interval_expiration_unsealed is not none else '' %}
+            {% set value = permutation.count_interval_expiration_unsealed if permutation.count_interval_expiration_unsealed is not none else 1 %}
             <input class="{{ model.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED }} {% if not permutation.does_expire_faster_once_unsealed %}{{ model.FLAG_COLLAPSED }}{% endif %}" 
-            type="number" min="0" value="{{ value }}" {{ model.ATTR_VALUE_CURRENT }}="{{ value }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}">
+                type="number" min="0" 
+                value="{% if value is not none %}{{ value }}{% else %}{{ 1 }}{% endif %}" 
+                {{ model.ATTR_VALUE_CURRENT }}="{% if value is not none %}{{ value }}{% else %}{{ 1 }}{% endif %}" 
+                {{ model.ATTR_VALUE_PREVIOUS }}="{{ value }}"
+            />
         </td>
 
         {% set value = permutation.id_unit_measurement_interval_expiration_unsealed if permutation.id_unit_measurement_interval_expiration_unsealed is not none else '' %}
@@ -157,7 +155,7 @@
             <input class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}" type="number" min="0" value="{{ permutation.latency_manufacture_days }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.latency_manufacture_days }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.latency_manufacture_days }}">
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.active }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.active }}" {% if permutation.active %}checked{% endif %}>
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.active | lower }}" {% if permutation.active %}checked{% endif %}>
         </td>
     </tr>
 {% endif %}

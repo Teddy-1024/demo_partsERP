@@ -34,5 +34,5 @@ class Model_View_Store_Supplier(Model_View_Store):
         av.val_instance(form, 'form', _m, FlaskForm)
         return super(Model_View_Supplier, cls).__new__(cls, db, info_user, app)
     """
-    def __init__(self,form, hash_page_current=Model_View_Base.HASH_PAGE_STORE_SUPPLIER):
+    def __init__(self,form, hash_page_current=Model_View_Base.HASH_PAGE_STORE_SUPPLIERS):
         super().__init__(hash_page_current=hash_page_current, form=form)

@@ -14,7 +14,7 @@ Business object for product permutation
 import lib.argument_validation as av
 from lib import data_types
 from forms.forms import Form_Basket_Add, Form_Basket_Edit
-from business_objects.store.currency import Currency
+from business_objects.currency import Currency
 from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.discount import Discount
 from business_objects.store.image import Image
@@ -309,6 +309,7 @@ class Product_Permutation(db.Model, Store_Base):
             'value': self.id_permutation,
             'text': self.get_name_variations()
         }
+    
     def get_name(self):
         return 
     def get_name_variations(self):
@@ -317,18 +318,13 @@ class Product_Permutation(db.Model, Store_Base):
         return len(self.prices) > 0
     def get_price(self):
         return self.prices[0]
-    def get_price_local_VAT_incl(self):
-        price = self.get_price()
-        return price.value_local_VAT_incl
-    def get_price_local_VAT_excl(self):
-        price = self.get_price()
-        return price.value_local_VAT_excl
 
-    def output_lead_time(self):
-        return '1 day' if self.latency_manufacture_days == 1 else f'{self.latency_manufacture_days} days'
-    
     def output_delivery_date(self):
         return (datetime.now() + timedelta(days=self.latency_manufacture_days)).strftime('%A, %d %B %Y')
+    
+    """
+    def output_lead_time(self):
+        return '1 day' if self.latency_manufacture_days == 1 else f'{self.latency_manufacture_days} days'
     
     def output_price(self, is_included_VAT):
         if self.is_unavailable_in_currency_or_region:
@@ -341,33 +337,14 @@ class Product_Permutation(db.Model, Store_Base):
             return f'{price.symbol_currency} {locale.format_string("%d", price.value_local_VAT_incl, grouping=True)}'
         else:
             return f'{price.symbol_currency} {locale.format_string("%d", price.value_local_VAT_excl, grouping=True)}'
-    def output_currency(self):
-        if not self.is_available:
-            return ''
-        """
-        price = self.get_price()
-        return price.code_currency
-        """
-        return self.code_currency_cost if self.symbol_currency_cost == '' else self.symbol_currency_cost
+    """
     def output_variations(self):
         if not self.has_variations: return ''
         return '\n'.join([f'{variation.name_variation_type}: {variation.name_variation}' for variation in self.variations])
     def output_variations_jsonify(self):
         if not self.has_variations: return ''
         return ','.join([f'{variation.id_type}: {variation.id_variation}' for variation in self.variations])
-    """
-    def output_price_VAT_incl(self):
-        locale.setlocale(locale.LC_ALL, '')
-        return locale.format_string("%d", self.price_GBP_VAT_incl, grouping=True)
-    def output_price_VAT_excl(self):
-        locale.setlocale(locale.LC_ALL, '')
-        return locale.format_string("%d", self.price_GBP_VAT_excl, grouping=True)
-    def add_form_basket_add(self):
-        self.form_basket_add = None
-
-    def add_form_basket_edit(self):
-        self.form_basket_edit = None
-    """
+    
     def __repr__(self):
         return f'''Product_Permutation
             id_permutation: {self.id_permutation}

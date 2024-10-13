@@ -81,6 +81,15 @@ class Currency(db.Model, Store_Base):
         v_arg_type = 'class attribute'
         currency = cls()
         return currency
+    @classmethod
+    def from_DB_stock_item(cls, query_row):
+        _m = 'Currency.from_DB_get_many_stock_item'
+        v_arg_type = 'class attribute'
+        currency = cls()
+        currency.id_currency = query_row[12]
+        currency.code = query_row[13]
+        currency.symbol = query_row[14]
+        return currency
     def __repr__(self):
         return f'''
             id: {self.id_currency}

@@ -42,7 +42,6 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
     filters_product: Parameters_Product = None
     form_filters: Filters_Product_Permutation
     list_options_product: list = None
-    permutation_blank: Product_Permutation = None
     units_measurement: list = None
     units_measurement_time: list = None
     # variation_container: Product_Variation_Container = None
@@ -79,12 +78,11 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
             )
         )
         print(f'category filters: {self.category_list_filters.categories}')
-        self.form_filters.id_category.choices = [('0', 'All')] + [(str(category.id_category), category.name) for category in self.category_list_filters.categories]
+        self.form_filters.id_category.choices += [(str(category.id_category), category.name) for category in self.category_list_filters.categories]
         print(f'category options: {self.form_filters.id_category.choices}')
         self.list_options_product = self.category_list_filters.to_product_option_list()
         print(f'product options: {self.list_options_product}')
-        self.form_filters.id_product.choices = [('0', 'All')] + [(str(product['value']), product['text']) for product in self.list_options_product]
-        self.permutation_blank = Product_Permutation()
+        self.form_filters.id_product.choices += [(str(product['value']), product['text']) for product in self.list_options_product]
         self.variation_types, self.variations, errors = self.get_many_product_variation()
         self.units_measurement = self.get_many_unit_measurement()
         self.units_measurement_time = [unit_measurement for unit_measurement in self.units_measurement if unit_measurement.is_unit_of_time]

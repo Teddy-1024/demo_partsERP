@@ -242,6 +242,11 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
             'value': self.id_category,
             'text': self.name
         }
+    def get_csv_ids_permutation(self):
+        list_ids = []
+        for product in self.products:
+            list_ids += product.get_csv_ids_permutation()
+        return list_ids
 """
 class Filters_Product_Category(BaseModel, Store_Base):
     ids_product_category: str
@@ -433,6 +438,11 @@ class Product_Category_Container(Store_Base):
             if column.name not in ['created_on', 'created_by']
         }
         return self.to_object_with_missing_attributes(excluded_attributes)
+    def get_csv_ids_permutation(self):
+        list_ids = []
+        for category in self.categories:
+            list_ids += category.get_csv_ids_permutation()
+        return ','.join(list_ids)
     
     
 """

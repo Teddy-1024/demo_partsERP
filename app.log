@@ -1,3 +1,22 @@
+Request: 127.0.0.1 GET http /store/stock_items?id_category=3&id_product=&is_out_of_stock=false&quantity_min=&quantity_max= Host: 127.0.0.1:5000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-GB,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Referer: http://127.0.0.1:5000/store/stock_items?id_category=3&id_product=3&is_out_of_stock=false&quantity_min=&quantity_max=
+Dnt: 1
+Connection: keep-alive
+Cookie: session=.eJytVlnPqzgS_SutSN1PnVz25ZOuZsgGJIEkhLC9ILBZzB6WLPTc_z4m3-2-_dCzSSOFYLtMnVOuclX9NguGPq1b1EXw2kXt7OO3GQgqP4Alqvyur9to9tG3Q_Trn5aH98bP1agMUDH7mEXwEbRwUSIIi6ivq65Effr3ZJIuQF3Ofp3FqO36KiixwpkZQfjCawj6YGjbqAIvH0ZxMBT97KMaiuItaqME1dVfCD4JkH-M_ckIAut9v__BsQIViiwQRBYSYsATYUAScRRPgJ3_ZuzfoxbFKIKzjzgouugtQRUoBhhB35LMH6ifdmJxNzQY6s_Gd0P73SDtd7vnl8nw2Td8Xl0b-32dRxWWg1gAbMCIPA0ZhuBogqZCigAEB4OQJ7kwZCkYEhyHKQ7f3RAAEHXdHxqi1y4NZYCOaJcHjooOq10Rlto0X2rZlTIIXVfRAwWOPqpZjQLFIICicYeXmHuO24cVTINRfeiZV3iZVx_lggkRS4IXm0LHqLUVm2FKd7UiFgtn617dFzzsYq1Rzr26GJ8usLan_Fjvjp4S3kxnpUgyw87l89Vlo-3TlTJ_v2eq_c7Ir-y-7kb_DC-I2SRjv_GsRD8YZbvpu7AW2uU6NIqIu7KR4kXD7gga1iSSw3wv1kbp1-d-wzV3F6zmNrKeCsk37E0E-gPUQxhc-tS3SjkOLTeu9sXa4q5ZtexW_mEfS-5yL9-qOIOsHDUKhGDeHQebvMQrD5zkKyqsjFyVjO3UaJNzohNJqIwAyJJUURgakRfZv_hldqiGuRdJr3oEFSuU0s1FibD3hbBORZvZjfd4GOLVSVyGYyfuHF7zGN3oLdZkD-yqY5e677rg8MwZP7mE5dgHQx1LOcvMx_MT1OeKJ-nt3k6s8C4sYihlxHlT6KlkeU8arNC51iQcBtGzQW3U-QEOQZKnBJ4UaI77sY5wUAgcQxDvW_AXUXK5jiqpI7VTK4MFK5VT88axVnhe9o03zSvrHjne1cgZJsx2d09JSCvfHrRtShqvnbjAyobA1tuw3PbeBX9QWjmkti9vxfaBbeShbBEhxY6hXRDBWzGbhvZ1Ai88BaagPA9Ylnvys4CyOACKbKCcSh5FpoH9GFxK7KeQBXKRQcV6fWKkBFSW4xEJdxyaFSi3lOsYKUCf4ek6Xgrl7eswXkdvrZdadia0Ncx1ExtLuYwuuy-d0lNtDRh9NJC3dokTrYn6OnnsKlUEMii9NVlDxXiA13U8X64vA-Gn1HN8Hf58FQotx1jllnCd3bgzd7Jnnwcgs9XEGTrLHPMqvK2YwukwM_WBufSaKeFne8X4nDaqnL6-DtqoMfbkiNLqXbvopuvp2QaN9eaHkmw82eg8x7iHld4HGP8sw_e-Q6nfw8uP7xzaK0BZlIFt5WrWlK79HL3L_-HKY3tcZ9KJeRHwFjnG08xJ50ylZuCkT3PEJ1VsOStPnbO9LS55w13LfEpBjeuc0THb0FqWUNq4YfUsmfgyU8BpJngd1y6ljzl1XGE_0xaaMDAWEayXgp5dGa1UWd3WmKNp5dq6SPVxiVxz8_BKq3zHBlW8ecEirUy7aU277o-bdONO53BVRzfzYpOAO6tqKLcydlrZTbwGHJfZO54yiIwcHi-K4WpKTXvYnx4FV1pmyVOqK1VFE2nHUXtOl-ICzTd519W2RUXkvXkMSJLofhWkdXTv6tNecCVkPG8X59CsvdMmlKvhUt5O7fa0fOmdq8DTQRt3FP-6w_acZE7S8HwzJKRGMZleWKvLvHavr7ZLU_VxN24A5_4BBu7QydSZXy2TU0EmIfNMLdY1IuuiNHWqMawEmqcSn7a-cpwvg7CshgHFxT60IYVW0m0jP4bLGvDpeLmC-W3r1KqrFkldtKaYWanVgKbjHXNfKQdWMh8rKSmgy0XQJtf9PeoFUeK0ZfUMVXtvnqBc7SFhioW-dLqWOfm0aD3sQLzKD8xTTG1PbY-7ka-OzjLMeOtCL4W56C0FV3N3hHhEp3lLJDh_daBupsqI_ysEf2raOkZF9NNnv_Dr7J2w_P713rOMghYXvc_ah6q4fte_ARfnWSJnr_6ma_YqvaDn7chTxnm0FFsKot0O3-_Z_9KC_IvSj1PqZ47lOF7kBJxQf0-6HE1-LnQdBkj7vuk-vnyB0X1ePYKcwgU7irlUQM9qMXSLd_cxQX3BWN8bg_9MqkIg_3ebpy11BSY5H25lXekdYuTjoE-SJcVusbhBoB-mRu0Pht0iaYN70Aftm87n8AtLQzqmcP_BQ5Zi-VhgYooHAcELPBNCjvlb95URiF_ar03yC_z61vUzLf1MbfEPwOqHfXj-qbLDowgumurtcTQ57O4kWpZr2VxQ1iE-5yUdcv5RVq3xHvYqlU8bh_C_6dWGBgY97sYmZ8wogmLmJDEnSZPgP2jqg2EXNC14s2_fvv0TX22jag.ZwjUoA.pitPRgpTPJyCaDMIr0TPpBG_lIc
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Sec-Gpc: 1
+Priority: u=0, i
+
+
+Request data: b''
 Traceback: Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
     response = self.full_dispatch_request()
@@ -14,9 +33,9 @@ Traceback: Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product.py", line 114, in products
-    return render_template('pages/store/_products.html', model = model)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\stock_item.py", line 45, in stock_items
+    return render_template('pages/store/_stock_items.html', model = model, datetime = datetime)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
     return _render(app, template, context)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -27,20 +46,20 @@ Traceback: Traceback (most recent call last):
     self.environment.handle_exception()
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 939, in handle_exception
     raise rewrite_traceback_stack(source=source)
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_products.html", line 1, in top-level template code
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_stock_items.html", line 1, in top-level template code
     {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\layouts\layout.html", line 316, in top-level template code
     {% block page_body %}{% endblock %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_products.html", line 89, in block 'page_body'
-    {% include 'components/store/_row_product.html' %}
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_stock_items.html", line 100, in block 'page_body'
+    {% include 'components/store/_row_stock_item.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\components\store\_row_product.html", line 38, in top-level template code
-    <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_category }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_category }}">
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\components\store\_row_stock_item.html", line 78, in top-level template code
+    {{ model.ATTR_VALUE_CURRENT }}="{{ currency.id_currency_cost }}"
     ^^^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 487, in getattr
     return getattr(obj, attribute)
            ^^^^^^^^^^^^^^^^^^^^^^^
-jinja2.exceptions.UndefinedError: 'permutation' is undefined
+jinja2.exceptions.UndefinedError: 'currency' is undefined
 

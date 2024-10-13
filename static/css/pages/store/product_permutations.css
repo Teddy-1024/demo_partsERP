@@ -107,17 +107,6 @@
     min-width: 6vh;
 }
 
-textarea {
-    width: 95% !important;
-}
-
-select {
-    width: 100% !important;
-}
-
-input {
-    width: 90% !important;
-}
 
 td > input, td > select, td > textarea, .container-input > input, .container-input > select, .container-input > textarea {
     border: 2px solid var(--c_purple);

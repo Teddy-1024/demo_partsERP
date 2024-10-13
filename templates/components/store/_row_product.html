@@ -4,12 +4,7 @@
             {% include 'components/common/buttons/_slider_display_order.html' %}
         </td>
         <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
-            <select class="{{ model.FLAG_PRODUCT_CATEGORY}}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
-                {% include 'components/common/inputs/_option_blank.html' %}
-                {% for cat in model.category_list_filters.categories %}
-                    <option value="{{ cat.id_category }}">{{ cat.name }}</option>
-                {% endfor %}
-            </select>
+            {% include 'components/store/_preview_DDL_product_category.html' %}
         </td>
         <td class="{{ model.FLAG_NAME }}">
             <textarea class="{{ model.FLAG_NAME }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
@@ -20,13 +15,13 @@
         </td>
         #}
         <td class="{{ model.FLAG_HAS_VARIATIONS }}">
-            <input class="{{ model.FLAG_HAS_VARIATIONS }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="false" {{ model.ATTR_VALUE_PREVIOUS }}="false">
+            <input class="{{ model.FLAG_HAS_VARIATIONS }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_FALSE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_FALSE }}">
         </td>
         <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="View">
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1">View</div>
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="true" {{ model.ATTR_VALUE_PREVIOUS }}="true">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}">
         </td>
     </tr>
 {% else %}

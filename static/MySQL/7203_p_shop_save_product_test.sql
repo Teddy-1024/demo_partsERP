@@ -37,7 +37,7 @@ BEGIN
 			4 -- id_product
 			, 1 -- id_category
 			, 'Laptops' -- name
-			, 1 -- has_variations
+			, 0 -- has_variations
 			, 2 -- id_access_level_required
 			, 2 -- display_order
 			, 1 -- active
@@ -69,10 +69,10 @@ BEGIN
 END //
 DELIMITER ;;
 
+/*
 CALL partsltd_prod.p_shop_save_product_test ();
 
 DELETE FROM partsltd_prod.Shop_Product_Temp;
-/*
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 */

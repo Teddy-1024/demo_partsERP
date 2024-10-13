@@ -124,6 +124,21 @@ export default class API {
         dataRequest[flagComment] = comment;
         return await API.request(hashSaveStoreProductPermutation, 'POST', dataRequest);
     }
+    
+    // stock items
+    static async getStockItems() {
+        return await API.request(hashGetStoreStockItem);
+    }
+    static async getStockItemsByFilters(filtersJson) {
+        API.goToHash(hashPageStoreStockItems, filtersJson);
+    }
+    static async saveStockItems(stockItems, formFilters, comment) {
+        let dataRequest = {};
+        dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagStockItem] = stockItems;
+        dataRequest[flagComment] = comment;
+        return await API.request(hashSaveStoreStockItem, 'POST', dataRequest);
+    }
 }
 
 /*

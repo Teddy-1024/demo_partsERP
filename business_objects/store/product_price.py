@@ -11,8 +11,8 @@ Business object for product price
 """
 
 # internal
-from business_objects.store.currency import Currency
-from business_objects.store.delivery_region import Delivery_Region
+from business_objects.currency import Currency
+from business_objects.region import Region
 from business_objects.store.store_base import Store_Base
 from extensions import db
 # external
@@ -22,8 +22,6 @@ from typing import ClassVar
 class Product_Price(db.Model, Store_Base):
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT_PRICE
     NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_TEXT
-    FLAG_VALUE_LOCAL_VAT_INCL: ClassVar[str] = 'value-local-vat-incl'
-    FLAG_VALUE_LOCAL_VAT_EXCL: ClassVar[str] = 'value-local-vat-excl'
 
     id_price = db.Column(db.Integer, primary_key=True)
     id_permutation = db.Column(db.Integer)
@@ -87,7 +85,7 @@ class Product_Price(db.Model, Store_Base):
             self.ATTR_ID_PRODUCT: self.id_product,
             self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
             self.FLAG_CURRENCY: self.currency.to_json(),
-            # Delivery_Region.ATTR_ID_DELIVERY_REGION: self.id_region,
+            # Region.ATTR_ID_REGION_DELIVERY: self.id_region,
             self.FLAG_VALUE_LOCAL_VAT_INCL: self.value_local_VAT_incl,
             self.FLAG_VALUE_LOCAL_VAT_EXCL: self.value_local_VAT_excl,
             self.FLAG_DISPLAY_ORDER: self.display_order
@@ -101,7 +99,7 @@ class Product_Price(db.Model, Store_Base):
         price.id_product = json[cls.ATTR_ID_PRODUCT]
         price.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
         price.currency = Currency.from_json(json)
-        # price.id_region = json[Delivery_Region.ATTR_ID_DELIVERY_REGION]
+        # price.id_region = json[Region.ATTR_ID_REGION_DELIVERY]
         price.value_local_VAT_incl = json[cls.FLAG_VALUE_LOCAL_VAT_INCL]
         price.value_local_VAT_excl = json[cls.FLAG_VALUE_LOCAL_VAT_EXCL]
         price.display_order = json[cls.FLAG_DISPLAY_ORDER]

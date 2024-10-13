@@ -4,36 +4,82 @@ th, td {
 }
 
 
-
-.category {
-    width: 12%;
+#tableMain {
+    max-width: 90vw;
 }
-.product {
-    width: 12%;
+#tableMain thead tr th.category, #tableMain tbody tr td.category {
+    width: 8vh;
+    min-width: 8vh;
 }
-.variations {
-    width: 12%;
-}
-.currency {
-    width: 12%;
-}
-.cost-local-VAT-incl {
-    width: 10%;
-}
-.date-puchased, .date-received, .date-unsealed, .date-expiration, .date-consumed {
-    width: 6%;
-}
-.storage-location {
-    width: 12%;
-}
-.active {
-    width: 5%;
+#tableMain thead tr th.product, #tableMain tbody tr td.product,
+#tableMain thead tr th.storage_location, #tableMain tbody tr td.storage_location {
+    width: 10vh;
+    min-width: 10vh;
 }
 
-.row-new {
-    visibility: hidden;
+#tableMain thead tr th.product_variations.collapsed, #tableMain tbody tr td.product_variations.collapsed {
+    width: 10vh;
+    min-width: 10vh;
+    display: table-cell !important;
+}
+#tableMain thead tr th.product_variations, #tableMain tbody tr td.product_variations {
+    width: 20vh;
+    min-width: 20vh;
+}
+#tableMain tbody tr td.product_variations table thead tr th, #tableMain tbody tr td.product_variations table tbody tr td {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain tbody tr td.product_variations table thead tr th:last-of-type, #tableMain tbody tr td.product_variations table tbody tr td:last-of-type {
+    width: 4vh;
+    min-width: 4vh;
 }
 
-textarea, select, input {
-    width: 100% !important;
+#tableMain thead tr th.id_currency_cost.collapsed, #tableMain tbody tr td.id_currency_cost.collapsed {
+    width: 9vh;
+    min-width: 9vh;
+}
+#tableMain thead tr th.id_currency_cost, #tableMain tbody tr td.id_currency_cost {
+    width: 11vh;
+    min-width: 11vh;
+}
+
+#tableMain thead tr th.cost_local_vat_excl, #tableMain tbody tr td.cost_local_vat_excl,
+#tableMain thead tr th.cost_local_vat_incl, #tableMain tbody tr td.cost_local_vat_incl {
+    width: 9vh;
+    min-width: 9vh;
+}
+
+#tableMain thead tr th.storage-location.collapsed, #tableMain tbody tr td.storage-location.collapsed {
+    width: 10vh;
+    min-width: 10vh;
+    display: table-cell !important;
+}
+#tableMain thead tr th.storage-location, #tableMain tbody tr td.storage-location {
+    width: 20vh;
+    min-width: 20vh;
+}
+#tableMain tbody tr td.storage-location table thead tr th, #tableMain tbody tr td.storage-location table tbody tr td {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain tbody tr td.storage-location table thead tr th:last-of-type, #tableMain tbody tr td.storage-location table tbody tr td:last-of-type {
+    width: 4vh;
+    min-width: 4vh;
+}
+
+#tableMain thead tr th.active, #tableMain tbody tr td.active,
+#tableMain thead tr th.is_sealed, #tableMain tbody tr td.is_sealed,
+#tableMain thead tr th.is_consumed, #tableMain tbody tr td.is_consumed {
+    width: 6vh;
+    min-width: 6vh;
+}
+
+#tableMain thead tr th.date_purchased, #tableMain tbody tr td.date_purchased,
+#tableMain thead tr th.date_received, #tableMain tbody tr td.date_received,
+#tableMain thead tr th.date_unsealed, #tableMain tbody tr td.date_unsealed,
+#tableMain thead tr th.date_expiration, #tableMain tbody tr td.date_expiration,
+#tableMain thead tr th.date_consumed, #tableMain tbody tr td.date_consumed {
+    width: 17vh;
+    min-width: 17vh;
 }

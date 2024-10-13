@@ -75,7 +75,7 @@ class Model_View_Store_Product(Model_View_Store):
     filters_product: Parameters_Product = None
     form_filters: Filters_Product
     list_options_product: list = None
-    product_blank: Product = None
+    # product_blank: Product = None
     units_measurement: list = None
     units_measurement_time: list = None
     # variation_container: Product_Variation_Container = None

@@ -38,7 +38,9 @@ class User(db.Model, Base):
     # is_logged_in: bool
 
     def __init__(self):
+        self.id_user = 0
         self.is_logged_in = False
+        super().__init__()
         
     def from_DB_user(query_row):
         _m = 'User.from_DB_user'
@@ -62,7 +64,7 @@ class User(db.Model, Base):
         _m = 'User.from_json'
         user = User()
         if json is None: return user
-        print(f'json: {json}')
+        print(f'{_m}\njson: {json}')
         user.id_user = json['id_user']
         user.id_user_auth0 = json['id_user_auth0']
         user.firstname = json['firstname']
@@ -85,7 +87,7 @@ class User(db.Model, Base):
         _m = 'User.from_json_auth0'
         user = User()
         if json is None: return user
-        print(f'json: {json}')
+        print(f'{_m}\njson: {json}')
         user_info = json['userinfo']
         user.id_user = None
         user.id_user_auth0 = user_info['sub']
@@ -136,11 +138,6 @@ class User(db.Model, Base):
             can_admin_user: {self.can_admin_user}
             '''
     
-    @staticmethod
-    def get_default():
-        user = User()
-        user.id_user = None
-        return user
     
     
 @dataclass

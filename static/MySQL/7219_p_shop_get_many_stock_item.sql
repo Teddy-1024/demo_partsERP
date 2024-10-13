@@ -622,6 +622,7 @@ BEGIN
     select * from tmp_Stock_Item;
     select * from tmp_Permutation;
     select * from tmp_Location_Storage;
+    select * from Shop_Storage_Location;
     select * from tmp_Plant_Storage;
     select * from tmp_Region_Storage;
     */
@@ -636,14 +637,19 @@ BEGIN
 		P.id_category,
 		t_SI.id_location_storage,
         t_PS.id_plant,
-        t_RS.id_region,
+        PLANT.id_address AS id_address_plant,
+        t_RS.id_region AS id_region_plant,
+        SL.code AS code_storage_location,
+        SL.name AS name_storage_location,
+        PLANT.code AS code_plant,
+        PLANT.name AS name_plant,
 		SI.id_currency_cost,
 		CURRENCY.symbol AS symbol_currency_cost,
 		CURRENCY.code AS code_currency_cost,
+		SI.cost_local_VAT_excl,
+		SI.cost_local_VAT_incl,
 		SI.date_purchased,
 		SI.date_received,
-		SI.cost_local_VAT_incl,
-		SI.cost_local_VAT_excl,
 		SI.is_sealed,
 		SI.date_unsealed,
 		SI.date_expiration,
@@ -722,6 +728,7 @@ END //
 DELIMITER ;;
 
 
+/*
 CALL p_shop_get_many_stock_item (
 	1, # a_id_user
     1, # a_get_all_product_permutation
@@ -750,7 +757,6 @@ CALL p_shop_get_many_stock_item (
     , 0 # a_debug
 );
 
-/*
 
 
 DROP TABLE IF EXISTS tmp_Msg_Error;

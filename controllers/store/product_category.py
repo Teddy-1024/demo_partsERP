@@ -54,6 +54,9 @@ def categories():
         return redirect(url_for('routes_store_product_category.categories', **filters.to_json()))
     """
     model = Model_View_Store_Product_Category(form_filters)
+    if not model.is_user_logged_in:
+        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Category.KEY_CALLBACK: Model_View_Store_Product_Category.HASH_PAGE_STORE_PRODUCT_CATEGORIES })))
+        return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_categories.html', model = model)
 
 @routes_store_product_category.route(Model_View_Store_Product_Category.HASH_GET_STORE_PRODUCT_CATEGORY, methods=['POST'])
@@ -70,6 +73,8 @@ def filter_category():
         # ToDo: manually validate category, product
         # filters_form = Filters_Product_Category.from_form(form_filters)
         model = Model_View_Store_Product_Category(form_filters = form_filters)
+        if not model.is_user_logged_in:
+            raise Exception('User not logged in')
         return jsonify({
             Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
             Model_View_Store_Product_Category.KEY_DATA: model.category_list.to_json()
@@ -106,7 +111,8 @@ def save_category():
         Model_View_Store_Product_Category.save_categories(data.get('comment', 'No comment'), objsCategory)
 
         model_return = Model_View_Store_Product_Category(form_filters=form_filters)
-        print('nips')
+        if not model_return.is_user_logged_in:
+            raise Exception('User not logged in')
         return jsonify({
             Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
             Model_View_Store_Product_Category.KEY_DATA: model_return.category_list.to_json()

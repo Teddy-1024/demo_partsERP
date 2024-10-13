@@ -1,58 +1,16 @@
-Exception on /store/products [GET]
-Traceback (most recent call last):
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 178, in wrapped_function
-    return cors_after_request(app.make_response(f(*args, **kwargs)))
-                                                ^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product.py", line 113, in products
-    model = Model_View_Store_Product(form_filters)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product.py", line 101, in __init__
-    self.category_list_filters, errors_filters = datastore_store.get_many_product(
-                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_store_base.py", line 109, in get_many_product
-    category_list.add_product(new_product)
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 337, in add_product
-    self.categories[index_category].add_product(product)
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 100, in add_product
-    raise ValueError(f"{av.error_msg_str(product, 'product', _m, Product)}\nProduct already in category.")
-ValueError: Invalid Category.add_product <class 'business_objects.store.product.Product'> argument product. Type = <class 'business_objects.store.product.Product'>. Value = Product
-            id_product: 1
-            id_category: 1
-            name: Braille Keyboard Translator
-            display_order: 1
-            can_view: False
-            can_edit: False
-            can_admin: False
-            has_variations: True
-            permutations: []
-            variation trees: []
-            
-Product already in category.
-Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
-Request: 127.0.0.1 GET http /store/products? Host: 127.0.0.1:5000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0
+Request: 127.0.0.1 GET http /store/stock_items?id_category=3&id_product=3&is_out_of_stock=false&quantity_min=&quantity_max= Host: 127.0.0.1:5000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
 Accept-Language: en-GB,en;q=0.5
 Accept-Encoding: gzip, deflate, br, zstd
+Referer: http://127.0.0.1:5000/store/stock_items?id_category=3&id_product=&is_out_of_stock=false&quantity_min=&quantity_max=
 Dnt: 1
 Connection: keep-alive
-Cookie: session=.eJytVlmzqkgS_isdRnQ_9fGyKyfixoyKAh5BQWR7IaCqkGJXQIGe-9-n8Nzu2w89W8REuFCVReaXlV8uv83Crk2qO24QvDToPnv_bQbCMghhgcugaas7mr239w79-qft7nXwcxcVIc5n7zMEn-EdzgsMYY7aqmwK3CZ_v07SOaiK2a-zGN-btgwLonBmIQgHsodhALr7HZVgCCCKwy5vZ-9ll-cv0R1dcVX-heATAP3HczA5QRG9r_9_CPySiUQeLEUeUmK4oKKQpmIUTwab4IU4eKA7jjGCs_c4zBv0kuAS5B1EMLBX1g-rn34ScdPVxNSfnW-6-3eHtN_9fjtPjs--kftq7nHQVhkqJ2AxRECkKQQBtVjwUBRYCjIAiSwLUMwxgAc8omiRQOy-hyEEADXNHxrQsE8iGeAj3mehq-LDZp9HhTat11p6YUxK11X8xKGrj2pa4VAxKaBowmEQM9_12qiESTiqTz31cz_1q6OccxHmaTDwCXTNStvwacRQD7Wk5nP69pEeN63Xs9qCtY7SPNPvelBJyWjCRoVL5xS_qcch6jvTfFv64zBIvtZq7DFmesA01INmH8M1UvcX6oPpRemNH24tqHUlTNHxKGin8-3UFH2lItye1Kpiec9glm9e6Ny2fT_y8IFF-Tgm0nmzUFSLSx4XvEykeC1KciuiJyuBvJIr1ts-ojI5yZuyP-XVclPvW1PHhxJFHYkuXgyHoaUT0fKTzEhE1m-kYH3gtos8o07W6iOV2coJ-BAd1K0aLJPuiQqVF_L1QU7PV1_sKnUXMzGIrxqDW3e4sSPd2HveXudvzaa63xB73nXJ5ZwPmmr2sd0v8rTJ8JA8alzRwZFyVsYQO81eFV0uyNvjkG9OaprWhwwgq8TRfC3rqwh_SLorJ9ytrKWjtpQNQgPU1_iOmiAkFKQXzIJb8Cwl_NjHhBRLgaOoVxb8BUvOl1Gldaw2amnyYKMKala79oasi7b2p3VpP5DrX8yM46J0__CVK21nu4O2S2hz2ItzoqwLHf0eFbvWP5MXCjuDzG7wN3wbOmYWyTYVMfwYOTkVvhTzSeRcJuO5r8AEFEZHZJkv9zmUxQ4wdA3lZOUzdBI6z85jxHaiLJDzFCr28GkjoaCyHo94-SDULEGxYzzXTAD-pKfn-gmUd8NhvIy-pBdaalCaBDPdIs4yHqfL3qAzeqJJgNNHE_uSR51YTdSl63NfqiKQQeFLdAUV8wmGy2icL4OJybfQM5IOf06FXMuIrWJHee5-3Ft72XeMDsh8OWGG7jojuHJ_JyZwusxUfRIsrSZlrZb6Fy1VBc26CJqkdZqljs4UiMJuPSdvpvT0HZMlerNDQde-bDa-axIq621I7BsyfJ07FPojOv94z2X9HBR5ETp2pqZ14Tn96J__DylP_PHcSSfBRcEbcs3eymjXYBIrdJPeGslN5TvBzhLXcHb5OauFS5FNJaj2XAMf0y2rpWA8Slee-Dvh5SbCaRYY9NEYdCl7agOJM2vjyQaxRYXSeqmnF04jCac7Gne07EyT8kQf19iztk-_sIsXN5j8E5eja2gLlShLSv3SmtEWjkamF7aUqOedeNEKj7HovW6UYMLVEV6mLz5luu3IKuXRJqex9tYo7Ifv7lL74vVTqasUVbPtymBpJ6WuPCmoSu4bT4aT1Nj4uLjMVcq8K7nM5Iykw5PnYLg2WXtVNxQ2Y1nBNAu45hQssjcufabSJUJ8TDJsOCtKCarTIj6p5rgZF0bAhdZtw36sFXf4WIVUsQKatH8AihMUwHCHmw2b2CrDTblqgnO81LitVfHr5NzXYXuWRy5ERd3E-TVZ9fx221egdsL6Lm8Fz1oeOit-eLlB6tSmaSk6CPEu_bAt2G0dUX-uFS4By_gSX_lYZy05FAWmk-W3Rx7oMtrwxoe9Pev1oQ8_qrRopdUTq3WlC8qyHMaTE-_larMbvVawbCE7DXfTrg8nuiL9mKSgnqzMnbq-YWXTNGi8Bt6T1K8GVPXUGclvieFP9b2KcY5--pwXfp29ClbQDq8zaxTeSdP77H24jKtX_-tIc55d5XRob7rmbJIz7m_HBWMao604qxDt9yS_Z__LCPIvWj8pqd9rLMOJFEsK6u9Fl10uPzeahhhI2rZu3r98gejxVj7DjKEEAcVCssR9Oe-a-Wv6mEx9Iba-Dwb_GVSJQfbvDk9HqhJM8s3FjThg9WwnrVGFbuCyo4m4xqDtpkHtD4TN_HoPH2Eb3l9wPh-_8CxkY4bjqAXkGX4RL7mYWYCQWiwXXAQF7m_NV25J_XL_Wl9_gV9fun5mVz8zO_IBsPzhH1l_qmzIE4LzurxOEcdTwBA49LJcKlf-w8jlZr2JraWiBBYTC0dTW7-o0UX_zazW1TBsyTQ2BWPGUAz3RolvjGAxzDvNv1PsnGZYf_bt27d_Agdyo3I.ZvXc6g.WpR0PQjTMWhM_qBkpa9CVzq95M8
+Cookie: session=.eJytVlnPqzgS_SutSN1PnVz25ZOuZsgGJIEkhLC9ILBZzB6WLPTc_z4m3-2-_dCzSSOFYLtMnVOuclX9NguGPq1b1EXw2kXt7OO3GQgqP4Alqvyur9to9tG3Q_Trn5aH98bP1agMUDH7mEXwEbRwUSIIi6ivq65Effr3ZJIuQF3Ofp3FqO36KiixwpkZQfjCawj6YGjbqAIvH0ZxMBT97KMaiuItaqME1dVfCD4JkH-M_ckIAut9v__BsQIViiwQRBYSYsATYUAScRRPgJ3_ZuzfoxbFKIKzjzgouugtQRUoBhhB35LMH6ifdmJxNzQY6s_Gd0P73SDtd7vnl8nw2Td8Xl0b-32dRxWWg1gAbMCIPA0ZhuBogqZCigAEB4OQJ7kwZCkYEhyHKQ7f3RAAEHXdHxqi1y4NZYCOaJcHjooOq10Rlto0X2rZlTIIXVfRAwWOPqpZjQLFIICicYeXmHuO24cVTINRfeiZV3iZVx_lggkRS4IXm0LHqLUVm2FKd7UiFgtn617dFzzsYq1Rzr26GJ8usLan_Fjvjp4S3kxnpUgyw87l89Vlo-3TlTJ_v2eq_c7Ir-y-7kb_DC-I2SRjv_GsRD8YZbvpu7AW2uU6NIqIu7KR4kXD7gga1iSSw3wv1kbp1-d-wzV3F6zmNrKeCsk37E0E-gPUQxhc-tS3SjkOLTeu9sXa4q5ZtexW_mEfS-5yL9-qOIOsHDUKhGDeHQebvMQrD5zkKyqsjFyVjO3UaJNzohNJqIwAyJJUURgakRfZv_hldqiGuRdJr3oEFSuU0s1FibD3hbBORZvZjfd4GOLVSVyGYyfuHF7zGN3oLdZkD-yqY5e677rg8MwZP7mE5dgHQx1LOcvMx_MT1OeKJ-nt3k6s8C4sYihlxHlT6KlkeU8arNC51iQcBtGzQW3U-QEOQZKnBJ4UaI77sY5wUAgcQxDvW_AXUXK5jiqpI7VTK4MFK5VT88axVnhe9o03zSvrHjne1cgZJsx2d09JSCvfHrRtShqvnbjAyobA1tuw3PbeBX9QWjmkti9vxfaBbeShbBEhxY6hXRDBWzGbhvZ1Ai88BaagPA9Ylnvys4CyOACKbKCcSh5FpoH9GFxK7KeQBXKRQcV6fWKkBFSW4xEJdxyaFSi3lOsYKUCf4ek6Xgrl7eswXkdvrZdadia0Ncx1ExtLuYwuuy-d0lNtDRh9NJC3dokTrYn6OnnsKlUEMii9NVlDxXiA13U8X64vA-Gn1HN8Hf58FQotx1jllnCd3bgzd7Jnnwcgs9XEGTrLHPMqvK2YwukwM_WBufSaKeFne8X4nDaqnL6-DtqoMfbkiNLqXbvopuvp2QaN9eaHkmw82eg8x7iHld4HGP8sw_e-Q6nfw8uP7xzaK0BZlIFt5WrWlK79HL3L_-HKY3tcZ9KJeRHwFjnG08xJ50ylZuCkT3PEJ1VsOStPnbO9LS55w13LfEpBjeuc0THb0FqWUNq4YfUsmfgyU8BpJngd1y6ljzl1XGE_0xaaMDAWEayXgp5dGa1UWd3WmKNp5dq6SPVxiVxz8_BKq3zHBlW8ecEirUy7aU277o-bdONO53BVRzfzYpOAO6tqKLcydlrZTbwGHJfZO54yiIwcHi-K4WpKTXvYnx4FV1pmyVOqK1VFE2nHUXtOl-ICzTd519W2RUXkvXkMSJLofhWkdXTv6tNecCVkPG8X59CsvdMmlKvhUt5O7fa0fOmdq8DTQRt3FP-6w_acZE7S8HwzJKRGMZleWKvLvHavr7ZLU_VxN24A5_4BBu7QydSZXy2TU0EmIfNMLdY1IuuiNHWqMawEmqcSn7a-cpwvg7CshgHFxT60IYVW0m0jP4bLGvDpeLmC-W3r1KqrFkldtKaYWanVgKbjHXNfKQdWMh8rKSmgy0XQJtf9PeoFUeK0ZfUMVXtvnqBc7SFhioW-dLqWOfm0aD3sQLzKD8xTTG1PbY-7ka-OzjLMeOtCL4W56C0FV3N3hHhEp3lLJDh_daBupsqI_ysEf2raOkZF9NNnv_Dr7J2w_P713rOMghYXvc_ah6q4fte_ARfnWSJnr_6ma_YqvaDn7chTxnm0FFsKot0O3-_Z_9KC_IvSj1PqZ47lOF7kBJxQf0-6HE1-LnQdBkj7vuk-vnyB0X1ePYKcwgU7irlUQM9qMXSLd_cxQX3BWN8bg_9MqkIg_3ebpy11BSY5H25lXekdYuTjoE-SJcVusbhBoB-mRu0Pht0iaYN70Aftm87n8AtLQzqmcP_BQ5Zi-VhgYooHAcELPBNCjvlb95URiF_ar03yC_z61vUzLf1MbfEPwOqHfXj-qbLDowgumurtcTQ57O4kWpZr2VxQ1iE-5yUdcv5RVq3xHvYqlU8bh_C_6dWGBgY97sYmZ8wogmLmJDEnSZPgP2jqg2EXNC14s2_fvv0TX22jag.ZwjUoA.pitPRgpTPJyCaDMIr0TPpBG_lIc
 Upgrade-Insecure-Requests: 1
 Sec-Fetch-Dest: document
 Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: none
+Sec-Fetch-Site: same-origin
 Sec-Fetch-User: ?1
 Sec-Gpc: 1
 Priority: u=0, i
@@ -75,29 +33,36 @@ Traceback: Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product.py", line 113, in products
-    model = Model_View_Store_Product(form_filters)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product.py", line 101, in __init__
-    self.category_list_filters, errors_filters = datastore_store.get_many_product(
-                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_store_base.py", line 109, in get_many_product
-    category_list.add_product(new_product)
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 337, in add_product
-    self.categories[index_category].add_product(product)
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 100, in add_product
-    raise ValueError(f"{av.error_msg_str(product, 'product', _m, Product)}\nProduct already in category.")
-ValueError: Invalid Category.add_product <class 'business_objects.store.product.Product'> argument product. Type = <class 'business_objects.store.product.Product'>. Value = Product
-            id_product: 1
-            id_category: 1
-            name: Braille Keyboard Translator
-            display_order: 1
-            can_view: False
-            can_edit: False
-            can_admin: False
-            has_variations: True
-            permutations: []
-            variation trees: []
-            
-Product already in category.
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\stock_item.py", line 40, in stock_items
+    model = Model_View_Store_Stock_Item(form_filters)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_stock_item.py", line 89, in __init__
+    self.form_filters.import_values(filters_stock_item)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Filters_Stock_Item' object has no attribute 'import_values'
 
+Exception on /store/stock_items [GET]
+Traceback (most recent call last):
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 178, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\stock_item.py", line 40, in stock_items
+    model = Model_View_Store_Stock_Item(form_filters)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_stock_item.py", line 89, in __init__
+    if product.id_category != self.form_filters.id_category.data and self.form_filters.id_category.data != '':
+       ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'id_category'
+Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.

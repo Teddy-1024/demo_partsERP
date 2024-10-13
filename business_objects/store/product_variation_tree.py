@@ -82,6 +82,7 @@ class Product_Variation_Tree():
     @classmethod
     def from_json_str(cls, json_str):
         variations = []
+        if json_str is None or json_str == '': return None
         for json_variation in json_str.split(','):
             parts = json_variation.split(':')
             if len(parts) != 2: continue

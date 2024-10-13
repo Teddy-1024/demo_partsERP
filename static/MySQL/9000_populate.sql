@@ -86,6 +86,14 @@ VALUES
 ;
 */
 
+# Addresses
+INSERT INTO Shop_Address (
+	id_region, postcode, address_line_1, address_line_2, city, county
+)
+VALUES ( 
+	1, 'CV22 6DN', '53 Alfred Green Close', '', 'Rugby', 'Warwickshire'
+);
+
 # Plants
 INSERT INTO Shop_Plant (
 	code, name, id_address, id_user_manager
@@ -552,7 +560,10 @@ VALUES
     (4, 'SALES_AND_PURCHASING', 'Sales and Purchasing'),
     (5, 'MANUFACTURING', 'Manufacturing')
 ;
-
+/*
+select * from Shop_Permission
+select * from Shop_Role_Permission_Link
+*/
 # Permissions
 INSERT INTO Shop_Permission (
 	display_order, code, name, id_permission_group, id_access_level_required
@@ -627,8 +638,8 @@ VALUES
 	(1, 1)
 ;
 
-# Addresses
-INSERT INTO Shop_Address (
+# User Addresses
+INSERT INTO Shop_User_Address (
 	id_user, id_region, name_full, phone_number, postcode, address_line_1, address_line_2, city, county
 )
 SELECT U.id_user, 1, CONCAT(U.firstname, ' ', U.surname), '07375 571430', 'CV22 6DN', '53 Alfred Green Close', '', 'Rugby', 'Warwickshire'
@@ -697,7 +708,7 @@ INSERT INTO Shop_Supplier (
 	, id_currency
 )
 VALUES
-	('Malt Kiln Farm Shop', NULL, NULL, 2, '01788 832640', NULL, 'farmshop@maltkilnfarmshop.co.uk', 'https://www.maltkilnfarmshop.co.uk/', 1)
+	('Malt Kiln Farm Shop', NULL, NULL, 1, '01788 832640', NULL, 'farmshop@maltkilnfarmshop.co.uk', 'https://www.maltkilnfarmshop.co.uk/', 1)
 ;
 
 /*

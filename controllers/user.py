@@ -170,6 +170,9 @@ def logout_callback():
 def user():
     try:
         model = Model_View_User(current_app, db)
+        if not model.is_user_logged_in:
+            # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_User.KEY_CALLBACK: Model_View_User.HASH_PAGE_USER_ACCOUNT })))
+            return redirect(url_for('routes_core.home'))
         html_body = render_template('pages/user/_user.html', model = model)
     except Exception as e:
         return str(e)
