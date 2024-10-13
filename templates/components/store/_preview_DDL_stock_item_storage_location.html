@@ -1,0 +1,13 @@
+
+{% with _is_blank_row = (is_blank_row or storage_location is not defined or storage_location is none or is_blank_row is not defined) %}
+    {% if not _is_blank_row %}
+        {% set name = storage_location.get_full_name() %}
+        <div 
+            class="{{ model.FLAG_STORAGE_LOCATION }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ name }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ name }}"
+        >{{ name }}</div>
+    {% else %}
+        <div class="{{ model.FLAG_STORAGE_LOCATION }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></div>
+    {% endif %}
+{% endwith %}

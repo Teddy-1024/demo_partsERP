@@ -23,7 +23,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class Filters_Unit_Measurement(Form_Base):
-    active = BooleanField("Active only?")
+    active = BooleanField("Active only?", default = True)
     @classmethod
     def from_filters(cls, filters):
         form = Filters_Unit_Measurement()

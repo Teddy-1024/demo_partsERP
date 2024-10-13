@@ -22,7 +22,7 @@ class Delivery_Option():
     delay_max: int
     quantity_min: float
     quantity_max: float
-    regions: list # [Enum_Delivery_Region]
+    regions: list # [Enum_Region]
     cost: float
 
     def __new__(cls, name, delay_min, delay_max, quantity_min, quantity_max, regions, cost):
@@ -33,7 +33,7 @@ class Delivery_Option():
         av.val_int(delay_max, 'delay_max', _m, 0, v_arg_type = v_arg_type)
         av.val_float(quantity_min, 'quantity_min', _m, 0, v_arg_type = v_arg_type)
         av.val_float(quantity_max, 'quantity_max', _m, 0, v_arg_type = v_arg_type)
-        av.val_list_instances(regions, 'regions', _m, Enum_Delivery_Region, v_arg_type = v_arg_type)
+        av.val_list_instances(regions, 'regions', _m, Enum_Region, v_arg_type = v_arg_type)
         av.val_float(cost, 'cost', _m, 0, v_arg_type = v_arg_type)
         return super(Delivery_Option, cls).__new__(cls)
     

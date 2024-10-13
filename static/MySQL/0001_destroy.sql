@@ -41,6 +41,8 @@ DROP TABLE IF EXISTS tmp_Shop_Customer_Sale_Order;
 
 # Delete old tables
 DROP TABLE IF EXISTS Split_Temp;
+DROP TABLE IF EXISTS Split_Key_Value_Pair_Csv_Temp;
+DROP TABLE IF EXISTS Split_Key_Value_Pair_Temp;
 
 DROP TABLE IF EXISTS Shop_User_Eval_Temp;
 DROP TABLE IF EXISTS Shop_Calc_User_Temp;
@@ -87,8 +89,8 @@ DROP TABLE IF EXISTS Shop_User_Order_Status;
 DROP TABLE IF EXISTS Shop_User_Basket_Audit;
 DROP TABLE IF EXISTS Shop_User_Basket;
 
-DROP TABLE IF EXISTS Shop_Address_Audit;
-DROP TABLE IF EXISTS Shop_Address;
+DROP TABLE IF EXISTS Shop_User_Address_Audit;
+DROP TABLE IF EXISTS Shop_User_Address;
 
 DROP TABLE IF EXISTS Shop_User_Role_Link_Audit;
 DROP TABLE IF EXISTS Shop_User_Role_Link;
@@ -190,6 +192,9 @@ DROP TABLE IF EXISTS Shop_Plant_Temp;
 DROP TABLE IF EXISTS Shop_Plant_Audit;
 DROP TABLE IF EXISTS Shop_Plant;
 
+DROP TABLE IF EXISTS Shop_Address_Audit;
+DROP TABLE IF EXISTS Shop_Address;
+
 DROP TABLE IF EXISTS Shop_Delivery_Region_Branch_Audit;
 DROP TABLE IF EXISTS Shop_Delivery_Region_Branch;
 DROP TABLE IF EXISTS Shop_Region_Branch_Temp;
@@ -232,6 +237,9 @@ DROP TABLE IF EXISTS Shop_Product_Change_Set;
 -- Procedures
 DROP PROCEDURE IF EXISTS p_split;
 DROP PROCEDURE IF EXISTS p_clear_split_temp;
+DROP PROCEDURE IF EXISTS p_split_key_value_pair_csv;
+DROP PROCEDURE IF EXISTS p_clear_split_key_value_csv_temp;
+DROP PROCEDURE IF EXISTS p_clear_split_key_value_pair_csv_temp;
 
 DROP PROCEDURE IF EXISTS p_debug_timing_reporting;
 DROP PROCEDURE IF EXISTS p_validate_guid;
@@ -248,12 +256,15 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_access_level;
 DROP PROCEDURE IF EXISTS p_shop_get_many_unit_measurement;
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_region;
+DROP PROCEDURE IF EXISTS p_shop_get_many_plant;
+DROP PROCEDURE IF EXISTS p_shop_get_many_storage_location;
 DROP PROCEDURE IF EXISTS p_shop_get_many_currency;
 
 DROP PROCEDURE IF EXISTS p_shop_save_category;
 DROP PROCEDURE IF EXISTS p_shop_save_product_category;
 DROP PROCEDURE IF EXISTS p_shop_save_product_category_test;
 DROP PROCEDURE IF EXISTS p_shop_save_product;
+DROP PROCEDURE IF EXISTS p_shop_save_product_test;
 DROP PROCEDURE IF EXISTS p_shop_calc_product_permutation;
 DROP PROCEDURE IF EXISTS p_shop_clear_calc_product_permutation;
 DROP PROCEDURE IF EXISTS p_shop_get_many_product;
@@ -261,6 +272,9 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_stripe_product_new;
 DROP PROCEDURE IF EXISTS p_shop_save_permutation;
 DROP PROCEDURE IF EXISTS p_shop_save_product_permutation;
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
+DROP FUNCTION IF EXISTS fn_shop_get_id_product_permutation_from_variation_csv_list;
+DROP PROCEDURE IF EXISTS p_shop_save_stock_item;
+DROP PROCEDURE IF EXISTS p_shop_save_stock_item_test;
 DROP PROCEDURE IF EXISTS p_shop_get_many_stock_item;
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_price_and_discount_and_delivery_option;
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_price_and_discount_and_delivery_option;

@@ -39,14 +39,6 @@ BEGIN
 	SELECT NEW.id_address, 'id_region', OLD.id_region, NEW.id_region, NEW.id_change_set
 		WHERE NOT OLD.id_region <=> NEW.id_region
     UNION
-    # Changed name_full
-	SELECT NEW.id_address, 'name_full', OLD.name_full, NEW.name_full, NEW.id_change_set
-		WHERE NOT OLD.name_full <=> NEW.name_full
-	UNION
-    # Changed phone_number
-	SELECT NEW.id_address, 'phone_number', OLD.phone_number, NEW.phone_number, NEW.id_change_set
-		WHERE NOT OLD.phone_number <=> NEW.phone_number
-    UNION
     # Changed postcode
 	SELECT NEW.id_address, 'postcode', OLD.postcode, NEW.postcode, NEW.id_change_set
 		WHERE NOT OLD.postcode <=> NEW.postcode

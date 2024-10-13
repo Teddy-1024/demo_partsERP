@@ -139,6 +139,76 @@ class DataStore_User(DataStore_Base):
             'a_id_user': user.id_user
             , 'a_id_user_auth0': user.id_user_auth0
             , **user_filters.to_json()
+            , 'a_debug': 0
+
+        }
+        # argument_dict_list['a_guid'] = guid
+        result = self.db_procedure_execute('p_get_many_user', argument_dict_list)
+        """
+        query = text(f"SELECT * FROM Shop_Calc_User_Temp UE_T WHERE UE_T.guid = '{guid}'")
+        result = self.db.session.execute(query)
+        """
+        cursor = result.cursor
+        result_set = cursor.fetchall()
+        print(f'raw users: {result_set}')
+        print(f'type result set: {str(type(result_set))}')
+        print(f'len result set: {len(result_set)}') 
+        """
+        user_permission_evals = []
+        for row in result_set:
+            user_permission_eval = User_Permission_Evaluation.from_DB_user_eval(row)
+            user_permission_evals.append(user_permission_eval)
+        print(f'user_permission_evals: {user_permission_evals}')
+        """
+        users = []
+        if len(result_set) > 0:
+            for row in result_set:
+                print(f'row: {row}')
+                user = User.from_DB_user(row)
+                users.append(user)
+                print(f'user {str(type(user))}: {user}')
+        print(f'type users: {str(type(users))}\n type user 0: {str(type(None if len(users) == 0 else users[0]))}')
+        # error_list, cursor = self.get_error_list_from_cursor(cursor)
+        errors = []
+        cursor.nextset()
+        result_set_e = cursor.fetchall()
+        print(f'raw errors: {result_set_e}')
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
+            for error in errors:
+                print(f"Error [{error.code}]: {error.msg}")
+
+        DataStore_User.db_cursor_clear(cursor)
+
+        return users, errors
+
+    def get_many_user(self, user_filters, user=None):
+        _m = 'DataStore_User.get_many_user'
+        print(_m)
+        # av.val_str(user_filters, 'user_filters', _m)
+        # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
+        av.val_instance(user_filters, 'user_filters', _m, User_Filters)
+
+        guid = Helper_DB_MySQL.create_guid()
+        # now = datetime.now()
+        # user = self.get_user_session()
+        
+        """
+        argument_dict_list = {
+            'a_id_user': id_user,
+            'a_comment': comment,
+            'a_guid': guid
+        }
+        """
+        if user is None:
+            user = self.get_user_session()
+        argument_dict_list = {
+            # 'a_guid': guid
+            'a_id_user': user.id_user
+            , 'a_id_user_auth0': user.id_user_auth0
+            , **user_filters.to_json()
+            , 'a_debug': 0
+
         }
         # argument_dict_list['a_guid'] = guid
         result = self.db_procedure_execute('p_get_many_user', argument_dict_list)

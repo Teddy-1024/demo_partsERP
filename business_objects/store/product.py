@@ -175,7 +175,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
                 if self.variation_trees[index_tree].is_equal(variation_tree):
                     found_variation_tree_match = True
                     break
-            if not found_variation_tree_match:
+            if not found_variation_tree_match and variation_tree is not None:
                 self.variation_trees.append(variation_tree)
     def from_DB_Stripe_product(query_row):
         permutation = Product_Permutation.from_DB_Stripe_product(query_row)
@@ -374,6 +374,13 @@ class Product(SQLAlchemy_ABC, Store_Base):
             text_input += tree.get_text_input_types()
         return text_input
     """
+    def get_csv_ids_permutation(self):
+        csv = ''
+        for permutation in self.permutations:
+            if csv != '':
+                csv += ','
+            csv += str(permutation.id_permutation)
+        return csv
 
 
 class Parameters_Product(Get_Many_Parameters_Base):
@@ -482,7 +489,7 @@ class Parameters_Product(Get_Many_Parameters_Base):
     @staticmethod
     def from_form_filters_product_permutation(form):
         # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product_Permutation)
+        # av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product_Permutation)
         has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
         has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
         get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form")
@@ -491,11 +498,11 @@ class Parameters_Product(Get_Many_Parameters_Base):
             get_all_product_category = not has_category_filter,
             get_inactive_product_category = False,
             # get_first_product_category_only = False,
-            ids_product_category = form.id_category.data,
+            ids_product_category = form.id_category.data if form.id_category.data is not None else '',
             get_all_product = not has_product_filter,
             get_inactive_product = False,
             # get_first_product_only = False,
-            ids_product = form.id_product.data,
+            ids_product = form.id_product.data if form.id_product.data is not None else '',
             get_all_permutation = not get_permutations_stock_below_min,
             get_inactive_permutation = False,
             # get_first_permutation_only = False,
@@ -601,6 +608,9 @@ class Parameters_Product(Get_Many_Parameters_Base):
             ids_image = '',
             get_products_quantity_stock_below_min = False
         )
+    @classmethod
+    def from_filters_stock_item(cls, filters_stock_item):
+        return cls.from_form_filters_product_permutation(filters_stock_item)
     
 """
 class Parameters_Product(Get_Many_Parameters_Base):

@@ -122,7 +122,7 @@ class Form_Supplier(FlaskForm):
     fax = StringField('Fax number')
     website = StringField('Website')
     id_currency = SelectField('Currency ID')
-    is_active = BooleanField('Active')
+    is_active = BooleanField('Active', default = True)
 
 # class Form_Supplier_Purchase_Order(FlaskForm):
 
@@ -130,5 +130,5 @@ class Form_Supplier(FlaskForm):
 
 # User 
 class Form_Filters_User(FlaskForm):
-    active = BooleanField('Active only?')
+    active = BooleanField('Active only?', default = True)
     id_user = SelectField('User ID', validators=[Optional()], choices=[])

@@ -78,6 +78,8 @@ BEGIN
 		COMMIT;
     END IF;
     
+    DROP TABLE IF EXISTS tmp_Split_Split;
+    
     IF a_debug = 1 THEN
 		CALL p_debug_timing_reporting ( v_time_start );
     END IF;

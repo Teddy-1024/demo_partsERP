@@ -644,6 +644,17 @@ tr {
 }
 */
 
+table textarea {
+    width: 95% !important;
+}
+
+table select {
+    width: 100% !important;
+}
+
+table input {
+    width: 90% !important;
+}
 
 
 button.collapsed {

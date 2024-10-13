@@ -464,6 +464,7 @@ END //
 DELIMITER ;;
 
 
+/*
 
 CALL partsltd_prod.p_shop_get_many_product (
 	1 #'auth0|6582b95c895d09a70ba10fef', # a_id_user
@@ -483,7 +484,6 @@ CALL partsltd_prod.p_shop_get_many_product (
     , 0 # a_debug
 );
 
-/*
 select * FROM partsltd_prod.Shop_Calc_User_Temp;
 
 select * FROM partsltd_prod.Shop_Product_Category;

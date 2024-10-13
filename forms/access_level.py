@@ -23,7 +23,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class Filters_Access_Level(Form_Base):
-    active = BooleanField("Active only?")
+    active = BooleanField("Active only?", default = True)
     def __repr__(self):
         return f'{self.__class__.__name__}(active={self.active.data})'
     @classmethod

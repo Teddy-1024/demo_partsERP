@@ -20,7 +20,7 @@ from business_objects.store.product_category import Product_Category_Container, 
 from business_objects.store.currency import Currency
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
-from business_objects.store.delivery_region import Delivery_Region
+from business_objects.store.delivery_region import Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
 from business_objects.store.product import Product, Product_Permutation, Product_Price, Parameters_Product # Permutation_Variation_Link
@@ -145,7 +145,7 @@ class DataStore_Base(BaseModel):
         result_set_1 = cursor.fetchall()
         regions = []
         for row in result_set_1:
-            region = Delivery_Region.make_from_DB_region(row)
+            region = Region.make_from_DB_region(row)
             regions.append(region)
         print(f'regions: {regions}')
         DataStore_Base.db_cursor_clear(cursor)

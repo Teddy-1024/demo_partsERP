@@ -49,6 +49,9 @@
     <script>
         // var attrFor = "{{ model.ATTR_FOR }}";
         var attrIdAccessLevel = "{{ model.ATTR_ID_ACCESS_LEVEL }}";
+        var attrIdAddress = "{{ model.ATTR_ID_ADDRESS }}";
+        var attrIdCurrency = "{{ model.ATTR_ID_CURRENCY }}";
+        var attrIdRegion = "{{ model.ATTR_ID_REGION }}";
         var attrTextCollapsed = "{{ model.ATTR_TEXT_COLLAPSED }}";
         var attrTextExpanded = "{{ model.ATTR_TEXT_EXPANDED }}";
         var attrValueCurrent = "{{ model.ATTR_VALUE_CURRENT }}";
@@ -60,6 +63,7 @@
         var flagAdd = "{{ model.FLAG_ADD }}";
         var flagCancel = "{{ model.FLAG_CANCEL }}";
         var flagCard = "{{ model.FLAG_CARD }}";
+        var flagCloseTemporaryElement = "{{ model.FLAG_CLOSE_TEMPORARY_ELEMENT }}";
         var flagCode = "{{ model.FLAG_CODE }}";
         var flagCollapsed = "{{ model.FLAG_COLLAPSED }}";
         var flagCollapsible = "{{ model.FLAG_COLLAPSIBLE }}";
@@ -72,19 +76,21 @@
         var flagDelete = "{{ model.FLAG_DELETE }}";
         var flagDescription = "{{ model.FLAG_DESCRIPTION }}";
         var flagDetail = "{{ model.FLAG_DETAIL }}";
+        var flagDialog = "{{ model.FLAG_DIALOG }}";
         var flagDirty = "{{ model.FLAG_DIRTY }}";
         var flagDisplayOrder = "{{ model.FLAG_DISPLAY_ORDER }}";
         var flagDragging = "dragging";
         var flagDragOver = "drag-over";
+        var flagError = "{{ model.FLAG_ERROR }}";
         var flagExpanded = "{{ model.FLAG_EXPANDED }}";
         var flagFailure = "{{ model.FLAG_FAILURE }}";
         var flagFilter = "{{ model.FLAG_FILTER }}";
         var flagFormFilters = "{{ model.FLAG_FORM_FILTERS }}";
-        var flagAccessLevelRequired = "{{ model.FLAG_ACCESS_LEVEL_REQUIRED }}";
         var flagImageLogo = "{{ model.FLAG_IMAGE_LOGO }}";
         var flagInitialised = "{{ model.FLAG_INITIALISED }}";
         // var flagKeyPrimary = "{{ model.FLAG_KEY_PRIMARY }}";
         var flagMessage = "{{ model.FLAG_MESSAGE }}";
+        var flagModal = "{{ model.FLAG_MODAL }}";
         var flagMove = "move";
         var flagName = "{{ model.FLAG_NAME }}";
         var flagNameAttrOptionText = "{{ model.FLAG_NAME_ATTR_OPTION_TEXT}}";
@@ -108,6 +114,7 @@
         var flagNavUserLogout = "{{ model.FLAG_NAV_USER_LOGOUT }}";
         var flagOverlay = "{{ model.FLAG_OVERLAY }}";
         var flagOverlayClose = "{{ model.FLAG_OVERLAY_CLOSE }}";
+        var flagPageBody = "{{ model.FLAG_PAGE_BODY }}";
         var flagRow = "{{ model.FLAG_ROW }}";
         var flagRowNew = "{{ model.FLAG_ROW_NEW }}";
         var flagRows = "{{ model.FLAG_ROWS }}";
@@ -118,6 +125,7 @@
         var flagSubmit = "{{ model.FLAG_SUBMIT }}";
         var flagSubmitted = "{{ model.FLAG_SUBMITTED }}";
         var flagSuccess = "{{ model.FLAG_SUCCESS }}";
+        var flagTemporaryElement = "{{ model.FLAG_TEMPORARY_ELEMENT }}";
         var hashApplyFiltersStoreProductPermutation = "{{ model.HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION }}";
         var hashPageAccessibilityReport = "{{ model.HASH_PAGE_ACCESSIBILITY_REPORT }}";
         var hashPageAccessibilityStatement = "{{ model.HASH_PAGE_ACCESSIBILITY_STATEMENT }}";
@@ -126,13 +134,14 @@
         var hashPageDataRetentionSchedule = "{{ model.HASH_PAGE_DATA_RETENTION_SCHEDULE }}";
         // var hashPageCurrent = "{{ model.hash_page_current }}";
         var hashPageErrorNoPermission = "{{ model.HASH_PAGE_ERROR_NO_PERMISSION }}";
-        var hashPageAdminHome = "{{ model.HASH_PAGE_ADMIN_HOME }}";
         var hashPageHome = "{{ model.HASH_PAGE_HOME }}";
         var hashPageLicense = "{{ model.HASH_PAGE_LICENSE }}";
         var hashPagePrivacyPolicy = "{{ model.HASH_PAGE_PRIVACY_POLICY }}";
         var hashPageServices = "{{ model.HASH_PAGE_SERVICES }}";
-        var hashPageStoreAdminStripePrices = "{{ model.HASH_PAGE_STORE_ADMIN_STRIPE_PRICES }}";
-        var hashPageStoreAdminStripeProducts = "{{ model.HASH_PAGE_STORE_ADMIN_STRIPE_PRODUCTS }}";
+        {#
+            var hashPageStoreAdminStripePrices = "{{ model.HASH_PAGE_STORE_ADMIN_STRIPE_PRICES }}";
+            var hashPageStoreAdminStripeProducts = "{{ model.HASH_PAGE_STORE_ADMIN_STRIPE_PRODUCTS }}";
+        #}
         var hashPageStoreBasket = "{{ model.HASH_PAGE_STORE_BASKET }}";
         var hashPageStoreHome = "{{ model.HASH_PAGE_STORE_HOME }}";
         var hashPageStoreProductCategories = "{{ model.HASH_PAGE_STORE_PRODUCT_CATEGORIES }}";
@@ -141,6 +150,7 @@
         var hashPageStoreProductPrices = "{{ model.HASH_PAGE_STORE_PRODUCT_PRICES }}";
         var hashPageStoreProductVariations = "{{ model.HASH_PAGE_STORE_PRODUCT_VARIATIONS }}";
         var hashPageStoreStockItems = "{{ model.HASH_PAGE_STORE_STOCK_ITEMS }}";
+        var hashPageSuppliers = "{{ model.HASH_PAGE_SUPPLIERS }}";
         var hashPageUserAccount = "{{ model.HASH_PAGE_USER_ACCOUNT }}";
         var hashPageUserAdmin = "{{ model.HASH_PAGE_USER_ADMIN }}";
         var hashPageUserLogin = "{{ model.HASH_PAGE_USER_LOGIN }}";
@@ -171,10 +181,14 @@
         var idButtonSave = "#{{ model.ID_BUTTON_SAVE }}";
         */
         var idCSRFToken = "#{{ model.ID_CSRF_TOKEN }}";
+        {#
         var idFormCurrency = "#{{ model.ID_FORM_CURRENCY }}";
         var idFormDeliveryRegion = "#{{ model.ID_FORM_DELIVERY_REGION }}";
+        #}
         var idFormFilters = "#{{ model.ID_FORM_FILTERS }}";
-        var idFormIsIncludedVAT = "#{{ model.ID_FORM_IS_INCLUDED_VAT }}";
+        {#
+            var idFormIsIncludedVAT = "#{{ model.ID_FORM_IS_INCLUDED_VAT }}";
+        #}
         var idLabelError = "#{{ model.ID_LABEL_ERROR }}";
         var idOverlayConfirm = "#{{ model.ID_OVERLAY_CONFIRM }}";
         var idOverlayError = "#{{ model.ID_OVERLAY_ERROR }}";
@@ -183,16 +197,12 @@
         var idTableMain = "#{{ model.ID_TABLE_MAIN }}";
         var idTextareaConfirm = "#{{ model.ID_TEXTAREA_CONFIRM }}";
         var isUserLoggedIn = "{{ model.output_bool(model.IS_USER_LOGGED_IN) }}";
-        var keyBasket = "{{ model.KEY_BASKET }}";
+        {# var keyBasket = "{{ model.KEY_BASKET }}"; #}
         var keyCallback = "{{ model.KEY_CALLBACK }}";
-        var keyCSRFToken = "{{ model.ID_CSRF_TOKEN }}";
+        {# var keyCSRFToken = "{{ model.ID_CSRF_TOKEN }}"; #}
         var keyData = "{{ model.KEY_DATA }}";
         var keyForm = "{{ model.KEY_FORM }}";
-        var keyPrice = "{{ model.KEY_PRICE }}";
-        var keyQuantity = "{{ model.KEY_QUANTITY }}";
         var keyShared = "shared";
-        var nameAttrOptionText = "{{ model.NAME_ATTR_OPTION_TEXT }}";
-        var nameAttrOptionValue = "{{ model.NAME_ATTR_OPTION_VALUE }}";
         var nameCSRFToken = "{{ model.NAME_CSRF_TOKEN }}";
         var _pathHost = "{{ model.get_url_host() }}";
         var _rowBlank = null;

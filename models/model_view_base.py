@@ -21,7 +21,7 @@ import lib.argument_validation as av
 from forms.forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
 from datastores.datastore_base import DataStore_Base
 from datastores.datastore_user import DataStore_User
-from business_objects.store.store_base import Store_Base
+from business_objects.base import Base
 from business_objects.store.product_category import Product_Category
 from forms.access_level import Filters_Access_Level
 from forms.unit_measurement import Filters_Unit_Measurement
@@ -37,20 +37,25 @@ from typing import ClassVar
 class Model_View_Base(BaseModel, ABC):
     # Global constants
     # ATTR_FOR: ClassVar[str] = 'for'
-    ATTR_ID_ACCESS_LEVEL: ClassVar[str] = Store_Base.ATTR_ID_ACCESS_LEVEL
+    ATTR_ID_ACCESS_LEVEL: ClassVar[str] = Base.ATTR_ID_ACCESS_LEVEL
+    ATTR_ID_ADDRESS: ClassVar[str] = Base.ATTR_ID_ADDRESS
+    ATTR_ID_CURRENCY: ClassVar[str] = Base.ATTR_ID_CURRENCY
+    ATTR_ID_REGION: ClassVar[str] = Base.ATTR_ID_REGION
     ATTR_TEXT_COLLAPSED: ClassVar[str] = 'textCollapsed'
     ATTR_TEXT_EXPANDED: ClassVar[str] = 'textExpanded'
     ATTR_VALUE_CURRENT: ClassVar[str] = 'current-value'
     ATTR_VALUE_PREVIOUS: ClassVar[str] = 'previous-value'
     FLAG_ACCESS_LEVEL: ClassVar[str] = 'access_level'
     FLAG_ACCESS_LEVEL_REQUIRED: ClassVar[str] = Product_Category.FLAG_ACCESS_LEVEL_REQUIRED
-    FLAG_ACTIVE: ClassVar[str] = Store_Base.FLAG_ACTIVE
+    FLAG_ACTIVE: ClassVar[str] = Base.FLAG_ACTIVE
     FLAG_ADD: ClassVar[str] = 'add'
+    FLAG_BOOL_FALSE: ClassVar[str] = 'false'
+    FLAG_BOOL_TRUE: ClassVar[str] = 'true'
     FLAG_CANCEL: ClassVar[str] = 'button-cancel'
     # FLAG_CONTACT_US: ClassVar[str] = 'button-contact'
     FLAG_CLOSE_TEMPORARY_ELEMENT: ClassVar[str] = 'button-temporary-element-close'
     FLAG_CARD: ClassVar[str] = 'card'
-    FLAG_CODE: ClassVar[str] = Store_Base.FLAG_CODE
+    FLAG_CODE: ClassVar[str] = Base.FLAG_CODE
     FLAG_COLLAPSED: ClassVar[str] = 'collapsed'
     FLAG_COLLAPSIBLE: ClassVar[str] = 'collapsible'
     FLAG_COLUMN: ClassVar[str] = 'column'
@@ -59,11 +64,11 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_CONTAINER_INPUT: ClassVar[str] = FLAG_CONTAINER + '-input'
     FLAG_CURRENCY: ClassVar[str] = 'currency'
     FLAG_DELETE: ClassVar[str] = 'delete'
-    FLAG_DESCRIPTION: ClassVar[str] = Store_Base.FLAG_DESCRIPTION
+    FLAG_DESCRIPTION: ClassVar[str] = Base.FLAG_DESCRIPTION
     FLAG_DETAIL: ClassVar[str] = 'detail'
     FLAG_DIALOG: ClassVar[str] = 'dialog' # try <dialog> element
     FLAG_DIRTY: ClassVar[str] = 'dirty'
-    FLAG_DISPLAY_ORDER: ClassVar[str] = Store_Base.FLAG_DISPLAY_ORDER
+    FLAG_DISPLAY_ORDER: ClassVar[str] = Base.FLAG_DISPLAY_ORDER
     FLAG_ERROR: ClassVar[str] = 'error'
     FLAG_EXPANDED: ClassVar[str] = 'expanded'
     FLAG_FAILURE: ClassVar[str] = 'failure'
@@ -75,9 +80,9 @@ class Model_View_Base(BaseModel, ABC):
     # FLAG_KEY_PRIMARY: ClassVar[str] = Store_Base.FLAG_KEY_PRIMARY
     FLAG_MESSAGE: ClassVar[str] = 'Message'
     FLAG_MODAL: ClassVar[str] = 'modal'
-    FLAG_NAME: ClassVar[str] = Store_Base.FLAG_NAME
-    FLAG_NAME_ATTR_OPTION_TEXT: ClassVar[str] = Store_Base.FLAG_NAME_ATTR_OPTION_TEXT
-    FLAG_NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.FLAG_NAME_ATTR_OPTION_VALUE
+    FLAG_NAME: ClassVar[str] = Base.FLAG_NAME
+    FLAG_NAME_ATTR_OPTION_TEXT: ClassVar[str] = Base.FLAG_NAME_ATTR_OPTION_TEXT
+    FLAG_NAME_ATTR_OPTION_VALUE: ClassVar[str] = Base.FLAG_NAME_ATTR_OPTION_VALUE
     FLAG_NAV_ADMIN_HOME: ClassVar[str] = 'navAdminHome'
     FLAG_NAV_ADMIN_STORE_STRIPE_PRICES: ClassVar[str] = 'navAdminStoreStripePrices'
     FLAG_NAV_ADMIN_STORE_STRIPE_PRODUCTS: ClassVar[str] = 'navAdminStoreStripeProducts'
@@ -96,11 +101,10 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_NAV_USER_LOGIN: ClassVar[str] = 'navUserLogin'
     FLAG_NAV_USER_LOGOUT: ClassVar[str] = 'navUserLogout'
     FLAG_OVERLAY: ClassVar[str] = 'overlay'
-    FLAG_TEMPORARY_ELEMENT: ClassVar[str] = 'temporary-element'
     FLAG_PAGE_BODY: ClassVar[str] = 'page-body'
     FLAG_ROW: ClassVar[str] = 'row'
     FLAG_ROW_NEW: ClassVar[str] = 'row-new'
-    FLAG_ROWS: ClassVar[str] = Store_Base.FLAG_ROWS
+    FLAG_ROWS: ClassVar[str] = Base.FLAG_ROWS
     FLAG_SAVE: ClassVar[str] = 'save'
     FLAG_SCROLLABLE: ClassVar[str] = 'scrollable'
     FLAG_SLIDER: ClassVar[str] = 'slider'
@@ -108,6 +112,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_SUBMIT: ClassVar[str] = 'submit'
     FLAG_SUBMITTED: ClassVar[str] = 'submitted'
     FLAG_SUCCESS: ClassVar[str] = 'success'
+    FLAG_TEMPORARY_ELEMENT: ClassVar[str] = 'temporary-element'
     # flagIsDatePicker: ClassVar[str] = 'is-date-picker'
     HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_filter'
     HASH_CALLBACK_LOGIN: ClassVar[str] = '/callback-login'
@@ -130,7 +135,7 @@ class Model_View_Base(BaseModel, ABC):
     HASH_PAGE_STORE_PRODUCT_PRICES: ClassVar[str] = '/store/prices'
     HASH_PAGE_STORE_PRODUCT_VARIATIONS: ClassVar[str] = '/store/variations'
     HASH_PAGE_STORE_STOCK_ITEMS: ClassVar[str] = '/store/stock_items'
-    HASH_PAGE_STORE_SUPPLIER: ClassVar[str] = '/store/supplier'
+    HASH_PAGE_STORE_SUPPLIERS: ClassVar[str] = '/store/suppliers'
     HASH_PAGE_USER_ACCOUNT: ClassVar[str] = '/user'
     HASH_PAGE_USER_ADMIN: ClassVar[str] = '/user/admin'
     HASH_PAGE_USER_LOGIN: ClassVar[str] = '/login'
@@ -148,9 +153,9 @@ class Model_View_Base(BaseModel, ABC):
     ID_FORM_FILTERS: ClassVar[str] = 'formFilters'
     ID_FORM_IS_INCLUDED_VAT: ClassVar[str] = 'formIsIncludedVAT'
     ID_LABEL_ERROR: ClassVar[str] = 'labelError'
+    """
     ID_MODAL_SERVICES: ClassVar[str] = 'modalServices'
     ID_MODAL_TECHNOLOGIES: ClassVar[str] = 'modalTechnologies'
-    """
     ID_BUTTON_NAV_ADMIN_HOME: ClassVar[str] = 'navAdminHome'
     ID_BUTTON_NAV_ADMIN_STORE_STRIPE_PRICE: ClassVar[str] = 'navAdminStoreStripePrice'
     ID_BUTTON_NAV_ADMIN_STORE_STRIPE_PRODUCT: ClassVar[str] = 'navAdminStoreStripeProduct'
@@ -179,8 +184,6 @@ class Model_View_Base(BaseModel, ABC):
     # KEY_CSRF_TOKEN: ClassVar[str] = 'X-CSRFToken'
     KEY_DATA: ClassVar[str] = 'data'
     KEY_FORM: ClassVar[str] = 'form'
-    KEY_FORM_FILTERS: ClassVar[str] = KEY_FORM + 'Filters'
-    KEY_USER: ClassVar[str] = User.KEY_USER
     NAME_COMPANY: ClassVar[str] = 'Precision And Research Technology Systems Limited'
     NAME_CSRF_TOKEN: ClassVar[str] = 'csrf-token'
     # URL_HOST: ClassVar[str] = os.env() 'http://127.0.0.1:5000' # 'https://www.partsltd.co.uk'
@@ -311,7 +314,7 @@ class Model_View_Base(BaseModel, ABC):
         return [obj.to_json() for obj in list_objects]
     @staticmethod
     def convert_list_objects_to_list_options(list_objects):
-        return Store_Base.convert_list_objects_to_list_options(list_objects)
+        return Base.convert_list_objects_to_list_options(list_objects)
     @staticmethod
     def convert_list_objects_to_dict_by_attribute_key(list_objects, key):
         return {getattr(obj, key): obj for obj in list_objects}
@@ -341,3 +344,13 @@ class Model_View_Base(BaseModel, ABC):
                 str_multiline += '\n'
             str_multiline += str
         return str_multiline
+    @staticmethod
+    def format_date(date):
+        if date is None:
+            return ''
+        return date.strftime('%Y-%m-%d')
+    @staticmethod
+    def format_datetime(date_time):
+        if date_time is None:
+            return ''
+        return date_time.strftime('%Y-%m-%dT%H:%M')

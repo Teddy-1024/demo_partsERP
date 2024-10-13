@@ -7,7 +7,7 @@
     -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_products.bundle.css') }}">
     
-    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product.save_product') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
+    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product.filter_product') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
             <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_FILTER }}">
@@ -44,24 +44,8 @@
         </div>
         <!--
         -->
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
-                {% set block_id = 'button_add' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
-                {% set block_id = 'button_save' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
-                {% set block_id = 'button_cancel' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
+        {% set block_id = 'buttons_table_default' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
         <!--
         <div class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
             <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
@@ -98,10 +82,7 @@
     {% include 'components/common/temporary/_overlay_confirm.html' %}
     {% include 'components/common/temporary/_overlay_error.html' %}
 
-    <!-- Include JavaScript 
-    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/pages/store/products.js') }}"></script>
-    -->
+    <!-- Include JavaScript -->
     <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
 
     <script>

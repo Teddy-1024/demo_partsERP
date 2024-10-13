@@ -30,11 +30,8 @@ class Get_Many_Parameters_Base(BaseModel, metaclass=ABCMeta):
     @abstractmethod
     def get_default(cls): # , id_user
         pass
-    """
-    @abstractmethod
     def to_json(self):
-        pass
-    """
+        return self.dict()
     """
     @classmethod
     @abstractmethod

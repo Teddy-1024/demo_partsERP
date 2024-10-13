@@ -27,7 +27,7 @@ from abc import ABCMeta, abstractmethod
 
 class Filters_Product_Category(Form_Base):
     is_not_empty = BooleanField('Not empty only?')
-    active = BooleanField("Active only?")
+    active = BooleanField("Active only?", default = True)
     """
     @classmethod
     def from_filters(cls, filters):

@@ -6,9 +6,10 @@
         {{ model.ATTR_VALUE_PREVIOUS }}="{{ category.id_category }}"
     >{{ category.name }}</div>
 {% else %}
-    <div 
-        class="{{ model.FLAG_PRODUCT_CATEGORY }}" 
-        {{ model.ATTR_VALUE_CURRENT }}="" 
-        {{ model.ATTR_VALUE_PREVIOUS }}=""
-    ></div>
+    <select class="{{ model.FLAG_PRODUCT_CATEGORY}}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
+        {% include 'components/common/inputs/_option_blank.html' %}
+        {% for cat in model.category_list_filters.categories %}
+            <option value="{{ cat.id_category }}">{{ cat.name }}</option>
+        {% endfor %}
+    </select>
 {% endif %}

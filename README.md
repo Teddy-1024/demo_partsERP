@@ -14,3 +14,27 @@ python -m flask run
 
 host for local network:
 python -m flask run --host=0.0.0.0
+
+
+files dedicated to each page:
+CSS
+    page
+HTML
+    page
+    row
+JavaScript
+    page
+    api
+    router
+MySQL
+    get
+    save
+    table
+    staging table
+    audit table
+Python
+    business object
+    controller
+    datastore
+    form
+    model

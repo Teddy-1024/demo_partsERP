@@ -13,21 +13,10 @@ Datastore for Store Stock Items
 # internal
 # from routes import bp_home
 import lib.argument_validation as av
-from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Product_Category_Container, Product_Category
-from business_objects.store.currency import Currency
-from business_objects.store.image import Image
-from business_objects.store.delivery_option import Delivery_Option
-from business_objects.store.delivery_region import Delivery_Region
-from business_objects.store.discount import Discount
-from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Parameters_Product 
 from business_objects.sql_error import SQL_Error
-from business_objects.store.stock_item import Stock_Item
-from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container
+from business_objects.store.stock_item import Stock_Item, Parameters_Stock_Item, Stock_Item_Temp
 from datastores.datastore_store_base import DataStore_Store_Base
-# from helpers.helper_db_mysql import Helper_DB_MySQL
+from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
 # external
@@ -52,11 +41,11 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         super().__init__()
 
     # Stock Items
-    def get_many_stock_item(self, Parameters_Stock_Item, category_list):
+    def get_many_stock_item(self, parameters_stock_item, category_list):
         # redundant argument validation? 
         _m = 'DataStore_Store_Stock_Item.get_many_stock_item'
-        av.val_instance(Parameters_Stock_Item, 'Parameters_Stock_Item', _m, Parameters_Stock_Item)
-        argument_dict = Parameters_Stock_Item.to_json()
+        av.val_instance(parameters_stock_item, 'parameters_stock_item', _m, Parameters_Stock_Item)
+        argument_dict = parameters_stock_item.to_json()
         user = self.get_user_session()
         """
         argument_dict['a_id_user'] = user.id_user # 'auth0|6582b95c895d09a70ba10fef' # id_user
@@ -67,6 +56,9 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
             , **argument_dict
             , 'a_debug': 0
         }
+        ids_permutation = category_list.get_csv_ids_permutation()
+        print(f'ids_permutation: {ids_permutation}')
+        argument_dict['a_ids_product_permutation'] = ids_permutation
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_stock_item')
         result = self.db_procedure_execute('p_shop_get_many_stock_item', argument_dict)
@@ -85,7 +77,7 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         print(f'raw categories: {result_set_1}')
         for row in result_set_1:
             new_stock_item = Stock_Item.from_DB_stock_item(row)
-            category_list.add_stock_item(new_stock_item, row)
+            category_list.add_stock_item(new_stock_item) # , row)
         
         # Errors
         cursor.nextset()
@@ -112,5 +104,47 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
                         if 'region' in error.msg or 'currency' in error.msg:
                             permutation.is_unavailable_in_currency_or_region = True
         """
+        DataStore_Store_Stock_Item.db_cursor_clear(cursor)
         return category_list, errors # categories, category_index
     
+    @classmethod
+    def save_stock_items(cls, comment, stock_items):
+        _m = 'DataStore_Store_Stock_Item.save_stock_items'
+        av.val_str(comment, 'comment', _m)
+
+        guid = Helper_DB_MySQL.create_guid_str()
+        now = datetime.now()
+        user = cls.get_user_session()
+        rows = []
+        for stock_item in stock_items:
+            # row = permutation.to_temporary_record()
+            row = Stock_Item_Temp.from_stock_item(stock_item)
+            row.guid = guid
+            rows.append(row)
+        
+        print(f'rows: {rows}')
+        
+        DataStore_Store_Base.upload_bulk(Stock_Item_Temp.__tablename__, rows, 1000)
+        print('bulk uploaded')
+
+        argument_dict_list = {
+            'a_comment': comment,
+            'a_guid': guid,
+            'a_id_user': user.id_user,
+            'a_debug': 0
+        }
+        result = cls.db_procedure_execute('p_shop_save_stock_item', argument_dict_list)
+        print('saved product permutations')
+        
+        # Errors
+        cursor = result.cursor
+        cursor.nextset()
+        result_set_e = cursor.fetchall()
+        print(f'raw errors: {result_set_e}')
+        errors = []
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            for error in errors:
+                print(f"Error [{error.code}]: {error.msg}")
+        DataStore_Store_Stock_Item.db_cursor_clear(cursor)
+        return errors

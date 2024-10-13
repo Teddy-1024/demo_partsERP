@@ -96,6 +96,9 @@ def permutations():
         form_filters = Filters_Product_Permutation()
     print(f'form_filters={form_filters}')
     model = Model_View_Store_Product_Permutation(form_filters)
+    if not model.is_user_logged_in:
+        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Permutation.KEY_CALLBACK: Model_View_Store_Product_Permutation.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS })))
+        return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_permutations.html', model = model)
 
 @routes_store_product_permutation.route(Model_View_Store_Product_Permutation.HASH_GET_STORE_PRODUCT_PERMUTATION, methods=['POST'])
@@ -109,6 +112,8 @@ def filter_permutation():
                 Model_View_Store_Product_Permutation.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
             })
         model = Model_View_Store_Product_Permutation(form_filters = form_filters)
+        if not model.is_user_logged_in:
+            raise Exception('User not logged in')
         return jsonify({
             Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_SUCCESS, 
             Model_View_Store_Product_Permutation.KEY_DATA: model.category_list.to_json()
@@ -146,6 +151,8 @@ def save_permutation():
         Model_View_Store_Product_Permutation.save_permutations(data.get('comment', 'No comment'), objsPermutation)
 
         model_return = Model_View_Store_Product_Permutation(form_filters=form_filters)
+        if not model_return.is_user_logged_in:
+            raise Exception('User not logged in')
         print('nips')
         return jsonify({
             Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_SUCCESS, 

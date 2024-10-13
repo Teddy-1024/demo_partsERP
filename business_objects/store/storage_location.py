@@ -12,6 +12,7 @@ Business object for product
 
 # internal
 import lib.argument_validation as av
+from business_objects.store.plant import Plant
 from business_objects.store.store_base import Store_Base
 from extensions import db
 # external
@@ -27,18 +28,32 @@ class Storage_Location(db.Model, Store_Base):
     code = db.Column(db.String(50))
     name = db.Column(db.String(255))
     active = db.Column(db.Boolean)
+
+    # plant = None
     
     def __init__(self):
         super().__init__()
         Store_Base.__init__(self)
+        self.plant = None
+
     @classmethod
     def from_DB_storage_location(cls, query_row):
         location = cls()
         location.id_location = query_row[0]
         location.id_plant = query_row[1]
+        location.plant = Plant.from_DB_storage_location(query_row)
         location.code = query_row[2]
         location.name = query_row[3]
         location.active = query_row[4]
+        return location
+    @classmethod
+    def from_DB_stock_item(cls, query_row):
+        location = cls()
+        location.id_location = query_row[4]
+        location.id_plant = query_row[5]
+        location.code = query_row[8]
+        location.name = query_row[9]
+        location.plant = Plant.from_DB_stock_item(query_row)
         return location
     def __repr__(self):
         return f'''
@@ -67,3 +82,6 @@ class Storage_Location(db.Model, Store_Base):
         location.name = json[cls.FLAG_NAME],
         location.active = json[cls.FLAG_ACTIVE]
         return location
+
+    def get_full_name(self):
+        return f'{self.plant.name} - {self.name}'

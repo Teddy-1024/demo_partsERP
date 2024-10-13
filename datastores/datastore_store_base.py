@@ -14,10 +14,10 @@ Datastore for Store
 # from routes import bp_home
 from business_objects.store.basket import Basket, Basket_Item
 from business_objects.store.product_category import Product_Category_Container, Product_Category
-from business_objects.store.currency import Currency
+from business_objects.currency import Currency
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
-from business_objects.store.delivery_region import Delivery_Region
+from business_objects.region import Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
 from business_objects.store.product import Product, Product_Permutation, Parameters_Product 
@@ -235,7 +235,7 @@ class DataStore_Store_Base(DataStore_Base):
         result_set_1 = cursor.fetchall()
         regions = []
         for row in result_set_1:
-            region = Delivery_Region.from_DB_region(row)
+            region = Region.from_DB_region(row)
             regions.append(region)
         print(f'regions: {regions}')
         DataStore_Store_Base.db_cursor_clear(cursor)

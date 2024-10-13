@@ -110,7 +110,7 @@ export default class TableBasePage extends BasePage {
             .catch(error => console.error('Error:', error));
     }
     getFormFilters() {
-        return document.querySelector(idFormFilters);    
+        return document.querySelector(idFormFilters);
     }
     callbackLoadTableContent(response) {
         let table = this.getTableMain();
@@ -235,13 +235,16 @@ export default class TableBasePage extends BasePage {
         });
     }
     initialiseRowNew(row) {
-        throw new Error("Subclass of TableBasePage must implement method initialiseRowNew().");
+        if (this.constructor === TableBasePage) {
+            throw new Error("Subclass of TableBasePage must implement method initialiseRowNew().");
+        }
+        row.classList.remove(flagRowNew);
     }
     hookupTableMain() {
         if (this.constructor === TableBasePage) {
             throw new Error("Must implement hookupTableMain() method.");
         }
-        if (_rowBlank == null) {
+        if (true) { // _rowBlank == null) {
             Events.initialiseEventHandler(idTableMain, flagInitialised, (table) => {
                this.cacheRowBlank();
             });
@@ -445,6 +448,194 @@ export default class TableBasePage extends BasePage {
             this.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, (event, element) => { ddlHookup(event, element); });
         });
     }
+    hookupProductPermutationVariationFields() {
+        this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations, (event, element) => this.handleClickProductPermutationVariationsPreview(event, element));
+    }
+    handleClickProductPermutationVariationsPreview(event, element) {
+        console.log("click product permutation variations preview");
+        this.toggleColumnCollapsed(flagProductVariations, false);
+        let permutationVariations = this.getElementProductVariations(element);
+        let tblVariations = document.createElement("table");
+        tblVariations.classList.add(flagProductVariations);
+        let thead = document.createElement("thead");
+        let tr = document.createElement("tr");
+        let thVariationType = document.createElement("th");
+        thVariationType.textContent = 'Type';
+        let thNameVariation = document.createElement("th");
+        thNameVariation.textContent = 'Name';
+        let buttonAdd = document.createElement("button");
+        buttonAdd.classList.add(flagAdd);
+        buttonAdd.textContent = '+';
+        let thAddDelete = document.createElement("th");
+        thAddDelete.appendChild(buttonAdd);
+        tr.appendChild(thVariationType);
+        tr.appendChild(thNameVariation);
+        tr.appendChild(thAddDelete);
+        thead.appendChild(tr);
+        tblVariations.appendChild(thead);
+        let tbody = document.createElement("tbody");
+        console.log('variations:', permutationVariations);
+        if (Validation.isEmpty(permutationVariations)) {
+            permutationVariations = [PageStoreProductPermutations.createOptionUnselectedProductVariation()];
+        }
+        else {
+            permutationVariations.forEach((permutationVariation, index) => {
+                this.addProductPermutationVariationRow(tbody, permutationVariation);
+            });
+        }
+        tblVariations.appendChild(tbody);
+        let parent = element.parentElement;
+        parent.innerHTML = '';
+        parent.appendChild(tblVariations);
+        console.log("tblVariations: ", tblVariations);
+        let selectorButtonAdd = idTableMain + ' td.' + flagProductVariations + ' button.' + flagAdd;
+        this.hookupEventHandler("click", selectorButtonAdd, this.handleClickButtonProductPermutationVariationsAdd);
+        let selectorButtonDelete = idTableMain + ' td.' + flagProductVariations + ' button.' + flagDelete;
+        this.hookupEventHandler("click", selectorButtonDelete, this.handleClickButtonProductPermutationVariationsDelete);
+    }
+    toggleColumnCollapsed(flagColumn, isCollapsed) {
+        this.toggleColumnHasClassnameFlag(flagColumn, isCollapsed, flagCollapsed);
+    }
+    getElementProductVariations(element) {
+        let permutationVariations = element.getAttribute(attrValueCurrent);
+        let objVariations = [];
+        let parts, new_variation, new_variation_type;
+        if (!Validation.isEmpty(permutationVariations)) {
+            permutationVariations = permutationVariations.split(',');
+            permutationVariations.forEach((variation) => {
+                parts = variation.split(':');
+                if (parts.length == 2) {
+                    console.log("parts: ", parts);
+                    new_variation_type = productVariationTypes[parts[0].trim()];
+                    new_variation = productVariations[parts[1].trim()];
+                    objVariations.push({
+                        [flagProductVariationType]: new_variation_type,
+                        [flagProductVariation]: new_variation,
+                    });
+                }
+                else {
+                    console.log("error: invalid variation: ", variation);
+                }
+            });
+        }
+        return objVariations;
+    }
+    static createOptionUnselectedProductVariation() {
+        return {
+            [flagProductVariationType]: {
+                [flagNameAttrOptionText]: [flagName],
+                [flagNameAttrOptionValue]: [attrIdProductVariationType],
+                [flagName]: 'Select Variation Type',
+                [attrIdProductVariationType]: 0,
+            },
+            [flagProductVariation]: {
+                [flagNameAttrOptionText]: [flagName],
+                [flagNameAttrOptionValue]: [attrIdProductVariation],
+                [flagName]: 'Select Variation',
+                [attrIdProductVariation]: 0,
+            },
+        };
+    }
+    addProductPermutationVariationRow(tbody, permutationVariation) {
+        let productVariationType, optionProductVariationTypeJson, optionProductVariationType, productVariation, optionProductVariationJson, optionProductVariation;
+        /*
+        if (Validation.isEmpty(variations)) {
+            return;
+        }
+        */
+        let productVariationKeys = Object.keys(productVariations);
+        let productVariationTypeKeys = Object.keys(productVariationTypes);
+        
+        console.log("permutationVariation: ", permutationVariation);
+        let permutationVariationJson = permutationVariation[flagProductVariation];
+        let permutationVariationTypeJson = permutationVariation[flagProductVariationType];
+        
+        let tdVariationType = document.createElement("td");
+        tdVariationType.classList.add(flagProductVariationType);
+        DOM.setElementAttributesValuesCurrentAndPrevious(tdVariationType, permutationVariationTypeJson[attrIdProductVariationType]);
+        
+        let ddlVariationType = document.createElement("select");
+        ddlVariationType.classList.add(flagProductVariationType);
+        DOM.setElementAttributesValuesCurrentAndPrevious(ddlVariationType, permutationVariationTypeJson[attrIdProductVariationType]);
+        
+        optionProductVariationType = DOM.createOption(null);
+        console.log("optionProductVariationType: ", optionProductVariationType);
+        ddlVariationType.appendChild(optionProductVariationType);
+
+        productVariationTypeKeys.forEach((productVariationTypeKey) => {
+            /*
+            optionProductVariationType = document.createElement('option');
+            optionProductVariationType.value = optionVariationType.value;
+            optionProductVariationType.text = optionVariationType.text;
+            */
+            productVariationType = productVariationTypes[productVariationTypeKey];
+            optionProductVariationTypeJson = BusinessObjects.getOptionJsonFromObjectJson(productVariationType, permutationVariationTypeJson[attrIdProductVariationType]);
+            optionProductVariationType = DOM.createOption(optionProductVariationTypeJson);
+            console.log("optionProductVariationType: ", optionProductVariationType);
+            ddlVariationType.appendChild(optionProductVariationType);
+        });
+        
+        let tdVariation = document.createElement("td");
+        tdVariation.classList.add(flagProductVariation);
+        DOM.setElementAttributesValuesCurrentAndPrevious(tdVariation, permutationVariationJson[attrIdProductVariation]);
+
+        let ddlVariation = document.createElement("select");
+        ddlVariation.classList.add(flagProductVariation);
+        DOM.setElementAttributesValuesCurrentAndPrevious(ddlVariation, permutationVariationJson[attrIdProductVariation]);
+        
+        optionProductVariation = DOM.createOption(null);
+        console.log("optionProductVariation: ", optionProductVariation);
+        ddlVariation.appendChild(optionProductVariation);
+
+        productVariationKeys.forEach((productVariationKey) => {
+            productVariation = productVariations[productVariationKey];
+            optionProductVariationJson = BusinessObjects.getOptionJsonFromObjectJson(productVariation, permutationVariationJson[attrIdProductVariation]);
+            optionProductVariation = DOM.createOption(optionProductVariationJson);
+            console.log("optionProductVariation: ", optionProductVariation);
+            ddlVariation.appendChild(optionProductVariation);
+        });
+        
+        let tdDelete = document.createElement("td");
+        tdDelete.classList.add(flagDelete);
+        
+        let buttonDelete = document.createElement("button");
+        buttonDelete.classList.add(flagDelete);
+        buttonDelete.textContent = 'x';
+
+        let tr = document.createElement("tr");
+        tdVariationType.appendChild(ddlVariationType);
+        tr.appendChild(tdVariationType);
+        tdVariation.appendChild(ddlVariation);
+        tr.appendChild(tdVariation);
+        tdDelete.appendChild(buttonDelete);
+        tr.appendChild(tdDelete);
+        tbody.appendChild(tr);
+    }
+    handleClickButtonProductPermutationVariationsDelete(event, element) {
+        let row = getRowFromElement(element);
+        let variationsCell = row.closest('td.' + flagProductVariations);
+        row.remove();
+        this.updateProductPermutationVariations(variationsCell);
+    }
+    updateProductPermutationVariations(variationsCell) {
+        let variationPairsString = this.getProductPermutationVariationsText(variationsCell);
+        variationsCell.setAttribute(attrValueCurrent, variationPairsString);
+        DOM.isElementDirty(variationsCell);
+    }
+    getProductPermutationVariationsText(variationsTd) {
+        let rows = variationsTd.querySelectorAll('tr');
+        let variationPairsString = '';
+        let ddlVariationType, ddlVariation, idVariationType, idVariation;
+        rows.forEach((row, index) => {
+            ddlVariationType = row.querySelector('td select.' + flagProductVariationType);
+            ddlVariation = row.querySelector('td select.' + flagProductVariation);
+            idVariationType = ddlVariationType.getAttribute(attrValueCurrent);
+            idVariation = ddlVariation.getAttribute(attrValueCurrent);
+            variationPairsString += idVariationType + ':' + idVariation + ',';
+        });
+        return variationPairsString;
+    }
+    
     leave() {
         if (this.constructor === TableBasePage) {
             throw new Error("Must implement leave() method.");

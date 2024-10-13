@@ -88,6 +88,11 @@ def services():
 def admin_home():
     try:
         model = Model_View_Admin_Home()
+        if not model.is_user_logged_in:
+            # return redirect(url_for('routes_user.login', callback = Model_View_Admin_Home.HASH_PAGE_ADMIN_HOME))
+            return redirect(url_for('routes_core.home'))
+        if not (model.user.can_admin_store or model.user.can_admin_user):
+            return redirect(url_for('routes_core.home'))
         html_body =  render_template('pages/core/_admin_home.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403

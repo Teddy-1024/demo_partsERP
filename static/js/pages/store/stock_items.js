@@ -1,508 +1,367 @@
 
-
+import API from "../../api.js";
+import BusinessObjects from "../../lib/business_objects.js";
+import DOM from "../../dom.js";
 import Events from "../../lib/events.js";
+import TableBasePage from "../base_table.js";
+import Utils from "../../lib/utils.js";
 import Validation from "../../lib/validation.js";
-import BasePage from "../base.js";
+import StoreTableMixinPage from "./mixin_table.js";
 
-export default class PageStoreStockItems extends BasePage {
+export default class PageStoreStockItems extends TableBasePage {
     static hash = hashPageStoreStockItems;
+    callFilterTableContent = API.getStockItemsByFilters;
+    callSaveTableContent = API.saveStockItems;
 
     constructor(router) {
         super(router);
+        this.storeMixin = new StoreTableMixinPage(this);
     }
 
     initialize() {
         this.sharedInitialize();
-        this.hookupFilters();
-        this.hookupButtonsSaveCancel();
-        hookupTableMain();
-        hookupOverlayConfirm(savePermutations);
     }
 
     hookupFilters() {
-        let filterCategory = document.querySelectorAll(idFilterCategory);
-        Events.initialiseEventHandler(filterCategory, flagInitialised, function() {
-            console.log("hooking up filter category");
-            filterCategory = document.querySelectorAll(filterCategory);
-            /*
-            listCategories.forEach(function(category) {
-                console.log('adding category: ', category.value, category.text);
-                /*
-                let option = document.createElement('option');
-                option.value = category.value;
-                option.text = category.text;
-                *
-            filterCategory.appendChild(document.createElement('<option>', category));
+        this.sharedHookupFilters();
+        this.hookupFilterProductCategory();
+        this.hookupFilterProduct();
+        this.hookupFilterOutOfStock();
+        this.hookupFilterMinStock();
+        this.hookupFilterMaxStock();
+    }
+    hookupFilterProductCategory() {
+        this.hookupFilter(flagProductCategory, (event, filterCategory) => {
+            // loadPermutations();
+            // let wasDirtyFilter = filterCategory.classList.contains(flagDirty);
+            PageStoreStockItems.isDirtyFilter(filterCategory);
+            let isDirtyFilter = filterCategory.classList.contains(flagDirty);
+            let idProductCategory = DOM.getElementValueCurrent(filterCategory);
+            let products = productCategories[idProductCategory];
+            let filterProduct = document.querySelector(idFormFilters + ' .' + flagProduct);
+            let idProductPrevious = filterProduct.getAttribute(attrValuePrevious);
+            filterProduct.innerHTML = '';
+            let optionJson, option;
+            option = DOM.createOption(null);
+            filterProduct.appendChild(option);
+            products.forEach((product) => {
+                optionJson = BusinessObjects.getOptionJsonFromObjectJson(product, idProductPrevious);
+                option = DOM.createOption(optionJson);
+                filterProduct.appendChild(option);
             });
-            console.log(listCategories);
-            */
-            filterCategory.addEventListener("change", function(event) {
-                loadPermutations();
-            });
-            console.log("hooked up filter category");
-        });
-
-        let filterProduct = document.querySelectorAll(idFilterProduct);
-        Events.initialiseEventHandler(filterProduct, flagInitialised, function() {
-            listProducts.forEach(function(product) {
-                if (product[attrIdProductCategory] != DOM.getElementValueCurrent(document.querySelectorAll(idFilterCategory))) return;
-                /*
-                let option = document.createElement('option');
-                option.value = product.value;
-                option.text = product.text;
-                */
-            filterProduct.appendChild(document.createElement('<option>', product));
-            });
-            filterProduct.addEventListener("change", function(event) {
-                loadPermutations();
-            });
-        });
-        
-        let filterIsOutOfStock = document.querySelectorAll(idFilterIsOutOfStock);
-        Events.initialiseEventHandler(filterIsOutOfStock, flagInitialised, function() {
-            filterIsOutOfStock.addEventListener("change", function(event) {
-                loadPermutations();
-            });
-        });
-
-        let filterQuantityMin = document.querySelectorAll(idFilterQuantityMin);
-        Events.initialiseEventHandler(filterQuantityMin, flagInitialised, function() {
-            filterQuantityMin.addEventListener("change", function(event) {
-                loadPermutations();
-            });
-        });
-        
-        let filterQuantityMax = document.querySelectorAll(idFilterQuantityMax);
-        Events.initialiseEventHandler(filterQuantityMax, flagInitialised, function() {
-            filterQuantityMax.addEventListener("change", function(event) {
-                loadPermutations();
-            });
+            filterProduct.dispatchEvent(new Event('change'));
         });
     }
-
-    loadPermutations() {
-
-        let elForm = document.querySelectorAll(idFormFiltersPermutations);
-        let ajaxData = {};
-        ajaxData[keyForm] = convertForm2JSON(elForm);
-        ajaxData.csrf_token = ajaxData[keyForm].csrf_token;
-        /*
-        ajaxData[attrIdProductCategory] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterCategory));
-        ajaxData[attrIdProduct] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterProduct));
-        ajaxData[flagIsOutOfStock] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterIsOutOfStock));
-        ajaxData[flagQuantityMin] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterQuantityMin));
-        ajaxData[flagQuantityMax] = DOM.getElementValueCurrent(document.querySelectorAll(idFilterQuantityMax));
-        */
-
-        console.log('ajaxData:'); console.log(ajaxData);
-
-        ajaxJSONData('permutations', mapHashToController(hashPageStorePermutationsPost), ajaxData, callbackLoadPermutations, false, {"X-CSRFToken": ajaxData.csrf_token});
+    hookupFilterProduct() {
+        this.hookupFilter(flagProduct);
     }
-
-    callbackLoadPermutations(response) {
-        
-        console.log('ajax:'); console.log(response.data);
-
-        let table = document.querySelectorAll(idTableMain);
-        let bodyTable, row, dllCategory, ddlProduct;
-
-    // table.querySelector('tr').remove(); // :not(.' + flagRowNew + ')
-        bodyTable = table.querySelector('tbody');
-        bodyTable.querySelector('tr').remove(); 
-
-        $.each(response.data, function(_, dataRow) { 
-            row = _rowBlank.cloneNode(true);
-            row = document.querySelectorAll(row);
-            row.classList.remove(flagRowNew);
-            console.log("applying data row: ", dataRow);
-            dllCategory = row.querySelector('td.' + flagProductCategory + ' select');
-            dllCategory.val(dataRow[attrIdProductCategory]);
-            ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-            listProducts.forEach(function(product) {
-                if (product[attrIdProductCategory] != dataRow[attrIdProductCategory]) return;
-                ddlProduct.appendChild(document.createElement('<option>', product));
-            });
-            ddlProduct.val(dataRow[attrIdProduct]);
-            row.querySelector('td.' + flagProductVariations + ' textarea').value = dataRow[flagProductVariations];
-            row.querySelector('td.' + flagQuantityStock + ' input').value = dataRow[flagQuantityStock];
-            row.querySelector('td.' + flagQuantityMin + ' input').value = dataRow[flagQuantityMin];
-            row.querySelector('td.' + flagQuantityMax + ' input').value = dataRow[flagQuantityMax];
-            row.querySelector('td.' + flagCostLocal).innerHTML = dataRow[flagCostLocal];
-            row.setAttribute(attrIdProductCategory, dataRow[flagProductCategory]);
-            row.setAttribute(attrIdProduct, dataRow[flagProduct]);
-            row.setAttribute(attrIdPermutation, dataRow[attrIdPermutation]);
-            bodyTable.appendChild(row);
-        });
-        
+    hookupFilterOutOfStock() {
+        this.hookupFilter(flagIsOutOfStock);
     }
-
-    hookupButtonsSaveCancel() {
-        let btnSave = document.querySelectorAll(idButtonSave);
-        let btnCancel = document.querySelectorAll(idButtonCancel);
-        let btnAdd = document.querySelectorAll(idButtonAdd);
-
-        btnSave.addEventListener("click", function(event) {
-            event.stopPropagation();
-            showOverlayConfirm();
-        });
-        btnSave.classList.add(flagCollapsed);
-
-        btnCancel.addEventListener("click", function(event) {
-            event.stopPropagation();
-            loadPermutations();
-        });
-        btnCancel.classList.add(flagCollapsed);
-
-        btnAdd.addEventListener("click", function(event) {
-            event.stopPropagation();
-            let table = document.querySelectorAll(idTableMain);
-            let row = _rowBlank.cloneNode(true);
-            row = document.querySelectorAll(row);
-            row.classList.remove(flagRowNew);
-            table.querySelector('tbody').appendChild(row);
-        });
+    hookupFilterMinStock() {
+        this.hookupFilter(flagQuantityMin);
     }
-
-    savePermutations() {
-
-        let permutations = getPermutations(true);
-        
-        if (permutations.length == 0) {
-            showOverlayError('No permutations to save');
-            return;
-        }
-
-        let ajaxData = {};
-        ajaxData[keyPermutations] = permutations;
-        ajaxData[keyForm] = convertForm2JSON(elForm);
-        ajaxData.csrf_token = ajaxData[keyForm].csrf_token;
-        ajaxData.comment = document.querySelector(idTextareaConfirm).value;
-
-        console.log('ajaxData:'); console.log(ajaxData);
-        ajaxJSONData('permutations', mapHashToController(hashPageStorePermutationsPost), ajaxData, callbackLoadPermutations, false, {});
-    }
-
-    getPermutations(dirtyOnly) {
-        let table = document.querySelectorAll(idTableMain);
-        let permutations = [];
-        let row, permutation, ddlCategory, ddlProduct, variations, quantityStock, quantityMin, quantityMax, costLocal;
-        table.querySelector('tbody tr').each(function(index, row) {
-            row = document.querySelectorAll(row);
-            if (dirtyOnly && !row.classList.contains(flagDirty)) return;
-
-            ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
-            ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-            variations = row.querySelector('td.' + flagProductVariations + ' textarea');
-            quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
-            quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
-            quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
-
-            permutation = {};
-            permutation[attrIdProductCategory] = ddlCategory.getAttribute(attrValueCurrent);
-            permutation[attrIdProduct] = ddlProduct.getAttribute(attrValueCurrent);
-            permutation[attrIdPermutation] = row.getAttribute(attrIdPermutation)
-            permutation[flagProductVariations] = variations.getAttribute(attrValueCurrent);
-            permutation[flagQuantityStock] = quantityStock.getAttribute(attrValueCurrent);
-            permutation[flagQuantityMin] = quantityMin.getAttribute(attrValueCurrent);
-            permutation[flagQuantityMax] = quantityMax.getAttribute(attrValueCurrent);
-            permutations.push(permutation);
-        });
-        return permutations;
-    }
-
-    hookupTableMain() {
-        let table = document.querySelectorAll(idTableMain);
-        let rowBlankTemp = table.querySelector('tr.' + flagRowNew);
-        console.log("row blank temp: ", rowBlankTemp);
-        _rowBlank = rowBlankTemp.cloneNode(true);
-        table.querySelector('tr.' + flagRowNew).remove();
-
-        /*
-        let ddlCategory, ddlProduct;
-        let optionsCategory = document.querySelectorAll(idFilterCategory + ' option');
-        optionsCategory.
-
-        console.log('optionsCategory:', optionsCategory);
-
-        table.querySelector('tbody tr').each(function(index, row) {
-            console.log("hooking up row ", index);
-            row = document.querySelectorAll(row);
-            ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
-            ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-            
-            optionsCategory.clone().appendTo(ddlCategory);
-
-            /*
-            listProducts.forEach(function(product) {
-                if (product[attrIdProductCategory] != DOM.getElementValueCurrent(ddlCategory)) return;
-                ddlProduct.appendChild(document.createElement('<option>', product));
-            });
-            *
-        });
-        */
-
-        let ddlCategory, ddlProduct, variations, quantityStock, quantityMin, quantityMax, costLocal;
-        table.querySelector('tbody tr').each(function(index, row) {
-            console.log("hooking up row ", index);
-            row = document.querySelectorAll(row);
-            ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
-            ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-            variations = row.querySelector('td.' + flagProductVariations + ' textarea');
-            quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
-            quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
-            quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
-            
-            Events.initialiseEventHandler(ddlCategory, flagInitialised, function() {
-                // ddlCategory = document.querySelectorAll(ddlCategory);
-                ddlCategory.addEventListener('change', function() {
-                    /*
-                    ddlCategory.setAttribute(attrValuePrevious, ddlCategory.getAttribute(attrValueCurrent));
-                    ddlCategory.setAttribute(attrValueCurrent, ddlCategory.val());
-                    */
-                    handleChangeInputPermutations(this);
-                    ddlCategory = this;
-                    row = getRowFromElement(ddlCategory);
-                    ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-                    // ddlProduct = document.querySelectorAll(ddlProduct);
-                    ddlProduct.querySelector('option').remove();
-                    ddlProduct.appendChild(document.createElement('<option>', {value: '', text: 'Select Product'}));
-                    listProducts.forEach(function(product) {
-                        if (product[attrIdProductCategory] != DOM.getElementValueCurrent(ddlCategory)) return;
-                        ddlProduct.appendChild(document.createElement('<option>', product));
-                    });
-                    handleChangeInputPermutations(ddlProduct);
-                });
-            });
-
-            Events.initialiseEventHandler(ddlProduct, flagInitialised, function() {
-                // ddlProduct = document.querySelectorAll(ddlProduct);
-                ddlProduct.addEventListener('change', function() {
-                    handleChangeInputPermutations(this);
-                });
-            });
-
-            Events.initialiseEventHandler(variations, flagInitialised, function() {
-                // variations = document.querySelectorAll(variations);
-                variations.addEventListener('change', function() {
-                    handleChangeInputPermutations(this);
-                });
-            });
-
-            Events.initialiseEventHandler(quantityStock, flagInitialised, function() {
-                // quantityStock = document.querySelectorAll(quantityStock);
-                quantityStock.addEventListener('change', function() {
-                    // console.log(this.value);
-                    // quantityStock.value = this.value;
-                    handleChangeInputPermutations(this);
-                });
-            });
-
-            Events.initialiseEventHandler(quantityMin, flagInitialised, function() {
-                // quantityMin = document.querySelectorAll(quantityMin);
-                quantityMin.addEventListener('change', function() {
-                    handleChangeInputPermutations(this);
-                });
-            });
-
-            Events.initialiseEventHandler(quantityMax, flagInitialised, function() {
-                // quantityMax = document.querySelectorAll(quantityMax);
-                quantityMax.addEventListener('change', function() {
-                    handleChangeInputPermutations(this);
-                });
-            });
-        });
-    }
-
-    handleChangeInputPermutations(element) {
-        console.log(element.value);
-        let objJQuery = document.querySelectorAll(element);
-        objJQuery.value = element.value;
-        let row = getRowFromElement(objJQuery);
-        let buttonCancel = document.querySelectorAll(idButtonCancel);
-        let buttonSave = document.querySelectorAll(idButtonSave);
-        let wasDirty = updateAndCheckIsElementDirty(objJQuery);
-
-        if (objJQuery.classList.contains(flagProductVariations)) {
-            objJQuery.setAttribute(attrValueCurrent, getVariationsCurrentValue(objJQuery));
-        } else {
-            objJQuery.setAttribute(attrValueCurrent, DOM.getElementValueCurrent(objJQuery));
-        }
-        let isDirty = updateAndCheckIsElementDirty(objJQuery);
-        if (wasDirty != isDirty) {
-            isRowDirty(row);
-            let permutationsDirty = getPermutations(true);
-            if (Validation.isEmpty(permutationsDirty)) {
-                buttonCancel.classList.add(flagCollapsed);
-                buttonSave.classList.add(flagCollapsed);
-            } else {
-                buttonCancel.classList.remove(flagCollapsed);
-                buttonSave.classList.remove(flagCollapsed);
-            }
-        }
-    }
-
-    isRowDirty(row) {
-        let ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
-        let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-        let variations = row.querySelector('td.' + flagProductVariations + ' textarea');
-        let quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
-        let quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
-        let quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
-        
-        // return updateAndCheckIsElementDirty(ddlCategory) || updateAndCheckIsElementDirty(ddlProduct) || updateAndCheckIsElementDirty(variations) || updateAndCheckIsElementDirty(quantityStock) || updateAndCheckIsElementDirty(quantityMin) || updateAndCheckIsElementDirty(quantityMax);
-        let isDirty = ddlCategory.classList.contains(flagDirty) || ddlProduct.classList.contains(flagDirty) || variations.classList.contains(flagDirty) || 
-            quantityStock.classList.contains(flagDirty) || quantityMin.classList.contains(flagDirty) || quantityMax.classList.contains(flagDirty);
-        if (isDirty) {
-            row.classList.add(flagDirty);
-        } else {
-            row.classList.remove(flagDirty);
-        }
-        return isDirty;
-    }
-
-    getVariationsCurrentValue(element) {
-        let value = element.value || null;
-        let variations = value.split('\n');
-        variations = variations.map(function(variation) {
-            return variation.trim();
-        });
-        variations = variations.filter(function(variation) {
-            return variation.length > 0;
-        });
-        return variations.join(',');
-    }
-}
-
-
-import TableBasePage from "../base_table.js";
-import API from "../../api.js";
-import DOM from "../../dom.js";
-
-export class PageStoreProductCategories extends TableBasePage {
-    static hash = hashPageStoreProductCategories;
-    callFilterTableContent = API.getCategoriesByFilters;
-
-    constructor() {
-        super();
-    }
-
-    initialize() {
-        super.initialize();
-    }
-
-    hookupFilters() {
-        super.hookupFilters();
-        this.hookupFilterIsNotEmpty();
-        this.hookupFilterActive();
-    }
-    hookupFilterIsNotEmpty() {
-        Events.initialiseEventHandler('.' + flagIsNotEmpty, flagInitialised, (filter) => {
-            filter.addEventListener("change", (event) => {
-                PageStoreProductCategories.isDirtyFilter(filter);
-            });
-        });
+    hookupFilterMaxStock() {
+        this.hookupFilter(flagQuantityMax);
     }
 
     loadRowTable(rowJson) {
-        if (rowJson == null) return;
-        let row = _rowBlank.cloneNode(true);
-        row.classList.remove(flagRowNew);
-        row.classList.remove(flagInitialised);
-        row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
-            element.classList.remove(flagInitialised);
-        });
-        console.log("applying data row: ", rowJson);
-        let sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
-        let textareaCode = row.querySelector('td.' + flagCode + ' textarea');
-        let textareaName = row.querySelector('td.' + flagName + ' textarea');
-        let textareaDescription = row.querySelector('td.' + flagDescription + ' textarea');
-        let tdAccessLevel = row.querySelector('td.' + flagAccessLevel);
-        let divAccessLevel = tdAccessLevel.querySelector('div.' + flagAccessLevel);
-        let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
-
-        sliderDisplayOrder.setAttribute(attrValueCurrent, rowJson[flagDisplayOrder]);
-        DOM.setElementAttributeValuePrevious(sliderDisplayOrder, rowJson[flagDisplayOrder]);
-        DOM.setElementValueCurrent(textareaCode, rowJson[flagCode]);
-        DOM.setElementAttributeValuePrevious(textareaCode, rowJson[flagCode]);
-        DOM.setElementValueCurrent(textareaName, rowJson[flagName]);
-        DOM.setElementAttributeValuePrevious(textareaName, rowJson[flagName]);
-        DOM.setElementValueCurrent(textareaDescription, rowJson[flagDescription]);
-        DOM.setElementAttributeValuePrevious(textareaDescription, rowJson[flagDescription]);
-        tdAccessLevel.setAttribute(attrIdAccessLevel, rowJson[attrIdAccessLevel]);
-        tdAccessLevel.setAttribute(flagAccessLevelRequired, rowJson[flagAccessLevelRequired]);
-        divAccessLevel.setAttribute(attrIdAccessLevel, rowJson[attrIdAccessLevel]);
-        DOM.setElementValueCurrent(divAccessLevel, rowJson[attrIdAccessLevel]);
-        DOM.setElementAttributeValuePrevious(divAccessLevel, rowJson[attrIdAccessLevel]);
-        divAccessLevel.textContent = rowJson[flagAccessLevelRequired];
-        DOM.setElementValueCurrent(inputActive, rowJson[flagActive]);
-        DOM.setElementAttributeValuePrevious(inputActive, rowJson[flagActive]);
-        row.setAttribute(rowJson[flagKeyPrimary], rowJson[rowJson[flagKeyPrimary]]);
-        
-        let table = this.getTableMain();
-        let bodyTable = table.querySelector('tbody');
-        bodyTable.appendChild(row);
     }
     getJsonRow(row) {
         if (row == null) return;
-        let sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
-        let textareaCode = row.querySelector('td.' + flagCode + ' textarea');
-        let textareaName = row.querySelector('td.' + flagName + ' textarea');
-        let textareaDescription = row.querySelector('td.' + flagDescription + ' textarea');
-        let tdAccessLevel = row.querySelector('td.' + flagAccessLevel);
-        let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+        let tdProductCategory = row.querySelector('td.' + flagProductCategory);
+        let tdProduct = row.querySelector('td.' + flagProduct);
+        let tdProductVariations = row.querySelector('td.' + flagProductVariations);
+        let tdCurrencyCost = row.querySelector('td.' + flagCurrencyCost);
+        let inputCostLocalVatExcl = row.querySelector('td.' + flagCostLocalVatExcl + ' input');
+        let inputCostLocalVatIncl = row.querySelector('td.' + flagCostLocalVatIncl + ' input');
+        let inputDatePurchased = row.querySelector('td.' + flagDatePurchased + ' input');
+        let inputDateReceived = row.querySelector('td.' + flagDateReceived + ' input');
+        let tdStorageLocation = row.querySelector('td.' + flagStorageLocation);
+        let inputIsSealed = row.querySelector('td.' + flagIsSealed + ' input');
+        let inputDateUnsealed = row.querySelector('td.' + flagDateUnsealed + ' input');
+        let inputDateExpiration = row.querySelector('td.' + flagDateExpiration + ' input');
+        let inputIsConsumed = row.querySelector('td.' + flagIsConsumed + ' input');
+        let inputDateConsumed = row.querySelector('td.' + flagDateConsumed + ' input');
+        let checkboxActive = row.querySelector('td.' + flagActive + ' input');
 
-        let jsonCategory = {};
-        jsonCategory[attrIdProductCategory] = row.getAttribute(attrIdProductCategory);
-        jsonCategory[flagCode] = DOM.getElementValueCurrent(textareaCode);
-        jsonCategory[flagName] = DOM.getElementValueCurrent(textareaName);
-        jsonCategory[flagDescription] = DOM.getElementValueCurrent(textareaDescription);
-        jsonCategory[flagAccessLevelRequired] = tdAccessLevel.getAttribute(flagAccessLevelRequired);
-        jsonCategory[attrIdAccessLevel] = tdAccessLevel.getAttribute(attrIdAccessLevel);
-        jsonCategory[flagActive] = DOM.getElementValueCurrent(inputActive);
-        jsonCategory[flagDisplayOrder] = sliderDisplayOrder.getAttribute(attrValueCurrent);
-        return jsonCategory;
+        let jsonRow = {};
+        jsonRow[attrIdStockItem] = row.getAttribute(attrIdStockItem);
+        jsonRow[attrIdProductPermutation] = tdProductVariations.getAttribute(attrIdProductPermutation);
+        jsonRow[attrIdProductCategory] = DOM.getElementAttributeValueCurrent(tdProductCategory);
+        jsonRow[attrIdProduct] = DOM.getElementAttributeValueCurrent(tdProduct);
+        jsonRow[flagProductVariations] = DOM.getElementAttributeValueCurrent(tdProductVariations);
+        jsonRow[flagHasVariations] = jsonRow[flagProductVariations] != '';
+        jsonRow[flagCurrencyCost] = DOM.getElementAttributeValueCurrent(tdCurrencyCost);
+        jsonRow[flagCostLocalVatExcl] = DOM.getElementAttributeValueCurrent(inputCostLocalVatExcl);
+        jsonRow[flagCostLocalVatIncl] = DOM.getElementAttributeValueCurrent(inputCostLocalVatIncl);
+        jsonRow[flagDatePurchased] = DOM.getElementAttributeValueCurrent(inputDatePurchased);
+        jsonRow[flagDateReceived] = DOM.getElementAttributeValueCurrent(inputDateReceived);
+        jsonRow[attrIdStorageLocation] = DOM.getElementAttributeValueCurrent(tdStorageLocation);
+        jsonRow[flagIsSealed] = DOM.getElementAttributeValueCurrent(inputIsSealed);
+        jsonRow[flagDateUnsealed] = DOM.getElementAttributeValueCurrent(inputDateUnsealed);
+        jsonRow[flagDateExpiration] = DOM.getElementAttributeValueCurrent(inputDateExpiration);
+        jsonRow[flagIsConsumed] = DOM.getElementAttributeValueCurrent(inputIsConsumed);
+        jsonRow[flagDateConsumed] = DOM.getElementAttributeValueCurrent(inputDateConsumed);
+        jsonRow[flagActive] = checkboxActive.getAttribute(attrValueCurrent);
+        return jsonRow;
+    }
+    initialiseRowNew(row) {
+        super.initialiseRowNew(row);
+        let ddlCategoryFilter = document.querySelector(idFormFilters + ' #' + attrIdProductCategory);
+        let idProductCategoryFilter = DOM.getElementValueCurrent(ddlCategoryFilter);
+        let hasCategoryFilter = !(Validation.isEmpty(idProductCategoryFilter) || idProductCategoryFilter == '0');
+        let ddlProductFilter = document.querySelector(idFormFilters + ' #' + attrIdProduct);
+        let idProductFilter = DOM.getElementValueCurrent(ddlProductFilter);
+        let hasProductFilter = !(Validation.isEmpty(idProductFilter) || idProductFilter == '0');
+        console.log("initialiseRowNew: ", row);
+        console.log({ddlCategoryFilter, idProductCategoryFilter, hasCategoryFilter, ddlProductFilter, idProductFilter, hasProductFilter});
+        if (!hasCategoryFilter && !hasProductFilter) return;
+        if (hasCategoryFilter) {
+            let ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
+            DOM.setElementValuesCurrentAndPrevious(ddlCategory, idProductCategoryFilter);
+            this.handleChangeProductCategoryDdl(null, ddlCategory);
+        }
+        if (hasProductFilter) {
+            let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
+            DOM.setElementValuesCurrentAndPrevious(ddlProduct, idProductFilter);
+        }
     }
 
     hookupTableMain() {
         super.hookupTableMain();
-        this.hookupSlidersDisplayOrderTable();
-        this.hookupTextareasCodeTable();
-        this.hookupTextareasNameTable();
-        this.hookupTextareasDescriptionTable();
-        this.hookupTdsAccessLevel();
-        this.hookupInputsActiveTable();
+        this.hookupProductCategoryFields();
+        this.hookupProductFields();
+        this.hookupProductPermutationVariationFields();
+        this.hookupCurrencyCostFields();
+        this.hookupCostInputs();
+        this.hookupOrderDateInputs();
+        this.hookupStorageLocationFields();
+        this.hookupSealingInputs();
+        this.hookupExpirationDateInputs();
+        this.hookupConsumationInputs();
+        this.hookupActiveCheckboxes();
     }
-
-    isRowDirty(row) {
-        if (row == null) return;
-        let ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
+    hookupProductCategoryFields() {
+        this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagProductCategory, Utils.getListFromDict(productCategories), (event, element) => { this.hookupProductCategoryDdls(event, element); });
+    }
+    hookupProductCategoryDdls(ddlSelector) {
+        this.hookupChangeHandlerTableCells(ddlSelector, (event, element) => { this.handleChangeProductCategoryDdl(event, element); });
+    }
+    handleChangeProductCategoryDdl(event, ddlCategory) {
+        this.handleChangeTableCellDdl(event, ddlCategory);
+        let idProductCategorySelected = DOM.getElementValueCurrent(ddlCategory);
+        let row = DOM.getRowFromElement(ddlCategory);
+        let tdProduct = row.querySelector('td.' + flagProduct);
+        tdProduct.dispatchEvent(new Event('click'));
         let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-        let variations = row.querySelector('td.' + flagProductVariations + ' textarea');
-        let quantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
-        let quantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
-        let quantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
-        
-        // return updateAndCheckIsElementDirty(ddlCategory) || updateAndCheckIsElementDirty(ddlProduct) || updateAndCheckIsElementDirty(variations) || updateAndCheckIsElementDirty(quantityStock) || updateAndCheckIsElementDirty(quantityMin) || updateAndCheckIsElementDirty(quantityMax);
-        let isDirty = ddlCategory.classList.contains(flagDirty) || ddlProduct.classList.contains(flagDirty) || variations.classList.contains(flagDirty) || 
-            quantityStock.classList.contains(flagDirty) || quantityMin.classList.contains(flagDirty) || quantityMax.classList.contains(flagDirty);
-        if (isDirty) {
-            row.classList.add(flagDirty);
-        } else {
-            row.classList.remove(flagDirty);
-        }
-        return isDirty;
+        ddlProduct.innerHTML = '';
+        ddlProduct.appendChild(DOM.createOption(null));
+        let optionJson, option;
+        Utils.getListFromDict(products).forEach((product) => {
+            if (product[attrIdProductCategory] != idProductCategorySelected) return;
+            optionJson = BusinessObjects.getOptionJsonFromObjectJson(product);
+            option = DOM.createOption(optionJson);
+            ddlProduct.appendChild(option);
+        });
+        this.handleChangeTableCellDdl(event, ddlProduct);
+    }
+    hookupProductFields() {
+        this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagProduct, Utils.getListFromDict(products));
     }
 
+    handleClickProductPermutationVariationsPreview(event, element) {
+        let row = DOM.getRowFromElement(element);
+        let tdProduct = row.querySelector('td.' + flagProduct);
+        let idProduct = DOM.getElementValueCurrent(tdProduct);
+        let product = products[idProduct];
+        if (!product[flagHasVariations]) return;
+        super.handleClickProductPermutationVariationsPreview(event, element);
+    }
+    handleClickButtonProductPermutationVariationsAdd(event, element) {
+        let row = DOM.getRowFromElement(element);
+        let tbody = row.querySelector('tbody');
+        let permutationVariation = PageStoreStockItems.createOptionUnselectedProductVariation();
+        this.addProductPermutationVariationRow(tbody, permutationVariation);
+    }
+    
+    hookupCurrencyCostFields(){
+        this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagCurrencyCost, Utils.getListFromDict(currencies));
+    }
+    hookupCostInputs(){
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostLocalVatExcl + ' input');
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostLocalVatIncl + ' input');
+    }
+    hookupOrderDateInputs(){
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagDatePurchased + ' input');
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagDateReceived + ' input');
+    }
+
+    hookupStorageLocationFields(){
+        this.hookupEventHandler(
+            "click", 
+            idTableMain + ' td.' + flagStorageLocation, 
+            (event, element) => this.handleClickStorageLocationPreview(event, element)
+        );
+    }
+    handleClickStorageLocationPreview(event, element) {
+        this.toggleColumnCollapsed(flagStorageLocation, false);
+        let idPlant = element.getAttribute(attrIdPlant);
+        let idStorageLocation = element.getAttribute(attrIdStorageLocation);
+        let tblStorageLocation = document.createElement("table");
+        tblStorageLocation.classList.add(flagProductVariations);
+        let thead = document.createElement("thead");
+        let thPlant = document.createElement("th");
+        thPlant.textContent = 'Plant';
+        let thLocation = document.createElement("th");
+        thLocation.textContent = 'Location';
+        let trHead = document.createElement("tr");
+        trHead.appendChild(thPlant);
+        trHead.appendChild(thLocation);
+        thead.appendChild(trHead);
+        tblStorageLocation.appendChild(thead);
+        let tbody = document.createElement("tbody");
+        
+        let plant, optionPlantJson, optionPlant, storageLocation, optionStorageLocationJson, optionStorageLocation;
+        let plantKeys = Object.keys(plants);
+        let storageLocationKeys = Object.keys(storageLocations);
+        
+        let plantJson = plants[idPlant];
+        let storageLocationJson = storageLocations[idStorageLocation];
+        
+        let tdPlant = document.createElement("td");
+        tdPlant.classList.add(flagPlant);
+        DOM.setElementAttributesValuesCurrentAndPrevious(tdPlant, plantJson[attrIdPlant]);
+        
+        let ddlPlant = document.createElement("select");
+        ddlPlant.classList.add(flagPlant);
+        DOM.setElementAttributesValuesCurrentAndPrevious(ddlPlant, plantJson[attrIdPlant]);
+        
+        optionPlant = DOM.createOption(null);
+        console.log("optionPlant: ", optionPlant);
+        ddlPlant.appendChild(optionPlant);
+
+        plantKeys.forEach((plantKey) => {
+            plant = plants[plantKey];
+            optionPlantJson = BusinessObjects.getOptionJsonFromObjectJson(
+                objectJson = plant, 
+                valueSelected = plantJson[attrIdPlant]
+            );
+            optionPlant = DOM.createOption(optionPlantJson);
+            console.log("optionPlant: ", optionPlant);
+            ddlPlant.appendChild(optionPlant);
+        });
+        
+        let tdStorageLocation = document.createElement("td");
+        tdStorageLocation.classList.add(flagStorageLocation);
+        DOM.setElementAttributesValuesCurrentAndPrevious(tdStorageLocation, storageLocationJson[attrIdStorageLocation]);
+
+        let ddlStorageLocation = document.createElement("select");
+        ddlStorageLocation.classList.add(flagStorageLocation);
+        DOM.setElementAttributesValuesCurrentAndPrevious(ddlStorageLocation, storageLocationJson[attrIdStorageLocation]);
+        
+        optionStorageLocation = DOM.createOption(null);
+        console.log("optionStorageLocation: ", optionStorageLocation);
+        ddlStorageLocation.appendChild(optionStorageLocation);
+
+        StorageLocationKeys.forEach((StorageLocationKey) => {
+            storageLocation = StorageLocations[StorageLocationKey];
+            optionStorageLocationJson = BusinessObjects.getOptionJsonFromObjectJson(
+                objectJson = storageLocation, 
+                valueSelected = storageLocationJson[attrIdStorageLocation]
+            );
+            optionStorageLocation = DOM.createOption(optionStorageLocationJson);
+            console.log("optionStorageLocation: ", optionStorageLocation);
+            ddlStorageLocation.appendChild(optionStorageLocation);
+        });
+
+        let trBody = document.createElement("tr");
+        tdPlant.appendChild(ddlPlant);
+        trBody.appendChild(tdPlant);
+        tdStorageLocation.appendChild(ddlStorageLocation);
+        trBody.appendChild(tdStorageLocation);
+        tbody.appendChild(trBody);
+
+        tblStorageLocation.appendChild(tbody);
+        let parent = element.parentElement;
+        parent.innerHTML = '';
+        parent.appendChild(tblStorageLocation);
+        console.log("tblStorageLocation: ", tblStorageLocation);
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagPlant + ' select', (event, element) => { this.handleChangeStoragePlantDdl(event, element); });
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagStorageLocation + ' select', (event, element) => { this.handleChangeStorageLocationDdl(event, element); });
+    }
+    handleChangeStoragePlantDdl(event, ddlPlant) {
+        this.handleChangeTableCellDdl(event, ddlPlant);
+        let row = DOM.getRowFromElement(ddlPlant);
+        let ddlStorageLocation = row.querySelector('td.' + flagStorageLocation + ' select');
+        ddlStorageLocation.innerHTML = '';
+        ddlStorageLocation.appendChild(DOM.createOption(null));
+        let idPlant = DOM.getElementValueCurrent(ddlPlant);
+        let storageLocations = plants[idPlant][flagStorageLocations];
+        let optionJson, option;
+        storageLocations.forEach((storageLocation) => {
+            optionJson = BusinessObjects.getOptionJsonFromObjectJson(storageLocation);
+            option = DOM.createOption(optionJson);
+            ddlStorageLocation.appendChild(option);
+        });
+        this.handleChangeTableCellDdl(event, ddlStorageLocation);
+    }
+    handleChangeStorageLocationDdl(event, ddlStorageLocation) {
+        this.handleChangeTableCellDdl(event, ddlStorageLocation);
+    }
+
+    hookupSealingInputs() {
+        this.hookupIsSealedFields();
+        this.hookupDateUnsealedInputs();
+    }
+    hookupIsSealedFields(){
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagIsSealed + ' input', (event, element) => {
+            this.handleChangeElementCellTable(event, element);
+            let isSealed = DOM.getElementValueCurrent(element);
+            let row = DOM.getRowFromElement(element);
+            let inputDateUnsealed = row.querySelector('td.' + flagDateUnsealed + ' input');
+            if (isSealed) {
+                inputDateUnsealed.classList.add(flagCollapsed);
+            } else {
+                inputDateUnsealed.classList.remove(flagCollapsed);
+            }
+        });
+    }
+    hookupDateUnsealedInputs(){
+        this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagDateUnsealed + ' input');
+    }
+    
+    hookupExpirationDateInputs() {
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagDateExpiration + ' input');
+    }
+
+    hookupConsumationInputs() {
+        this.hookupIsConsumedFields();
+        this.hookupDateConsumedInputs();
+    }
+    hookupIsConsumedFields(){
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagIsConsumed + ' input', (event, element) => {
+            this.handleChangeElementCellTable(event, element);
+            let isConsumed = DOM.getElementValueCurrent(element);
+            let row = DOM.getRowFromElement(element);
+            let inputDateConsumed = row.querySelector('td.' + flagDateConsumed + ' input');
+            if (isConsumed) {
+                inputDateConsumed.classList.remove(flagCollapsed);
+            } else {
+                inputDateConsumed.classList.add(flagCollapsed);
+            }
+        });
+    }
+    hookupDateConsumedInputs(){
+        this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagDateConsumed + ' input');
+    }
+
+    hookupActiveCheckboxes(){
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagActive + ' input');
+    }
 
     leave() {
         super.leave();
-    }
-
-    getFiltersDefaults() {
-        filters = {};
-        filters.flagIsNotEmpty = true;
-        filters.flagActive = true;
-        return filters;
     }
 }
 
