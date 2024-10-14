@@ -320,6 +320,8 @@ class Filters_Product_Category(Get_Many_Parameters_Base):
 """
 
 class Product_Category_Container(Store_Base):
+    NAME_ATTR_OPTION_TEXT: ClassVar[str] = ''
+    NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.FLAG_ROWS
     categories: list
     def __init__(self):
         self.categories = []

@@ -490,10 +490,10 @@ class Parameters_Product(Get_Many_Parameters_Base):
     def from_form_filters_product_permutation(form):
         # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
         # av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product_Permutation)
-        has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '')
-        has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '')
+        has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '' or form.id_category.data is None)
+        has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '' or form.id_product.data is None)
         get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form")
-        print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
+        print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\ntype form: {type(form)}')
         return Parameters_Product(
             get_all_product_category = not has_category_filter,
             get_inactive_product_category = False,
@@ -595,11 +595,11 @@ class Parameters_Product(Get_Many_Parameters_Base):
     def from_filters_product_category(cls, filters_category):
         return cls(
             get_all_product_category = True,
-            get_inactive_product_category = filters_category.active,
+            get_inactive_product_category = filters_category.active.data,
             ids_product_category = '',
             get_all_product = True,
             get_inactive_product = False,
-            ids_product = False,
+            ids_product = '',
             get_all_permutation = True,
             get_inactive_permutation = False,
             ids_permutation = '',

@@ -7,9 +7,9 @@ th, td {
 #tableMain {
     max-width: 90vw;
 }
-#tableMain thead tr th.category, #tableMain tbody tr td.category {
-    width: 8vh;
-    min-width: 8vh;
+#tableMain thead tr th.product_category, #tableMain tbody tr td.product_category {
+    width: 12vh;
+    min-width: 12vh;
 }
 #tableMain thead tr th.product, #tableMain tbody tr td.product,
 #tableMain thead tr th.storage_location, #tableMain tbody tr td.storage_location {
@@ -80,6 +80,6 @@ th, td {
 #tableMain thead tr th.date_unsealed, #tableMain tbody tr td.date_unsealed,
 #tableMain thead tr th.date_expiration, #tableMain tbody tr td.date_expiration,
 #tableMain thead tr th.date_consumed, #tableMain tbody tr td.date_consumed {
-    width: 17vh;
-    min-width: 17vh;
+    width: 15vh;
+    min-width: 15vh;
 }

@@ -51,8 +51,10 @@ class Base():
     FLAG_URL: ClassVar[str] = 'url'
     FLAG_VALUE_LOCAL_VAT_EXCL: ClassVar[str] = 'value_local_vat_excl'
     FLAG_VALUE_LOCAL_VAT_INCL: ClassVar[str] = 'value_local_vat_incl'
+    """
     NAME_ATTR_OPTION_TEXT: ClassVar[str] = 'name-attribute-option-text'
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = 'name-attribute-option-value'
+    """
     
     @classmethod
     def output_bool(cls, value):
