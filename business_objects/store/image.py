@@ -16,6 +16,7 @@ from extensions import db
 import lib.argument_validation as av
 # external
 from enum import Enum
+from typing import ClassVar
 
 
 class Resolution_Level_Enum(Enum):
@@ -48,6 +49,8 @@ class Resolution_Level_Enum(Enum):
 
 
 class Image(db.Model, Store_Base):
+    NAME_ATTR_OPTION_TEXT: ClassVar[str] = 'url'
+    NAME_ATTR_OPTION_VALUE: ClassVar[str] = 'id_image'
     id_image = db.Column(db.Integer, primary_key=True)
     id_product = db.Column(db.Integer)
     id_permutation = db.Column(db.Integer)

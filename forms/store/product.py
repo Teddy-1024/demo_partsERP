@@ -22,7 +22,7 @@ from flask_wtf.recaptcha import RecaptchaField
 
 
 class Filters_Product(FlaskForm):
-    id_category = SelectField('Category', validators=[Optional()], choices=[('', 'All')])
+    id_category = SelectField('Category', validators=[Optional()], choices=[('', 'All')], default='')
     is_not_empty = BooleanField('Not empty only?')
     active = BooleanField("Active only?", default = True)
     @classmethod
