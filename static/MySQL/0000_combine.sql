@@ -305,7 +305,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 CREATE TABLE Shop_Product_Change_Set (
 	id_change_set INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	comment VARCHAR(500),
-	updated_last_on TIMESTAMP,
+	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
 # Split Staging
@@ -329,7 +329,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 CREATE TABLE IF NOT EXISTS Shop_User_Change_Set (
 	id_change_set INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     comment VARCHAR(500),
-    updated_last_on TIMESTAMP,
+    updated_last_on DATETIME,
     updated_last_by VARCHAR(100)
 );
 # Split Key Value Pair CSV Staging
@@ -354,7 +354,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 CREATE TABLE Shop_Sales_And_Purchasing_Change_Set (
 	id_change_set INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	comment VARCHAR(500),
-	updated_last_on TIMESTAMP,
+	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
 # Access Levels
@@ -370,7 +370,7 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level (
     priority INT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Access_Level_id_change_set
@@ -425,9 +425,9 @@ CREATE TABLE IF NOT EXISTS File_Type (
 	code VARCHAR(50),
 	name VARCHAR(100),
 	extension VARCHAR(50),
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP,
+	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
 
@@ -447,9 +447,9 @@ CREATE TABLE IF NOT EXISTS File_Type_Audit (
 	name_field VARCHAR(50),
 	value_prev VARCHAR(500),
 	value_new VARCHAR(500),
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP,
+	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
 # Generic / shared properties
@@ -461,7 +461,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 CREATE TABLE IF NOT EXISTS Shop_General (
 	id_general INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	quantity_max FLOAT,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT CHK_Shop_General_id_change_set
@@ -508,7 +508,7 @@ CREATE TABLE IF NOT EXISTS Shop_Image_Type (
 	name_plural VARCHAR(256),
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Image_Type_id_change_set
@@ -547,7 +547,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region (
     name VARCHAR(200) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Region_id_change_set
@@ -587,7 +587,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Temp (
     name VARCHAR(200) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Region_Temp_id_change_set
@@ -615,7 +615,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch (
     -- depth INT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Region_Branch_id_change_set
@@ -671,7 +671,7 @@ CREATE TABLE Shop_Address (
     city VARCHAR(256) NOT NULL,
     county VARCHAR(256) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Address_id_change_set
@@ -692,7 +692,7 @@ CREATE TABLE IF NOT EXISTS Shop_Plant (
         REFERENCES Shop_Address(id_address),
     id_user_manager INT NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Plant_id_change_set
@@ -775,7 +775,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location (
     code VARCHAR(50) NOT NULL,
     name VARCHAR(500) NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Storage_Location_id_change_set
@@ -839,7 +839,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch (
     -- depth INT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Storage_Location_Branch_id_change_set
@@ -896,7 +896,7 @@ CREATE TABLE IF NOT EXISTS Shop_Currency (
     factor_from_GBP FLOAT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Currency_id_change_set
@@ -971,7 +971,7 @@ CREATE TABLE Shop_Tax_Or_Surcharge (
     quantity_max FLOAT NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Tax_Or_Surcharge_id_change_set
@@ -1041,7 +1041,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement (
     is_unit_of_time BIT NOT NULL DEFAULT 0,
     is_unit_of_volume BIT NOT NULL DEFAULT 0,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Unit_Measurement_id_change_set
@@ -1085,7 +1085,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion (
     multiplier_unit_base FLOAT NOT NULL,
     increment_unit_base FLOAT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Unit_Measurement_Conversion_id_change_set
@@ -1131,7 +1131,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category (
     , CONSTRAINT FK_Shop_Product_Category_id_access_level_required
 		FOREIGN KEY (id_access_level_required)
         REFERENCES Shop_Access_Level(id_access_level)
-	, created_on TIMESTAMP
+	, created_on DATETIME
 	, created_by INT NOT NULL
 	, id_change_set INT
 	, CONSTRAINT FK_Shop_Product_Category_id_change_set
@@ -1221,7 +1221,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 	# id_stripe_price VARCHAR(100) NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on TIMESTAMP NOT NULL,
+	created_on DATETIME NOT NULL,
 	created_by INT NOT NULL,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Product_id_change_set
@@ -1321,7 +1321,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
 	count_interval_expiration_unsealed INT,
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Product_Permutation_id_change_set
@@ -1399,7 +1399,7 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type (
 	name_plural VARCHAR(256),
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Variation_Type_id_change_set
@@ -1445,7 +1445,7 @@ CREATE TABLE Shop_Variation (
 	name VARCHAR(255),
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Variation_id_change_set
@@ -1495,7 +1495,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link (
 		ON UPDATE RESTRICT,
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Product_Permutation_Variation_Link_id_change_set
@@ -1637,7 +1637,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price (
     price_local_VAT_excl FLOAT NULL,
 	id_stripe_price VARCHAR(200),
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Price_id_change_set
@@ -1701,7 +1701,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Image (
     url VARCHAR(255),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Image_id_change_set
@@ -1747,7 +1747,7 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option (
     */
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Delivery_Option_Type_id_change_set
@@ -1814,7 +1814,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Delivery_Option_Link (
   quantity_max FLOAT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Permutation_Delivery_Option_Link_id_change_set
@@ -1878,11 +1878,11 @@ CREATE TABLE Shop_Discount (
     apply_multiplier_first BIT DEFAULT 1,
 	quantity_min FLOAT NOT NULL DEFAULT 0,
     quantity_max FLOAT NOT NULL,
-    date_start TIMESTAMP NOT NULL,
-    date_end TIMESTAMP NOT NULL,
+    date_start DATETIME NOT NULL,
+    date_end DATETIME NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Discount_id_change_set
@@ -1936,7 +1936,7 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Region_Currency_Link (
         REFERENCES Shop_Currency(id_currency)
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Discount_Region_Currency_Link_id_change_set
@@ -1977,7 +1977,7 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Group (
     name VARCHAR(255),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Permission_Group_id_change_set
@@ -2028,7 +2028,7 @@ CREATE TABLE IF NOT EXISTS Shop_Permission (
         REFERENCES Shop_Access_Level(id_access_level),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
 	CONSTRAINT FK_Shop_Permission_id_change_set
@@ -2069,7 +2069,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role (
     name VARCHAR(255),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Role_id_change_set
@@ -2121,7 +2121,7 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link (
 		FOREIGN KEY (id_access_level)
         REFERENCES Shop_Access_Level(id_access_level),
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Role_Permission_Link_id_change_set
@@ -2167,7 +2167,7 @@ CREATE TABLE IF NOT EXISTS Shop_User (
     id_region_default INT NULL,
     is_included_VAT_default BIT NOT NULL DEFAULT 1,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_User_id_change_set
@@ -2215,7 +2215,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
 		FOREIGN KEY (id_role)
         REFERENCES Shop_Role(id_role),
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_User_Role_Link_id_change_set
@@ -2265,7 +2265,7 @@ CREATE TABLE Shop_User_Address (
     city VARCHAR(256) NOT NULL,
     county VARCHAR(256) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_User_Address_id_change_set
@@ -2317,7 +2317,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket (
 		ON UPDATE RESTRICT,
 	quantity INT NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set_user INT,
 	CONSTRAINT FK_Shop_User_Basket_id_change_set_user
@@ -2371,7 +2371,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order_Status (
 	name_plural VARCHAR(256),
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_User_Order_Status_id_change_set
@@ -2424,7 +2424,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier (
 		FOREIGN KEY (id_currency)
         REFERENCES Shop_Currency(id_currency),
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Supplier_id_change_set
@@ -2485,9 +2485,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order (
 	display_order INT NOT NULL,
     */
     active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP NULL,
+	updated_last_on DATETIME NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Supplier_Purchase_Order_id_change_set
@@ -2544,9 +2544,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link (
     latency_delivery_days INT NOT NULL,
 	display_order INT NOT NULL,
     active BIT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP NULL,
+	updated_last_on DATETIME NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Supplier_Purchase_Order_Product_Link_id_change_set
@@ -2633,9 +2633,9 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order (
 	display_order INT NOT NULL,
     */
     active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP NULL,
+	updated_last_on DATETIME NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Manufacturing_Purchase_Order_id_change_set
@@ -2693,9 +2693,9 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
 	quantity_produced FLOAT NOT NULL,
 	display_order INT NOT NULL,
     active BIT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP NULL,
+	updated_last_on DATETIME NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Manufacturing_Purchase_Order_id_change_set
@@ -2781,7 +2781,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer (
 		FOREIGN KEY (id_currency)
         REFERENCES Shop_Currency(id_currency),
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Customer_id_change_set
@@ -2836,9 +2836,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order (
 	display_order INT NOT NULL,
     */
     active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP NULL,
+	updated_last_on DATETIME NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Customer_Sales_Order_id_change_set
@@ -2896,9 +2896,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link (
 	display_order INT NOT NULL,
     
     active BIT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP NULL,
+	updated_last_on DATETIME NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Customer_Sales_Order_Product_Link_id_change_set
@@ -5999,19 +5999,19 @@ BEGIN
 	SET v_time_end := CURRENT_TIMESTAMP(6);
 	SELECT
 		a_time_start
-		, UNIX_TIMESTAMP(a_time_start)
+		, UNIX_DATETIME(a_time_start)
 		, MICROSECOND(a_time_start) / 1000
 		, v_time_end
-		, UNIX_TIMESTAMP(v_time_end)
+		, UNIX_DATETIME(v_time_end)
 		, MICROSECOND(v_time_end) / 1000
 		, v_time_end - a_time_start AS timestamp_delta
-		, UNIX_TIMESTAMP(v_time_end - a_time_start) AS UNIX_TIMESTAMP_timestamp_delta
+		, UNIX_DATETIME(v_time_end - a_time_start) AS UNIX_DATETIME_timestamp_delta
 		, MICROSECOND(v_time_end - a_time_start) AS MICROSECOND_timestamp_delta
 		-- , TIME_FORMAT(TIMEDIFF(v_time_end, a_time_start), '%H:%i:%s') AS time_difference
 		, CONCAT(
 			TIME_FORMAT(TIMEDIFF(v_time_end, a_time_start), '%H hours, %i minutes, %s seconds'),
 			', ',
-			TIMESTAMPDIFF(MICROSECOND, a_time_start, v_time_end) % 1000000 / 1000, ' milliseconds'
+			DATETIMEDIFF(MICROSECOND, a_time_start, v_time_end) % 1000000 / 1000, ' milliseconds'
 		) AS time_difference
 	;
 	
@@ -7258,7 +7258,7 @@ BEGIN
     DECLARE v_ids_product_permission LONGTEXT;
     DECLARE v_id_change_set INT;
     DECLARE v_id_access_level_edit INT;
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
@@ -7441,7 +7441,7 @@ BEGIN
 		END IF;
     END IF;
     
-    SET v_now := CURRENT_TIMESTAMP();
+    SET v_now := CURRENT_DATETIME();
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
@@ -8950,7 +8950,7 @@ BEGIN
     DECLARE v_ids_product_permission VARCHAR(4000);
     -- DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_ids_product_invalid VARCHAR(4000);
     DECLARE v_time_start TIMESTAMP(6);
@@ -9754,7 +9754,7 @@ BEGIN
     DECLARE v_ids_product_permission LONGTEXT;
     DECLARE v_id_change_set INT;
     DECLARE v_id_access_level_edit INT;
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
@@ -10112,7 +10112,7 @@ BEGIN
 		END IF;
     END IF;
     
-    SET v_now := CURRENT_TIMESTAMP();
+    SET v_now := CURRENT_DATETIME();
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
@@ -10956,7 +10956,7 @@ CREATE PROCEDURE p_shop_get_many_stock_item (
     IN a_get_all_location_storage BIT,
 	IN a_get_inactive_location_storage BIT,
     IN a_ids_location_storage TEXT,
-    IN a_date_received_to TIMESTAMP,
+    IN a_date_received_to DATETIME,
 	IN a_get_sealed_stock_item_only BIT,
 	IN a_get_unsealed_stock_item_only BIT,
 	IN a_get_expired_stock_item_only BIT,
@@ -10977,7 +10977,7 @@ BEGIN
     DECLARE v_ids_product_permission LONGTEXT;
     -- DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     -- DECLARE v_id_minimum INT;
 	DECLARE v_time_start TIMESTAMP(6);
     
@@ -11728,7 +11728,7 @@ BEGIN
     DECLARE v_id_change_set INT;
     DECLARE v_id_access_level_edit INT;
     DECLARE v_time_start TIMESTAMP(6);
-	DECLARE v_time_expire TIMESTAMP;
+	DECLARE v_time_expire DATETIME;
     
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
@@ -12514,7 +12514,7 @@ BEGIN
     DECLARE v_ids_product_permission VARCHAR(4000);
     -- DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_time_start TIMESTAMP(6);
     
@@ -13747,7 +13747,7 @@ BEGIN
 	-- Argument redeclaration
 	-- Variable declaration
     DECLARE v_has_filter_user BIT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     
     
 	-- Argument validation + default values
@@ -13921,7 +13921,7 @@ BEGIN
     DECLARE v_id_permission_user INT;
     DECLARE v_id_permission_user_admin INT;
     DECLARE v_ids_permission_required VARCHAR(4000);
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_code_error_bad_data VARCHAR(50);
     DECLARE v_id_type_error_bad_data INT;
@@ -14457,7 +14457,7 @@ BEGIN
     # DECLARE v_id_user VARCHAR(100);
     DECLARE v_id_permission_product INT;
     DECLARE v_ids_permutation_permission VARCHAR(4000);
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     # DECLARE v_quantity_new INT;
     DECLARE v_change_set_used BIT;
     DECLARE v_id_change_set INT;
@@ -15560,7 +15560,7 @@ BEGIN
     # DECLARE v_ids_product_permission VARCHAR(4000);
     # DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_code_error_data VARCHAR(50);
     
@@ -16367,8 +16367,8 @@ CREATE PROCEDURE p_shop_get_many_supplier_purchase_order (
 	IN a_ids_product VARCHAR(4000),
 	IN a_get_inactive_permutation BIT,
 	IN a_ids_permutation VARCHAR(4000),
-    IN a_date_from TIMESTAMP,
-    IN a_date_to TIMESTAMP
+    IN a_date_from DATETIME,
+    IN a_date_to DATETIME
 )
 BEGIN
 	-- Argument redeclaration
@@ -16387,7 +16387,7 @@ BEGIN
     DECLARE v_ids_product_permission VARCHAR(4000);
     # DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     -- DECLARE v_id_minimum INT;
     DECLARE v_code_error_data VARCHAR(50);
     DECLARE v_id_type_error_data INT;
@@ -17733,8 +17733,8 @@ CREATE PROCEDURE p_shop_get_many_manufacturing_purchase_order (
 	IN a_ids_product VARCHAR(4000),
 	IN a_get_inactive_permutation BIT,
 	IN a_ids_permutation VARCHAR(4000),
-    IN a_date_from TIMESTAMP,
-    IN a_date_to TIMESTAMP
+    IN a_date_from DATETIME,
+    IN a_date_to DATETIME
 )
 BEGIN
 	-- Argument redeclaration
@@ -17752,7 +17752,7 @@ BEGIN
     DECLARE v_ids_product_permission VARCHAR(4000);
     # DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     -- DECLARE v_id_minimum INT;
     DECLARE v_code_error_data VARCHAR(50);
     DECLARE v_id_type_error_data INT;
@@ -18711,7 +18711,7 @@ BEGIN
     # DECLARE v_ids_product_permission VARCHAR(4000);
     # DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     
     SET v_code_error_type_bad_data = 'BAD_DATA';
@@ -19523,8 +19523,8 @@ CREATE PROCEDURE p_shop_get_many_customer_sales_order (
 	IN a_ids_product VARCHAR(4000),
 	IN a_get_inactive_permutation BIT,
 	IN a_ids_permutation VARCHAR(4000),
-    IN a_date_from TIMESTAMP,
-    IN a_date_to TIMESTAMP
+    IN a_date_from DATETIME,
+    IN a_date_to DATETIME
 )
 BEGIN
 	-- Argument redeclaration
@@ -19543,7 +19543,7 @@ BEGIN
     DECLARE v_ids_product_permission VARCHAR(4000);
     # DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     -- DECLARE v_id_minimum INT;
     DECLARE v_code_error_data VARCHAR(50);
     DECLARE v_id_type_error_data INT;

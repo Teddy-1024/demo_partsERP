@@ -48,7 +48,7 @@ class Form_Base(FlaskForm, metaclass=Form_Base_Meta):
         pass
         
     def get_Filters_Product_Category(data_request):
-        data_form = data_request[Model_View_Store_Product_Category.KEY_FORM]
+        data_form = data_request[Model_View_Store_Product_Category.FLAG_FORM]
         form_filters = Filters_Product_Category(**data_form)
         form_filters.is_not_empty.data = av.input_bool(data_form['is_not_empty'], 'is_not_empty', 'filter_category')
         form_filters.active.data = av.input_bool(data_form['active'], 'active', 'filter_category')

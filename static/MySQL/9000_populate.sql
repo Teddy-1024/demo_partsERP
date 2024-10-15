@@ -37,6 +37,7 @@ VALUES
 	, ('NO_PERMISSION', 'No permission', 'Not authorised')
     , ('PRODUCT_AVAILABILITY', 'Product not available', 'Product not available')
     , ('MYSQL_ERROR', 'MySQL error', 'MySQL execution error.')
+    , ('WARNING', 'Warning', 'Non-breaking error.')
 ;
 
 # File Types

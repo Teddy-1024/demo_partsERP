@@ -23,8 +23,8 @@ CREATE PROCEDURE p_shop_get_many_customer_sales_order (
 	IN a_ids_product VARCHAR(4000),
 	IN a_get_inactive_permutation BIT,
 	IN a_ids_permutation VARCHAR(4000),
-    IN a_date_from TIMESTAMP,
-    IN a_date_to TIMESTAMP
+    IN a_date_from DATETIME,
+    IN a_date_to DATETIME
 )
 BEGIN
 	-- Argument redeclaration
@@ -43,7 +43,7 @@ BEGIN
     DECLARE v_ids_product_permission VARCHAR(4000);
     # DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     -- DECLARE v_id_minimum INT;
     DECLARE v_code_error_data VARCHAR(50);
     DECLARE v_id_type_error_data INT;

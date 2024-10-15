@@ -48,12 +48,12 @@ def permutation_filter():
         # ToDo: manually validate category, product
         filters_form = Parameters_Product.from_form(form_filters)
         model = Model_View_Store_Product_Permutation(filters_product=filters_form)
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model.category_list.to_permutation_row_list()})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.FLAG_DATA: model.category_list.to_permutation_row_list()})
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
 
 def get_Form_Filters_Permutation(data_request):
-    data_form = data_request[Model_View_Store_Product_Permutation.KEY_FORM]
+    data_form = data_request[Model_View_Store_Product_Permutation.FLAG_FORM]
     form_filters = Filters_Product_Permutation(**data_form)
     form_filters.is_out_of_stock.data = av.input_bool(data_form['is_out_of_stock'], 'is_out_of_stock', 'permutations_post')
     return form_filters
@@ -80,7 +80,7 @@ def permutation_save():
         model_save.save_permutations(data.comment, objsPermutation)
 
         model_return = Model_View_Store_Product_Permutation(filters_product=filters_form)
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.KEY_DATA: model_return.category_list.to_permutation_row_list()})
+        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.FLAG_DATA: model_return.category_list.to_permutation_row_list()})
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
 """
@@ -97,7 +97,7 @@ def permutations():
     print(f'form_filters={form_filters}')
     model = Model_View_Store_Product_Permutation(form_filters)
     if not model.is_user_logged_in:
-        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Permutation.KEY_CALLBACK: Model_View_Store_Product_Permutation.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS })))
+        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Permutation.FLAG_CALLBACK: Model_View_Store_Product_Permutation.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS })))
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_permutations.html', model = model)
 
@@ -116,7 +116,7 @@ def filter_permutation():
             raise Exception('User not logged in')
         return jsonify({
             Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_SUCCESS, 
-            Model_View_Store_Product_Permutation.KEY_DATA: model.category_list.to_json()
+            Model_View_Store_Product_Permutation.FLAG_DATA: model.category_list.to_json()
         })
     except Exception as e:
         return jsonify({
@@ -156,7 +156,7 @@ def save_permutation():
         print('nips')
         return jsonify({
             Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_SUCCESS, 
-            Model_View_Store_Product_Permutation.KEY_DATA: model_return.category_list.to_json()
+            Model_View_Store_Product_Permutation.FLAG_DATA: model_return.category_list.to_json()
         })
     except Exception as e:
         return jsonify({

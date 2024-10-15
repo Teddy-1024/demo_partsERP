@@ -37,7 +37,7 @@ BEGIN
     DECLARE v_ids_product_permission VARCHAR(4000);
     -- DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_ids_product_invalid VARCHAR(4000);
     DECLARE v_time_start TIMESTAMP(6);

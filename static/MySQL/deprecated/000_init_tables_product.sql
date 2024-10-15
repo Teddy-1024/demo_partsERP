@@ -56,7 +56,7 @@ DROP TABLE IF EXISTS Shop_Product_Change_Set;
 CREATE TABLE Shop_Product_Change_Set (
 	id_change_set INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     comment VARCHAR(500),
-    updated_last_on TIMESTAMP,
+    updated_last_on DATETIME,
     updated_last_by VARCHAR(100)
 );
 
@@ -84,9 +84,9 @@ CREATE TABLE File_Type (
 	code VARCHAR(50),
     name VARCHAR(100),
     extension VARCHAR(50),
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
-    updated_last_on TIMESTAMP,
+    updated_last_on DATETIME,
     updated_last_by VARCHAR(100)
 );
 
@@ -110,9 +110,9 @@ CREATE TABLE File_Type_Audit (
     name_field VARCHAR(50),
     value_prev VARCHAR(500),
     value_new VARCHAR(500),
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
-    updated_last_on TIMESTAMP,
+    updated_last_on DATETIME,
     updated_last_by VARCHAR(100)
 );
 
@@ -181,7 +181,7 @@ SELECT * FROM File_Type_Audit;
 CREATE TABLE Shop_General (
 	id_general INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     quantity_max FLOAT,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_General_id_change_set
@@ -254,7 +254,7 @@ CREATE TABLE Shop_Product_Category (
     description VARCHAR(4000),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Category_id_change_set
@@ -347,7 +347,7 @@ CREATE TABLE Shop_Interval_Recurrence (
     code VARCHAR(50),
     name VARCHAR(255),
     name_plural VARCHAR(256),
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Interval_Recurrence_id_change_set
@@ -448,7 +448,7 @@ CREATE TABLE Shop_Product (
     id_stripe_price VARCHAR(100),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_id_change_set
@@ -597,7 +597,7 @@ CREATE TABLE Shop_Variation_Type (
     name_plural VARCHAR(256),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Variation_Type_id_change_set
@@ -690,7 +690,7 @@ CREATE TABLE Shop_Variation (
     name VARCHAR(255),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Variation_id_change_set
@@ -782,7 +782,7 @@ CREATE TABLE Shop_Product_Variation_Link (
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Variation_Link_id_change_set
@@ -872,7 +872,7 @@ CREATE TABLE Shop_Image_Type (
     name_plural VARCHAR(256),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Image_Type_id_change_set
@@ -969,7 +969,7 @@ CREATE TABLE Shop_Image (
     url VARCHAR(255),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Image_id_change_set
@@ -1063,7 +1063,7 @@ CREATE TABLE Shop_Product_Image_Link (
         REFERENCES Shop_Image(id_image)
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Image_Link_id_change_set
@@ -1154,7 +1154,7 @@ CREATE TABLE Shop_Delivery_Option_Type (
     quantity_max INT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Delivery_Option_Type_id_change_set
@@ -1263,7 +1263,7 @@ CREATE TABLE Shop_Delivery_Option (
         ON UPDATE RESTRICT,
 	price_GBP FLOAT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Delivery_Option_id_change_set
@@ -1352,7 +1352,7 @@ CREATE TABLE Shop_Delivery_Region (
     name VARCHAR(200) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Delivery_Region_id_change_set
@@ -1443,7 +1443,7 @@ CREATE TABLE Shop_Product_Delivery_Region_Link (
         REFERENCES Shop_Delivery_Region(id_region)
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Delivery_Region_Link_id_change_set

@@ -54,6 +54,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_CANCEL: ClassVar[str] = 'button-cancel'
     # FLAG_CONTACT_US: ClassVar[str] = 'button-contact'
     FLAG_CLOSE_TEMPORARY_ELEMENT: ClassVar[str] = 'button-temporary-element-close'
+    FLAG_CALLBACK: ClassVar[str] = 'callback'
     FLAG_CARD: ClassVar[str] = 'card'
     FLAG_CODE: ClassVar[str] = Base.FLAG_CODE
     FLAG_COLLAPSED: ClassVar[str] = 'collapsed'
@@ -63,6 +64,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_CONTAINER: ClassVar[str] = 'container'
     FLAG_CONTAINER_INPUT: ClassVar[str] = FLAG_CONTAINER + '-input'
     FLAG_CURRENCY: ClassVar[str] = 'currency'
+    FLAG_DATA: ClassVar[str] = 'data'
     FLAG_DELETE: ClassVar[str] = 'delete'
     FLAG_DESCRIPTION: ClassVar[str] = Base.FLAG_DESCRIPTION
     FLAG_DETAIL: ClassVar[str] = 'detail'
@@ -73,6 +75,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_EXPANDED: ClassVar[str] = 'expanded'
     FLAG_FAILURE: ClassVar[str] = 'failure'
     FLAG_FILTER: ClassVar[str] = 'filter'
+    FLAG_FORM: ClassVar[str] = 'form'
     FLAG_FORM_FILTERS: ClassVar[str] = 'form-filters'
     FLAG_HAMBURGER: ClassVar[str] = 'hamburger'
     FLAG_IMAGE_LOGO: ClassVar[str] = 'image-logo'
@@ -113,6 +116,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_SUBMITTED: ClassVar[str] = 'submitted'
     FLAG_SUCCESS: ClassVar[str] = 'success'
     FLAG_TEMPORARY_ELEMENT: ClassVar[str] = 'temporary-element'
+    FLAG_USER: ClassVar[str] = User.FLAG_USER
     # flagIsDatePicker: ClassVar[str] = 'is-date-picker'
     HASH_APPLY_FILTERS_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_filter'
     HASH_CALLBACK_LOGIN: ClassVar[str] = '/callback-login'
@@ -180,10 +184,6 @@ class Model_View_Base(BaseModel, ABC):
     ID_PAGE_BODY: ClassVar[str] = 'pageBody'
     ID_TABLE_MAIN: ClassVar[str] = 'tableMain'
     ID_TEXTAREA_CONFIRM: ClassVar[str] = 'textareaConfirm'
-    KEY_CALLBACK: ClassVar[str] = 'callback'
-    # KEY_CSRF_TOKEN: ClassVar[str] = 'X-CSRFToken'
-    KEY_DATA: ClassVar[str] = 'data'
-    KEY_FORM: ClassVar[str] = 'form'
     NAME_COMPANY: ClassVar[str] = 'Precision And Research Technology Systems Limited'
     NAME_CSRF_TOKEN: ClassVar[str] = 'csrf-token'
     # URL_HOST: ClassVar[str] = os.env() 'http://127.0.0.1:5000' # 'https://www.partsltd.co.uk'
@@ -256,9 +256,9 @@ class Model_View_Base(BaseModel, ABC):
         print(f'session: {self.session}')
         
         datastore_user = DataStore_User()
-        user = datastore_user.get_user_session()
-        self.user = user
-        self.is_user_logged_in = user.is_logged_in
+        self.user = datastore_user.get_user_session()
+        self.is_user_logged_in = self.user.is_logged_in
+        print(f'model_view_base init end - model.user: {self.user}')
         
     def output_bool(self, boolean):
         return str(boolean).lower()

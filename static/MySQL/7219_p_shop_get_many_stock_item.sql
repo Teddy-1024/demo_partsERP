@@ -22,7 +22,7 @@ CREATE PROCEDURE p_shop_get_many_stock_item (
     IN a_get_all_location_storage BIT,
 	IN a_get_inactive_location_storage BIT,
     IN a_ids_location_storage TEXT,
-    IN a_date_received_to TIMESTAMP,
+    IN a_date_received_to DATETIME,
 	IN a_get_sealed_stock_item_only BIT,
 	IN a_get_unsealed_stock_item_only BIT,
 	IN a_get_expired_stock_item_only BIT,
@@ -43,7 +43,7 @@ BEGIN
     DECLARE v_ids_product_permission LONGTEXT;
     -- DECLARE v_ids_permutation_permission VARCHAR(4000);
     DECLARE v_id_access_level_view INT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     -- DECLARE v_id_minimum INT;
 	DECLARE v_time_start TIMESTAMP(6);
     

@@ -54,7 +54,7 @@ def supplier():
         try:
             model = Model_View_Store_Supplier(form)
             if not model.is_user_logged_in:
-                # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Supplier.KEY_CALLBACK: Model_View_Store_Supplier.HASH_PAGE_STORE_SUPPLIERS })))
+                # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Supplier.FLAG_CALLBACK: Model_View_Store_Supplier.HASH_PAGE_STORE_SUPPLIERS })))
                 return redirect(url_for('routes_core.home'))
             # print('importing basket')
             # model.import_JSON_basket(data)

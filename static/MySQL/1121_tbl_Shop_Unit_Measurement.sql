@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement (
     is_unit_of_time BIT NOT NULL DEFAULT 0,
     is_unit_of_volume BIT NOT NULL DEFAULT 0,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Unit_Measurement_id_change_set

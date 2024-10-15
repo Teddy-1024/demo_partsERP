@@ -154,7 +154,8 @@ class DataStore_Base(BaseModel):
         return regions, currencies
     @staticmethod
     def get_user_session():
-        return User.from_json(session.get(User.KEY_USER))
+        print('DataStore_Base.get_user_session')
+        return User.from_json(session.get(User.FLAG_USER))
         user = User.get_default()
         try:
             print(f'user session: {session[self.app.ID_TOKEN_USER]}')
@@ -166,9 +167,11 @@ class DataStore_Base(BaseModel):
         except:
             print('get user login failed')
         return user
+    """
     @staticmethod
     def get_user_auth0():
         return User.from_json_auth0(session.get(current_app.config['ID_TOKEN_USER']))
+    """
     @staticmethod
     def upload_bulk(permanent_table_name, records, batch_size):
         _m = 'DataStore_Base.upload_bulk'

@@ -166,6 +166,10 @@ BEGIN
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PC.id_category)
+				OR (
+					PC.active = 0
+					AND a_get_inactive_product_category = 0
+				)
 		) THEN
 			INSERT INTO tmp_Msg_Error (
 				-- guid,
@@ -183,7 +187,10 @@ BEGIN
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(PC.id_category)
-				-- OR PC.active = 0
+				OR (
+					PC.active = 0
+					AND a_get_inactive_product_category = 0
+				)
 			;
 		ELSE
 			INSERT INTO tmp_Category_calc (
@@ -197,7 +204,7 @@ BEGIN
 					a_get_all_product_category = 1
 					OR (
 						v_has_filter_product_category = 1
-						AND FIND_IN_SET(PC.id_category, a_ids_product_category) > 0
+						AND NOT ISNULL(t_S.as_int)
 					)
 				)
 				AND (
@@ -239,6 +246,10 @@ BEGIN
 			WHERE 
 				ISNULL(t_S.as_int)
                 OR ISNULL(P.id_product)
+				OR (
+					P.active = 0
+					AND a_get_inactive_product = 0
+				)
 		) THEN
 			INSERT INTO tmp_Msg_Error (
 				-- guid,
@@ -256,7 +267,10 @@ BEGIN
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(P.id_product)
-				-- OR PC.active = 0
+				OR (
+					P.active = 0
+					AND a_get_inactive_product = 0
+				)
 			;
 		ELSE
 			INSERT INTO tmp_Product_calc (
@@ -273,7 +287,7 @@ BEGIN
 					a_get_all_product = 1
 					OR (
 						v_has_filter_product = 1
-						AND FIND_IN_SET(P.id_product, a_ids_product) > 0
+						AND NOT ISNULL(t_S.as_int)
 					)
 				)
 				AND (
@@ -332,7 +346,10 @@ BEGIN
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(PP.id_permutation)
-				-- OR PC.active = 0
+				OR (
+					PP.active = 0
+					AND a_get_inactive_product_permutation = 0
+				)
 			;
 		ELSE
 			INSERT INTO tmp_Permutation_calc (
@@ -347,16 +364,17 @@ BEGIN
 			FROM tmp_Split t_S 
             RIGHT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			INNER JOIN tmp_Product_calc t_P ON PP.id_product = t_P.id_product
-			WHERE (
+			WHERE 1=1
+				AND (
 					a_get_all_product_permutation = 1
 					OR (
 						v_has_filter_permutation = 1
-						AND FIND_IN_SET(PP.id_permutation, a_ids_permutation) > 0
+						AND NOT ISNULL(t_S.as_int)
 					)
-					OR (
-						a_get_products_quantity_stock_below_min = 1
-						AND PP.quantity_stock < PP.quantity_min
-					)
+				)
+				AND (
+					a_get_products_quantity_stock_below_min = 1
+					AND PP.quantity_stock < PP.quantity_min
 				)
 				AND (
 					a_get_inactive_permutation = 1

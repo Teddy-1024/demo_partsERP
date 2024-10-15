@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region (
     name VARCHAR(200) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Region_id_change_set

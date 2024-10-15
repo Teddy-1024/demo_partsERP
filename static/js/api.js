@@ -69,7 +69,7 @@ export default class API {
     */
     static async loginUser() {
         let callback = {};
-        callback[keyCallback] = DOM.getHashPageCurrent();
+        callback[flagCallback] = DOM.getHashPageCurrent();
         return await API.request(hashPageUserLogin, 'POST', callback);
     }
 
@@ -81,7 +81,7 @@ export default class API {
     static async getCategoriesByFilters(filtersJson) {
         /*
         let dataRequest = {};
-        dataRequest[keyForm] = filtersJson;
+        dataRequest[flagForm] = filtersJson;
         return await API.request(hashGetStoreProductCategory, 'POST', dataRequest);
         */
         // return await API.request(hashPageStoreProductCategories, 'GET', filtersJson);

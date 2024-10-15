@@ -17,8 +17,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order (
 		FOREIGN KEY (id_supplier_fulfilled) 
         REFERENCES Shop_Supplier(id_supplier),
 	*/
-    cost_total_local FLOAT NOT NULL,
     id_currency_cost INT NOT NULL,
+    cost_total_local_VAT_excl FLOAT NOT NULL,
+    cost_total_local_VAT_incl FLOAT NOT NULL,
     /*
     latency_delivery INT NOT NULL,
 	quantity_ordered FLOAT NOT NULL,
@@ -30,9 +31,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order (
 	display_order INT NOT NULL,
     */
     active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP NULL,
+	updated_last_on DATETIME NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Supplier_Purchase_Order_id_change_set

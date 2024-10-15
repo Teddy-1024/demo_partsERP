@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS Shop_Customer (
 		FOREIGN KEY (id_currency)
         REFERENCES Shop_Currency(id_currency),
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Customer_id_change_set

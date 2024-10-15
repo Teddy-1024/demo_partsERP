@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
 		FOREIGN KEY (id_role)
         REFERENCES Shop_Role(id_role),
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_User_Role_Link_id_change_set

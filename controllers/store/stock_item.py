@@ -39,8 +39,8 @@ def stock_items():
     print(f'form_filters={form_filters}')
     model = Model_View_Store_Stock_Item(form_filters)
     if not model.is_user_logged_in:
-        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Stock_Item.KEY_CALLBACK: Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS })))
-        # return requests.post(f"{current_app.config['URL_HOST']}{url_for('routes_user.login')}", json={ Model_View_Store_Stock_Item.KEY_CALLBACK: Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS })
+        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Stock_Item.FLAG_CALLBACK: Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS })))
+        # return requests.post(f"{current_app.config['URL_HOST']}{url_for('routes_user.login')}", json={ Model_View_Store_Stock_Item.FLAG_CALLBACK: Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS })
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_stock_items.html', model = model, datetime = datetime)
 
@@ -73,7 +73,7 @@ def filter_stock_item():
             raise Exception('User not logged in.')
         return jsonify({
             Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_SUCCESS, 
-            Model_View_Store_Stock_Item.KEY_DATA: model.category_list.to_json()
+            Model_View_Store_Stock_Item.FLAG_DATA: model.category_list.to_json()
         })
     except Exception as e:
         return jsonify({
@@ -133,7 +133,7 @@ def save_stock_item():
             raise Exception('User not logged in.')
         return jsonify({
             Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_SUCCESS, 
-            Model_View_Store_Stock_Item.KEY_DATA: model_return.category_list.to_json()
+            Model_View_Store_Stock_Item.FLAG_DATA: model_return.category_list.to_json()
         })
     except Exception as e:
         return jsonify({

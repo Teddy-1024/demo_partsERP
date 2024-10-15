@@ -18,7 +18,7 @@ BEGIN
     DECLARE v_ids_product_permission LONGTEXT;
     DECLARE v_id_change_set INT;
     DECLARE v_id_access_level_edit INT;
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
@@ -376,7 +376,7 @@ BEGIN
 		END IF;
     END IF;
     
-    SET v_now := CURRENT_TIMESTAMP();
+    SET v_now := CURRENT_DATETIME();
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;

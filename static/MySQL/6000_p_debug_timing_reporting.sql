@@ -17,19 +17,19 @@ BEGIN
 	SET v_time_end := CURRENT_TIMESTAMP(6);
 	SELECT
 		a_time_start
-		, UNIX_TIMESTAMP(a_time_start)
+		, UNIX_DATETIME(a_time_start)
 		, MICROSECOND(a_time_start) / 1000
 		, v_time_end
-		, UNIX_TIMESTAMP(v_time_end)
+		, UNIX_DATETIME(v_time_end)
 		, MICROSECOND(v_time_end) / 1000
 		, v_time_end - a_time_start AS timestamp_delta
-		, UNIX_TIMESTAMP(v_time_end - a_time_start) AS UNIX_TIMESTAMP_timestamp_delta
+		, UNIX_DATETIME(v_time_end - a_time_start) AS UNIX_DATETIME_timestamp_delta
 		, MICROSECOND(v_time_end - a_time_start) AS MICROSECOND_timestamp_delta
 		-- , TIME_FORMAT(TIMEDIFF(v_time_end, a_time_start), '%H:%i:%s') AS time_difference
 		, CONCAT(
 			TIME_FORMAT(TIMEDIFF(v_time_end, a_time_start), '%H hours, %i minutes, %s seconds'),
 			', ',
-			TIMESTAMPDIFF(MICROSECOND, a_time_start, v_time_end) % 1000000 / 1000, ' milliseconds'
+			DATETIMEDIFF(MICROSECOND, a_time_start, v_time_end) % 1000000 / 1000, ' milliseconds'
 		) AS time_difference
 	;
 	

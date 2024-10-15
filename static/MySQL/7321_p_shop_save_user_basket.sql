@@ -47,7 +47,7 @@ BEGIN
     # DECLARE v_id_user VARCHAR(100);
     DECLARE v_id_permission_product INT;
     DECLARE v_ids_permutation_permission VARCHAR(4000);
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     # DECLARE v_quantity_new INT;
     DECLARE v_change_set_used BIT;
     DECLARE v_id_change_set INT;

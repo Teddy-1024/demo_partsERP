@@ -8,7 +8,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 CREATE TABLE IF NOT EXISTS Shop_General (
 	id_general INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	quantity_max FLOAT,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT CHK_Shop_General_id_change_set
