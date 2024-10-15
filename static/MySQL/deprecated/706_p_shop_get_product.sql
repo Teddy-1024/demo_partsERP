@@ -40,7 +40,7 @@ BEGIN
     DECLARE v_ids_product_permission VARCHAR(500);
     DECLARE v_id_access_level_view INT;
     DECLARE v_has_filter_image BIT;
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_code_error_data VARCHAR(50);
     

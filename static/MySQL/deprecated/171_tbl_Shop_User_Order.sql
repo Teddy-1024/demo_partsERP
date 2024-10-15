@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order (
 		REFERENCES Shop_Currency(id_currency)
 		ON UPDATE RESTRICT,
 	active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set_user INT,
 	CONSTRAINT FK_Shop_User_Order_id_change_set_user

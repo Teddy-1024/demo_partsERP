@@ -36,14 +36,14 @@ def login():
     except:
         data = {}
     print(f'data={data}')
-    # callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}{data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
+    # callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}{data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
     
-    # encoded_path = quote(data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME))
+    # encoded_path = quote(data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME))
     uri_redirect = url_for('routes_user.login_callback', _external=True) # , subpath=encoded_path
     
-    # uri_redirect = f'{current_app.URL_HOST}/login_callback?subpath={data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
+    # uri_redirect = f'{current_app.URL_HOST}/login_callback?subpath={data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
     print(f'redirect uri: {uri_redirect}')
-    hash_callback = data.get(Model_View_Base.KEY_CALLBACK, Model_View_Base.HASH_PAGE_HOME)
+    hash_callback = data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)
     print(f'hash_callback: {hash_callback}')
 
     red = oauth.auth0.authorize_redirect(
@@ -63,7 +63,7 @@ def login():
     
     Query Parameters: {query_params}
     """)
-    return jsonify({'Success': True, Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, f'{Model_View_Base.KEY_CALLBACK}': headers})
+    return jsonify({'Success': True, Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, f'{Model_View_Base.FLAG_CALLBACK}': headers})
 
 @routes_user.route("/login_callback") # <path:subpath>/<code>
 def login_callback():
@@ -84,6 +84,7 @@ def login_callback():
             print(f"Error: {str(e)}")
         session[current_app.config['ID_TOKEN_USER']] = token
         # import user id
+        """
         print(f'str(type(token)) = {str(type(token))}')
         print(f'token = {token}')
         userinfo = token.get('userinfo')
@@ -91,18 +92,18 @@ def login_callback():
         # id_user = token.get('sub')
         id_user = userinfo.get('sub')
         print(f'user ID: {id_user}')
-
-        datastore_user = DataStore_User()
-        user = datastore_user.get_user_auth0()
+        """
+        user = User.from_json_auth0(token) # datastore_user.get_user_auth0()
         user_filters = User_Filters.from_user(user)
+        datastore_user = DataStore_User()
         users, errors = datastore_user.get_many_user(user_filters, user)
         try:
             user = users[0]
             print('User logged in')
             print(f'user ({str(type(user))}): {user}')
-            print(f'user key: {Model_View_Base.KEY_USER}')
+            print(f'user key: {Model_View_Base.FLAG_USER}')
             user_json = user.to_json()
-            session[Model_View_Base.KEY_USER] = user_json
+            session[Model_View_Base.FLAG_USER] = user_json
             print(f'user stored on session')
         except:
             print(f'User not found: {user_filters}\nDatabase query error: {errors}')
@@ -121,7 +122,7 @@ def login_callback():
         # add user to database
         # DataStore_Store().add_new_user(id_user) # this is part of get basket - should occur on page load
 
-        print(f'user session: {session[Model_View_Base.KEY_USER]}')
+        print(f'user session: {session[Model_View_Base.FLAG_USER]}')
         return redirect(f"{current_app.config['URL_HOST']}{hash_callback}")
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
@@ -160,7 +161,7 @@ def logout_callback():
         # add user to database
         # DataStore_Store().add_new_user(id_user) # this is part of get basket - should occur on page load
 
-        print(f'user session: {session[Model_View_Base.KEY_USER]}')
+        print(f'user session: {session[Model_View_Base.FLAG_USER]}')
         return redirect(f'{current_app.URL_HOST}{hash_callback}')
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
@@ -171,7 +172,7 @@ def user():
     try:
         model = Model_View_User(current_app, db)
         if not model.is_user_logged_in:
-            # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_User.KEY_CALLBACK: Model_View_User.HASH_PAGE_USER_ACCOUNT })))
+            # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_User.FLAG_CALLBACK: Model_View_User.HASH_PAGE_USER_ACCOUNT })))
             return redirect(url_for('routes_core.home'))
         html_body = render_template('pages/user/_user.html', model = model)
     except Exception as e:

@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category (
     , CONSTRAINT FK_Shop_Product_Category_id_access_level_required
 		FOREIGN KEY (id_access_level_required)
         REFERENCES Shop_Access_Level(id_access_level)
-	, created_on TIMESTAMP
+	, created_on DATETIME
 	, created_by INT NOT NULL
 	, id_change_set INT
 	, CONSTRAINT FK_Shop_Product_Category_id_change_set

@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link (
 	display_order INT NOT NULL,
     
     active BIT NOT NULL,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
-	updated_last_on TIMESTAMP NULL,
+	updated_last_on DATETIME NULL,
 	created_last_by VARCHAR(100) NULL,
 	id_change_set INT NULL,
 	CONSTRAINT FK_Shop_Customer_Sales_Order_Product_Link_id_change_set

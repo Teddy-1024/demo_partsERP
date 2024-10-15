@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion (
     multiplier_unit_base FLOAT NOT NULL,
     increment_unit_base FLOAT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Unit_Measurement_Conversion_id_change_set

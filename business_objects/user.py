@@ -18,7 +18,6 @@ from typing import ClassVar
 
 
 class User(db.Model, Base):
-    KEY_USER: ClassVar[str] = 'authorisedUser' # 'user' already used
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Base.ATTR_ID_USER
     NAME_ATTR_OPTION_TEXT: ClassVar[str] = 'email'
 
@@ -57,6 +56,7 @@ class User(db.Model, Base):
         user.is_super_user = av.input_bool(query_row[9], 'is_super_user', _m)
         user.can_admin_store = av.input_bool(query_row[10], 'can_admin_store', _m)
         user.can_admin_user = av.input_bool(query_row[11], 'can_admin_user', _m)
+        user.is_logged_in = (user.id_user is not None and user.id_user > 0)
         return user
     
     @staticmethod
@@ -101,6 +101,7 @@ class User(db.Model, Base):
         user.is_included_VAT_default = None
         user.can_admin_store = None
         user.can_admin_user = None
+        user.is_logged_in = (user.id_user_auth0 is not None and user.id_user_auth0 != '')
         print(f'user: {user}')
         return user
     

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location (
     code VARCHAR(50) NOT NULL,
     name VARCHAR(500) NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
-	created_on TIMESTAMP,
+	created_on DATETIME,
 	created_by INT,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Storage_Location_id_change_set

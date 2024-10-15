@@ -13,11 +13,11 @@ CREATE PROCEDURE p_shop_save_stock_item (
 BEGIN
     
 	DECLARE v_code_type_error_bad_data VARCHAR(100);
-    DECLARE v_id_type_error_bad_data INT;
-    DECLARE v_id_permission_product INT;
-    DECLARE v_ids_product_permission LONGTEXT;
-    DECLARE v_id_change_set INT;
     DECLARE v_id_access_level_edit INT;
+    DECLARE v_id_change_set INT;
+    DECLARE v_id_permission_product INT;
+    DECLARE v_id_type_error_bad_data INT;
+    DECLARE v_ids_product_permission LONGTEXT;
     DECLARE v_time_start TIMESTAMP(6);
 	DECLARE v_time_expire DATETIME;
     
@@ -63,7 +63,7 @@ BEGIN
     SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
     SET v_id_access_level_edit := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
-    SET a_guid := IFNULL(a_guid, UUID());
+    CALL partsltd_prod.p_validate_guid ( a_guid );
     
     DROP TEMPORARY TABLE IF EXISTS tmp_Stock_Item;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
@@ -191,7 +191,41 @@ BEGIN
     END IF;
     
     -- Validation
-    -- Missing mandatory fields
+    -- id_stock
+    IF EXISTS (
+		SELECT * 
+        FROM tmp_Stock_Item t_SI 
+        LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
+        WHERE 1=1
+			AND t_SI.id_stock > 0
+			AND ISNULL(SI.id_stock)
+		LIMIT 1
+	) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT(
+				'Invalid stock item(s): '
+				, GROUP_CONCAT(
+					CONCAT(
+						IFNULL(t_SI.id_stock, '(No Stock Item)')
+						, ' - '
+						, IFNULL(t_SI.name_error, '(No Product)')
+					) SEPARATOR ', '
+				)
+			) AS msg
+		FROM tmp_Stock_Item t_SI
+        LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
+        WHERE 1=1
+			AND t_SI.id_stock > 0
+			AND ISNULL(SI.id_stock)
+		;
+    END IF;
     -- id_product
     IF EXISTS (SELECT * FROM tmp_Stock_Item t_SI WHERE t_SI.id_product = 0 LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
@@ -483,8 +517,14 @@ BEGIN
 		START TRANSACTION;
 			
 			IF NOT ISNULL(v_ids_product_permission) THEN
-				INSERT INTO Shop_Product_Change_Set ( comment )
-				VALUES ( a_comment )
+				INSERT INTO Shop_Product_Change_Set ( 
+					comment
+					, updated_last_by
+				)
+				VALUES ( 
+					a_comment,
+					a_id_user
+				)
 				;
 				
 				SET v_id_change_set := LAST_INSERT_ID();
@@ -556,10 +596,22 @@ BEGIN
 		COMMIT;
     END IF;
     
-    SELECT * FROM tmp_Msg_Error;
+    # Errors
+    SELECT *
+    FROM tmp_Msg_Error t_ME
+	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	;
+    
+	IF a_debug = 1 THEN
+		SELECT * from tmp_Stock_Item;
+	END IF;
     
     DROP TEMPORARY TABLE IF EXISTS tmp_Stock_Item;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+    
+	IF a_debug = 1 THEN
+		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+	END IF;
 END //
 DELIMITER ;;
 

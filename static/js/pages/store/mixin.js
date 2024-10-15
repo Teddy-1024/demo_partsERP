@@ -31,7 +31,7 @@ export default class StoreMixinPage {
             elForm = document.querySelectorAll(idFormCurrency);
             elSelector.addEventListener("change", function(event) {
                 ajaxData = {};
-                ajaxData[keyForm] = convertForm2JSON(elForm);
+                ajaxData[flagForm] = convertForm2JSON(elForm);
                 console.log('sending data to currency selector controller: '); console.log(ajaxData);
                 ajaxJSONData('select currency', mapHashToController(hashStoreSelectCurrency), ajaxData, function() { window.location.reload() }, false);
 
@@ -84,7 +84,7 @@ export default class StoreMixinPage {
             elForm = document.querySelectorAll(idFormDeliveryRegion);
             elSelector.addEventListener("change", function(event) {
                 ajaxData = {};
-                ajaxData[keyForm] = convertForm2JSON(elForm);
+                ajaxData[flagForm] = convertForm2JSON(elForm);
                 console.log('sending data to delivery region selector controller: '); console.log(ajaxData);
                 ajaxJSONData('select delivery region', mapHashToController(hashStoreSelectDeliveryRegion), ajaxData, function() { window.location.reload() }, false);
             });
@@ -137,7 +137,7 @@ export default class StoreMixinPage {
             elForm = document.querySelectorAll(idFormIsIncludedVAT);
             elSelector.addEventListener("change", function(event) {
                 ajaxData = {};
-                ajaxData[keyForm] = convertForm2JSON(elForm);
+                ajaxData[flagForm] = convertForm2JSON(elForm);
                 console.log('sending data to include VAT controller: '); console.log(ajaxData);
                 ajaxJSONData('set include VAT', mapHashToController(hashStoreSetIsIncludedVAT), ajaxData, function() { window.location.reload() }, false);
             });

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Image (
     url VARCHAR(255),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Product_Image_id_change_set

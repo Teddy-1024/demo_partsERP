@@ -28,7 +28,7 @@ BEGIN
 	-- Argument redeclaration
 	-- Variable declaration
     DECLARE v_has_filter_user BIT;
-    -- DECLARE v_now TIMESTAMP;
+    -- DECLARE v_now DATETIME;
     
     
 	-- Argument validation + default values

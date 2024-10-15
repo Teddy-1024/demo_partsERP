@@ -22,7 +22,7 @@ BEGIN
     DECLARE v_id_permission_user INT;
     DECLARE v_id_permission_user_admin INT;
     DECLARE v_ids_permission_required VARCHAR(4000);
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_code_error_bad_data VARCHAR(50);
     DECLARE v_id_type_error_bad_data INT;

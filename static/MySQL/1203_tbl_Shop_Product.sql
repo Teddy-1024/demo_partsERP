@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 	# id_stripe_price VARCHAR(100) NOT NULL,
 	active BIT NOT NULL DEFAULT 1,
 	display_order INT NOT NULL,
-	created_on TIMESTAMP NOT NULL,
+	created_on DATETIME NOT NULL,
 	created_by INT NOT NULL,
 	id_change_set INT,
 	CONSTRAINT FK_Shop_Product_id_change_set

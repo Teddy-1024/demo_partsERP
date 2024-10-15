@@ -61,12 +61,12 @@ def filter():
         # ToDo: manually validate category, product
         filters_form = Parameters_Product.from_form_filters_product(form_filters)
         model = Model_View_Store_Product(filters = filters_form)
-        return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 'Success': True, Model_View_Store_Product.KEY_DATA: model.category_list.to_json()})
+        return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 'Success': True, Model_View_Store_Product.FLAG_DATA: model.category_list.to_json()})
     except Exception as e:
         return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, Model_View_Store_Product.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
 
 def get_Filters_Product(data_request):
-    data_form = data_request[Model_View_Store_Product.KEY_FORM]
+    data_form = data_request[Model_View_Store_Product.FLAG_FORM]
     form_filters = Filters_Product(**data_form)
     form_filters.is_not_empty.data = av.input_bool(data_form['is_not_empty'], 'is_not_empty', 'filter')
     form_filters.active.data = av.input_bool(data_form['active'], 'active', 'filter')
@@ -95,7 +95,7 @@ def save():
 
         model_return = Model_View_Store_Product(filters=filters_form)
         print('nips')
-        return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 'Success': True, Model_View_Store_Product.KEY_DATA: model_return.category_list.to_json()})
+        return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 'Success': True, Model_View_Store_Product.FLAG_DATA: model_return.category_list.to_json()})
     except Exception as e:
         return jsonify({Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, Model_View_Store_Product.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
 """
@@ -112,7 +112,7 @@ def products():
     print(f'form_filters={form_filters}')
     model = Model_View_Store_Product(form_filters)
     if not model.is_user_logged_in:
-        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product.KEY_CALLBACK: Model_View_Store_Product.HASH_PAGE_STORE_PRODUCTS })))
+        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product.FLAG_CALLBACK: Model_View_Store_Product.HASH_PAGE_STORE_PRODUCTS })))
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_products.html', model = model)
 
@@ -131,7 +131,7 @@ def filter_product():
             raise Exception('User not logged in')
         return jsonify({
             Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 
-            Model_View_Store_Product.KEY_DATA: model.category_list.to_json()
+            Model_View_Store_Product.FLAG_DATA: model.category_list.to_json()
         })
     except Exception as e:
         return jsonify({
@@ -171,7 +171,7 @@ def save_product():
         print('nips')
         return jsonify({
             Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_SUCCESS, 
-            Model_View_Store_Product.KEY_DATA: model_return.category_list.to_json()
+            Model_View_Store_Product.FLAG_DATA: model_return.category_list.to_json()
         })
     except Exception as e:
         return jsonify({

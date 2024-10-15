@@ -36,7 +36,6 @@ routes_core = Blueprint('routes_core', __name__)
 def home():
     try:
         model = Model_View_Home()
-        print('nips')
         html_body = render_template('pages/core/_home.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403

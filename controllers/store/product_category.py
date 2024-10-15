@@ -55,7 +55,7 @@ def categories():
     """
     model = Model_View_Store_Product_Category(form_filters)
     if not model.is_user_logged_in:
-        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Category.KEY_CALLBACK: Model_View_Store_Product_Category.HASH_PAGE_STORE_PRODUCT_CATEGORIES })))
+        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Category.FLAG_CALLBACK: Model_View_Store_Product_Category.HASH_PAGE_STORE_PRODUCT_CATEGORIES })))
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_categories.html', model = model)
 
@@ -77,7 +77,7 @@ def filter_category():
             raise Exception('User not logged in')
         return jsonify({
             Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
-            Model_View_Store_Product_Category.KEY_DATA: model.category_list.to_json()
+            Model_View_Store_Product_Category.FLAG_DATA: model.category_list.to_json()
         })
     except Exception as e:
         return jsonify({
@@ -115,7 +115,7 @@ def save_category():
             raise Exception('User not logged in')
         return jsonify({
             Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
-            Model_View_Store_Product_Category.KEY_DATA: model_return.category_list.to_json()
+            Model_View_Store_Product_Category.FLAG_DATA: model_return.category_list.to_json()
         })
     except Exception as e:
         return jsonify({

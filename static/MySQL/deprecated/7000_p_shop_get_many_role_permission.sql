@@ -42,7 +42,7 @@ BEGIN
     DECLARE v_priority_admin INT;
     /*
     DECLARE v_ids_product_permission VARCHAR(500);
-    DECLARE v_now TIMESTAMP;
+    DECLARE v_now DATETIME;
     */
     
 	-- Parse arguments + get default values

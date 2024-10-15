@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch (
     -- depth INT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Region_Branch_id_change_set

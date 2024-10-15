@@ -140,7 +140,6 @@ class Model_View_Store(Model_View_Base):
     """
     KEY_BASKET : ClassVar[str] = Basket.KEY_BASKET # 'basket'
     # KEY_CODE_CURRENCY : ClassVar[str] = 'code_currency'
-    # KEY_FORM : ClassVar[str] = 'form'
     KEY_ID_CURRENCY : ClassVar[str] = Basket.KEY_ID_CURRENCY # 'id_currency'
     KEY_ID_PRODUCT : ClassVar[str] = 'product_id'
     KEY_ID_PERMUTATION : ClassVar[str] = 'permutation_id'

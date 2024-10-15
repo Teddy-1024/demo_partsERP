@@ -38,7 +38,7 @@ DROP TABLE IF EXISTS Shop_User_Change_Set;
 CREATE TABLE Shop_User_Change_Set (
 	id_change_set INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     comment VARCHAR(500),
-    updated_last_on TIMESTAMP,
+    updated_last_on DATETIME,
     updated_last_by VARCHAR(100)
 );
 
@@ -68,7 +68,7 @@ CREATE TABLE Shop_Access_Level (
     priority INT NOT NULL,
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Access_Level_id_change_set
@@ -158,7 +158,7 @@ CREATE TABLE Shop_Permission_Group (
     name VARCHAR(255),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Permission_Group_id_change_set
@@ -253,7 +253,7 @@ CREATE TABLE Shop_Permission (
         REFERENCES Shop_Access_Level(id_access_level),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
 	CONSTRAINT FK_Shop_Permission_id_change_set
@@ -348,7 +348,7 @@ CREATE TABLE Shop_Role (
     name VARCHAR(255),
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Role_id_change_set
@@ -448,7 +448,7 @@ CREATE TABLE Shop_Role_Permission_Link (
         REFERENCES Shop_Access_Level(id_access_level)
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Role_Permission_Link_id_change_set
@@ -541,7 +541,7 @@ CREATE TABLE Shop_User (
     name VARCHAR(255),
     is_super_user BIT NOT NULL DEFAULT 0,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_User_id_change_set
@@ -635,7 +635,7 @@ CREATE TABLE Shop_User_Role_Link (
         REFERENCES Shop_Role(id_role)
         ON UPDATE RESTRICT,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_User_Role_Link_id_change_set
@@ -722,7 +722,7 @@ CREATE TABLE Shop_Address (
     city VARCHAR(50) NOT NULL,
     county VARCHAR(100) NOT NULL,
     active BIT NOT NULL DEFAULT 1,
-    created_on TIMESTAMP,
+    created_on DATETIME,
     created_by INT,
     id_change_set INT,
     CONSTRAINT FK_Shop_Address_id_change_set

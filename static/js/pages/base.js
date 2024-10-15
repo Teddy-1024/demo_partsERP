@@ -113,7 +113,7 @@ export default class BasePage {
             // this.router.navigateToHash(hashPageUserLogin);
             /*
             let dataRequest = {};
-            dataRequest[keyCallback] = hashPageCurrent;
+            dataRequest[flagCallback] = hashPageCurrent;
             console.log('sending data to user login controller: '); 
             console.log(dataRequest);
             */
@@ -121,7 +121,7 @@ export default class BasePage {
             API.loginUser()
                 .then((response) => {
                 if (response.Success) {
-                    this.router.navigateToUrl(response[keyCallback], null, false); // window.app.
+                    this.router.navigateToUrl(response[flagCallback], null, false); // window.app.
                 } else {
                     DOM.alertError("Error", response.Message);
                 }
