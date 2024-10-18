@@ -373,8 +373,8 @@ BEGIN
 					)
 				)
 				AND (
-					a_get_products_quantity_stock_below_min = 1
-					AND PP.quantity_stock < PP.quantity_min
+					a_get_products_quantity_stock_below_min = 0
+					OR PP.quantity_stock < PP.quantity_min
 				)
 				AND (
 					a_get_inactive_permutation = 1

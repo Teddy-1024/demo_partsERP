@@ -21,7 +21,7 @@ BEGIN
 	DECLARE v_code_type_error_warning VARCHAR(50);
     DECLARE v_id_access_level_edit INT;
     DECLARE v_id_change_set INT;
-    DECLARE v_id_permission_supplier_purchase_order INT;
+    DECLARE v_id_permission_supplier_purchase_order VARCHAR(100);
     DECLARE v_id_type_error_bad_data INT;
     DECLARE v_id_type_error_no_permission INT;
     DECLARE v_id_type_error_warning INT;
@@ -66,8 +66,8 @@ BEGIN
     SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
     SET v_code_type_error_warning := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'WARNING');
     SET v_id_type_error_warning := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning);
-	SET v_id_permission_supplier_purchase_order = (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER_PURCHASE_ORDER' LIMIT 1);
-	SET v_id_access_level_edit = (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT');
+	SET v_id_permission_supplier_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_SUPPLIER', 'STORE_SUPPLIER_PURCHASE_ORDER', 'STORE_PRODUCT') LIMIT 1);
+	SET v_id_access_level_edit := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -81,13 +81,14 @@ BEGIN
 		, id_supplier_ordered INT NOT NULL
 		, id_currency_cost INT NOT NULL
 		-- , cost_total_local FLOAT NOT NULL
+        , active BIT NOT NULL
     );
     
     CREATE TEMPORARY TABLE tmp_Supplier_Purchase_Order_Product_Link (
 		id_link INT NOT NULL PRIMARY KEY
 		, id_order INT NOT NULL
         , id_permutation INT NOT NULL
-		, id_currency_cost INT NOT NULL
+		-- , id_currency_cost INT NOT NULL
 		, quantity_ordered FLOAT NOT NULL
 		, id_unit_quantity INT NOT NULL
 		, quantity_received FLOAT NULL
@@ -127,9 +128,9 @@ BEGIN
 		id_link
 		, id_order
 		, id_permutation
-		, id_currency_cost
-		, quantity_ordered
+		-- , id_currency_cost
 		, id_unit_quantity
+		, quantity_ordered
 		, quantity_received
 		, latency_delivery_days
 		, display_order
@@ -144,14 +145,14 @@ BEGIN
 	)
 	SELECT 
 		IFNULL(SPOPL_T.id_link, 0) AS id_link
-		, IFNULL(IFNULL(SPOPL_T.id_order, SPOPL.id_order) 0) AS id_order
+		, IFNULL(IFNULL(SPOPL_T.id_order, SPOPL.id_order), 0) AS id_order
 		, IFNULL(IFNULL(SPOPL_T.id_permutation, SPOPL.id_permutation), 0) AS id_permutation
-		, IFNULL(IFNULL(SPOPL_T.id_currency_cost, SPOPL.id_currency_cost) 0) AS id_currency_cost
-		, IFNULL(IFNULL(SPOPL_T.quantity_ordered, SPOPL.quantity_ordered), 0) AS quantity_ordered
+		-- , IFNULL(IFNULL(SPOPL_T.id_currency_cost, SPOPL.id_currency_cost), 0) AS id_currency_cost
 		, IFNULL(IFNULL(SPOPL_T.id_unit_quantity, SPOPL.id_unit_quantity), 0) AS id_unit_quantity
+		, IFNULL(IFNULL(SPOPL_T.quantity_ordered, SPOPL.quantity_ordered), 0) AS quantity_ordered
 		, IFNULL(SPOPL_T.quantity_received, SPOPL.quantity_received) AS quantity_received
 		, IFNULL(SPOPL_T.latency_delivery_days, SPOPL.latency_delivery_days) AS latency_delivery_days
-		, RANK() OVER (PARTITION BY IFNULL(IFNULL(SPOPL_T.id_order, SPOPL.id_order) 0) ORDER BY IFNULL(IFNULL(SPOPL_T.display_order, SPOPL.display_order), 0)) AS display_order
+		, RANK() OVER (PARTITION BY IFNULL(IFNULL(SPOPL_T.id_order, SPOPL.id_order), 0) ORDER BY IFNULL(IFNULL(SPOPL_T.display_order, SPOPL.display_order), 0)) AS display_order
 		, IFNULL(IFNULL(SPOPL_T.active, SPOPL.active), 1) AS active
 		, CONCAT(
 			fn_shop_get_product_permutation_name(SPOPL_T.id_permutation)
@@ -285,8 +286,8 @@ BEGIN
     # id_unit_quantity
     IF EXISTS (
 		SELECT * 
-        FROM tmp_Supplier_Purchase_Order t_SPO
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_SPO.id_unit_quantity = UM.id_unit_measurement
+        FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
+        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_SPOPL.id_unit_quantity = UM.id_unit_measurement
         WHERE 1=1
 			AND (
 				ISNULL(UM.id_unit_measurement)
@@ -306,8 +307,8 @@ BEGIN
 				'A valid unit measurement of quantity is required for the following Supplier Purchase Order(s): '
 				, GROUP_CONCAT(CONCAT(IFNULL(t_SPO.id_stock, '(No Supplier Purchase Order)'), ' - ', t_SPO.id_currency_cost) SEPARATOR ', ')
 			) AS msg
-		FROM tmp_Stock_Item t_SPO
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_SPO.id_unit_quantity = UM.id_unit_measurement
+		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
+        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_SPOPL.id_unit_quantity = UM.id_unit_measurement
         WHERE 1=1
 			AND (
 				ISNULL(UM.id_unit_measurement)
@@ -318,7 +319,7 @@ BEGIN
 	# Invalid quantity ordered
 	IF EXISTS (
 		SELECT * 
-		FROM tmp_Supplier_Purchase_Order_Product_Link 
+		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
 		WHERE 
 			ISNULL(t_SPOPL.quantity_ordered)
 			OR t_SPOPL.quantity_ordered <= 0
@@ -342,7 +343,7 @@ BEGIN
 	# Invalid quantity received
 	IF EXISTS (
 		SELECT * 
-		FROM tmp_Supplier_Purchase_Order_Product_Link 
+		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
 		WHERE t_SPOPL.quantity_received < 0
 	) THEN
 		INSERT INTO tmp_Msg_Error ( 
@@ -362,7 +363,7 @@ BEGIN
 	# Invalid delivery latency
 	IF EXISTS (
 		SELECT * 
-		FROM tmp_Supplier_Purchase_Order_Product_Link 
+		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
 		WHERE t_SPOPL.latency_delivery_days < 0
 	) THEN
 		INSERT INTO tmp_Msg_Error ( 
@@ -494,7 +495,7 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
 		)
 		;
 	END IF;
@@ -513,8 +514,30 @@ BEGIN
 		INNER JOIN partsltd_prod.Shop_Stock_Item SI ON SPOPL.id_permutation = SI.id_permutation
 		WHERE 
 			t_SPOPL.is_new = 0
-			AND t_SPOPL.quantity_received < SPOPL.quantity_received
-	)
+			AND t_SPOPL.quantity_received <> SPOPL.quantity_received
+	) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+            , code
+            , msg
+		)
+        SELECT
+			v_id_type_error_warning
+            , v_code_type_error_warning
+            , CONCAT(
+				'The quantity received has changed on the following orders. Please update the stock items appropriately.'
+                , GROUP_CONCAT(
+					CONCAT(
+						t_SPOPL.name_error
+                        , ' - from '
+                        , SPOPL.quantity_received
+                        , ' to '
+                        , t_SPOPL.quantity_received
+					) SEPARATOR ', '
+				)
+			) AS msg
+		;
+    END IF;
 	
 	-- Transaction    
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
@@ -559,7 +582,7 @@ BEGIN
 			INSERT INTO Shop_Supplier_Purchase_Order_Product_Link (
 				id_order
 				, id_permutation
-				, id_currency_cost
+				-- , id_currency_cost
 				, id_unit_quantity
 				, quantity_ordered
 				, quantity_received
@@ -574,7 +597,7 @@ BEGIN
 			SELECT
 				t_SPOPL.id_order
 				, t_SPOPL.id_permutation
-				, t_SPOPL.id_currency_cost
+				-- , t_SPOPL.id_currency_cost
 				, t_SPOPL.id_unit_quantity
 				, t_SPOPL.quantity_ordered
 				, t_SPOPL.quantity_received
@@ -583,8 +606,8 @@ BEGIN
 				, t_SPOPL.active
 				, t_SPOPL.cost_total_local_VAT_excl
 				, t_SPOPL.cost_total_local_VAT_incl
-				a_id_user
-				v_id_change_set
+				, a_id_user
+				, v_id_change_set
 			FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
 			WHERE t_SPOPL.is_new = 1
 			;
@@ -610,7 +633,7 @@ BEGIN
 			SET
 				SPOPL.id_order = t_SPOPL.id_order,
 				SPOPL.id_permutation = t_SPOPL.id_permutation,
-				SPOPL.id_currency_cost = t_SPOPL.id_currency_cost,
+				-- SPOPL.id_currency_cost = t_SPOPL.id_currency_cost,
 				SPOPL.id_unit_quantity = t_SPOPL.id_unit_quantity,
 				SPOPL.quantity_ordered = t_SPOPL.quantity_ordered,
 				SPOPL.quantity_received = t_SPOPL.quantity_received,
@@ -632,6 +655,7 @@ BEGIN
 			;
 			
 		COMMIT;
+    END IF;
     
     # Errors
     SELECT *

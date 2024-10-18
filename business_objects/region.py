@@ -32,13 +32,18 @@ class Region(db.Model, Base):
     def __init__(self):
         super().__init__()
         Base.__init__(self)
-        self.region = None
 
     @classmethod
     def from_DB_stock_item(cls, query_row):
-        plant = cls()
-        plant.id_region = query_row[7]
-        return plant
+        region = cls()
+        region.id_region = query_row[7]
+        return region
+    @classmethod
+    def from_DB_supplier(cls, query_row):
+        region = cls()
+        region.id_region = query_row[2]
+        region.name = query_row[3]
+        return region
     def __repr__(self):
         return f'''
             {self.ATTR_ID_REGION}: {self.id_region}
@@ -78,5 +83,4 @@ class Region(db.Model, Base):
         region.code = query_row[1]
         region.name = query_row[2]
         region.active = av.input_bool(query_row[3], cls.FLAG_ACTIVE, f'{cls.__name__}.from_DB_region')
-        region.display_order = query_row[4]
         return region

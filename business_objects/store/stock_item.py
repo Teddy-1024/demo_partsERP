@@ -112,8 +112,8 @@ class Stock_Item(db.Model, Store_Base):
         stock_item.date_received = json[cls.FLAG_DATE_RECEIVED]
         stock_item.id_location_storage = json[cls.ATTR_ID_STORAGE_LOCATION]
         stock_item.id_currency_cost = json[cls.ATTR_ID_CURRENCY_COST]
-        stock_item.cost_local_VAT_excl = json[cls.FLAG_COST_LOCAL_VAT_EXCL]
-        stock_item.cost_local_VAT_incl = json[cls.FLAG_COST_LOCAL_VAT_INCL]
+        stock_item.cost_local_VAT_excl = json[cls.FLAG_COST_UNIT_LOCAL_VAT_EXCL]
+        stock_item.cost_local_VAT_incl = json[cls.FLAG_COST_UNIT_LOCAL_VAT_INCL]
         stock_item.is_sealed = json[cls.FLAG_IS_SEALED]
         stock_item.date_unsealed = json[cls.FLAG_DATE_UNSEALED]
         stock_item.date_expiration = json[cls.FLAG_DATE_EXPIRATION]
@@ -150,8 +150,8 @@ class Stock_Item(db.Model, Store_Base):
             self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
             self.FLAG_STORAGE_LOCATION: self.storage_location.to_json(),
             self.FLAG_CURRENCY_COST: self.currency_cost.to_json(),
-            self.FLAG_COST_LOCAL_VAT_EXCL: self.cost_local_VAT_excl,
-            self.FLAG_COST_LOCAL_VAT_INCL: self.cost_local_VAT_incl,
+            self.FLAG_COST_UNIT_LOCAL_VAT_EXCL: self.cost_local_VAT_excl,
+            self.FLAG_COST_UNIT_LOCAL_VAT_INCL: self.cost_local_VAT_incl,
         }
     def has_permutations(self):
         return len(self.permutations) > 0

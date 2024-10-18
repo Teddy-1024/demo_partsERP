@@ -25,14 +25,15 @@
     display: table-cell !important;
 }
 #tableMain thead tr th.product_variations, #tableMain tbody tr td.product_variations {
-    width: 20vh;
-    min-width: 20vh;
+    width: 24vh;
+    min-width: 24vh;
 }
-#tableMain tbody tr td.product_variations table thead tr th, #tableMain tbody tr td.product_variations table tbody tr td {
+#tableMain tbody tr td.product_variations table thead tr th.product_variation_type, #tableMain tbody tr td.product_variations table tbody tr td.product_variation_type,
+#tableMain tbody tr td.product_variations table thead tr th.product_variation, #tableMain tbody tr td.product_variations table tbody tr td.product_variation {
     width: 8vh;
     min-width: 8vh;
 }
-#tableMain tbody tr td.product_variations table thead tr th:last-of-type, #tableMain tbody tr td.product_variations table tbody tr td:last-of-type {
+#tableMain tbody tr td.product_variations table thead tr th.add, #tableMain tbody tr td.product_variations table tbody tr td.delete {
     width: 4vh;
     min-width: 4vh;
 }

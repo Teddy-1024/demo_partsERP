@@ -43,15 +43,13 @@ BEGIN
 	SELECT NEW.id_link, 'id_permutation', OLD.id_permutation, NEW.id_permutation, NEW.id_change_set
 		WHERE NOT OLD.id_permutation <=> NEW.id_permutation
     UNION
-	# Changed cost_total_local
-	SELECT NEW.id_link, 'cost_total_local', OLD.cost_total_local, NEW.cost_total_local, NEW.id_change_set
-		WHERE NOT OLD.cost_total_local <=> NEW.cost_total_local
-    UNION
+    /*
 	# Changed id_currency_cost
 	SELECT NEW.id_link, 'id_currency_cost', OLD.id_currency_cost, NEW.id_currency_cost, NEW.id_change_set
 		WHERE NOT OLD.id_currency_cost <=> NEW.id_currency_cost
     UNION
-	# Changed quantity_ordered
+	*/
+    # Changed quantity_ordered
 	SELECT NEW.id_link, 'quantity_ordered', OLD.quantity_ordered, NEW.quantity_ordered, NEW.id_change_set
 		WHERE NOT OLD.quantity_ordered <=> NEW.quantity_ordered
     UNION
@@ -74,6 +72,22 @@ BEGIN
 	# Changed active
 	SELECT NEW.id_link, 'active', OLD.active, NEW.active, NEW.id_change_set
 		WHERE NOT OLD.active <=> NEW.active
+    UNION
+	# Changed cost_total_local_VAT_excl
+	SELECT NEW.id_link, 'cost_total_local_VAT_excl', OLD.cost_total_local_VAT_excl, NEW.cost_total_local_VAT_excl, NEW.id_change_set
+		WHERE NOT OLD.cost_total_local_VAT_excl <=> NEW.cost_total_local_VAT_excl
+    UNION
+	# Changed cost_total_local_VAT_incl
+	SELECT NEW.id_link, 'cost_total_local_VAT_incl', OLD.cost_total_local_VAT_incl, NEW.cost_total_local_VAT_incl, NEW.id_change_set
+		WHERE NOT OLD.cost_total_local_VAT_incl <=> NEW.cost_total_local_VAT_incl
+    UNION
+	# Changed cost_unit_local_VAT_excl
+	SELECT NEW.id_link, 'cost_unit_local_VAT_excl', OLD.cost_unit_local_VAT_excl, NEW.cost_unit_local_VAT_excl, NEW.id_change_set
+		WHERE NOT OLD.cost_unit_local_VAT_excl <=> NEW.cost_unit_local_VAT_excl
+    UNION
+	# Changed cost_unit_local_VAT_incl
+	SELECT NEW.id_link, 'cost_unit_local_VAT_incl', OLD.cost_unit_local_VAT_incl, NEW.cost_unit_local_VAT_incl, NEW.id_change_set
+		WHERE NOT OLD.cost_unit_local_VAT_incl <=> NEW.cost_unit_local_VAT_incl
     ;
 END //
 DELIMITER ;;

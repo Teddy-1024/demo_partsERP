@@ -17,7 +17,7 @@ from business_objects.region import Region
 from extensions import db
 # external
 from typing import ClassVar
-
+from flask import jsonify
 
 class Address(db.Model, Base):
     FLAG_ADDRESS_LINE_1: ClassVar[str] = 'address_line_1'
@@ -59,6 +59,12 @@ class Address(db.Model, Base):
         address.id_address = query_row[6]
         address.id_region = query_row[7]
         return address
+    @classmethod
+    def from_DB_supplier(cls, query_row):
+        address = cls()
+        address.id_address = query_row[1]
+        address.postcode = query_row[2]
+        return address
     def __repr__(self):
         return f'''
             {self.ATTR_ID_ADDRESS}: {self.id_address}
@@ -82,6 +88,8 @@ class Address(db.Model, Base):
             self.FLAG_COUNTY: self.county,
             self.FLAG_ACTIVE: 1 if av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json') else 0
         }
+    def to_json_str(self):
+        return jsonify(self.to_json())
     @classmethod
     def from_json(cls, json):
         print(f'{cls.__name__}.from_json: {json}')

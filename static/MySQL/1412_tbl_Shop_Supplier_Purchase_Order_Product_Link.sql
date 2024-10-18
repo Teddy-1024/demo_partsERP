@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link (
     CONSTRAINT FK_Shop_Supplier_Purchase_Order_Product_Link_id_permutation
 		FOREIGN KEY (id_permutation) 
         REFERENCES Shop_Product_Permutation(id_permutation),
-    id_currency_cost INT NOT NULL,
+    -- id_currency_cost INT NOT NULL,
 	id_unit_quantity INT NOT NULL,
     CONSTRAINT FK_Shop_Supplier_Purchase_Order_Product_Link_id_unit_quantity
 		FOREIGN KEY (id_unit_quantity)

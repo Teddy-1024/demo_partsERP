@@ -7,6 +7,7 @@ import StoreTableMixinPage from "./mixin_table.js";
 
 export default class PageStoreProductCategories extends TableBasePage {
     static hash = hashPageStoreProductCategories;
+    static attrIdRowObject = attrIdProductCategory;
     callFilterTableContent = API.getCategoriesByFilters;
     callSaveTableContent = API.saveCategories;
 

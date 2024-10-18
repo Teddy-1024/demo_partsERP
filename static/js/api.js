@@ -139,6 +139,51 @@ export default class API {
         dataRequest[flagComment] = comment;
         return await API.request(hashSaveStoreStockItem, 'POST', dataRequest);
     }
+    
+    // suppliers
+    static async getSuppliers() {
+        return await API.request(hashGetStoreSupplier);
+    }
+    static async getSuppliersByFilters(filtersJson) {
+        API.goToHash(hashPageStoreSuppliers, filtersJson);
+    }
+    static async saveSuppliers(suppliers, formFilters, comment) {
+        let dataRequest = {};
+        dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagSupplier] = suppliers;
+        dataRequest[flagComment] = comment;
+        return await API.request(hashSaveStoreSupplier, 'POST', dataRequest);
+    }
+    
+    // supplier purchase orders
+    static async getSupplierPurchaseOrders() {
+        return await API.request(hashGetStoreSupplierPurchaseOrder);
+    }
+    static async getSupplierPurchaseOrdersByFilters(filtersJson) {
+        API.goToHash(hashPageStoreSupplierPurchaseOrders, filtersJson);
+    }
+    static async saveSupplierPurchaseOrders(supplierPurchaseOrders, formFilters, comment) {
+        let dataRequest = {};
+        dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagSupplierPurchaseOrder] = supplierPurchaseOrders;
+        dataRequest[flagComment] = comment;
+        return await API.request(hashSaveStoreSupplierPurchaseOrder, 'POST', dataRequest);
+    }
+    
+    // manufacturing purchase orders
+    static async getManufacturingPurchaseOrders() {
+        return await API.request(hashGetStoreManufacturingPurchaseOrder);
+    }
+    static async getManufacturingPurchaseOrdersByFilters(filtersJson) {
+        API.goToHash(hashPageStoreManufacturingPurchaseOrders, filtersJson);
+    }
+    static async saveManufacturingPurchaseOrders(manufacturingPurchaseOrders, formFilters, comment) {
+        let dataRequest = {};
+        dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagManufacturingPurchaseOrder] = manufacturingPurchaseOrders;
+        dataRequest[flagComment] = comment;
+        return await API.request(hashSaveStoreManufacturingPurchaseOrder, 'POST', dataRequest);
+    }
 }
 
 /*

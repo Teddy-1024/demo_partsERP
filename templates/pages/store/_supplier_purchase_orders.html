@@ -1,0 +1,73 @@
+{% extends 'layouts/layout.html' %}
+
+{% block page_body %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_supplier_purchase_orders.bundle.css') }}">
+    
+    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_supplier_purchase_order.filter_supplier_purchase_order') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
+        {{ model.form_filters.hidden_tag() }}
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }} {{ model.FLAG_ACTIVE }}">
+                {{ model.form_filters.active.label }}
+                {{ model.form_filters.active() }}
+                {% for error in model.form_filters.active.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }} {{ model.FLAG_DATE_FROM }}">
+                {{ model.form_filters.date_from.label }}
+                {{ model.form_filters.date_from() }}
+                {% for error in model.form_filters.date_from.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }} {{ model.FLAG_DATE_TO }}">
+                {{ model.form_filters.date_to.label }}
+                {{ model.form_filters.date_to() }}
+                {% for error in model.form_filters.date_to.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% set block_id = 'buttons_table_default' %}
+        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+    </form>
+
+
+    <table id="{{ model.ID_TABLE_MAIN }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
+        <thead>
+            <tr class="{{ model.FLAG_SUPPLIER_PURCHASE_ORDER }}">
+                <th class="{{ model.FLAG_SUPPLIER }}">Supplier</th>
+                <th class="{{ model.FLAG_CURRENCY }}">Currency</th>
+                <th class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_EXCL }}">Cost Total VAT Excl.</th>
+                <th class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_INCL }}">Cost Total VAT Incl.</th>
+                <th class="{{ model.FLAG_ITEMS }}">Items</th>
+                <th class="{{ model.FLAG_ACTIVE}}">Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set is_blank_row = False %}
+            {% for order in model.supplier_purchase_orders %}
+                {% include 'components/store/_row_supplier_purchase_order.html' %}
+            {% endfor %}
+
+            {% set is_blank_row = True %}
+            {% include 'components/store/_row_supplier_purchase_order.html' %}
+        </tbody>
+    </table>
+    
+    {% include 'components/common/temporary/_overlay_confirm.html' %}
+    {% include 'components/common/temporary/_overlay_error.html' %}
+
+    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
+
+    <script>
+        var currencies = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.currencies) | tojson | safe }};
+        var supplier_purchase_orders = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.supplier_purchase_orders) | tojson | safe }};
+        var suppliers = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.suppliers) | tojson | safe }};
+    </script>
+{% endblock %}

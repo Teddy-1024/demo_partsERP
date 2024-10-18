@@ -56,19 +56,8 @@
                 {% endfor %}
             </div>
         </div>
-        <!--
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }} {{ model.FLAG_CONTAINER_INPUT }}">
-            { { model.form_filters.submit() }}
-        </div>
-        -->
         {% set block_id = 'buttons_table_default' %}
         {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-        <!--
-        <div class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
-            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            </div>
-        </div>
-        -->
     </form>
     <table id="{{ model.ID_TABLE_MAIN }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
         <thead>
@@ -77,8 +66,8 @@
                 <th class="{{ model.FLAG_PRODUCT }}">Product</th>
                 <th class="{{ model.FLAG_PRODUCT_VARIATIONS }} {{ model.FLAG_COLLAPSED }}">Variations</th>
                 <th class="{{ model.FLAG_CURRENCY_COST }}">Currency</th>
-                <th class="{{ model.FLAG_COST_LOCAL_VAT_EXCL }}">Cost Local (VAT excl.)</th>
-                <th class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}">Cost Local (VAT incl.)</th>
+                <th class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_EXCL }}">Cost Local (VAT excl.)</th>
+                <th class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_INCL }}">Cost Local (VAT incl.)</th>
                 <th class="{{ model.FLAG_DATE_PURCHASED}}">Date Purchased</th>
                 <th class="{{ model.FLAG_DATE_RECEIVED }}">Date Received</th>
                 <th class="{{ model.FLAG_STORAGE_LOCATION }}">Storage Location</th>

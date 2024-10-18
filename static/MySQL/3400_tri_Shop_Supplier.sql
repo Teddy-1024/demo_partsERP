@@ -47,10 +47,12 @@ BEGIN
 	SELECT NEW.id_supplier, 'department_contact', OLD.department_contact, NEW.department_contact, NEW.id_change_set
 		WHERE NOT OLD.department_contact <=> NEW.department_contact
     UNION
+    /*
 	# Changed id_address
 	SELECT NEW.id_supplier, 'id_address', OLD.id_address, NEW.id_address, NEW.id_change_set
 		WHERE NOT OLD.id_address <=> NEW.id_address
     UNION
+    */
 	# Changed phone_number
 	SELECT NEW.id_supplier, 'phone_number', OLD.phone_number, NEW.phone_number, NEW.id_change_set
 		WHERE NOT OLD.phone_number <=> NEW.phone_number

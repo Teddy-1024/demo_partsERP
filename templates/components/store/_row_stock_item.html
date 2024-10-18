@@ -15,11 +15,11 @@
         <td class="{{ model.FLAG_CURRENCY_COST }}">
             {% include 'components/store/_preview_DDL_currency.html' %}
         </td>
-        <td class="{{ model.FLAG_COST_LOCAL_VAT_EXCL }}">
-            <input class="{{ model.FLAG_COST_LOCAL_VAT_EXCL }}" type="number" min="0" value="" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}>
+        <td class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_EXCL }}">
+            <input class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_EXCL }}" type="number" min="0" value="" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}>
         </td>
-        <td class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}">
-            <input class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}" type="number" min="0" value="" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}>
+        <td class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_INCL }}">
+            <input class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_INCL }}" type="number" min="0" value="" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}>
         </td>
         <td class="{{ model.FLAG_DATE_PURCHASED }}">
             <input class="{{ model.FLAG_DATE_PURCHASED }}" type="datetime-local" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }} />
@@ -82,15 +82,15 @@
         >
             {% include 'components/store/_preview_DDL_currency.html' %}
         </td>
-        <td class="{{ model.FLAG_COST_LOCAL_VAT_EXCL }}">
-            <input class="{{ model.FLAG_COST_LOCAL_VAT_EXCL }}" type="number" step="0.001" 
+        <td class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_EXCL }}">
+            <input class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_EXCL }}" type="number" step="0.001" 
                 value="{{ stock_item.cost_local_VAT_excl }}" 
                 {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.cost_local_VAT_excl }}" 
                 {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.cost_local_VAT_excl }}" 
             >
         </td>
-        <td class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}">
-            <input class="{{ model.FLAG_COST_LOCAL_VAT_INCL }}" type="number" step="0.001" 
+        <td class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_INCL }}">
+            <input class="{{ model.FLAG_COST_UNIT_LOCAL_VAT_INCL }}" type="number" step="0.001" 
                 value="{{ stock_item.cost_local_VAT_incl }}" 
                 {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.cost_local_VAT_incl }}" 
                 {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.cost_local_VAT_incl }}" 

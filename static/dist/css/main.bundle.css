@@ -500,10 +500,6 @@ button:hover, input[type="submit"]:hover, #overlayHamburger .row *:hover {
     text-decoration: none;
 }
 
-.delete {
-    text-decoration: underline;
-}
-
 
 /* Overlay modal */
 .overlay {
@@ -609,6 +605,10 @@ td.dirty {
     height: 50vh;
 }
 
+#formFilters .container {
+    max-width: fit-content;
+}
+
 thead, tbody {
     padding-top: 0px !important;
     padding-bottom: 0px !important;
@@ -654,6 +654,15 @@ table select {
 
 table input {
     width: 90% !important;
+}
+
+table button {
+    margin: 0.25vh;
+    padding: 0.5vh 1vh;
+}
+
+tr.delete {
+    background-color: red;
 }
 
 

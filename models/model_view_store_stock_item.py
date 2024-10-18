@@ -25,16 +25,6 @@ from pydantic import BaseModel
 from typing import ClassVar
 
 class Model_View_Store_Stock_Item(Model_View_Store):
-    """
-    ID_FILTER_CATEGORY: ClassVar[str] = 'id_category'
-    ID_FILTER_PRODUCT: ClassVar[str] = 'id_product'
-    ID_FILTER_IS_OUT_OF_STOCK: ClassVar[str] = 'is_out_of_stock'
-    ID_FILTER_QUANTITY_MIN: ClassVar[str] = 'quantity_min'
-    ID_FILTER_QUANTITY_MAX: ClassVar[str] = 'quantity_max'
-    ID_Form_Filters_Permutation: ClassVar[str] = 'Form_Filters_Permutation'
-    """
-    KEY_PERMUTATIONS: ClassVar[str] = 'permutations'
-
     category_list: Product_Category_Container = None
     category_list_filters: Product_Category_Container = None
     currencies: list = None

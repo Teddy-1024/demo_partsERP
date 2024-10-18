@@ -1,0 +1,59 @@
+
+#formFilters {
+    width: 50vh;
+}
+
+#formFilters .container-input.filter.active {
+    width: 8vh;
+}
+
+#tableMain tbody tr td.name_company, #tableMain thead tr th.name_company,
+#tableMain tbody tr td.name_contact, #tableMain thead tr th.name_contact,
+#tableMain tbody tr td.department_contact, #tableMain thead tr th.department_contact,
+#tableMain tbody tr td.phone_number, #tableMain thead tr th.phone_number {
+    width: 10vh;
+    min-width: 10vh;
+}
+#tableMain tbody tr td.email, #tableMain thead tr th.email,
+#tableMain tbody tr td.website, #tableMain thead tr th.website {
+    width: 15vh;
+    min-width: 15vh;
+}
+
+#tableMain thead tr th.address.collapsed, #tableMain tbody tr td.address.collapsed {
+    width: 9vh;
+    min-width: 9vh;
+    display: table-cell !important;
+}
+#tableMain thead tr th.address, #tableMain tbody tr td.address {
+    width: 108vh;
+    min-width: 108vh;
+}
+#tableMain tbody tr td.address table thead tr th.postcode, #tableMain tbody tr td.address table tbody tr td.postcode,
+#tableMain tbody tr td.address table thead tr th.address_line_1, #tableMain tbody tr td.address table tbody tr td.address_line_1,
+#tableMain tbody tr td.address table thead tr th.address_line_2, #tableMain tbody tr td.address table tbody tr td.address_line_2,
+#tableMain tbody tr td.address table thead tr th.city, #tableMain tbody tr td.address table tbody tr td.city,
+#tableMain tbody tr td.address table thead tr th.county, #tableMain tbody tr td.address table tbody tr td.county,
+#tableMain tbody tr td.address table thead tr th.region, #tableMain tbody tr td.address table tbody tr td.region {
+    width: 15vh;
+    min-width: 15vh;
+}
+#tableMain tbody tr td.address table thead tr th.active, #tableMain tbody tr td.address table tbody tr td.active,
+#tableMain tbody tr td.address table thead tr th.add, #tableMain tbody tr td.address table tbody tr td.delete {
+    width: 5vh;
+    min-width: 5vh;
+}
+
+#tableMain thead tr th.currency.collapsed, #tableMain tbody tr td.currency.collapsed {
+    width: 9vh;
+    min-width: 9vh;
+}
+#tableMain thead tr th.currency, #tableMain tbody tr td.currency {
+    width: 11vh;
+    min-width: 11vh;
+}
+
+#tableMain tbody tr td.active, #tableMain thead tr th.active {
+    width: 5vh;
+    min-width: 5vh;
+}

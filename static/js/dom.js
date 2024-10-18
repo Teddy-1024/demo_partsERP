@@ -91,6 +91,10 @@ export default class DOM {
         if (container == null) return false;
         return container.querySelector('.' + flagDirty) != null;
     }
+    static hasDirtyChildrenNotDeletedContainer(container) {
+        if (container == null) return false;
+        return container.querySelector('.' + flagDirty + ':not(.' + flagDelete + ')') != null;
+    }
     static getElementValueCurrent(element) {
         let returnVal = '';
     
@@ -117,6 +121,7 @@ export default class DOM {
         return returnVal;
     }
     static getElementAttributeValueCurrent(element) {
+        if (Validation.isEmpty(element)) return null;
         return element.getAttribute(attrValueCurrent);
         if (!Validation.isEmpty(value) && element.type === "checkbox") {
             value = (value === 'true');
@@ -124,6 +129,7 @@ export default class DOM {
         return value;
     }
     static getElementAttributeValuePrevious(element) {
+        if (Validation.isEmpty(element)) return null;
         return element.getAttribute(attrValuePrevious);
         if (!Validation.isEmpty(value) && element.type === "checkbox") {
             value = (value === 'true');
@@ -134,13 +140,13 @@ export default class DOM {
     static updateAndCheckIsTableElementDirty(element) {
         let wasDirty = DOM.isElementDirty(element);
         let row = DOM.getRowFromElement(element);
-        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
+        let wasDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
         let isDirty = DOM.updateAndCheckIsElementDirty(element);
         let cell = DOM.getCellFromElement(element);
         console.log({element, row, cell, isDirty, wasDirty});
         if (isDirty != wasDirty) {
             DOM.handleDirtyElement(cell, isDirty);
-            let isDirtyRow = DOM.hasDirtyChildrenContainer(row);
+            let isDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
             console.log({isDirtyRow, wasDirtyRow});
             if (isDirtyRow != wasDirtyRow) {
                 DOM.handleDirtyElement(row, isDirtyRow);

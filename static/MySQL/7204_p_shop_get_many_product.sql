@@ -447,8 +447,13 @@ BEGIN
     -- WHERE guid = v_guid
     ;
     
+    IF a_debug = 1 THEN
+		SELECT * FROM tmp_Category;
+		SELECT * FROM tmp_Product;
+		SELECT * FROM tmp_Permutation;
+		SELECT * FROM tmp_Image;
+    END IF;
     
-    -- Clean up
     DROP TEMPORARY TABLE IF EXISTS tmp_Split;
     DROP TEMPORARY TABLE IF EXISTS tmp_Image;
     DROP TEMPORARY TABLE IF EXISTS tmp_Category;
@@ -481,7 +486,7 @@ CALL partsltd_prod.p_shop_get_many_product (
     , 0 # a_get_inactive_image
 	, '' # a_ids_image
     , 0 # a_get_products_quantity_stock_below_minimum
-    , 0 # a_debug
+    , 1 # a_debug
 );
 
 select * FROM partsltd_prod.Shop_Calc_User_Temp;

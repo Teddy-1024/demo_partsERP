@@ -47,10 +47,6 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         av.val_instance(parameters_stock_item, 'parameters_stock_item', _m, Parameters_Stock_Item)
         argument_dict = parameters_stock_item.to_json()
         user = self.get_user_session()
-        """
-        argument_dict['a_id_user'] = user.id_user # 'auth0|6582b95c895d09a70ba10fef' # id_user
-        argument_dict['a_debug'] = 0
-        """
         argument_dict = {
             'a_id_user': user.id_user
             , **argument_dict
@@ -64,11 +60,10 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         result = self.db_procedure_execute('p_shop_get_many_stock_item', argument_dict)
         cursor = result.cursor
         print('data received')
-        # categories, category_index = DataStore_Store_Stock_Item.input_many_product(cursor)
         category_list, errors = DataStore_Store_Stock_Item.input_many_stock_item(cursor, category_list)
         DataStore_Store_Stock_Item.db_cursor_clear(cursor)
 
-        return category_list, errors # categories, category_index
+        return category_list, errors 
 
 
     def input_many_stock_item(cursor, category_list):
