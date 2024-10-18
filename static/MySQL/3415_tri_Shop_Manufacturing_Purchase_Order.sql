@@ -35,17 +35,25 @@ BEGIN
         value_new,
         id_change_set
     )
-	# Changed cost_total_local
-	SELECT NEW.id_order, 'cost_total_local', OLD.cost_total_local, NEW.cost_total_local, NEW.id_change_set
-		WHERE NOT OLD.cost_total_local <=> NEW.cost_total_local
+	# Changed id_currency
+	SELECT NEW.id_order, 'id_currency', OLD.id_currency, NEW.id_currency, NEW.id_change_set
+		WHERE NOT OLD.id_currency <=> NEW.id_currency
     UNION
-	# Changed value_produced_total_local
-	SELECT NEW.id_order, 'value_produced_total_local', OLD.value_produced_total_local, NEW.value_produced_total_local, NEW.id_change_set
-		WHERE NOT OLD.value_produced_total_local <=> NEW.value_produced_total_local
+	# Changed cost_total_local_VAT_excl
+	SELECT NEW.id_order, 'cost_total_local_VAT_excl', OLD.cost_total_local_VAT_excl, NEW.cost_total_local_VAT_excl, NEW.id_change_set
+		WHERE NOT OLD.cost_total_local_VAT_excl <=> NEW.cost_total_local_VAT_excl
     UNION
-	# Changed id_currency_cost
-	SELECT NEW.id_order, 'id_currency_cost', OLD.id_currency_cost, NEW.id_currency_cost, NEW.id_change_set
-		WHERE NOT OLD.id_currency_cost <=> NEW.id_currency_cost
+	# Changed cost_total_local_VAT_incl
+	SELECT NEW.id_order, 'cost_total_local_VAT_incl', OLD.cost_total_local_VAT_incl, NEW.cost_total_local_VAT_incl, NEW.id_change_set
+		WHERE NOT OLD.cost_total_local_VAT_incl <=> NEW.cost_total_local_VAT_incl
+    UNION
+	# Changed price_total_local_VAT_excl
+	SELECT NEW.id_order, 'price_total_local_VAT_excl', OLD.price_total_local_VAT_excl, NEW.price_total_local_VAT_excl, NEW.id_change_set
+		WHERE NOT OLD.price_total_local_VAT_excl <=> NEW.price_total_local_VAT_excl
+    UNION
+	# Changed price_total_local_VAT_incl
+	SELECT NEW.id_order, 'price_total_local_VAT_incl', OLD.price_total_local_VAT_incl, NEW.price_total_local_VAT_incl, NEW.id_change_set
+		WHERE NOT OLD.price_total_local_VAT_incl <=> NEW.price_total_local_VAT_incl
     UNION
 	# Changed active
 	SELECT NEW.id_order, 'active', OLD.active, NEW.active, NEW.id_change_set

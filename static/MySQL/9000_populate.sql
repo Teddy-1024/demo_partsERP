@@ -690,10 +690,28 @@ VALUES
 
 # Supplier
 INSERT INTO Shop_Supplier (
-	name_company, name_contact, department_contact, id_address, phone_number, fax, email, website, id_currency
+	name_company
+    , name_contact
+    , department_contact
+    -- , id_address
+    , phone_number
+    , fax
+    , email
+    , website
+    , id_currency
 )
 VALUES
-	('Precision And Research Technology Systems Limited', 'Teddy Middleton-Smith', 'Executive Management', 1, '07375571430', '', 'teddy@partsltd.co.uk', 'www.partsltd.co.uk', 1)
+	(
+		'Precision And Research Technology Systems Limited'
+        , 'Teddy Middleton-Smith'
+        , 'Executive Management'
+        -- , 1
+        , '07375571430'
+        , ''
+        , 'teddy@partsltd.co.uk'
+        , 'www.partsltd.co.uk'
+        , 1
+	)
 ;
 
 # Suppliers
@@ -701,7 +719,7 @@ INSERT INTO Shop_Supplier (
 	name_company
 	, name_contact
 	, department_contact
-	, id_address
+	-- , id_address
 	, phone_number
 	, fax
 	, email
@@ -709,7 +727,51 @@ INSERT INTO Shop_Supplier (
 	, id_currency
 )
 VALUES
-	('Malt Kiln Farm Shop', NULL, NULL, 1, '01788 832640', NULL, 'farmshop@maltkilnfarmshop.co.uk', 'https://www.maltkilnfarmshop.co.uk/', 1)
+	(
+		'Malt Kiln Farm Shop'
+        , NULL
+        , NULL
+        -- , 1
+        , '01788 832640'
+        , NULL
+        , 'farmshop@maltkilnfarmshop.co.uk'
+        , 'https://www.maltkilnfarmshop.co.uk/'
+        , 1
+	)
+;
+
+# Supplier Addresses
+INSERT INTO Shop_Supplier_Address (
+	id_supplier
+    , id_region
+    , postcode
+    , address_line_1
+    , address_line_2
+    , city
+    , county
+    , active
+)
+VALUES 
+	( 
+		1
+		, 1
+		, 'CV22 6DN'
+		, '53 Alfred Green Close'
+		, ''
+		, 'Rugby'
+		, 'Warwickshire'
+		, 1
+	),
+    ( 
+		2
+        , 1
+		, 'CV22 6DN'
+		, '53 Alfred Green Close'
+		, ''
+		, 'Rugby'
+		, 'Warwickshire'
+		, 1
+	)
 ;
 
 /*

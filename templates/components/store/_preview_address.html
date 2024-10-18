@@ -1,0 +1,13 @@
+
+{% with _is_blank_row = (is_blank_row or address is not defined or address is none or is_blank_row is not defined) %}
+    {% if not _is_blank_row %}
+        {% set json_str = address.to_json_str() %}
+        <div 
+            class="{{ model.FLAG_ADDRESS }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ json_str }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ json_str }}"
+        >{{ address.postcode }}</div>
+    {% else %}
+        <div class="{{ model.FLAG_ADDRESS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></div>
+    {% endif %}
+{% endwith %}

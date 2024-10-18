@@ -8,10 +8,12 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier (
     name_company VARCHAR(255) NOT NULL,
     name_contact VARCHAR(255) NULL,
     department_contact VARCHAR(255) NULL,
+    /*
     id_address INT NOT NULL,
     CONSTRAINT FK_Shop_Supplier_id_address
         FOREIGN KEY (id_address)
         REFERENCES Shop_Address(id_address),
+    */
     phone_number VARCHAR(50) NULL,
     fax VARCHAR(50) NULL,
     email VARCHAR(255) NOT NULL,

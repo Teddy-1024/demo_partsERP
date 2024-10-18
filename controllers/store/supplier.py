@@ -10,62 +10,106 @@ Description:
 Initializes the Flask application, sets the configuration based on the environment, and defines two routes (/ and /about) that render templates with the specified titles.
 """
 
-
 # internal
-from business_objects.store.product import Product, Parameters_Product, Product_Permutation
-from business_objects.store.stock_item import Stock_Item
-from forms.forms import Form_Supplier
-from models.model_view_base import Model_View_Base
-from models.model_view_store import Model_View_Store
+from business_objects.store.supplier import Supplier
+from forms.store.supplier import Filters_Supplier
 from models.model_view_store_supplier import Model_View_Store_Supplier
-from models.model_view_store_product_category import Model_View_Store_Product_Category
-from models.model_view_store_product_permutation import Model_View_Store_Product_Permutation
-from models.model_view_store_stock_item import Model_View_Store_Stock_Item
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 # external
+from datetime import datetime
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session, Blueprint, current_app
 from extensions import db, oauth
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.base_client import OAuthError
 from urllib.parse import quote, urlparse, parse_qs
+import requests
 
+routes_store_supplier = Blueprint('routes_store_supplier', __name__)
 
-routes_store_supplier= Blueprint('routes_store_supplier', __name__)
-
-
-@routes_store_supplier.route('/supplier', methods=['GET'])
-def supplier():
+@routes_store_supplier.route(Model_View_Store_Supplier.HASH_PAGE_STORE_SUPPLIERS, methods=['GET'])
+def suppliers():
+    print('suppliers')
     try:
-        data = request.json
-    except:
-        data = {}
-    print(f'data={data}')
-    form_data = data[Model_View_Store_Supplier.key_form]
-    print(f'form_data: {form_data}')
-    form = Form_Supplier(**form_data)
-    print('form acquired')
-    print(form.__repr__)
-    if form.validate_on_submit():
-        print('valid form')
-        # model = input_JSON_basket(model, data)
-        # if not logged in:
-        try:
-            model = Model_View_Store_Supplier(form)
-            if not model.is_user_logged_in:
-                # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Supplier.FLAG_CALLBACK: Model_View_Store_Supplier.HASH_PAGE_STORE_SUPPLIERS })))
-                return redirect(url_for('routes_core.home'))
-            # print('importing basket')
-            # model.import_JSON_basket(data)
-            model.get_basket(data)
-            permutation_id, quantity = model.import_JSON_basket_item(data, form)
-            model.basket_item_edit(permutation_id, quantity, False) # new_basket = 
-        except Exception as e:
-            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
-        # return jsonify(Success = True, data = { html_block: render_template(), Model_View_Store.key_basket: new_basket })
-        # html_block = render_template('_block_store_basket.html', model = model)
-        # print(f'html_block:\n{html_block}')
-        # return jsonify(Success = True, data = { 'html_block': html_block, 'basket': {'items': model.basket.to_json_list()}})
-        return render_template('pages/store/_supplier.html', model = model)
-    return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Invalid supplier details.\n{form.errors}'})
+        form_filters = Filters_Supplier.from_json(request.args)
+    except Exception as e:
+        print(f'Error: {e}')
+        form_filters = Filters_Supplier()
+    print(f'form_filters={form_filters}')
+    model = Model_View_Store_Supplier(form_filters)
+    if not model.is_user_logged_in:
+        return redirect(url_for('routes_core.home'))
+    return render_template('pages/store/_suppliers.html', model = model, datetime = datetime)
+
+@routes_store_supplier.route(Model_View_Store_Supplier.HASH_GET_STORE_SUPPLIER, methods=['POST'])
+def filter_supplier():
+    data = Helper_App.get_request_data(request)
+    try:
+        form_filters = Filters_Supplier.from_json(data)
+        if not form_filters.validate_on_submit():
+            error_keys = list(form_filters.errors.keys())
+            try:
+                error_keys.remove(Supplier.ATTR_ID_PRODUCT_CATEGORY)
+            except:
+                pass
+            try:
+                error_keys.remove(Supplier.ATTR_ID_PRODUCT)
+            except:
+                pass
+            if error_keys:
+                return jsonify({
+                    Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_FAILURE, 
+                    Model_View_Store_Supplier.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
+                })
+        model = Model_View_Store_Supplier(filters_supplier = form_filters)
+        if not model.is_user_logged_in:
+            raise Exception('User not logged in.')
+        return jsonify({
+            Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_SUCCESS, 
+            Model_View_Store_Supplier.FLAG_DATA: {supplier.id_supplier: supplier.to_json() for supplier in model.suppliers}
+        })
+    except Exception as e:
+        return jsonify({
+            Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_FAILURE, 
+            Model_View_Store_Supplier.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
+        })
+
+@routes_store_supplier.route(Model_View_Store_Supplier.HASH_SAVE_STORE_SUPPLIER, methods=['POST'])
+def save_supplier():
+    data = Helper_App.get_request_data(request)
+    try:
+        form_filters = Filters_Supplier.from_json(data[Model_View_Store_Supplier.FLAG_FORM_FILTERS])
+        print(f'form_filters: {form_filters}')
+
+        suppliers = data[Model_View_Store_Supplier.FLAG_SUPPLIER]
+        if len(suppliers) == 0:
+            return jsonify({
+                Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_FAILURE, 
+                Model_View_Store_Supplier.FLAG_MESSAGE: f'No stock items.'
+            })
+        print(f'suppliers={suppliers}')
+        objs_supplier = []
+        for supplier in suppliers:
+            objs_supplier.append(Supplier.from_json(supplier))
+        print(f'objs_supplier={objs_supplier}')
+
+        save_errors = Model_View_Store_Supplier.save_suppliers(data.get('comment', 'No comment'), objs_supplier)
+        if len(save_errors) > 0:
+            return jsonify({
+                Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_FAILURE, 
+                Model_View_Store_Supplier.FLAG_MESSAGE: f'Save errors: {save_errors}'
+            })
+        model_return = Model_View_Store_Supplier(form_filters_old = form_filters)
+        if not model_return.is_user_logged_in:
+            raise Exception('User not logged in.')
+        return jsonify({
+            Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_SUCCESS, 
+            Model_View_Store_Supplier.FLAG_DATA: {supplier.id_supplier: supplier.to_json() for supplier in model_return.suppliers}
+        })
+    except Exception as e:
+        return jsonify({
+            Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_FAILURE, 
+            Model_View_Store_Supplier.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
+        })
+    

@@ -27,22 +27,18 @@ module.exports = {
     ],
     // Core
     core_home: [
-      // path.resolve(__dirname, 'static/js/pages/core/home.js'),
       path.resolve(__dirname, 'static/css/sections/core.css'),
       path.resolve(__dirname, 'static/css/pages/core/home.css')
     ],
     core_contact: [
-      // path.resolve(__dirname, 'static/js/pages/core/contact.js'),
       path.resolve(__dirname, 'static/css/sections/core.css'),
       path.resolve(__dirname, 'static/css/pages/core/contact.css')
     ],
     core_services: [
-      // path.resolve(__dirname, 'static/js/pages/core/services.js'),
       path.resolve(__dirname, 'static/css/sections/core.css'),
       path.resolve(__dirname, 'static/css/pages/core/services.css')
     ],
     core_admin_home: [
-      // path.resolve(__dirname, 'static/js/pages/core/admin_home.js'),
       path.resolve(__dirname, 'static/css/sections/core.css'),
       path.resolve(__dirname, 'static/css/pages/core/admin_home.css')
     ],
@@ -55,51 +51,53 @@ module.exports = {
     ],
     */
     legal_accessibility_statement: [
-      // path.resolve(__dirname, 'static/js/pages/legal/accessibility_statement.js'),
       path.resolve(__dirname, 'static/css/sections/legal.css'),
       path.resolve(__dirname, 'static/css/pages/legal/accessibility_statement.css')
     ],
     legal_retention_schedule: [
-      // path.resolve(__dirname, 'static/js/pages/legal/retention_schedule.js'),
       path.resolve(__dirname, 'static/css/sections/legal.css'),
       path.resolve(__dirname, 'static/css/pages/legal/retention_schedule.css')
     ],
     legal_license: [
-      // path.resolve(__dirname, 'static/js/pages/legal/license.js'),
       path.resolve(__dirname, 'static/css/sections/legal.css'),
       path.resolve(__dirname, 'static/css/pages/legal/license.css')
     ],
     legal_privacy_policy: [
-      // path.resolve(__dirname, 'static/js/pages/legal/privacy_policy.js'),
       path.resolve(__dirname, 'static/css/sections/legal.css'),
       path.resolve(__dirname, 'static/css/pages/legal/privacy_policy.css')
     ],
     // Store
     store_home: [
-      // path.resolve(__dirname, 'static/js/pages/store/home.js'),
       path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/home.css')
     ],
     store_products: [
-      // path.resolve(__dirname, 'static/js/pages/store/product_categories.js'),
       path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/products.css')
     ],
     store_product_categories: [
-      // path.resolve(__dirname, 'static/js/pages/store/product_categories.js'),
       path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/product_categories.css')
     ],
     store_product_permutations: [
-      // path.resolve(__dirname, 'static/js/pages/store/product_permutations.js'),
-      // path.resolve(__dirname, 'templates/js/sections/store.js'), // templates don't work
       path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/product_permutations.css')
     ],
     store_stock_items: [
-      // path.resolve(__dirname, 'static/js/pages/store/stock_items.js'),
       path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/stock_items.css')
+    ],
+    store_suppliers: [
+      path.resolve(__dirname, 'static/css/sections/store.css'),
+      path.resolve(__dirname, 'static/css/pages/store/supplier.css')
+    ],
+    store_supplier_purchase_orders: [
+      path.resolve(__dirname, 'static/css/sections/store.css'),
+      path.resolve(__dirname, 'static/css/pages/store/supplier_purchase_order.css')
+    ],
+    store_manufacturing_purchase_orders: [
+      path.resolve(__dirname, 'static/css/sections/store.css'),
+      path.resolve(__dirname, 'static/css/pages/store/manufacturing_purchase_order.css')
     ],
   },
   output: {

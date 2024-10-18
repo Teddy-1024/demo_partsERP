@@ -23,24 +23,26 @@ BEGIN
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_type_error_bad_data := (SELECT code FROM Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-    SET v_id_type_error_no_permission := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
-	SET v_id_permission_supplier := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
+    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
+    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
+	SET v_id_permission_supplier := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
     
 	SET a_get_all_supplier := IFNULL(a_get_all_supplier, 0);
 	SET a_get_inactive_supplier := IFNULL(a_get_inactive_supplier, 0);
 	SET a_ids_supplier := TRIM(IFNULL(a_ids_supplier, ''));
     
     DROP TEMPORARY TABLE IF EXISTS tmp_Supplier;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Split;
     
     CREATE TEMPORARY TABLE tmp_Supplier (
 		id_supplier INT NOT NULL
     );
     
-	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 		id_type INT NOT NULL,
         code VARCHAR(50) NOT NULL,
@@ -94,7 +96,7 @@ BEGIN
                 OR ISNULL(S.id_supplier)
 				OR (
 					S.active = 0
-					AND v_get_inactive_supplier = 0
+					AND a_get_inactive_supplier = 0
 				)
 		) THEN
 			INSERT INTO tmp_Msg_Error (
@@ -113,7 +115,7 @@ BEGIN
 				OR ISNULL(S.id_supplier)
 				OR (
 					S.active = 0
-					AND v_get_inactive_supplier = 0
+					AND a_get_inactive_supplier = 0
 				)
 			;
 		ELSE
@@ -173,14 +175,14 @@ BEGIN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
-			, id_type
+			id_type
 			, code
 			, msg
 		)
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			CONCAT('You do not have view permissions for ', (SELECT name FROM Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
 		)
 		;
 	END IF;
@@ -193,8 +195,9 @@ BEGIN
     # Suppliers
     SELECT 
 		t_S.id_supplier,
-		S.id_address,
 		S.id_currency,
+        C.symbol AS symbol_currency,
+        C.code AS code_currency,
         S.name_company,
 		S.name_contact,
 		S.department_contact,
@@ -204,14 +207,32 @@ BEGIN
 		S.website,
 		S.active
     FROM tmp_Supplier t_S
-    INNER JOIN Shop_Supplier S
-		ON t_S.id_supplier = S.id_supplier
+    INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
+    LEFT JOIN partsltd_prod.Shop_Currency C ON S.id_currency = C.id_currency
+	;
+    
+    # Supplier Addresses
+    SELECT 
+		t_S.id_supplier
+		, SA.id_address
+        , SA.id_region
+        , R.name AS name_region
+        , SA.postcode
+        , SA.address_line_1
+        , SA.address_line_2
+        , SA.city
+        , SA.county
+        , SA.active
+    FROM tmp_Supplier t_S
+    INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
+    INNER JOIN partsltd_prod.Shop_Supplier_Address SA ON S.id_supplier = SA.id_supplier
+    LEFT JOIN partsltd_prod.Shop_Region R ON SA.id_region = R.id_region
 	;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     IF a_debug = 1 THEN
@@ -220,6 +241,7 @@ BEGIN
 
     DROP TEMPORARY TABLE IF EXISTS tmp_Supplier;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Split;
 	
     IF a_debug = 1 THEN
 		CALL p_debug_timing_reporting( v_time_start );
@@ -228,6 +250,7 @@ END //
 DELIMITER ;;
 
 
+/*
 
 CALL p_shop_get_many_supplier (
 	1 -- 'auth0|6582b95c895d09a70ba10fef' # a_id_user
@@ -237,5 +260,4 @@ CALL p_shop_get_many_supplier (
     , 0 # a_debug
 );
 
-/*
 */

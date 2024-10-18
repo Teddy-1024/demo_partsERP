@@ -45,6 +45,7 @@ export default class BasePage {
         // hookupVideos();
         this.hookupNavigation();
         this.hookupImagesLogo();
+        this.hookupOverlays();
     }
     
     hookupNavigation() {
@@ -75,8 +76,11 @@ export default class BasePage {
         this.hookupButtonsNavUserLogout();
         this.hookupButtonsNavUserLogin();
         this.hookupButtonsNavStoreHome();
+        this.hookupButtonsNavStoreManufacturingPurchaseOrders();
         this.hookupButtonsNavStoreProductPermutations();
         this.hookupButtonsNavStoreStockItems();
+        this.hookupButtonsNavStoreSuppliers();
+        this.hookupButtonsNavStoreSupplierPurchaseOrders();
         this.hookupButtonsNavAdminHome();
     }
     hookupEventHandler(eventType, selector, callback) {
@@ -131,6 +135,9 @@ export default class BasePage {
     hookupButtonsNavStoreHome() {
         this.hookupButtonsNav('.' + flagNavStoreHome, hashPageStoreHome);
     }
+    hookupButtonsNavStoreManufacturingPurchaseOrders() {
+        this.hookupButtonsNav('.' + flagNavStoreManufacturingPurchaseOrders, hashPageStoreManufacturingPurchaseOrders);
+    }
     hookupButtonsNavStoreProductCategories() {
         this.hookupButtonsNav('.' + flagNavStoreProductCategories, hashPageStoreProductCategories);
     }
@@ -152,14 +159,25 @@ export default class BasePage {
     hookupButtonsNavAdminHome() {
         this.hookupButtonsNav('.' + flagNavAdminHome, hashPageAdminHome);
     }
+    hookupButtonsNavStoreSuppliers() {
+        this.hookupButtonsNav('.' + flagNavStoreSuppliers, hashPageStoreSuppliers);
+    }
+    hookupButtonsNavStoreSupplierPurchaseOrders() {
+        this.hookupButtonsNav('.' + flagNavStoreSupplierPurchaseOrders, hashPageStoreSupplierPurchaseOrders);
+    }
 
     hookupImagesLogo() {
         this.hookupButtonsNav("img." + flagImageLogo, hashPageHome);
     }
 
+    hookupOverlays() {
+        this.hookupOverlayFromId(idOverlayConfirm);
+        this.hookupOverlayFromId(idOverlayError);
+    }
+
     hookupOverlayFromId(idOverlay) {
         Events.initialiseEventHandler(idOverlay, flagInitialised, (overlay) => {
-            overlay.querySelector('button.' + flagClose).addEventListener("click", (event) => {
+            overlay.querySelector('button.' + flagCancel).addEventListener("click", (event) => {
                 event.stopPropagation();
                 overlay.css('display', 'none');
             });

@@ -16,27 +16,40 @@ DROP TABLE IF EXISTS tmp_Price;
 DROP TABLE IF EXISTS tmp_Shop_User;
 DROP TABLE IF EXISTS tmp_Shop_Order;
 DROP TABLE IF EXISTS tmp_Shop_Product;
+DROP TABLE IF EXISTS tmp_Product;
+DROP TABLE IF EXISTS tmp_Product_Permutation;
+DROP TABLE IF EXISTS tmp_Permutation;
 DROP TABLE IF EXISTS tmp_Shop_Product_p_shop_calc_user;
 DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_Calc_User;
 DROP TABLE IF EXISTS tmp_Shop_Image;
+DROP TABLE IF EXISTS tmp_Image;
+DROP TABLE IF EXISTS tmp_Product_Image;
 DROP TABLE IF EXISTS tmp_Shop_Variation;
+DROP TABLE IF EXISTS tmp_Variation;
+DROP TABLE IF EXISTS tmp_Variation_Type;
 DROP TABLE IF EXISTS tmp_Shop_Discount;
 DROP TABLE IF EXISTS tmp_Discount;
 DROP TABLE IF EXISTS tmp_Shop_Category;
+DROP TABLE IF EXISTS tmp_Category;
 DROP TABLE IF EXISTS tmp_Shop_Product_Category;
+DROP TABLE IF EXISTS tmp_Product_Category;
 DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Region_Link;
 DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Link;
 DROP TABLE IF EXISTS tmp_User_Role_Link;
 DROP TABLE IF EXISTS tmp_Shop_Basket;
 DROP TABLE IF EXISTS tmp_Shop_Supplier_Purchase_Order_Product_Link;
+DROP TABLE IF EXISTS tmp_Supplier_Purchase_Order_Product_Link;
 DROP TABLE IF EXISTS tmp_Shop_Supplier_Purchase_Order;
+DROP TABLE IF EXISTS tmp_Supplier_Purchase_Order;
 DROP TABLE IF EXISTS tmp_Shop_Supplier;
+DROP TABLE IF EXISTS tmp_Supplier;
 DROP TABLE IF EXISTS tmp_Shop_Manufacturing_Purchase_Order_Product_Link;
+DROP TABLE IF EXISTS tmp_Manufacturing_Purchase_Order_Product_Link;
 DROP TABLE IF EXISTS tmp_Shop_Manufacturing_Purchase_Order;
+DROP TABLE IF EXISTS tmp_Manufacturing_Purchase_Order;
 DROP TABLE IF EXISTS tmp_Shop_Customer;
 DROP TABLE IF EXISTS tmp_Shop_Customer_Sale_Order_Product_Link;
 DROP TABLE IF EXISTS tmp_Shop_Customer_Sale_Order;
-
 
 
 # Delete old tables
@@ -62,6 +75,7 @@ DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
 DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Audit;
 DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link;
 
+DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Temp;
 DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Audit;
 DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order;
 
@@ -69,8 +83,13 @@ DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link_Temp;
 DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link_Audit;
 DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link;
 
+DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Temp;
 DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Audit;
 DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order;
+
+DROP TABLE IF EXISTS Shop_Supplier_Address_Temp;
+DROP TABLE IF EXISTS Shop_Supplier_Address_Audit;
+DROP TABLE IF EXISTS Shop_Supplier_Address;
 
 DROP TABLE IF EXISTS Shop_Supplier_Temp;
 DROP TABLE IF EXISTS Shop_Supplier_Audit;

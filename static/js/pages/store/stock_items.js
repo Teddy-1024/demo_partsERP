@@ -10,6 +10,7 @@ import StoreTableMixinPage from "./mixin_table.js";
 
 export default class PageStoreStockItems extends TableBasePage {
     static hash = hashPageStoreStockItems;
+    static attrIdRowObject = attrIdStockItem;
     callFilterTableContent = API.getStockItemsByFilters;
     callSaveTableContent = API.saveStockItems;
 
@@ -73,8 +74,8 @@ export default class PageStoreStockItems extends TableBasePage {
         let tdProduct = row.querySelector('td.' + flagProduct);
         let tdProductVariations = row.querySelector('td.' + flagProductVariations);
         let tdCurrencyCost = row.querySelector('td.' + flagCurrencyCost);
-        let inputCostLocalVatExcl = row.querySelector('td.' + flagCostLocalVatExcl + ' input');
-        let inputCostLocalVatIncl = row.querySelector('td.' + flagCostLocalVatIncl + ' input');
+        let inputCostLocalVatExcl = row.querySelector('td.' + flagCostUnitLocalVatExcl + ' input');
+        let inputCostLocalVatIncl = row.querySelector('td.' + flagCostUnitLocalVatIncl + ' input');
         let inputDatePurchased = row.querySelector('td.' + flagDatePurchased + ' input');
         let inputDateReceived = row.querySelector('td.' + flagDateReceived + ' input');
         let tdStorageLocation = row.querySelector('td.' + flagStorageLocation);
@@ -93,8 +94,8 @@ export default class PageStoreStockItems extends TableBasePage {
         jsonRow[flagProductVariations] = DOM.getElementAttributeValueCurrent(tdProductVariations);
         jsonRow[flagHasVariations] = jsonRow[flagProductVariations] != '';
         jsonRow[flagCurrencyCost] = DOM.getElementAttributeValueCurrent(tdCurrencyCost);
-        jsonRow[flagCostLocalVatExcl] = DOM.getElementAttributeValueCurrent(inputCostLocalVatExcl);
-        jsonRow[flagCostLocalVatIncl] = DOM.getElementAttributeValueCurrent(inputCostLocalVatIncl);
+        jsonRow[flagCostUnitLocalVatExcl] = DOM.getElementAttributeValueCurrent(inputCostLocalVatExcl);
+        jsonRow[flagCostUnitLocalVatIncl] = DOM.getElementAttributeValueCurrent(inputCostLocalVatIncl);
         jsonRow[flagDatePurchased] = DOM.getElementAttributeValueCurrent(inputDatePurchased);
         jsonRow[flagDateReceived] = DOM.getElementAttributeValueCurrent(inputDateReceived);
         jsonRow[attrIdStorageLocation] = DOM.getElementAttributeValueCurrent(tdStorageLocation);
@@ -189,8 +190,8 @@ export default class PageStoreStockItems extends TableBasePage {
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagCurrencyCost, Utils.getListFromDict(currencies));
     }
     hookupCostInputs(){
-        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostLocalVatExcl + ' input');
-        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostLocalVatIncl + ' input');
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostUnitLocalVatExcl + ' input');
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostUnitLocalVatIncl + ' input');
     }
     hookupOrderDateInputs(){
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagDatePurchased + ' input');

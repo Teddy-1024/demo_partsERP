@@ -500,10 +500,6 @@ button:hover, input[type="submit"]:hover, #overlayHamburger .row *:hover {
     text-decoration: none;
 }
 
-.delete {
-    text-decoration: underline;
-}
-
 
 /* Overlay modal */
 .overlay {

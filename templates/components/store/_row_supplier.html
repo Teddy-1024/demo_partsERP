@@ -1,0 +1,69 @@
+{% if is_blank_row %}
+    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_SUPPLIER }}>
+        <td class="{{ model.FLAG_NAME_COMPANY }}">
+            <textarea class="{{ model.FLAG_NAME_COMPANY }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_NAME_CONTACT }}">
+            <textarea class="{{ model.FLAG_NAME_CONTACT }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_DEPARTMENT_CONTACT }}">
+            <textarea class="{{ model.FLAG_DEPARTMENT_CONTACT }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_ADDRESS }} {{ model.FLAG_COLLAPSED }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
+            {% include 'components/store/_preview_address.html' %}
+        </td>
+        <td class="{{ model.FLAG_PHONE_NUMBER }}">
+            <textarea class="{{ model.FLAG_PHONE_NUMBER }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_FAX }}">
+            <textarea class="{{ model.FLAG_FAX }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_EMAIL }}">
+            <textarea class="{{ model.FLAG_EMAIL }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_WEBSITE }}">
+            <textarea class="{{ model.FLAG_WEBSITE }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
+            {% include 'components/store/_preview_DDL_currency.html' %}
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}">
+        </td>
+    </tr>
+{% else %}
+    <tr {{ model.ATTR_ID_SUPPLIER }}="{{ supplier.id_supplier }}">
+        <td class="{{ model.FLAG_NAME_COMPANY }}">
+            <textarea class="{{ model.FLAG_NAME_COMPANY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.name_company }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.name_company }}">{{ supplier.name_company }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_NAME_CONTACT }}">
+            <textarea class="{{ model.FLAG_NAME_CONTACT }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.name_contact }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.name_contact }}">{{ supplier.name_contact }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_DEPARTMENT_CONTACT }}">
+            <textarea class="{{ model.FLAG_DEPARTMENT_CONTACT }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.department_contact }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.department_contact }}">{{ supplier.department_contact }}</textarea>
+        </td>
+        {% set address = supplier.get_address_active() %}
+        <td class="{{ model.FLAG_ADDRESS }} {{ model.FLAG_COLLAPSED }}" {{ model.ATTR_VALUE_CURRENT }}="{{ address.id_address }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ address.id_address }}">
+            {% include 'components/store/_preview_address.html' %}
+        </td>
+        <td class="{{ model.FLAG_PHONE_NUMBER }}">
+            <textarea class="{{ model.FLAG_PHONE_NUMBER }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.name_company }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.phone_number }}">{{ supplier.phone_number }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_FAX }}">
+            <textarea class="{{ model.FLAG_FAX }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.name_company }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.fax }}">{{ supplier.fax }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_EMAIL }}">
+            <textarea class="{{ model.FLAG_EMAIL }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.name_company }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.email }}">{{ supplier.email }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_WEBSITE }}">
+            <textarea class="{{ model.FLAG_WEBSITE }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.website }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.website }}">{{ supplier.website }}</textarea>
+        </td>
+        {% set currency = supplier.currency %}
+        <td class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ currency.id_currency }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ currency.id_currency }}">
+            {% include 'components/store/_preview_DDL_currency.html' %}
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.active | lower }}">
+        </td>
+    </tr>
+{% endif %}

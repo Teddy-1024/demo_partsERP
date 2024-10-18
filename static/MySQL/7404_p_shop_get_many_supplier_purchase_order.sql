@@ -26,19 +26,19 @@ BEGIN
     DECLARE v_has_filter_date_from BIT;
     DECLARE v_has_filter_date_to BIT;
     DECLARE v_id_access_level_view INT;
-    DECLARE v_ids_permission_supplier_purchase_order INT;
+    DECLARE v_ids_permission_supplier_purchase_order VARCHAR(100);
     DECLARE v_id_type_error_bad_data INT;
     DECLARE v_id_type_error_no_permission INT;
     DECLARE v_time_start TIMESTAMP(6);
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_type_error_bad_data := (SELECT code FROM Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-    SET v_id_type_error_no_permission := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
-    SET v_ids_permission_supplier_purchase_order := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_SUPPLIER_PURCHASE_ORDER' LIMIT 1);
+    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+    SET v_ids_permission_supplier_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_SUPPLIER', 'STORE_SUPPLIER_PURCHASE_ORDER', 'STORE_PRODUCT'));
 	
 	SET a_get_all_supplier := IFNULL(a_get_all_supplier, 1);
 	SET a_get_inactive_supplier := IFNULL(a_get_inactive_supplier, 0);
@@ -51,31 +51,37 @@ BEGIN
 	SET a_date_to := IFNULL(a_date_to, NULL);
 	SET a_debug := IFNULL(a_debug, 0);
     
-    DROP TABLE IF EXISTS tmp_Supplier_Purchase_Order_Product_Link;
-    DROP TABLE IF EXISTS tmp_Supplier_Purchase_Order;
-    DROP TABLE IF EXISTS tmp_Supplier;
-    DROP TABLE IF EXISTS tmp_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Supplier_Purchase_Order_Product_Link;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Supplier_Purchase_Order;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Supplier;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Split;
     
-    CREATE TABLE tmp_Supplier (
+    CREATE TEMPORARY TABLE tmp_Supplier (
 		id_supplier INT NOT NULL PRIMARY KEY
     );
     
-    CREATE TABLE tmp_Supplier_Purchase_Order (
+    CREATE TEMPORARY TABLE tmp_Supplier_Purchase_Order (
 		id_order INT NOT NULL PRIMARY KEY
     );
     
-    CREATE TABLE tmp_Supplier_Purchase_Order_Product_Link (
-		id_link INT NOT NULL PRIMARY KEY,
-		id_order INT NOT NULL,
-		id_permutation INT NOT NULL
+    CREATE TEMPORARY TABLE tmp_Permutation (
+		id_permutation INT NOT NULL PRIMARY KEY
     );
     
-	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 		id_type INT NOT NULL,
         code VARCHAR(50) NOT NULL,
         msg VARCHAR(4000) NOT NULL
 	);
+    
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Split (
+		substring VARCHAR(4000) NOT NULL
+        , as_int INT NULL
+	);
+    DELETE FROM tmp_Split;
     
     SET v_has_filter_supplier = CASE WHEN a_ids_supplier = '' THEN 0 ELSE 1 END;
     SET v_has_filter_order = CASE WHEN a_ids_order = '' THEN 0 ELSE 1 END;
@@ -189,7 +195,7 @@ BEGIN
 				OR ISNULL(S.id_supplier)
 				OR (
 					S.active = 0
-					AND v_get_inactive_supplier = 0
+					AND a_get_inactive_supplier = 0
 				)
 		) THEN
 			INSERT INTO tmp_Msg_Error (
@@ -208,7 +214,7 @@ BEGIN
 				OR ISNULL(S.id_supplier)
 				OR (
 					S.active = 0
-					AND v_get_inactive_supplier = 0
+					AND a_get_inactive_supplier = 0
 				)
 			;
 		ELSE
@@ -267,7 +273,7 @@ BEGIN
                 OR ISNULL(SPO.id_order)
 				OR (
 					SPO.active = 0
-					AND v_get_inactive_order = 0
+					AND a_get_inactive_order = 0
 				)
 		) THEN
 			INSERT INTO tmp_Msg_Error (
@@ -286,7 +292,7 @@ BEGIN
                 OR ISNULL(SPO.id_order)
 				OR (
 					SPO.active = 0
-					AND v_get_inactive_order = 0
+					AND a_get_inactive_order = 0
 				)
 			;
 		ELSE
@@ -340,40 +346,40 @@ BEGIN
 			v_guid
 			, a_id_user
 			, FALSE -- get inactive users
-			, v_id_permission_supplier_purchase_order
+			, v_ids_permission_supplier_purchase_order
 			, v_id_access_level_view
 			, '' -- ids_product
 			, 0 -- a_debug
 		;
-		SELECT * from Shop_Calc_User_Temp;
+		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
 	END IF;
 	
 	CALL p_shop_calc_user(
 		v_guid
 		, a_id_user
 		, FALSE -- get inactive users
-		, v_id_permission_supplier_purchase_order
+		, v_ids_permission_supplier_purchase_order
 		, v_id_access_level_view
 		, '' -- ids_product
 		, 0 -- a_debug
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from Shop_Calc_User_Temp;
+		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
-			, id_type
+			id_type
 			, code
 			, msg
 		)
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			CONCAT('You do not have view permissions for ', (SELECT name FROM Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
 		)
 		;
 	END IF;
@@ -399,7 +405,7 @@ BEGIN
 		S.id_currency,
 		t_S.active
     FROM tmp_Supplier t_S
-    INNER JOIN Shop_Supplier S
+    INNER JOIN partsltd_prod.Shop_Supplier S
 		ON t_S.id_supplier = S.id_supplier
 	;
     */
@@ -412,6 +418,12 @@ BEGIN
 		, SPO.cost_total_local_VAT_excl
 		, SPO.cost_total_local_VAT_incl
         , SPO.active
+        , SPO.created_on
+        , CONCAT(
+			SPO.cost_total_local_VAT_excl
+            , ' on '
+            , SPO.created_on
+		) AS name
     FROM tmp_Supplier_Purchase_Order t_SPO 
 	INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON SPO.id_order = t_SPO.id_order
     ;
@@ -422,23 +434,25 @@ BEGIN
 		, SPOPL.id_order
 		, SPOPL.id_permutation
         , fn_shop_get_product_permutation_name(SPOPL.id_permutation) AS name_permutation
-		, SPOPL.id_currency_cost
+		-- , SPOPL.id_currency_cost
 		, SPOPL.id_unit_quantity
 		, SPOPL.quantity_ordered
 		, SPOPL.quantity_received
 		, SPOPL.latency_delivery_days
 		, SPOPL.display_order
-		, SPO.cost_total_local_VAT_excl
-		, SPO.cost_total_local_VAT_incl
-    FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-    INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPOPL.id_link = SPOPL.id_link
-    INNER JOIN tmp_Supplier_Purchase_Order t_SPO ON SPOPL.id_order = t_SPO.id_order
+		, SPOPL.cost_total_local_VAT_excl
+		, SPOPL.cost_total_local_VAT_incl
+		, SPOPL.cost_unit_local_VAT_excl
+		, SPOPL.cost_unit_local_VAT_incl
+        , SPOPL.active
+    FROM tmp_Supplier_Purchase_Order t_SPO
+    INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPO.id_order = SPOPL.id_order
     ;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     IF a_debug = 1 THEN
@@ -450,7 +464,9 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Supplier_Purchase_Order_Product_Link;
     DROP TEMPORARY TABLE IF EXISTS tmp_Supplier_Purchase_Order;
     DROP TEMPORARY TABLE IF EXISTS tmp_Supplier;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Split;
 	
     IF a_debug = 1 THEN
 		CALL p_debug_timing_reporting( v_time_start );
@@ -459,15 +475,14 @@ END //
 DELIMITER ;;
 
 
-/*
 
 CALL p_shop_get_many_supplier_purchase_order (
-	'', # a_id_user
+	1, # a_id_user
     1, # a_get_all_supplier
 	0, # a_get_inactive_supplier
     '', # a_ids_supplier
 	1, # a_get_all_order
-	-- 0, # a_get_inactive_order
+	0, # a_get_inactive_order
     '', # a_ids_order
     '', # a_ids_permutation
     NULL, # a_date_from
@@ -475,4 +490,5 @@ CALL p_shop_get_many_supplier_purchase_order (
 	, 0 # a_debug
 );
 
+/*
 */

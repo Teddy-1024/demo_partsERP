@@ -1,16 +1,22 @@
 
-
 # Manufacturing Purchase Order
-
-
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order';
 
 CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order (
 	id_order INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    /*
 	cost_total_local FLOAT NOT NULL,
     id_currency_cost INT NOT NULL,
-    value_produced_total_local FLOAT NOT NULL,
+    */
+    id_currency INT NOT NULL,
+    CONSTRAINT FK_Manufacturing_Purchase_Order_id_currency
+		FOREIGN KEY (id_currency) 
+        REFERENCES Shop_Currency(id_currency),
+    cost_total_local_VAT_excl FLOAT NOT NULL,
+    cost_total_local_VAT_incl FLOAT NOT NULL,
+    price_total_local_VAT_excl FLOAT NOT NULL,
+    price_total_local_VAT_incl FLOAT NOT NULL,
     /*
     latency_delivery INT NOT NULL,
 	quantity_ordered FLOAT NOT NULL,

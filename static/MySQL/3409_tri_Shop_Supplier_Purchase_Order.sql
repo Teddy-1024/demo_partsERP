@@ -39,13 +39,17 @@ BEGIN
 	SELECT NEW.id_order, 'id_supplier_ordered', OLD.id_supplier_ordered, NEW.id_supplier_ordered, NEW.id_change_set
 		WHERE NOT OLD.id_supplier_ordered <=> NEW.id_supplier_ordered
     UNION
-	# Changed cost_total_local
-	SELECT NEW.id_order, 'cost_total_local', OLD.cost_total_local, NEW.cost_total_local, NEW.id_change_set
-		WHERE NOT OLD.cost_total_local <=> NEW.cost_total_local
-    UNION
 	# Changed id_currency_cost
 	SELECT NEW.id_order, 'id_currency_cost', OLD.id_currency_cost, NEW.id_currency_cost, NEW.id_change_set
 		WHERE NOT OLD.id_currency_cost <=> NEW.id_currency_cost
+    UNION
+	# Changed cost_total_local_VAT_excl
+	SELECT NEW.id_order, 'cost_total_local_VAT_excl', OLD.cost_total_local_VAT_excl, NEW.cost_total_local_VAT_excl, NEW.id_change_set
+		WHERE NOT OLD.cost_total_local_VAT_excl <=> NEW.cost_total_local_VAT_excl
+    UNION
+	# Changed cost_total_local_VAT_incl
+	SELECT NEW.id_order, 'cost_total_local_VAT_incl', OLD.cost_total_local_VAT_incl, NEW.cost_total_local_VAT_incl, NEW.id_change_set
+		WHERE NOT OLD.cost_total_local_VAT_incl <=> NEW.cost_total_local_VAT_incl
 	/*
     UNION
 	# Changed latency_delivery

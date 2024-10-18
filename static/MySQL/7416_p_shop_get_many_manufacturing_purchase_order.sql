@@ -5,9 +5,6 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_manufacturing_purchase_order;
 DELIMITER //
 CREATE PROCEDURE p_shop_get_many_manufacturing_purchase_order (
 	IN a_id_user INT,
-    IN a_get_all_manufacturing BIT,
-	IN a_get_inactive_manufacturing BIT,
-	IN a_ids_manufacturing TEXT,
     IN a_get_all_order BIT,
 	IN a_get_inactive_order BIT,
 	IN a_ids_order TEXT,
@@ -25,19 +22,19 @@ BEGIN
     DECLARE v_has_filter_date_from BIT;
     DECLARE v_has_filter_date_to BIT;
     DECLARE v_id_access_level_view INT;
-    DECLARE v_ids_permission_manufacturing_purchase_order INT;
+    DECLARE v_ids_permission_manufacturing_purchase_order VARCHAR(100);
     DECLARE v_id_type_error_bad_data INT;
     DECLARE v_id_type_error_no_permission INT;
     DECLARE v_time_start TIMESTAMP(6);
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_type_error_bad_data := (SELECT code FROM Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-    SET v_id_type_error_no_permission := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
-    SET v_ids_permission_manufacturing_purchase_order := (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_SUPPLIER_PURCHASE_ORDER' LIMIT 1);
+    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
+    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
+    SET v_ids_permission_manufacturing_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_MANUFACTURING_PURCHASE_ORDER', 'STORE_PRODUCT'));
 	
 	SET a_get_all_order := IFNULL(a_get_all_order, 1);
 	SET a_get_inactive_order := IFNULL(a_get_inactive_order, 0);
@@ -47,26 +44,32 @@ BEGIN
 	SET a_date_to := IFNULL(a_date_to, NULL);
 	SET a_debug := IFNULL(a_debug, 0);
     
-    DROP TABLE IF EXISTS tmp_Manufacturing_Purchase_Order_Product_Link;
-    DROP TABLE IF EXISTS tmp_Manufacturing_Purchase_Order;
-    DROP TABLE IF EXISTS tmp_Product;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Manufacturing_Purchase_Order_Product_Link;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Manufacturing_Purchase_Order;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Split;
     
-    CREATE TABLE tmp_Manufacturing_Purchase_Order (
+    CREATE TEMPORARY TABLE tmp_Manufacturing_Purchase_Order (
 		id_order INT NOT NULL PRIMARY KEY
     );
     
-    CREATE TABLE tmp_Manufacturing_Purchase_Order_Product_Link (
-		id_link INT NOT NULL PRIMARY KEY,
-		id_order INT NOT NULL,
-		id_permutation INT NOT NULL
+    CREATE TEMPORARY TABLE tmp_Permutation (
+		id_permutation INT NOT NULL PRIMARY KEY
     );
     
-	CREATE TABLE IF NOT EXISTS tmp_Msg_Error (
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 		id_type INT NOT NULL,
         code VARCHAR(50) NOT NULL,
         msg VARCHAR(4000) NOT NULL
 	);
+    
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Split (
+		substring VARCHAR(4000) NOT NULL
+        , as_int INT NULL
+	);
+    DELETE FROM tmp_Split;
     
     SET v_has_filter_order = CASE WHEN a_ids_order = '' THEN 0 ELSE 1 END;
     SET v_has_filter_permutation = CASE WHEN a_ids_permutation = '' THEN 0 ELSE 1 END;
@@ -172,13 +175,13 @@ BEGIN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order SPO ON t_S.as_int = SPO.id_order
+            LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
 			WHERE 
 				ISNULL(t_S.as_int) 
-                OR ISNULL(SPO.id_order)
+                OR ISNULL(MPO.id_order)
 				OR (
-					SPO.active = 0
-					AND v_get_inactive_order = 0
+					MPO.active = 0
+					AND a_get_inactive_order = 0
 				)
 		) THEN
 			INSERT INTO tmp_Msg_Error (
@@ -191,13 +194,13 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive Manufacturing Purchase Order IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order SPO ON t_S.as_int = SPO.id_order
+			LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
 			WHERE 
 				ISNULL(t_S.as_int) 
-                OR ISNULL(SPO.id_order)
+                OR ISNULL(MPO.id_order)
 				OR (
-					SPO.active = 0
-					AND v_get_inactive_order = 0
+					MPO.active = 0
+					AND a_get_inactive_order = 0
 				)
 			;
 		ELSE
@@ -205,11 +208,11 @@ BEGIN
 				id_order
 			)
 			SELECT 
-				SPO.id_order
+				MPO.id_order
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order SPO ON t_S.as_int = SPO.id_order
-			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link SPOPL ON SPO.id_order = SPOPL.id_order
-			INNER JOIN tmp_Permutation t_PP ON SPOPL.id_permutation = t_PP.id_permutation
+			RIGHT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
+			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON MPO.id_order = MPOPL.id_order
+			INNER JOIN tmp_Permutation t_PP ON MPOPL.id_permutation = t_PP.id_permutation
 			WHERE (
 					a_get_all_order = 1
 					OR (
@@ -223,15 +226,15 @@ BEGIN
 				)
 				AND (
 					a_get_inactive_order = 1
-					OR SPO.active = 1
+					OR MPO.active = 1
 				)
 				AND (
 					v_has_filter_date_from = 0
-					OR SPO.created_on > a_date_from
+					OR MPO.created_on > a_date_from
 				)
 				AND (
 					v_has_filter_date_to = 0
-					OR SPO.created_on < a_date_to
+					OR MPO.created_on < a_date_to
 				)
 				
 			;
@@ -246,40 +249,40 @@ BEGIN
 			v_guid
 			, a_id_user
 			, FALSE -- get inactive users
-			, v_id_permission_manufacturing_purchase_order
+			, v_ids_permission_manufacturing_purchase_order
 			, v_id_access_level_view
 			, '' -- ids_product
 			, 0 -- a_debug
 		;
-		SELECT * from Shop_Calc_User_Temp;
+		SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
 	END IF;
 	
 	CALL p_shop_calc_user(
 		v_guid
 		, a_id_user
 		, FALSE -- get inactive users
-		, v_id_permission_manufacturing_purchase_order
+		, v_ids_permission_manufacturing_purchase_order
 		, v_id_access_level_view
 		, '' -- ids_product
 		, 0 -- a_debug
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from Shop_Calc_User_Temp;
+		SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
-			, id_type
+			id_type
 			, code
 			, msg
 		)
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			CONCAT('You do not have view permissions for ', (SELECT name FROM Shop_Permission WHERE id_permission = v_id_permission_manufacturing LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_manufacturing LIMIT 1))
 		)
 		;
 	END IF;
@@ -305,60 +308,66 @@ BEGIN
 		S.id_currency,
 		t_S.active
     FROM tmp_Manufacturing t_S
-    INNER JOIN Shop_Manufacturing S
+    INNER JOIN partsltd_prod.Shop_Manufacturing S
 		ON t_S.id_manufacturing = S.id_manufacturing
 	;
     */
 
     # Manufacturing Purchase Order
     SELECT 
-		t_SPO.id_order
-		, SPO.id_manufacturing_ordered
-		, SPO.id_currency_cost
-		, SPO.cost_total_local_VAT_excl
-		, SPO.cost_total_local_VAT_incl
-        , SPO.active
-    FROM tmp_Manufacturing_Purchase_Order t_SPO 
-	INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order SPO ON SPO.id_order = t_SPO.id_order
+		t_MPO.id_order
+		, MPO.id_currency
+		, MPO.cost_total_local_VAT_excl
+		, MPO.cost_total_local_VAT_incl
+		, MPO.price_total_local_VAT_excl
+		, MPO.price_total_local_VAT_incl
+        , MPO.active
+        , MPO.created_on
+        , CONCAT(
+			MPO.cost_total_local_VAT_excl
+            , ' on '
+            , MPO.created_on
+		) AS name
+    FROM tmp_Manufacturing_Purchase_Order t_MPO 
+	INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON MPO.id_order = t_MPO.id_order
     ;
     
     # Manufacturing Purchase Order Product Link
     SELECT
-		SPOPL.id_link
-		, SPOPL.id_order
-		, SPOPL.id_permutation
-        , fn_shop_get_product_permutation_name(SPOPL.id_permutation) AS name_permutation
-		, SPOPL.id_currency_cost
-		, SPOPL.id_unit_quantity
-		, SPOPL.quantity_ordered
-		, SPOPL.quantity_received
-		, SPOPL.latency_delivery_days
-		, SPOPL.display_order
-		, SPO.cost_total_local_VAT_excl
-		, SPO.cost_total_local_VAT_incl
-		, SPO.cost_unit_local_VAT_excl
-		, SPO.cost_unit_local_VAT_incl
-    FROM tmp_Manufacturing_Purchase_Order_Product_Link t_SPOPL
-    INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link SPOPL ON t_SPOPL.id_link = SPOPL.id_link
-    INNER JOIN tmp_Manufacturing_Purchase_Order t_SPO ON SPOPL.id_order = t_SPO.id_order
+		MPOPL.id_link
+		, MPOPL.id_order
+		, MPOPL.id_permutation
+        , fn_shop_get_product_permutation_name(MPOPL.id_permutation) AS name_permutation
+		, MPOPL.id_unit_quantity
+		, MPOPL.quantity_used
+		, MPOPL.quantity_produced
+		, MPOPL.latency_manufacture_days
+		, MPOPL.display_order
+        , MPOPL.cost_unit_local_VAT_excl
+        , MPOPL.cost_unit_local_VAT_incl
+        , MPOPL.price_unit_local_VAT_excl
+        , MPOPL.price_unit_local_VAT_incl
+        , MPOPL.active
+    FROM tmp_Manufacturing_Purchase_Order t_MPO
+    INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPO.id_order = MPOPL.id_order
     ;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     IF a_debug = 1 THEN
-		SELECT * from tmp_Manufacturing_Purchase_Order_Product_Link;
 		SELECT * from tmp_Manufacturing_Purchase_Order;
-		SELECT * from tmp_Manufacturing;
+		SELECT * from tmp_Permutation;
     END IF;
 
     DROP TEMPORARY TABLE IF EXISTS tmp_Manufacturing_Purchase_Order_Product_Link;
     DROP TEMPORARY TABLE IF EXISTS tmp_Manufacturing_Purchase_Order;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Manufacturing;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Split;
 	
     IF a_debug = 1 THEN
 		CALL p_debug_timing_reporting( v_time_start );
@@ -367,20 +376,17 @@ END //
 DELIMITER ;;
 
 
-/*
 
 CALL p_shop_get_many_manufacturing_purchase_order (
-	'', # a_id_user
-    1, # a_get_all_manufacturing
-	0, # a_get_inactive_manufacturing
-    '', # a_ids_manufacturing
-	1, # a_get_all_order
-	-- 0, # a_get_inactive_order
-    '', # a_ids_order
-    '', # a_ids_permutation
-    NULL, # a_date_from
-	NULL # a_date_to
+	1 # a_id_user
+	, 1 # a_get_all_order
+	, 0 # a_get_inactive_order
+    , '' # a_ids_order
+    , '' # a_ids_permutation
+    , NULL # a_date_from
+	, NULL # a_date_to
 	, 0 # a_debug
 );
 
+/*
 */

@@ -168,10 +168,10 @@ export default class TableBasePage extends BasePage {
             .catch(error => console.error('Error:', error));
     }
     getTableRecords(dirtyOnly = false) {
-        let table = this.getTableMain();
+        // let table = this.getTableMain();
         let records = [];
         let record;
-        table.querySelectorAll('tbody tr').forEach((row) => {
+        document.querySelectorAll(idTableMain + ' > tbody > tr').forEach((row) => {
             if (dirtyOnly && !row.classList.contains(flagDirty)) return;
             record = this.getJsonRow(row);
             records.push(record);
@@ -221,6 +221,8 @@ export default class TableBasePage extends BasePage {
             row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
                 element.classList.remove(flagInitialised);
             });
+            let countRows = document.querySelectorAll(idTableMain + ' > tbody > tr').length;
+            row.setAttribute(this.constructor.attrIdRowObject, -1 - countRows);
             /* Shared nethods
             let newDisplayOrder = parseInt(tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider).getAttribute(attrValueCurrent)) + 1;
             let slider = tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
@@ -285,19 +287,19 @@ export default class TableBasePage extends BasePage {
             input.addEventListener("change", (event) => {
                 handler(event, input);
             });
-            this.handleChangeElementCellTable(null, input);
+            handler(null, input);
         });
         // this.hookupEventHandler("change", inputSelector, handler);
     }
     handleChangeElementCellTable(event, element) {
         let row = DOM.getRowFromElement(element);
         let td = DOM.getCellFromElement(element);
-        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
+        let wasDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
         let wasDirtyElement = element.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
         if (isDirtyElement != wasDirtyElement) {
             DOM.handleDirtyElement(td, isDirtyElement);
-            let isNowDirtyRow = DOM.hasDirtyChildrenContainer(row);
+            let isNowDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
             if (isNowDirtyRow != wasDirtyRow) {
                 DOM.handleDirtyElement(row, isNowDirtyRow);
                 let rows = this.getTableRecords(true);
@@ -419,7 +421,7 @@ export default class TableBasePage extends BasePage {
         let row = DOM.getRowFromElement(ddl);
         let td = DOM.getCellFromElement(ddl);
         console.log("td: ", td);
-        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
+        let wasDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
         let wasDirtyElement = ddl.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(ddl);
         console.log("isDirtyElement: ", isDirtyElement);
@@ -428,7 +430,7 @@ export default class TableBasePage extends BasePage {
             DOM.handleDirtyElement(td, isDirtyElement);
             let optionSelected = ddl.options[ddl.selectedIndex];
             DOM.setElementAttributeValueCurrent(td, optionSelected.value);
-            let isNowDirtyRow = DOM.hasDirtyChildrenContainer(row);
+            let isNowDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
             console.log("isNowDirtyRow: ", isNowDirtyRow);
             console.log("wasDirtyRow: ", wasDirtyRow);
             if (isNowDirtyRow != wasDirtyRow) {
@@ -460,13 +462,16 @@ export default class TableBasePage extends BasePage {
         let thead = document.createElement("thead");
         let tr = document.createElement("tr");
         let thVariationType = document.createElement("th");
+        thVariationType.classList.add(flagProductVariationType);
         thVariationType.textContent = 'Type';
         let thNameVariation = document.createElement("th");
+        thNameVariation.classList.add(flagProductVariation);
         thNameVariation.textContent = 'Name';
         let buttonAdd = document.createElement("button");
         buttonAdd.classList.add(flagAdd);
         buttonAdd.textContent = '+';
         let thAddDelete = document.createElement("th");
+        thAddDelete.classList.add(flagAdd);
         thAddDelete.appendChild(buttonAdd);
         tr.appendChild(thVariationType);
         tr.appendChild(thNameVariation);
@@ -484,9 +489,10 @@ export default class TableBasePage extends BasePage {
             });
         }
         tblVariations.appendChild(tbody);
-        let parent = element.parentElement;
-        parent.innerHTML = '';
-        parent.appendChild(tblVariations);
+
+        let cellParent = element.closest(idTableMain + ' tbody tr td.' + flagProductVariations);
+        cellParent.innerHTML = '';
+        cellParent.appendChild(tblVariations);
         console.log("tblVariations: ", tblVariations);
         let selectorButtonAdd = idTableMain + ' td.' + flagProductVariations + ' button.' + flagAdd;
         this.hookupEventHandler("click", selectorButtonAdd, this.handleClickButtonProductPermutationVariationsAdd);
@@ -494,6 +500,9 @@ export default class TableBasePage extends BasePage {
         this.hookupEventHandler("click", selectorButtonDelete, this.handleClickButtonProductPermutationVariationsDelete);
     }
     toggleColumnCollapsed(flagColumn, isCollapsed) {
+        this.toggleColumnHasClassnameFlag(flagColumn, isCollapsed, flagCollapsed);
+    }
+    toggleColumnHeaderCollapsed(flagColumn, isCollapsed) {
         this.toggleColumnHasClassnameFlag(flagColumn, isCollapsed, flagCollapsed);
     }
     getElementProductVariations(element) {
@@ -636,6 +645,10 @@ export default class TableBasePage extends BasePage {
         return variationPairsString;
     }
     
+    hookupCurrencyFields() {
+        this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagCurrency, Utils.getListFromDict(currencies));
+    }
+    
     leave() {
         if (this.constructor === TableBasePage) {
             throw new Error("Must implement leave() method.");
@@ -653,11 +666,16 @@ export default class TableBasePage extends BasePage {
         let columnTh = table.querySelector('th.' + columnFlag);
         let columnThHasFlag = columnTh.classList.contains(classnameFlag);
         if (isRequiredFlag == columnThHasFlag) return;
-        let columnTds = table.querySelectorAll('td.' + columnFlag);
         DOM.toggleElementHasClassnameFlag(columnTh, isRequiredFlag, classnameFlag);
+        let columnTds = table.querySelectorAll('td.' + columnFlag);
         columnTds.forEach((columnTd) => {
             DOM.toggleElementHasClassnameFlag(columnTd, isRequiredFlag, classnameFlag);
         });
+    }
+    toggleColumnHeaderHasClassnameFlag(columnFlag, isRequiredFlag, classnameFlag) {
+        let table = this.getTableMain();
+        let columnTh = table.querySelector('th.' + columnFlag);
+        DOM.toggleElementHasClassnameFlag(columnTh, isRequiredFlag, classnameFlag);
     }
 }
 
@@ -669,7 +687,9 @@ import DOM from "../dom.js";
 
 export class PageStoreProductCategories extends TableBasePage {
     static hash = hashPageStoreProductCategories;
+    static attrIdRowObject = attrIdProductCategory;
     callFilterTableContent = API.getCategoriesByFilters;
+    callSaveTableContent = API.saveCategories;
 
     constructor() {}
     initialize() {}

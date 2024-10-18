@@ -14,7 +14,7 @@ Initializes the Flask application, sets the configuration based on the environme
 # internal
 from models.model_view_store import Model_View_Store
 # external
-from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session, Blueprint, current_app
+from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session, Blueprint, current_app, Response
 from extensions import db, oauth
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
@@ -27,4 +27,5 @@ routes_store = Blueprint('routes_store', __name__)
 def scripts_section_store():
     hash_page_current = request.args.get('hash_page_current', default = Model_View_Store.HASH_SCRIPTS_SECTION_STORE, type = str)
     model = Model_View_Store(hash_page_current=hash_page_current)
-    return render_template('js/sections/store.js', model = model)
+    template = render_template('js/sections/store.js', model = model)
+    return Response(template, mimetype='application/javascript')

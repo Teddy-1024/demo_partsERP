@@ -15,16 +15,17 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
     CONSTRAINT FK_Manufacturing_Purchase_Order_Product_Link_id_permutation
 		FOREIGN KEY (id_permutation) 
         REFERENCES Shop_Product_Permutation(id_permutation),
-    cost_total_local FLOAT NOT NULL,
-    id_currency_cost INT NOT NULL,
-    value_produced_total_local FLOAT NOT NULL,
-	quantity_used FLOAT NOT NULL,
+    cost_unit_local_VAT_excl FLOAT NOT NULL,
+    cost_unit_local_VAT_incl FLOAT NOT NULL,
+    price_unit_local_VAT_excl FLOAT NOT NULL,
+    price_unit_local_VAT_incl FLOAT NOT NULL,
 	id_unit_quantity INT NOT NULL,
     CONSTRAINT FK_Manufacturing_Purchase_Order_id_unit_quantity
 		FOREIGN KEY (id_unit_quantity)
         REFERENCES Shop_Unit_Measurement(id_unit_measurement),
-    latency_manufacture_days INT NOT NULL,
+	quantity_used FLOAT NOT NULL,
 	quantity_produced FLOAT NOT NULL,
+    latency_manufacture_days INT NOT NULL,
 	display_order INT NOT NULL,
     active BIT NOT NULL,
 	created_on DATETIME,

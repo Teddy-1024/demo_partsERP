@@ -1,0 +1,64 @@
+
+{% if is_blank_row %}
+    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_SUPPLIER_PURCHASE_ORDER }}>
+        <td class="{{ model.FLAG_SUPPLIER }}">
+            <textarea class="{{ model.FLAG_SUPPLIER }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
+            {% include 'components/store/_preview_DDL_currency.html' %}
+        </td>
+        <td class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_EXCL }}">
+            <input type="number" min="0" step="0.001"
+                class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_EXCL }}" 
+                {{ model.ATTR_VALUE_CURRENT }}="" 
+                {{ model.ATTR_VALUE_PREVIOUS }}=""
+            />
+        </td>
+        <td class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_INCL }}">
+            <input type="number" min="0" step="0.001"
+                class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_INCL }}" 
+                {{ model.ATTR_VALUE_CURRENT }}="" 
+                {{ model.ATTR_VALUE_PREVIOUS }}=""
+            />
+        </td>
+        <td class="{{ model.FLAG_ITEMS }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
+            {% include 'components/store/_preview_order_items.html' %}
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}">
+        </td>
+    </tr>
+{% else %}
+    <tr {{ model.ATTR_ID_SUPPLIER_PURCHASE_ORDER }}="{{ order.id_order }}">
+        {% set supplier = order.supplier %}
+        <td class="{{ model.FLAG_SUPPLIER }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.id_supplier }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.id_supplier }}">
+            {% include 'components/store/_preview_DDL_supplier.html' %}
+        </td>
+        {% set currency = order.currency %}
+        <td class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ currency.id_currency }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ currency.id_currency }}">
+            {% include 'components/store/_preview_DDL_currency.html' %}
+        </td>
+        <td class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_EXCL }}">
+            <input type="number" min="0" step="0.001"
+                class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_EXCL }}" 
+                {{ model.ATTR_VALUE_CURRENT }}="{{ order.cost_total_local_VAT_excl }}" 
+                {{ model.ATTR_VALUE_PREVIOUS }}="{{ order.cost_total_local_VAT_excl }}"
+            />
+        </td>
+        <td class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_INCL }}">
+            <input type="number" min="0" step="0.001" 
+                class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_INCL }}" 
+                {{ model.ATTR_VALUE_CURRENT }}="{{ order.cost_total_local_VAT_incl }}" 
+                {{ model.ATTR_VALUE_PREVIOUS }}="{{ order.cost_total_local_VAT_incl }}"
+            />
+        </td>
+        {% set order_items = supplier_purchase_order.order_items %}
+        {% set json_str_items = jsonify(order_items.to_json_list()) %}
+        <td class="{{ model.FLAG_ITEMS }}" {{ model.ATTR_VALUE_CURRENT }}="{{ json_str_items }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ json_str_items }}">
+            {% include 'components/store/_preview_order_items.html' %}
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ order.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ order.active | lower }}">
+        </td>
+    </tr>
+{% endif %}

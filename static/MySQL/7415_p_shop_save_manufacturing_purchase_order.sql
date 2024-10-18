@@ -20,7 +20,7 @@ BEGIN
 	DECLARE v_code_type_error_no_permission VARCHAR(50);
     DECLARE v_id_access_level_edit INT;
     DECLARE v_id_change_set INT;
-    DECLARE v_id_permission_manufacturing_purchase_order INT;
+    DECLARE v_ids_permission_manufacturing_purchase_order VARCHAR(100);
     DECLARE v_id_type_error_bad_data INT;
     DECLARE v_id_type_error_no_permission INT;
 	DECLARE v_ids_product_permission TEXT;
@@ -58,12 +58,12 @@ BEGIN
     END;
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA');
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
-	SET v_id_permission_manufacturing_purchase_order = (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER_PURCHASE_ORDER' LIMIT 1);
-	SET v_id_access_level_edit = (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT');
+    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+	SET v_ids_permission_manufacturing_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_MANUFACTURING_PURCHASE_ORDER', 'STORE_PRODUCT'));
+	SET v_id_access_level_edit := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -136,14 +136,14 @@ BEGIN
 	)
 	SELECT 
 		IFNULL(SPOPL_T.id_link, 0) AS id_link
-		, IFNULL(IFNULL(SPOPL_T.id_order, MPOPL.id_order) 0) AS id_order
+		, IFNULL(IFNULL(SPOPL_T.id_order, MPOPL.id_order), 0) AS id_order
 		, IFNULL(IFNULL(SPOPL_T.id_permutation, MPOPL.id_permutation), 0) AS id_permutation
-		, IFNULL(IFNULL(SPOPL_T.id_currency_cost, MPOPL.id_currency_cost) 0) AS id_currency_cost
+		, IFNULL(IFNULL(SPOPL_T.id_currency_cost, MPOPL.id_currency_cost), 0) AS id_currency_cost
 		, IFNULL(IFNULL(SPOPL_T.quantity_ordered, MPOPL.quantity_ordered), 0) AS quantity_ordered
 		, IFNULL(IFNULL(SPOPL_T.id_unit_quantity, MPOPL.id_unit_quantity), 0) AS id_unit_quantity
 		, IFNULL(SPOPL_T.quantity_received, MPOPL.quantity_received) AS quantity_received
 		, IFNULL(SPOPL_T.latency_delivery_days, MPOPL.latency_delivery_days) AS latency_delivery_days
-		, RANK() OVER (PARTITION BY IFNULL(IFNULL(SPOPL_T.id_order, MPOPL.id_order) 0) ORDER BY IFNULL(IFNULL(SPOPL_T.display_order, MPOPL.display_order), 0)) AS display_order
+		, RANK() OVER (PARTITION BY IFNULL(IFNULL(SPOPL_T.id_order, MPOPL.id_order), 0) ORDER BY IFNULL(IFNULL(SPOPL_T.display_order, MPOPL.display_order), 0)) AS display_order
 		, IFNULL(IFNULL(SPOPL_T.active, MPOPL.active), 1) AS active
 		, CONCAT(
 			fn_shop_get_product_permutation_name(SPOPL_T.id_permutation)
@@ -418,7 +418,7 @@ BEGIN
 			v_guid
 			, a_id_user
 			, FALSE -- get inactive users
-			, v_id_permission_manufacturing_purchase_order
+			, v_ids_permission_manufacturing_purchase_order
 			, v_id_access_level_edit
 			, v_ids_product_permission -- ids_product
 			, 0 -- a_debug
@@ -430,7 +430,7 @@ BEGIN
 		v_guid
 		, a_id_user
 		, FALSE -- get inactive users
-		, v_id_permission_manufacturing_purchase_order
+		, v_ids_permission_manufacturing_purchase_order
 		, v_id_access_level_edit
 		, v_ids_product_permission -- ids_product
 		, 0 -- a_debug
@@ -451,7 +451,7 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_manufacturing LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_manufacturing LIMIT 1))
 		)
 		;
 	END IF;
@@ -527,8 +527,8 @@ BEGIN
 				, t_MPOPL.active
 				, t_MPOPL.cost_total_local_VAT_excl
 				, t_MPOPL.cost_total_local_VAT_incl
-				a_id_user
-				v_id_change_set
+				, a_id_user
+				, v_id_change_set
 			FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
 			WHERE t_MPOPL.is_new = 1
 			;
@@ -575,6 +575,7 @@ BEGIN
 			;
 			
 		COMMIT;
+    END IF;
     
     # Errors
     SELECT *

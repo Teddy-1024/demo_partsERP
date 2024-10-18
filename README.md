@@ -26,6 +26,7 @@ JavaScript
     page
     api
     router
+    base - navigation buttons
 MySQL
     get
     save

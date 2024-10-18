@@ -1,6 +1,6 @@
 
 
-{% with _is_blank_row = (is_blank_row or model.currencies | length == 0 or currency is none) %}
+{% with _is_blank_row = (is_blank_row or model.currencies | length == 0 or currency is not defined or currency is none) %}
     {% if not _is_blank_row %}
         <div 
             class="{{ model.FLAG_CURRENCY }}" 

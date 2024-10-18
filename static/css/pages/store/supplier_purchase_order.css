@@ -1,0 +1,40 @@
+
+#formFilters {
+    width: 100vh;
+}
+
+#formFilters .container-input.filter.active {
+    width: 8vh;
+}
+#formFilters .container-input.filter.date_from, 
+#formFilters .container-input.filter.date_to {
+    width: 8vh;
+}
+
+#tableMain tbody tr td.supplier, #tableMain thead tr th.supplier {
+    width: 15vh;
+    min-width: 15vh;
+}
+
+#tableMain thead tr th.currency.collapsed, #tableMain tbody tr td.currency.collapsed {
+    width: 9vh;
+    min-width: 9vh;
+}
+#tableMain thead tr th.currency, #tableMain tbody tr td.currency {
+    width: 11vh;
+    min-width: 11vh;
+}
+
+#tableMain tbody tr td.cost_total_local_vat_excl, #tableMain thead tr th.cost_total_local_vat_excl, 
+#tableMain tbody tr td.cost_total_local_vat_incl, #tableMain thead tr th.cost_total_local_vat_incl {
+    width: 10vh;
+    min-width: 10vh;
+}
+#tableMain tbody tr td.items, #tableMain thead tr th.items {
+    width: 40vh;
+    min-width: 40vh;
+}
+#tableMain tbody tr td.active, #tableMain thead tr th.active {
+    width: 5vh;
+    min-width: 5vh;
+}

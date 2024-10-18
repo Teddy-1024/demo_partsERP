@@ -45,9 +45,11 @@ BEGIN
             , msg
 		)
         SELECT 
-			NULL
+			id_type
             , @errno
             , @text
+		FROM partsltd_prod.Shop_Msg_Error_Type MET
+        WHERE code = 'MYSQL_ERROR'
 		;
         SELECT *
         FROM tmp_Msg_Error;
@@ -55,12 +57,12 @@ BEGIN
     END;
 
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA');
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
-	SET v_id_permission_supplier = (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
-	SET v_id_access_level_EDIT = (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT');
+    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+	SET v_id_permission_supplier := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
+	SET v_id_access_level_EDIT := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -82,6 +84,18 @@ BEGIN
 		, active BIT NOT NULL
 		, name_error VARCHAR(1000) NOT NULL
 		, is_new BIT NOT NULL
+    );
+    
+    CREATE TEMPORARY TABLE tmp_Supplier_Address (
+		id_address INT NOT NULL
+        , id_supplier INT NOT NULL
+        , id_region INT NOT NULL
+        , postcode VARCHAR(20) NOT NULL
+        , address_line_1 VARCHAR(256) NOT NULL
+        , address_line_2 VARCHAR(256) NOT NULL
+        , city VARCHAR(256) NOT NULL
+		, county VARCHAR(256) NOT NULL
+        , active BIT NOT NULL
     );
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
@@ -125,7 +139,38 @@ BEGIN
 	WHERE GUID = a_guid
 	;
     
+	INSERT INTO tmp_Supplier_Address (
+		id_address
+		, id_supplier
+        , id_region
+        , postcode
+        , address_line_1
+        , address_line_2
+        , city
+        , county
+		, active
+		, name_error
+		, is_new
+	)
+	SELECT
+		SA_T.id_address
+		, SA_T.id_supplier
+        , SA_T.id_region
+        , SA_T.postcode
+        , SA_T.address_line_1
+        , SA_T.address_line_2
+        , SA_T.city
+        , SA_T.county
+		, SA_T.active
+		, IFNULL(SA_T.postcode, IFNULL(SA_T.city, IFNULL(SA_T.county, IFNULL(SA_T.address_line_1, IFNULL(SA_T.address_line_2, '(No Supplier)'))))) AS name_error
+		, IFNULL(SA_T.id_address, 0) < 1 AS is_new
+	FROM partsltd_prod.Shop_Supplier_Address_Temp SA_T
+	WHERE GUID = a_guid
+	;
+    
     -- Validation
+    -- Suppliers
+    /*
     # id_address
     IF EXISTS (
 		SELECT * 
@@ -159,6 +204,7 @@ BEGIN
 			)
 		;
     END IF;
+    */
     # id_currency
     IF EXISTS (
 		SELECT * 
@@ -222,6 +268,106 @@ BEGIN
 		WHERE ISNULL(t_S.email)
 		;
     END IF;
+    # duplicate
+    IF EXISTS (SELECT COUNT(*) FROM tmp_Supplier t_S WHERE COUNT(*) > 1 GROUP BY t_S.id_supplier) THEN 
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following supplier(s) are duplicates: ', GROUP_CONCAT(IFNULL(t_S.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Supplier t_S
+        WHERE COUNT(*) > 1
+        GROUP BY t_S.id_supplier
+		;
+    END IF;
+    
+    -- Addresses
+    # id_supplier
+    IF EXISTS (
+		SELECT * 
+        FROM tmp_Supplier_Address t_SA
+        LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
+        WHERE 1=1
+			AND (
+				t_SA.id_supplier = 0
+                OR S.active = 0
+			)
+		LIMIT 1
+	) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT(
+				'The following supplier address(es) have an invalid or inactive Supplier: '
+				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
+			) AS msg
+		FROM tmp_Supplier t_S
+        LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
+        WHERE 1=1
+			AND (
+				t_SA.id_supplier = 0
+                OR S.active = 0
+			)
+		;
+    END IF;
+    # id_region
+    IF EXISTS (
+		SELECT * 
+        FROM tmp_Supplier_Address t_SA
+        LEFT JOIN partsltd_prod.Shop_Region R ON t_SA.id_region = R.id_region
+        WHERE 1=1
+			AND (
+				t_SA.id_region = 0
+                OR R.active = 0
+			)
+		LIMIT 1
+	) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT(
+				'The following supplier address(es) have an invalid or inactive Supplier: '
+				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
+			) AS msg
+		FROM tmp_Supplier t_S
+        LEFT JOIN partsltd_prod.Shop_Region R ON t_SA.id_region = R.id_region
+        WHERE 1=1
+			AND (
+				t_SA.id_region = 0
+                OR R.active = 0
+			)
+		;
+    END IF;
+    # duplicate
+    IF EXISTS (SELECT COUNT(*) FROM tmp_Supplier_Address t_SA WHERE COUNT(*) > 1 GROUP BY t_SA.id_address) THEN 
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following supplier address(es) are duplicates: ', GROUP_CONCAT(IFNULL(t_S.name_error, 'NULL') SEPARATOR ', ')) AS msg
+		FROM tmp_Supplier_Address t_SA
+        WHERE COUNT(*) > 1
+        GROUP BY t_SA.id_address
+		;
+    END IF;
 
     -- Permissions
 	IF a_debug = 1 THEN
@@ -262,7 +408,7 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
 		)
 		;
 	END IF;
@@ -291,7 +437,6 @@ BEGIN
 			SET v_id_change_set := LAST_INSERT_ID();
 			
 			INSERT INTO partsltd_prod.Shop_Supplier (
-				-- id_supplier, 
 				id_address
 				, id_currency
 				, name_company
@@ -350,6 +495,47 @@ BEGIN
 				S.id_change_set = v_id_change_set
 				*/
 			;
+            
+            INSERT INTO partsltd_prod.Shop_Supplier_Address (
+				id_address
+				, id_supplier
+                , id_region
+                , postcode
+                , address_line_1
+				, address_line_2
+                , city
+                , county
+                , active
+            )
+            SELECT 
+				t_SA.id_address
+				, t_SA.id_supplier
+                , t_SA.id_region
+                , t_SA.postcode
+                , t_SA.address_line_1
+				, t_SA.address_line_2
+                , t_SA.city
+                , t_SA.county
+                , t_SA.active
+			FROM tmp_Supplier_Address t_SA
+            WHERE t_SA.is_new = 1
+            ;
+            
+            UPDATE partsltd_prod.Shop_Supplier_Address SA
+			INNER JOIN tmp_Supplier_Address t_SA 
+				ON SA.id_address = t_SA.id_address
+                AND t_SA.is_new = 0
+            SET
+				SA.id_address = t_SA.id_address
+				, SA.id_supplier = t_SA.id_supplier
+                , SA.id_region = t_SA.id_region
+                , SA.postcode = t_SA.postcode
+                , SA.address_line_1 = t_SA.address_line_1
+				, SA.address_line_2 = t_SA.address_line_2
+                , SA.city = t_SA.city
+                , SA.county = t_SA.county
+                , SA.active = t_SA.active
+            ;
 		COMMIT;
     END IF;
     

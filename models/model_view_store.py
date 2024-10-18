@@ -42,8 +42,12 @@ from abc import abstractmethod
 class Model_View_Store(Model_View_Base):
     # Global constants
     ATTR_FORM_TYPE: ClassVar[str] = 'form-type'
+    ATTR_ID_CUSTOMER: ClassVar[str] = 'id-customer'
+    ATTR_ID_CUSTOMER_ADDRESS: ClassVar[str] = Store_Base.ATTR_ID_CUSTOMER_ADDRESS
+    ATTR_ID_CUSTOMER_SALES_ORDER: ClassVar[str] = 'id-customer-sales-order'
     ATTR_ID_DELIVERY_OPTION: ClassVar[str] = Store_Base.ATTR_ID_DELIVERY_OPTION
     ATTR_ID_DISCOUNT: ClassVar[str] = Store_Base.ATTR_ID_DISCOUNT
+    ATTR_ID_MANUFACTURING_PURCHASE_ORDER: ClassVar[str] = Store_Base.ATTR_ID_MANUFACTURING_PURCHASE_ORDER
     ATTR_ID_PLANT: ClassVar[str] = 'id-plant'
     ATTR_ID_PRODUCT : ClassVar[str] = Product.ATTR_ID_PRODUCT # 'id-product'
     ATTR_ID_PRODUCT_CATEGORY: ClassVar[str] = Product.ATTR_ID_PRODUCT_CATEGORY
@@ -53,15 +57,27 @@ class Model_View_Store(Model_View_Base):
     ATTR_ID_PRODUCT_VARIATION_TYPE : ClassVar[str] = Product_Variation.ATTR_ID_PRODUCT_VARIATION_TYPE # 'id-variation-type'
     ATTR_ID_STOCK_ITEM: ClassVar[str] = Store_Base.ATTR_ID_STOCK_ITEM
     ATTR_ID_STORAGE_LOCATION: ClassVar[str] = Store_Base.ATTR_ID_STORAGE_LOCATION
+    ATTR_ID_SUPPLIER: ClassVar[str] = Store_Base.ATTR_ID_SUPPLIER
+    ATTR_ID_SUPPLIER_ADDRESS: ClassVar[str] = Store_Base.ATTR_ID_SUPPLIER_ADDRESS
+    ATTR_ID_SUPPLIER_PURCHASE_ORDER: ClassVar[str] = Store_Base.ATTR_ID_SUPPLIER_PURCHASE_ORDER
     FLAG_BUTTON_BASKET_ADD : ClassVar[str] = Model_View_Base.FLAG_SUBMIT + '.buttonAddToBasket'
     FLAG_BUTTON_BUY_NOW : ClassVar[str] = 'buttonBuyNow'
+    """
     FLAG_COST_LOCAL: ClassVar[str] = Store_Base.FLAG_COST_LOCAL
     FLAG_COST_LOCAL_VAT_EXCL: ClassVar[str] = Store_Base.FLAG_COST_LOCAL_VAT_EXCL
     FLAG_COST_LOCAL_VAT_INCL: ClassVar[str] = Store_Base.FLAG_COST_LOCAL_VAT_INCL
+    """
+    FLAG_COST_TOTAL_LOCAL_VAT_EXCL: ClassVar[str] = Store_Base.FLAG_COST_TOTAL_LOCAL_VAT_EXCL
+    FLAG_COST_TOTAL_LOCAL_VAT_INCL: ClassVar[str] = Store_Base.FLAG_COST_TOTAL_LOCAL_VAT_INCL
+    FLAG_COST_UNIT_LOCAL_VAT_EXCL: ClassVar[str] = Store_Base.FLAG_COST_UNIT_LOCAL_VAT_EXCL
+    FLAG_COST_UNIT_LOCAL_VAT_INCL: ClassVar[str] = Store_Base.FLAG_COST_UNIT_LOCAL_VAT_INCL
     FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
     FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
     FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP: ClassVar[str] = Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP
     FLAG_CURRENCY_COST: ClassVar[str] = Product_Permutation.FLAG_CURRENCY_COST
+    FLAG_CUSTOMER: ClassVar[str] = Store_Base.FLAG_CUSTOMER
+    FLAG_CUSTOMER_ADDRESS: ClassVar[str] = Store_Base.FLAG_CUSTOMER_ADDRESS
+    FLAG_CUSTOMER_SALES_ORDER: ClassVar[str] = Store_Base.FLAG_CUSTOMER_SALES_ORDER
     FLAG_DATE_CONSUMED: ClassVar[str] = Stock_Item.FLAG_DATE_CONSUMED
     FLAG_DATE_EXPIRATION: ClassVar[str] = Stock_Item.FLAG_DATE_EXPIRATION
     FLAG_DATE_PURCHASED: ClassVar[str] = Stock_Item.FLAG_DATE_PURCHASED
@@ -77,6 +93,7 @@ class Model_View_Store(Model_View_Base):
     FLAG_IS_SEALED: ClassVar[str] = Stock_Item.FLAG_IS_SEALED
     FLAG_IS_SUBSCRIPTION: ClassVar[str] = Product_Permutation.FLAG_IS_SUBSCRIPTION
     FLAG_LATENCY_MANUFACTURE_DAYS: ClassVar[str] = Product_Permutation.FLAG_LATENCY_MANUFACTURE_DAYS
+    FLAG_MANUFACTURING_PURCHASE_ORDER: ClassVar[str] = Store_Base.FLAG_MANUFACTURING_PURCHASE_ORDER
     FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
     FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
     FLAG_NAME_PLURAL_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = Product_Permutation.FLAG_NAME_PLURAL_UNIT_MEASUREMENT_QUANTITY
@@ -84,6 +101,10 @@ class Model_View_Store(Model_View_Base):
     FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
     FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = Product_Permutation.FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_QUANTITY
     FLAG_PLANT: ClassVar[str] = Store_Base.FLAG_PLANT
+    FLAG_PRICE_TOTAL_LOCAL_VAT_EXCL: ClassVar[str] = Store_Base.FLAG_PRICE_TOTAL_LOCAL_VAT_EXCL
+    FLAG_PRICE_TOTAL_LOCAL_VAT_INCL: ClassVar[str] = Store_Base.FLAG_PRICE_TOTAL_LOCAL_VAT_INCL
+    FLAG_PRICE_UNIT_LOCAL_VAT_EXCL: ClassVar[str] = Store_Base.FLAG_PRICE_UNIT_LOCAL_VAT_EXCL
+    FLAG_PRICE_UNIT_LOCAL_VAT_INCL: ClassVar[str] = Store_Base.FLAG_PRICE_UNIT_LOCAL_VAT_INCL
     FLAG_PRODUCT: ClassVar[str] = Store_Base.FLAG_PRODUCT
     FLAG_PRODUCT_CATEGORY: ClassVar[str] = Store_Base.FLAG_PRODUCT_CATEGORY
     FLAG_PRODUCT_PERMUTATION: ClassVar[str] = Store_Base.FLAG_PRODUCT_PERMUTATION
@@ -99,6 +120,9 @@ class Model_View_Store(Model_View_Base):
     FLAG_REGION: ClassVar[str] = Store_Base.FLAG_REGION
     FLAG_STOCK_ITEM: ClassVar[str] = Store_Base.FLAG_STOCK_ITEM
     FLAG_STORAGE_LOCATION: ClassVar[str] = Store_Base.FLAG_STORAGE_LOCATION
+    FLAG_SUPPLIER: ClassVar[str] = Store_Base.FLAG_SUPPLIER
+    FLAG_SUPPLIER_ADDRESS: ClassVar[str] = Store_Base.FLAG_SUPPLIER_ADDRESS
+    FLAG_SUPPLIER_PURCHASE_ORDER: ClassVar[str] = Store_Base.FLAG_SUPPLIER_PURCHASE_ORDER
     FLAG_SYMBOL_CURRENCY_COST: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_CURRENCY_COST
     FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
     FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
@@ -109,15 +133,23 @@ class Model_View_Store(Model_View_Base):
     FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: ClassVar[str] = Product_Permutation.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED
     FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: ClassVar[str] = Product_Permutation.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE
     FLAG_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = Product_Permutation.FLAG_UNIT_MEASUREMENT_QUANTITY
+    HASH_GET_STORE_CUSTOMER_SALES_ORDER: ClassVar[str] = '/store/customer_sales_order_get'
+    HASH_GET_STORE_MANUFACTURING_PURCHASE_ORDER: ClassVar[str] = '/store/manufacturing_purchase_order_get'
     HASH_GET_STORE_PRODUCT: ClassVar[str] = '/store/product_get'
     HASH_GET_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/category_get'
     HASH_GET_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_get'
     HASH_GET_STORE_STOCK_ITEM: ClassVar[str] = '/store/stock_item_get'
+    HASH_GET_STORE_SUPPLIER: ClassVar[str] = '/store/supplier_get'
+    HASH_GET_STORE_SUPPLIER_PURCHASE_ORDER: ClassVar[str] = '/store/supplier_purchase_order_get'
     HASH_PAGE_STORE_BASKET : ClassVar[str] = '/store/basket'
+    HASH_SAVE_STORE_CUSTOMER_SALES_ORDER: ClassVar[str] = '/store/save_customer_sales_order'
+    HASH_SAVE_STORE_MANUFACTURING_PURCHASE_ORDER: ClassVar[str] = '/store/save_manufacturing_purchase_order'
     HASH_SAVE_STORE_PRODUCT: ClassVar[str] = '/store/save_product'
     HASH_SAVE_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/save_category'
     HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/save_permutation'
     HASH_SAVE_STORE_STOCK_ITEM: ClassVar[str] = '/store/save_stock_item'
+    HASH_SAVE_STORE_SUPPLIER: ClassVar[str] = '/store/save_supplier'
+    HASH_SAVE_STORE_SUPPLIER_PURCHASE_ORDER: ClassVar[str] = '/store/save_supplier_purchase_order'
     HASH_STORE_BASKET_ADD : ClassVar[str] = '/store/basket_add'
     HASH_STORE_BASKET_DELETE : ClassVar[str] = '/store/basket_delete'
     HASH_STORE_BASKET_EDIT : ClassVar[str] = '/store/basket_edit'
