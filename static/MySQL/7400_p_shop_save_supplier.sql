@@ -68,11 +68,12 @@ BEGIN
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
     
 	DROP TEMPORARY TABLE IF EXISTS tmp_Supplier;
+	DROP TEMPORARY TABLE IF EXISTS tmp_Supplier_Address;
 	DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
 
     CREATE TEMPORARY TABLE tmp_Supplier (
-		id_supplier INT NOT NULL
-		, id_address INT NOT NULL
+		id_supplier_temp INT NOT NULL
+		, id_supplier INT NULL
 		, id_currency INT NOT NULL
 		, name_company VARCHAR(255) NOT NULL
 		, name_contact VARCHAR(255) NULL
@@ -96,6 +97,8 @@ BEGIN
         , city VARCHAR(256) NOT NULL
 		, county VARCHAR(256) NOT NULL
         , active BIT NOT NULL
+		, name_error VARCHAR(1000) NOT NULL
+		, is_new BIT NOT NULL
     );
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
@@ -107,8 +110,8 @@ BEGIN
     
     
 	INSERT INTO tmp_Supplier (
-		id_supplier
-		, id_address
+		id_supplier_temp
+        , id_supplier
 		, id_currency
 		, name_company
 		, name_contact
@@ -123,7 +126,7 @@ BEGIN
 	)
 	SELECT
 		S_T.id_supplier
-		, S_T.id_address
+		, S_T.id_supplier
 		, S_T.id_currency
 		, S_T.name_company
 		, S_T.name_contact
@@ -269,7 +272,7 @@ BEGIN
 		;
     END IF;
     # duplicate
-    IF EXISTS (SELECT COUNT(*) FROM tmp_Supplier t_S WHERE COUNT(*) > 1 GROUP BY t_S.id_supplier) THEN 
+    IF EXISTS (SELECT COUNT(*) FROM tmp_Supplier t_S GROUP BY t_S.id_supplier HAVING COUNT(*) > 1) THEN 
 		INSERT INTO tmp_Msg_Error (
 			id_type
 			, code
@@ -280,8 +283,8 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following supplier(s) are duplicates: ', GROUP_CONCAT(IFNULL(t_S.name_error, 'NULL') SEPARATOR ', ')) AS msg
 		FROM tmp_Supplier t_S
-        WHERE COUNT(*) > 1
         GROUP BY t_S.id_supplier
+        HAVING COUNT(*) > 1
 		;
     END IF;
     
@@ -353,7 +356,7 @@ BEGIN
 		;
     END IF;
     # duplicate
-    IF EXISTS (SELECT COUNT(*) FROM tmp_Supplier_Address t_SA WHERE COUNT(*) > 1 GROUP BY t_SA.id_address) THEN 
+    IF EXISTS (SELECT COUNT(*) FROM tmp_Supplier_Address t_SA GROUP BY t_SA.id_address HAVING COUNT(*) > 1) THEN 
 		INSERT INTO tmp_Msg_Error (
 			id_type
 			, code
@@ -364,15 +367,15 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following supplier address(es) are duplicates: ', GROUP_CONCAT(IFNULL(t_S.name_error, 'NULL') SEPARATOR ', ')) AS msg
 		FROM tmp_Supplier_Address t_SA
-        WHERE COUNT(*) > 1
         GROUP BY t_SA.id_address
+        HAVING COUNT(*) > 1
 		;
     END IF;
 
     -- Permissions
 	IF a_debug = 1 THEN
 		SELECT 
-			v_guid
+			a_guid
 			, a_id_user
 			, FALSE -- get inactive users
 			, v_id_permission_supplier
@@ -384,7 +387,7 @@ BEGIN
 	END IF;
 	
 	CALL p_shop_calc_user(
-		v_guid
+		a_guid
 		, a_id_user
 		, FALSE -- get inactive users
 		, v_id_permission_supplier
@@ -397,7 +400,7 @@ BEGIN
 		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -413,7 +416,10 @@ BEGIN
 		;
 	END IF;
 
-	CALL partsltd_prod.p_shop_clear_calc_user( a_guid );
+	CALL partsltd_prod.p_shop_clear_calc_user( 
+		a_guid
+        , 0 -- a_debug
+	);
     
 	IF EXISTS ( SELECT * FROM tmp_Msg_Error LIMIT 1 ) THEN
 		DELETE FROM tmp_Supplier;
@@ -437,7 +443,7 @@ BEGIN
 			SET v_id_change_set := LAST_INSERT_ID();
 			
 			INSERT INTO partsltd_prod.Shop_Supplier (
-				id_address
+				id_supplier_temp
 				, id_currency
 				, name_company
 				, name_contact
@@ -450,7 +456,7 @@ BEGIN
 				, id_change_set
 			)
 			SELECT
-				t_S.id_address
+				t_S.id_supplier
 				, t_S.id_currency
 				, t_S.name_company
 				, t_S.name_contact
@@ -460,18 +466,31 @@ BEGIN
 				, t_S.email
 				, t_S.website
 				, t_S.active
-				v_id_change_set
+				, v_id_change_set
 			FROM tmp_Supplier t_S
 			WHERE t_S.is_new = 1
 			;
 			
+			UPDATE tmp_Supplier t_S
+			INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier_temp = S.id_supplier_temp
+			SET 
+				t_S.id_supplier = S.id_supplier
+			WHERE t_S.is_new = 1
+			;
+            
+			UPDATE tmp_Supplier_Address t_SA
+			INNER JOIN tmp_Supplier t_S ON t_SA.id_supplier = t_S.id_supplier_temp
+			SET 
+				t_SA.id_supplier = t_S.id_supplier
+			WHERE t_S.is_new = 1
+			;
+            
 			UPDATE partsltd_prod.Shop_Supplier S
 			INNER JOIN tmp_Supplier t_S 
 				ON S.id_supplier = t_S.id_supplier
 				AND t_S.is_new = 0
 			SET 
-				S.id_address = t_S.id_address
-				, S.id_currency = t_S.id_currency
+				S.id_currency = t_S.id_currency
 				, S.name_company = t_S.name_company
 				, S.name_contact = t_S.name_contact
 				, S.department_contact = t_S.department_contact
@@ -497,8 +516,7 @@ BEGIN
 			;
             
             INSERT INTO partsltd_prod.Shop_Supplier_Address (
-				id_address
-				, id_supplier
+				id_supplier
                 , id_region
                 , postcode
                 , address_line_1
@@ -506,10 +524,10 @@ BEGIN
                 , city
                 , county
                 , active
+				, id_change_set
             )
             SELECT 
-				t_SA.id_address
-				, t_SA.id_supplier
+				t_SA.id_supplier
                 , t_SA.id_region
                 , t_SA.postcode
                 , t_SA.address_line_1
@@ -517,6 +535,7 @@ BEGIN
                 , t_SA.city
                 , t_SA.county
                 , t_SA.active
+				, v_id_change_set
 			FROM tmp_Supplier_Address t_SA
             WHERE t_SA.is_new = 1
             ;
@@ -526,8 +545,7 @@ BEGIN
 				ON SA.id_address = t_SA.id_address
                 AND t_SA.is_new = 0
             SET
-				SA.id_address = t_SA.id_address
-				, SA.id_supplier = t_SA.id_supplier
+				SA.id_supplier = t_SA.id_supplier
                 , SA.id_region = t_SA.id_region
                 , SA.postcode = t_SA.postcode
                 , SA.address_line_1 = t_SA.address_line_1
@@ -535,6 +553,7 @@ BEGIN
                 , SA.city = t_SA.city
                 , SA.county = t_SA.county
                 , SA.active = t_SA.active
+				, SA.id_change_set = v_id_change_set
             ;
 		COMMIT;
     END IF;
@@ -546,11 +565,14 @@ BEGIN
 	;
     
 	IF a_debug = 1 THEN
+		SELECT 'A_DEBUG';
 		SELECT * from tmp_Supplier;
+        SELECT * from tmp_Supplier_Address;
 	END IF;
 
-    DROP TEMPORARY TABLE tmp_Supplier;
-    DROP TEMPORARY TABLE tmp_Msg_Error;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Supplier;
+	DROP TEMPORARY TABLE IF EXISTS tmp_Supplier_Address;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
@@ -561,3 +583,7 @@ DELIMITER ;;
 
 -- SELECT * FROM Shop_Supplier;
 
+delete from shop_supplier_audit where id_supplier = 9;
+delete from shop_supplier where id_supplier = 9;
+delete from shop_supplier_address_audit where id_address = -4;
+delete from shop_supplier_address where id_address = -4;

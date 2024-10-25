@@ -35,6 +35,7 @@ class Base():
     FLAG_CITY: ClassVar[str] = 'city'
     FLAG_CODE: ClassVar[str] = 'code'
     FLAG_COUNTY: ClassVar[str] = 'county'
+    FLAG_CREATED_BY: ClassVar[str] = 'created_by'
     FLAG_CREATED_ON: ClassVar[str] = 'created_on'
     FLAG_CURRENCY: ClassVar[str] = 'currency'
     FLAG_CURRENCY_COST: ClassVar[str] = 'currency_cost'

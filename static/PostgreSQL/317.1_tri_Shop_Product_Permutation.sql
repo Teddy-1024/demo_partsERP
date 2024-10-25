@@ -78,9 +78,9 @@ BEGIN
 		WHERE NOT (OLD.price_GBP_min <=> NEW.price_GBP_min)
 	UNION
     */
-    -- Changed latency_manufacture_days
-	SELECT NEW.id_product, 'latency_manufacture_days', CONVERT(OLD.latency_manufacture_days, CHAR), CONVERT(NEW.latency_manufacture_days, CHAR), NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
+    -- Changed latency_manufacture
+	SELECT NEW.id_product, 'latency_manufacture', CONVERT(OLD.latency_manufacture, CHAR), CONVERT(NEW.latency_manufacture, CHAR), NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
 	UNION
     -- Changed quantity_min
 	SELECT NEW.id_product, 'quantity_min', CONVERT(OLD.quantity_min, CHAR), CONVERT(NEW.quantity_min, CHAR), NEW.id_change_set

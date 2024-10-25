@@ -258,7 +258,7 @@ INSERT INTO Shop_Product_Permutation (
     id_currency_cost,
     profit_local_min,
     # id_currency_profit_min,
-    latency_manufacture_days,
+    latency_manufacture,
 	id_unit_measurement_quantity,
     count_unit_measurement_per_quantity_step,
     quantity_min,
@@ -690,7 +690,8 @@ VALUES
 
 # Supplier
 INSERT INTO Shop_Supplier (
-	name_company
+	id_supplier_temp
+    , name_company
     , name_contact
     , department_contact
     -- , id_address
@@ -702,7 +703,8 @@ INSERT INTO Shop_Supplier (
 )
 VALUES
 	(
-		'Precision And Research Technology Systems Limited'
+		-1
+		, 'Precision And Research Technology Systems Limited'
         , 'Teddy Middleton-Smith'
         , 'Executive Management'
         -- , 1
@@ -716,7 +718,8 @@ VALUES
 
 # Suppliers
 INSERT INTO Shop_Supplier (
-	name_company
+	id_supplier_temp
+    , name_company
 	, name_contact
 	, department_contact
 	-- , id_address
@@ -728,7 +731,8 @@ INSERT INTO Shop_Supplier (
 )
 VALUES
 	(
-		'Malt Kiln Farm Shop'
+		-2
+		, 'Malt Kiln Farm Shop'
         , NULL
         , NULL
         -- , 1

@@ -40,7 +40,7 @@ class Product_Permutation(db.Model, Store_Base):
     FLAG_COST_LOCAL = 'cost_local'
     FLAG_PROFIT_LOCAL_MIN = 'profit_local_min'
     FLAG_HAS_VARIATIONS = 'has_variations'
-    FLAG_LATENCY_MANUFACTURE_DAYS = 'latency_manufacture_days'
+    FLAG_LATENCY_MANUFACTURE = 'latency_manufacture'
     FLAG_UNIT_MEASUREMENT_QUANTITY = f'{Unit_Measurement.ATTR_ID_UNIT_MEASUREMENT}_quantity'
     FLAG_SYMBOL_UNIT_MEASUREMENT_QUANTITY = f'{Unit_Measurement.FLAG_SYMBOL}_quantity'
     FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_QUANTITY = f'{Unit_Measurement.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX}_quantity'
@@ -80,7 +80,7 @@ class Product_Permutation(db.Model, Store_Base):
     cost_local = db.Column(db.Float)
     profit_local_min = db.Column(db.Float)
     has_variations = db.Column(db.Boolean)
-    latency_manufacture_days = db.Column(db.Integer)
+    latency_manufacture = db.Column(db.Integer)
     id_unit_measurement_quantity = db.Column(db.Integer)
     symbol_unit_measurement_quantity = db.Column(db.String(50))
     symbol_is_suffix_not_prefix_unit_measurement_quantity = db.Column(db.Boolean)
@@ -151,7 +151,7 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.cost_local = query_row[4]
         permutation.currency_cost = Currency.from_DB_get_many_product_catalogue_product_permutation(query_row)
         permutation.profit_local_min = query_row[8]
-        permutation.latency_manufacture_days = query_row[9]
+        permutation.latency_manufacture = query_row[9]
         permutation.id_unit_measurement_quantity = query_row[10]
         permutation.symbol_unit_measurement_quantity = query_row[11]
         permutation.symbol_is_suffix_not_prefix_unit_measurement_quantity = av.input_bool(query_row[12], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_QUANTITY, _m, v_arg_type=v_arg_type)
@@ -224,7 +224,7 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.cost_local = json[cls.FLAG_COST_LOCAL]
         permutation.currency_cost = Currency.from_json(json, '_cost')
         permutation.profit_local_min = json[cls.FLAG_PROFIT_LOCAL_MIN]
-        permutation.latency_manufacture_days = json[cls.FLAG_LATENCY_MANUFACTURE_DAYS]
+        permutation.latency_manufacture = json[cls.FLAG_LATENCY_MANUFACTURE]
         permutation.id_unit_measurement_quantity = json[cls.FLAG_UNIT_MEASUREMENT_QUANTITY]
         permutation.symbol_unit_measurement_quantity = json.get(cls.FLAG_SYMBOL_UNIT_MEASUREMENT_QUANTITY)
         permutation.symbol_is_suffix_not_prefix_unit_measurement_quantity = json.get(cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_QUANTITY)
@@ -269,7 +269,7 @@ class Product_Permutation(db.Model, Store_Base):
             self.FLAG_COST_LOCAL: self.cost_local,
             self.FLAG_CURRENCY_COST: self.currency_cost.to_json(),
             self.FLAG_PROFIT_LOCAL_MIN: self.profit_local_min,
-            self.FLAG_LATENCY_MANUFACTURE_DAYS: self.latency_manufacture_days,
+            self.FLAG_LATENCY_MANUFACTURE: self.latency_manufacture,
             self.FLAG_UNIT_MEASUREMENT_QUANTITY: self.id_unit_measurement_quantity,
             self.FLAG_SYMBOL_UNIT_MEASUREMENT_QUANTITY: self.symbol_unit_measurement_quantity,
             self.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_QUANTITY: self.symbol_is_suffix_not_prefix_unit_measurement_quantity,
@@ -320,11 +320,11 @@ class Product_Permutation(db.Model, Store_Base):
         return self.prices[0]
 
     def output_delivery_date(self):
-        return (datetime.now() + timedelta(days=self.latency_manufacture_days)).strftime('%A, %d %B %Y')
+        return (datetime.now() + timedelta(days=self.latency_manufacture)).strftime('%A, %d %B %Y')
     
     """
     def output_lead_time(self):
-        return '1 day' if self.latency_manufacture_days == 1 else f'{self.latency_manufacture_days} days'
+        return '1 day' if self.latency_manufacture == 1 else f'{self.latency_manufacture} days'
     
     def output_price(self, is_included_VAT):
         if self.is_unavailable_in_currency_or_region:
@@ -353,7 +353,7 @@ class Product_Permutation(db.Model, Store_Base):
             description: {self.description}
             cost_local: {self.cost_local}
             currency_cost: {self.currency_cost}
-            latency_manufacture_days: {self.latency_manufacture_days}
+            latency_manufacture: {self.latency_manufacture}
             id_unit_measurement_quantity: {self.id_unit_measurement_quantity}
             symbol_unit_measurement_quantity: {self.symbol_unit_measurement_quantity}
             symbol_is_suffix_not_prefix_unit_measurement_quantity: {self.symbol_is_suffix_not_prefix_unit_measurement_quantity}
@@ -500,7 +500,7 @@ class Product_Permutation_Temp(db.Model, Store_Base):
     cost_local: float = db.Column(db.Float)
     id_currency_cost: int = db.Column(db.Integer)
     profit_local_min: float = db.Column(db.Float)
-    latency_manufacture_days: int = db.Column(db.Integer)
+    latency_manufacture: int = db.Column(db.Integer)
     id_unit_measurement_quantity: int = db.Column(db.Integer)
     count_unit_measurement_per_quantity_step: int = db.Column(db.Float)
     quantity_min: int = db.Column(db.Integer)
@@ -525,7 +525,7 @@ class Product_Permutation_Temp(db.Model, Store_Base):
         row.cost_local = product_permutation.cost_local
         row.id_currency_cost = product_permutation.currency_cost.id_currency
         row.profit_local_min = product_permutation.profit_local_min
-        row.latency_manufacture_days = product_permutation.latency_manufacture_days
+        row.latency_manufacture = product_permutation.latency_manufacture
         row.id_unit_measurement_quantity = product_permutation.id_unit_measurement_quantity
         row.count_unit_measurement_per_quantity_step = product_permutation.count_unit_measurement_per_quantity_step
         row.quantity_min = product_permutation.quantity_min
@@ -548,7 +548,7 @@ class Product_Permutation_Temp(db.Model, Store_Base):
             cost_local: {self.cost_local}
             id_currency_cost: {self.id_currency_cost}
             profit_local_min: {self.profit_local_min}
-            latency_manufacture_days: {self.latency_manufacture_days}
+            latency_manufacture: {self.latency_manufacture}
             id_unit_measurement_quantity: {self.id_unit_measurement_quantity}
             {Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP}: {self.count_unit_measurement_per_quantity_step}
             quantity_min: {self.quantity_min}
@@ -573,7 +573,7 @@ class Product_Permutation_Temp(db.Model, Store_Base):
             Product_Permutation.FLAG_COST_LOCAL: float(self.cost_local),
             Product_Permutation.FLAG_CURRENCY_COST: int(self.id_currency_cost),
             Product_Permutation.FLAG_PROFIT_LOCAL_MIN: float(self.profit_local_min),
-            Product_Permutation.FLAG_LATENCY_MANUFACTURE_DAYS: int(self.latency_manufacture_days),
+            Product_Permutation.FLAG_LATENCY_MANUFACTURE: int(self.latency_manufacture),
             Product_Permutation.FLAG_UNIT_MEASUREMENT_QUANTITY: int(self.id_unit_measurement_quantity),
             Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP: float(self.count_unit_measurement_per_quantity_step),
             self.FLAG_QUANTITY_MIN: float(self.quantity_min),

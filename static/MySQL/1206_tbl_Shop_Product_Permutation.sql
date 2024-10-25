@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
     id_currency_cost INT NOT NULL,
 	profit_local_min FLOAT NOT NULL,
     -- id_currency_profit_min INT NOT NULL,
-	latency_manufacture_days INT NOT NULL,
+	latency_manufacture INT NOT NULL,
 	id_unit_measurement_quantity INT NOT NULL,
 	CONSTRAINT FK_Shop_Product_Permutation_id_unit_quantity
 		FOREIGN KEY (id_unit_measurement_quantity)

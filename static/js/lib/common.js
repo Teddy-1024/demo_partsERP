@@ -2,50 +2,11 @@
 import Validation from "./validation.js";
 
 export default class Common {
-    static parseCSSPropertyToFloat(element, propertyName) {
-        var propertyText = element.css(propertyName);
-
-        if (!Validation.isEmpty(propertyText)) {
-
-            propertyText = propertyText.replace('px', '');
-
-            if (!Validation.isValidNumber(propertyText, true)) return parseFloat(propertyText);
+    static parseFloatWithDefault(value, defaultValue = 0.00) {
+        if (!Validation.isEmpty(value) && Validation.isValidNumber(value, true)) {
+            return parseFloat(value);
         }
-
-        return 0.00;
-    }
-
-    static setPageToLoading(isLoading) {
-
-        if (isLoading) {
-            document.querySelectorAll(document.body).classList.add(_dataLoadingFlag);
-        }
-        else {
-            document.querySelectorAll(document.body).classList.remove(_dataLoadingFlag);
-        }
-    }
-
-    static setBackgroundToLoading(elId, isLoading) {
-
-        if (Validation.isEmpty(el)) {
-
-            var elObj = document.querySelectorAll(elId);
-
-            if (isLoading) {
-
-                setTimeout(function() {
-                    elObj.innerHTML = "";
-                    elObj.css({
-                        "background-image": "url(" + urlImgLoading + ")",
-                        "background-position": "center",
-                        "background-repeat": "no-repeat"
-                    });
-                }, 0);
-            }
-            else {
-                elObj.css("background-image", "");
-            }
-        }
+        return defaultValue;
     }
 
     static allowClick() {

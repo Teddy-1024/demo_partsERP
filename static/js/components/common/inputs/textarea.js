@@ -1,4 +1,5 @@
 
+import Common from "../../../lib/common.js";
 import Validation from "../../../lib/validation.js";
 
 export default class TextArea {
@@ -27,15 +28,15 @@ export default class TextArea {
         elTextarea.style.removeProperty('height');
         textarea.getAttribute('rows', 1);
 
-        const paddingTop = parseCSSPropertyToFloat(textarea, 'padding-top');
-        const paddingBottom= parseCSSPropertyToFloat(textarea, 'padding-bottom');
-        const borderTop = parseCSSPropertyToFloat(textarea, 'border-top');
-        const borderBottom = parseCSSPropertyToFloat(textarea, 'border-bottom');
+        const paddingTop = Common.parseFloatWithDefault(textarea.style.paddingTop);
+        const paddingBottom = Common.parseFloatWithDefault(textarea.style.paddingBottom);
+        const borderTop = Common.parseFloatWithDefault(textarea.style.borderTop);
+        const borderBottom = Common.parseFloatWithDefault(textarea.style.borderBottom);
         let heightDelta = paddingTop + paddingBottom + borderTop + borderBottom;
         let heightNew = elTextarea.scrollHeight + heightDelta;
 
         // If new height is less than 1 linem default to single line height
-        const heightSingleLine = parseCSSPropertyToFloat(textarea, 'line-height') + heightDelta;
+        const heightSingleLine = Common.parseFloatWithDefault(textarea.style.heightSingleLine) + heightDelta;
         if (heightNew < heightSingleLine) heightNew = heightSingleLine;
 
         elTextarea.style.height = heightNew + 'px';

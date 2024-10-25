@@ -1,5 +1,5 @@
 
-import BusinessObjects from "../lib/business_objects.js";
+import BusinessObjects from "../lib/business_objects/business_objects.js";
 import Events from "../lib/events.js";
 import LocalStorage from "../lib/local_storage.js";
 import API from "../api.js";
@@ -179,7 +179,7 @@ export default class BasePage {
         Events.initialiseEventHandler(idOverlay, flagInitialised, (overlay) => {
             overlay.querySelector('button.' + flagCancel).addEventListener("click", (event) => {
                 event.stopPropagation();
-                overlay.css('display', 'none');
+                overlay.style.display = 'none';
             });
         });
     }
@@ -222,9 +222,11 @@ export default class BasePage {
         if (show) {
             buttonCancel.classList.remove(flagCollapsed);
             buttonSave.classList.remove(flagCollapsed);
+            console.log('showing buttons');
         } else {
             buttonCancel.classList.add(flagCollapsed);
             buttonSave.classList.add(flagCollapsed);
+            console.log('hiding buttons');
         }
     }
 

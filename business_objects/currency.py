@@ -68,8 +68,6 @@ class Currency(db.Model, Store_Base):
         return currency
     @classmethod
     def from_DB_get_many_product_catalogue_product_permutation(cls, query_row):
-        _m = 'Currency.from_DB_get_many_product_catalogue_product_permutation'
-        v_arg_type = 'class attribute'
         currency = cls()
         currency.id_currency = query_row[5]
         currency.code = query_row[6]
@@ -77,14 +75,10 @@ class Currency(db.Model, Store_Base):
         return currency
     @classmethod
     def from_DB_get_many_product_price_and_discount_and_delivery_region(cls, query_row):
-        _m = 'Currency.from_DB_get_many_product_price_and_discount_and_delivery_region'
-        v_arg_type = 'class attribute'
         currency = cls()
         return currency
     @classmethod
     def from_DB_stock_item(cls, query_row):
-        _m = 'Currency.from_DB_get_many_stock_item'
-        v_arg_type = 'class attribute'
         currency = cls()
         currency.id_currency = query_row[12]
         currency.code = query_row[13]
@@ -92,12 +86,24 @@ class Currency(db.Model, Store_Base):
         return currency
     @classmethod
     def from_DB_supplier(cls, query_row):
-        _m = 'Currency.from_DB_supplier'
-        v_arg_type = 'class attribute'
         currency = cls()
         currency.id_currency = query_row[1]
-        currency.symbol = query_row[2]
-        currency.code = query_row[3]
+        currency.code = query_row[2]
+        currency.symbol = query_row[3]
+        return currency
+    @classmethod
+    def from_DB_supplier_purchase_order(cls, query_row):
+        currency = cls()
+        currency.id_currency = query_row[3]
+        currency.code = query_row[4]
+        currency.symbol = query_row[5]
+        return currency
+    @classmethod
+    def from_DB_manufacturing_purchase_order(cls, query_row):
+        currency = cls()
+        currency.id_currency = query_row[1]
+        currency.code = query_row[2]
+        currency.symbol = query_row[3]
         return currency
     def __repr__(self):
         return f'''

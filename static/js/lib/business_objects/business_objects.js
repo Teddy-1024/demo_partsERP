@@ -21,4 +21,7 @@ export default class BusinessObjects {
         };
     }
     */
+    static getObjectText(objectJson) {
+        return objectJson[objectJson[flagNameAttrOptionText]];
+    }
 }

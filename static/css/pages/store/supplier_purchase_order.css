@@ -30,10 +30,63 @@
     width: 10vh;
     min-width: 10vh;
 }
-#tableMain tbody tr td.items, #tableMain thead tr th.items {
+
+#tableMain tbody tr td.order_items, #tableMain thead tr th.items {
     width: 40vh;
     min-width: 40vh;
 }
+#tableMain thead tr th.order_items.collapsed, #tableMain tbody tr td.order_items.collapsed {
+    width: 15vh;
+    min-width: 15vh;
+}
+#tableMain:has(tbody tr td.order_items table thead tr th.product_variations.collapsed) thead tr th.order_items, 
+#tableMain:has(tbody tr td.order_items table thead tr th.product_variations.collapsed) tbody tr td.order_items {
+    width: 91vh;
+    min-width: 91vh;
+}
+#tableMain thead tr th.order_items, 
+#tableMain tbody tr td.order_items {
+    width: 101vh;
+    min-width: 101vh;
+}
+#tableMain tbody tr td.order_items table thead tr th, #tableMain tbody tr td.order_items table tbody tr td {
+    width: 12vh;
+    min-width: 12vh;
+}
+#tableMain tbody tr td.order_items table thead tr th.display_order, #tableMain tbody tr td.order_items table tbody tr td.display_order,
+#tableMain tbody tr td.order_items table thead tr th.id_unit_measurement_quantity, #tableMain tbody tr td.order_items table tbody tr td.id_unit_measurement_quantity {
+    width: 6vh;
+    min-width: 6vh;
+}
+
+#tableMain tbody tr td.order_items table thead tr th.product_variations.collapsed, #tableMain tbody tr td.order_items table tbody tr td.product_variations.collapsed {
+    width: 10vh;
+    min-width: 10vh;
+}
+#tableMain tbody tr td.order_items table thead tr th.product_variations, #tableMain tbody tr td.order_items table tbody tr td.product_variations {
+    width: 20vh;
+    min-width: 20vh;
+}
+#tableMain tbody tr td.order_items table tbody tr td.product_variations table thead tr th, #tableMain tbody tr td.order_items table tbody tr td.product_variations table tbody tr td {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain tbody tr td.order_items table tbody tr td.product_variations table thead tr th:last-of-type, #tableMain tbody tr td.order_items table tbody tr td.product_variations table tbody tr td:last-of-type {
+    width: 4vh;
+    min-width: 4vh;
+}
+
+#tableMain tbody tr td.order_items table thead tr th.quantity_ordered, #tableMain tbody tr td.order_items table tbody tr td.quantity_ordered,
+#tableMain tbody tr td.order_items table thead tr th.quantity_received, #tableMain tbody tr td.order_items table tbody tr td.quantity_received,
+#tableMain tbody tr td.order_items table thead tr th.latency_delivery_days, #tableMain tbody tr td.order_items table tbody tr td.latency_delivery_days {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain tbody tr td.order_items table thead tr th.active, #tableMain tbody tr td.order_items table tbody tr td.active {
+    width: 4vh;
+    min-width: 4vh;
+}
+
 #tableMain tbody tr td.active, #tableMain thead tr th.active {
     width: 5vh;
     min-width: 5vh;

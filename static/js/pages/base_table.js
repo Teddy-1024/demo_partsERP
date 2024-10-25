@@ -1,5 +1,5 @@
 
-import BusinessObjects from "../lib/business_objects.js";
+import BusinessObjects from "../lib/business_objects/business_objects.js";
 import Events from "../lib/events.js";
 import LocalStorage from "../lib/local_storage.js";
 import Validation from "../lib/validation.js";
@@ -113,7 +113,7 @@ export default class TableBasePage extends BasePage {
         return document.querySelector(idFormFilters);
     }
     callbackLoadTableContent(response) {
-        let table = this.getTableMain();
+        let table = TableBasePage.getTableMain();
         let bodyTable = table.querySelector('tbody');
         bodyTable.querySelectorAll('tr').forEach(function(row) { row.remove(); });
         let rowsJson = response.data[flagRows];
@@ -123,7 +123,7 @@ export default class TableBasePage extends BasePage {
         rowsJson.forEach(this.loadRowTable.bind(this));
         this.hookupTableMain();
     }
-    getTableMain() {
+    static getTableMain() {
         return document.querySelector(idTableMain);
     }
     loadRowTable(rowJson) {
@@ -168,7 +168,7 @@ export default class TableBasePage extends BasePage {
             .catch(error => console.error('Error:', error));
     }
     getTableRecords(dirtyOnly = false) {
-        // let table = this.getTableMain();
+        // let table = TableBasePage.getTableMain();
         let records = [];
         let record;
         document.querySelectorAll(idTableMain + ' > tbody > tr').forEach((row) => {
@@ -276,13 +276,13 @@ export default class TableBasePage extends BasePage {
             *
             sliderDisplayOrder.addEventListener('change', (event) => {
                 console.log("slider change event");
-                this.handleChangeElementCellTable(sliderDisplayOrder);
+                this.handleChangeNestedElementCellTable(sliderDisplayOrder);
             });
         });
         */
         this.hookupChangeHandlerTableCells(selectorDisplayOrder);
     }
-    hookupChangeHandlerTableCells(inputSelector, handler = (event, element) => { this.handleChangeElementCellTable(event, element); }) {
+    hookupChangeHandlerTableCells(inputSelector, handler = (event, element) => { this.handleChangeNestedElementCellTable(event, element); }) {
         Events.initialiseEventHandler(inputSelector, flagInitialised, (input) => {
             input.addEventListener("change", (event) => {
                 handler(event, input);
@@ -291,6 +291,7 @@ export default class TableBasePage extends BasePage {
         });
         // this.hookupEventHandler("change", inputSelector, handler);
     }
+    /*
     handleChangeElementCellTable(event, element) {
         let row = DOM.getRowFromElement(element);
         let td = DOM.getCellFromElement(element);
@@ -308,8 +309,103 @@ export default class TableBasePage extends BasePage {
             }
         }
     }
+    handleChangeElementNestedCellTable(event, element, flagColumnList = [], orderNesting = 1) {
+        let orderNestingTemp = orderNesting;
+        let row, td, nestedRowSelector;
+        while (orderNestingTemp > 0) {
+            nestedRowSelector = idTableMain;
+            for (let indexOrderNesting = 0; indexOrderNesting < orderNestingTemp; indexOrderNesting++) {
+                nestedRowSelector += ' tbody tr';
+            }
+            row = DOM.getClosestParent(element, nestedRowSelector);
+            td = row.querySelector('td.' + flag);
+        }
+        let row = DOM.getRowFromElement(element);
+        let td = DOM.getCellFromElement(element);
+        let wasDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
+        let wasDirtyElement = element.classList.contains(flagDirty);
+        let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
+        if (isDirtyElement != wasDirtyElement) {
+            DOM.handleDirtyElement(td, isDirtyElement);
+            let isNowDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
+            if (isNowDirtyRow != wasDirtyRow) {
+                DOM.handleDirtyElement(row, isNowDirtyRow);
+                let rows = this.getTableRecords(true);
+                let existsDirtyRecord = rows.length > 0;
+                this.toggleShowButtonsSaveCancel(existsDirtyRecord);
+            }
+        }
+    }
+    handleChangeElementSubtableCell(event, element, flagFieldSubtable) {
+        let rowSubtable = element.closest(idTableMain + ' td.' + flagFieldSubtable + ' tbody tr');
+        let rowTable = rowSubtable.closest(idTableMain + ' > tbody > tr');
+        let td = DOM.getCellFromElement(element);
+        // let tdSubtable = td.closest('td.' + flagFieldSubtable);
+        let wasDirtyRowSubtable = DOM.hasDirtyChildrenNotDeletedContainer(rowSubtable);
+        let wasDirtyRowTable = DOM.hasDirtyChildrenNotDeletedContainer(rowTable);
+        let wasDirtyElement = element.classList.contains(flagDirty);
+        let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
+        console.log({isDirtyElement, wasDirtyElement});
+        if (isDirtyElement != wasDirtyElement) {
+            DOM.handleDirtyElement(td, isDirtyElement);
+            let isNowDirtyRowSubtable = DOM.hasDirtyChildrenNotDeletedContainer(rowSubtable);
+            console.log({isNowDirtyRowSubtable, wasDirtyRowSubtable});
+            if (isNowDirtyRowSubtable != wasDirtyRowSubtable) {
+                DOM.handleDirtyElement(rowSubtable, isNowDirtyRowSubtable);
+                let isNowDirtyRowTable = DOM.hasDirtyChildrenNotDeletedContainer(rowTable);
+                console.log({isNowDirtyRowTable, wasDirtyRowTable});
+                if (isNowDirtyRowTable != wasDirtyRowTable) {
+                    DOM.handleDirtyElement(rowTable, isNowDirtyRowTable);
+                    let rows = this.getTableRecords(true);
+                    let existsDirtyRecord = rows.length > 0;
+                    this.toggleShowButtonsSaveCancel(existsDirtyRecord);
+                }
+            }
+        }
+    }
+    */
+    handleChangeNestedElementCellTable(event, element) {
+        let wasDirtyParentRows = this.getAllIsDirtyRowsInParentTree(element);
+        let wasDirtyElement = element.classList.contains(flagDirty);
+        let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
+        console.log({isDirtyElement, wasDirtyElement, wasDirtyParentRows});
+        if (isDirtyElement != wasDirtyElement) {
+            let td = DOM.getCellFromElement(element);
+            DOM.setElementAttributeValueCurrent(td, DOM.getElementValueCurrent(element));
+            this.toggleShowButtonsSaveCancel(isDirtyElement);
+            this.cascadeChangedIsDirtyNestedElementCellTable(element, isDirtyElement, wasDirtyParentRows);
+        }
+    }
+    getAllIsDirtyRowsInParentTree(element) {
+        let rows = [];
+        let parent = element;
+        let isDirty;
+        while (parent) {
+            if (parent.matches('tr')) {
+                isDirty = parent.classList.contains(flagDirty)
+                rows.push(isDirty);
+            }
+            parent = parent.parentElement;
+        }
+        return rows;
+    }
+    cascadeChangedIsDirtyNestedElementCellTable(element, isDirtyElement, wasDirtyParentRows) {
+        if (Validation.isEmpty(wasDirtyParentRows)) return;
+        let td = DOM.getCellFromElement(element);
+        let isDirtyTd = isDirtyElement || DOM.hasDirtyChildrenNotDeletedContainer(tr);
+        DOM.handleDirtyElement(td, isDirtyTd);
+        let tr = DOM.getRowFromElement(td);
+        let isDirtyRow = isDirtyTd || DOM.hasDirtyChildrenNotDeletedContainer(tr);
+        let wasDirtyRow = wasDirtyParentRows.pop();
+        console.log({isDirtyRow, wasDirtyRow});
+        if (isDirtyRow != wasDirtyRow) {
+            DOM.handleDirtyElement(tr, isDirtyRow);
+            this.toggleShowButtonsSaveCancel(isDirtyRow);
+            this.cascadeChangedIsDirtyNestedElementCellTable(tr.parentElement, isDirtyRow, wasDirtyParentRows);
+        }
+    }
     hookupChangeHandlerTableCellsWhenNotCollapsed(inputSelector, handler = (event, element) => {
-        if (!element.classList.contains(flagCollapsed)) this.handleChangeElementCellTable(event, element);
+        if (!element.classList.contains(flagCollapsed)) this.handleChangeNestedElementCellTable(event, element);
     }) {
         this.hookupEventHandler("change", inputSelector, handler);
     }
@@ -355,7 +451,7 @@ export default class TableBasePage extends BasePage {
         return false;
     }
     handleDragSliderEnd(event) {
-        let table = this.getTableMain();
+        let table = TableBasePage.getTableMain();
         let rows = table.querySelectorAll('tr');
         rows.forEach(row => {
             row.classList.remove(flagDragOver);
@@ -381,33 +477,79 @@ export default class TableBasePage extends BasePage {
         this.hookupChangeHandlerTableCells(idTableMain + ' tbody tr td.' + flagDescription + ' textarea');
     }
     hookupInputsActiveTable() {
-        this.hookupChangeHandlerTableCells(idTableMain + ' tbody tr td.' + flagActive + ' input[type="checkbox"]');
+        this.hookupChangeHandlerTableCells(idTableMain + ' > tbody > tr > td.' + flagActive + ' input[type="checkbox"]');
+    }
+    hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete) {
+        this.hookupEventHandler("click", selectorButtonDelete, (event, element) => {
+            this.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+        });
+    }
+    handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
+        let row = DOM.getRowFromElement(element);
+        row.classList.add(flagDelete);
+
+        let buttonAdd = document.createElement("button");
+        buttonAdd.classList.add(flagAdd);
+        buttonAdd.textContent = '+';
+        element.replaceWith(buttonAdd);
+        this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
+    }
+    hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete) {
+        this.hookupEventHandler("click", selectorButtonUndelete, (event, element) => {
+            this.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+        });
+    }
+    handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
+        let row = DOM.getRowFromElement(element);
+        row.classList.add(flagDelete);
+
+        let buttonAdd = document.createElement("button");
+        buttonAdd.classList.add(flagAdd);
+        buttonAdd.textContent = '+';
+        element.replaceWith(buttonAdd);
+        this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete);
     }
     hookupTdsAccessLevel() {
         let cellSelector = idTableMain + ' tbody td.' + flagAccessLevel;
         this.hookupTableCellDdlPreviews(cellSelector, Utils.getListFromDict(accessLevels));
     }
-    hookupTableCellDdlPreviews(cellSelector, optionList, ddlHookup = (event, element) => { this.hookupTableCellDdls(event, element); }) {
+    hookupTableCellDdlPreviews(
+        cellSelector
+        , optionList
+        , ddlHookup = (cellSelector) => { this.hookupTableCellDdls(cellSelector); }
+        , changeHandler = (event, element) => { this.handleChangeTableCellDdl(event, element); }
+    ) {
         this.hookupEventHandler("click", cellSelector, (event, td) => {
             // if (td.querySelector('select')) return;
-            this.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, (event, element) => { ddlHookup(event, element); });
+            this.handleClickTableCellDdlPreview(
+                event
+                , td
+                , optionList
+                , cellSelector
+                , (cellSelector) => { ddlHookup(
+                    cellSelector
+                    , (event, element) => { changeHandler(event, element); }
+                ); }
+            );
         });
     }
-    hookupTableCellDdls(ddlSelector) {
-        this.hookupEventHandler("change", ddlSelector, (event, element) => { this.handleChangeTableCellDdl(event, element); });
+    hookupTableCellDdls(ddlSelector, changeHandler = (event, element) => { this.handleChangeTableCellDdl(event, element); }) {
+        this.hookupEventHandler("change", ddlSelector, (event, element) => { changeHandler(event, element); });
     }
-    handleClickTableCellDdlPreview(event, td, optionObjectList, cellSelector, ddlHookup = (event, element) => { this.hookupTableCellDdls(event, element); }) {
+    handleClickTableCellDdlPreview(event, td, optionObjectList, cellSelector, ddlHookup = (cellSelector) => { this.hookupTableCellDdls(cellSelector); }) {
         if (td.querySelector('select')) return;
         // td.removeEventListener("click", ddlHookup);
         console.log("click table cell ddl preview");
         let tdNew = td.cloneNode(true);
         td.parentNode.replaceChild(tdNew, td);
-        let idSelected = tdNew.getAttribute(attrValueCurrent);
+        let idSelected = DOM.getElementAttributeValueCurrent(tdNew);
         tdNew.innerHTML = '';
         let ddl = document.createElement('select');
-        DOM.setElementValuesCurrentAndPrevious(ddl, DOM.getElementAttributeValueCurrent(tdNew));
+        DOM.setElementValuesCurrentAndPrevious(ddl, idSelected);
         let optionJson, option;
         console.log({optionObjectList, cellSelector});
+        option = DOM.createOption(null);
+        ddl.appendChild(option);
         optionObjectList.forEach((optionObjectJson) => {
             optionJson = BusinessObjects.getOptionJsonFromObjectJson(optionObjectJson, idSelected);
             option = DOM.createOption(optionJson);
@@ -450,14 +592,43 @@ export default class TableBasePage extends BasePage {
             this.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, (event, element) => { ddlHookup(event, element); });
         });
     }
-    hookupProductPermutationVariationFields() {
+    hookupProductCategoryDdls(ddlSelector) {
+        this.hookupChangeHandlerTableCells(ddlSelector, (event, element) => { this.handleChangeProductCategoryDdl(event, element); });
+    }
+    handleChangeProductCategoryDdl(event, ddlCategory) {
+        this.handleChangeTableCellDdl(event, ddlCategory);
+        let idProductCategorySelected = DOM.getElementValueCurrent(ddlCategory);
+        let row = DOM.getRowFromElement(ddlCategory);
+        let tdProduct = row.querySelector('td.' + flagProduct);
+        tdProduct.dispatchEvent(new Event('click'));
+        let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
+        ddlProduct.innerHTML = '';
+        ddlProduct.appendChild(DOM.createOption(null));
+        let optionJson, option;
+        Utils.getListFromDict(products).forEach((product) => {
+            if (idProductCategorySelected != '0' && product[attrIdProductCategory] != idProductCategorySelected) return;
+            optionJson = BusinessObjects.getOptionJsonFromObjectJson(product);
+            option = DOM.createOption(optionJson);
+            ddlProduct.appendChild(option);
+        });
+        this.handleChangeTableCellDdl(event, ddlProduct);
+    }
+    hookupFieldsProductPermutationVariation() {
+        this.hookupPreviewsProductPermutationVariation();
+        this.hookupDdlsProductPermutationVariation();
+        this.hookupDdlsProductPermutationVariationType();
+        this.hookupButtonsProductPermutationVariationAddDelete(); 
+    }
+    hookupPreviewsProductPermutationVariation() {
         this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations, (event, element) => this.handleClickProductPermutationVariationsPreview(event, element));
     }
     handleClickProductPermutationVariationsPreview(event, element) {
+        let tblVariations = element.querySelector('table.' + flagProductVariations);
+        if (!Validation.isEmpty(tblVariations)) return;
         console.log("click product permutation variations preview");
         this.toggleColumnCollapsed(flagProductVariations, false);
         let permutationVariations = this.getElementProductVariations(element);
-        let tblVariations = document.createElement("table");
+        tblVariations = document.createElement("table");
         tblVariations.classList.add(flagProductVariations);
         let thead = document.createElement("thead");
         let tr = document.createElement("tr");
@@ -480,10 +651,7 @@ export default class TableBasePage extends BasePage {
         tblVariations.appendChild(thead);
         let tbody = document.createElement("tbody");
         console.log('variations:', permutationVariations);
-        if (Validation.isEmpty(permutationVariations)) {
-            permutationVariations = [PageStoreProductPermutations.createOptionUnselectedProductVariation()];
-        }
-        else {
+        if (!Validation.isEmpty(permutationVariations)) {
             permutationVariations.forEach((permutationVariation, index) => {
                 this.addProductPermutationVariationRow(tbody, permutationVariation);
             });
@@ -494,10 +662,8 @@ export default class TableBasePage extends BasePage {
         cellParent.innerHTML = '';
         cellParent.appendChild(tblVariations);
         console.log("tblVariations: ", tblVariations);
-        let selectorButtonAdd = idTableMain + ' td.' + flagProductVariations + ' button.' + flagAdd;
-        this.hookupEventHandler("click", selectorButtonAdd, this.handleClickButtonProductPermutationVariationsAdd);
-        let selectorButtonDelete = idTableMain + ' td.' + flagProductVariations + ' button.' + flagDelete;
-        this.hookupEventHandler("click", selectorButtonDelete, this.handleClickButtonProductPermutationVariationsDelete);
+        
+        this.hookupFieldsProductPermutationVariation();
     }
     toggleColumnCollapsed(flagColumn, isCollapsed) {
         this.toggleColumnHasClassnameFlag(flagColumn, isCollapsed, flagCollapsed);
@@ -555,6 +721,19 @@ export default class TableBasePage extends BasePage {
         let productVariationKeys = Object.keys(productVariations);
         let productVariationTypeKeys = Object.keys(productVariationTypes);
         
+        let ddlsProductVariationType = tbody.querySelectorAll('select.' + flagProductVariationType);
+        let productVariationTypeKeysSelected = new Set();
+        let valueSelected;
+        let doFilterProductVariationKeys = permutationVariation[attrIdProductVariationType] != 0;
+        ddlsProductVariationType.forEach((ddlProductVariationType) => {
+            valueSelected = DOM.getElementValueCurrent(ddlProductVariationType);
+            productVariationTypeKeysSelected.add(valueSelected);
+        });
+        productVariationTypeKeys = productVariationTypeKeys.filter(typeKey => !productVariationTypeKeysSelected.has(typeKey));
+        if (productVariationTypeKeys.length == 0) return;
+        if (doFilterProductVariationKeys) {
+            productVariationKeys = productVariationKeys.filter(variationKey => !productVariationTypeKeysSelected.has(productVariations[variationKey][attrIdProductVariationType]));
+        }
         console.log("permutationVariation: ", permutationVariation);
         let permutationVariationJson = permutationVariation[flagProductVariation];
         let permutationVariationTypeJson = permutationVariation[flagProductVariationType];
@@ -612,6 +791,7 @@ export default class TableBasePage extends BasePage {
         buttonDelete.textContent = 'x';
 
         let tr = document.createElement("tr");
+        tr.classList.add(flagProductVariation);
         tdVariationType.appendChild(ddlVariationType);
         tr.appendChild(tdVariationType);
         tdVariation.appendChild(ddlVariation);
@@ -620,13 +800,39 @@ export default class TableBasePage extends BasePage {
         tr.appendChild(tdDelete);
         tbody.appendChild(tr);
     }
-    handleClickButtonProductPermutationVariationsDelete(event, element) {
-        let row = getRowFromElement(element);
-        let variationsCell = row.closest('td.' + flagProductVariations);
-        row.remove();
-        this.updateProductPermutationVariations(variationsCell);
+    hookupDdlsProductPermutationVariation() {
+        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation);
     }
-    updateProductPermutationVariations(variationsCell) {
+    hookupDdlsProductPermutationVariationType() {
+        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariationType);
+    }
+    hookupButtonsProductPermutationVariationAddDelete() {
+        let selectorButton = idTableMain + ' td.' + flagProductVariations + ' tr.' + flagProductVariation + ' button';
+        let selectorButtonDelete = selectorButton + '.' + flagDelete;
+        let selectorButtonUndelete = selectorButton + '.' + flagAdd;
+        this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, (event, element) => {
+            this.handleClickButtonRowDelete(event, element);
+            this.updateProductPermutationVariations(element);
+        });
+        this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
+        this.hookupButtonsProductPermutationVariationAdd();
+    }
+    hookupButtonsProductPermutationVariationAdd() {
+        this.hookupEventHandler(
+            "click"
+            , idTableMain + ' td.' + flagProductVariations + ' button.' + flagAdd
+            , (event, element) => { this.handleClickButtonProductPermutationVariationAdd(event, element); }
+        );
+    }
+    handleClickButtonProductPermutationVariationAdd(event, element) {
+        let variationsCell = element.closest('td.' + flagProductVariations);
+        let tbody = variationsCell.querySelector('tbody');
+        let permutationVariation = TableBasePage.createOptionUnselectedProductVariation();
+        this.addProductPermutationVariationRow(tbody, permutationVariation);
+        this.hookupFieldsProductPermutationVariation();
+    }
+    updateProductPermutationVariations(element) {
+        let variationsCell = element.closest('td.' + flagProductVariations);
         let variationPairsString = this.getProductPermutationVariationsText(variationsCell);
         variationsCell.setAttribute(attrValueCurrent, variationPairsString);
         DOM.isElementDirty(variationsCell);
@@ -662,7 +868,7 @@ export default class TableBasePage extends BasePage {
     }
 
     toggleColumnHasClassnameFlag(columnFlag, isRequiredFlag, classnameFlag) {
-        let table = this.getTableMain();
+        let table = TableBasePage.getTableMain();
         let columnTh = table.querySelector('th.' + columnFlag);
         let columnThHasFlag = columnTh.classList.contains(classnameFlag);
         if (isRequiredFlag == columnThHasFlag) return;
@@ -673,7 +879,7 @@ export default class TableBasePage extends BasePage {
         });
     }
     toggleColumnHeaderHasClassnameFlag(columnFlag, isRequiredFlag, classnameFlag) {
-        let table = this.getTableMain();
+        let table = TableBasePage.getTableMain();
         let columnTh = table.querySelector('th.' + columnFlag);
         DOM.toggleElementHasClassnameFlag(columnTh, isRequiredFlag, classnameFlag);
     }

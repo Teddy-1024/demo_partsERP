@@ -1,6 +1,6 @@
 
 import API from "../../api.js";
-import BusinessObjects from "../../lib/business_objects.js";
+import BusinessObjects from "../../lib/business_objects/business_objects.js";
 import DOM from "../../dom.js";
 import Events from "../../lib/events.js";
 import TableBasePage from "../base_table.js";
@@ -133,7 +133,7 @@ export default class PageStoreStockItems extends TableBasePage {
         super.hookupTableMain();
         this.hookupProductCategoryFields();
         this.hookupProductFields();
-        this.hookupProductPermutationVariationFields();
+        this.hookupFieldsProductPermutationVariation();
         this.hookupCurrencyCostFields();
         this.hookupCostInputs();
         this.hookupOrderDateInputs();
@@ -144,28 +144,11 @@ export default class PageStoreStockItems extends TableBasePage {
         this.hookupActiveCheckboxes();
     }
     hookupProductCategoryFields() {
-        this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagProductCategory, Utils.getListFromDict(productCategories), (event, element) => { this.hookupProductCategoryDdls(event, element); });
-    }
-    hookupProductCategoryDdls(ddlSelector) {
-        this.hookupChangeHandlerTableCells(ddlSelector, (event, element) => { this.handleChangeProductCategoryDdl(event, element); });
-    }
-    handleChangeProductCategoryDdl(event, ddlCategory) {
-        this.handleChangeTableCellDdl(event, ddlCategory);
-        let idProductCategorySelected = DOM.getElementValueCurrent(ddlCategory);
-        let row = DOM.getRowFromElement(ddlCategory);
-        let tdProduct = row.querySelector('td.' + flagProduct);
-        tdProduct.dispatchEvent(new Event('click'));
-        let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-        ddlProduct.innerHTML = '';
-        ddlProduct.appendChild(DOM.createOption(null));
-        let optionJson, option;
-        Utils.getListFromDict(products).forEach((product) => {
-            if (product[attrIdProductCategory] != idProductCategorySelected) return;
-            optionJson = BusinessObjects.getOptionJsonFromObjectJson(product);
-            option = DOM.createOption(optionJson);
-            ddlProduct.appendChild(option);
-        });
-        this.handleChangeTableCellDdl(event, ddlProduct);
+        this.hookupTableCellDdlPreviews(
+            idTableMain + ' td.' + flagProductCategory
+            , Utils.getListFromDict(productCategories)
+            , (event, element) => { this.hookupProductCategoryDdls(event, element); }
+        );
     }
     hookupProductFields() {
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagProduct, Utils.getListFromDict(products));
@@ -317,7 +300,7 @@ export default class PageStoreStockItems extends TableBasePage {
     }
     hookupIsSealedFields(){
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagIsSealed + ' input', (event, element) => {
-            this.handleChangeElementCellTable(event, element);
+            this.handleChangeNestedElementCellTable(event, element);
             let isSealed = DOM.getElementValueCurrent(element);
             let row = DOM.getRowFromElement(element);
             let inputDateUnsealed = row.querySelector('td.' + flagDateUnsealed + ' input');
@@ -342,7 +325,7 @@ export default class PageStoreStockItems extends TableBasePage {
     }
     hookupIsConsumedFields(){
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagIsConsumed + ' input', (event, element) => {
-            this.handleChangeElementCellTable(event, element);
+            this.handleChangeNestedElementCellTable(event, element);
             let isConsumed = DOM.getElementValueCurrent(element);
             let row = DOM.getRowFromElement(element);
             let inputDateConsumed = row.querySelector('td.' + flagDateConsumed + ' input');

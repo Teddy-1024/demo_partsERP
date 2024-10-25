@@ -12,6 +12,7 @@ Business object for manufacturing_purchase_order
 
 # internal
 import lib.argument_validation as av
+from business_objects.currency import Currency
 from business_objects.db_base import Get_Many_Parameters_Base
 from business_objects.store.store_base import Store_Base
 from extensions import db
@@ -38,19 +39,21 @@ class Manufacturing_Purchase_Order(db.Model, Store_Base):
     def __init__(self):
         super().__init__()
         Store_Base.__init__(self)
-        self.items = None
+        self.items = []
+        self.currency = None
     @classmethod
     def from_DB_manufacturing_purchase_order(cls, query_row):
         manufacturing_purchase_order = cls()
         manufacturing_purchase_order.id_order = query_row[0]
         manufacturing_purchase_order.id_currency = query_row[1]
-        manufacturing_purchase_order.cost_total_local_VAT_excl = query_row[2]
-        manufacturing_purchase_order.cost_total_local_VAT_incl = query_row[3]
-        manufacturing_purchase_order.price_total_local_VAT_excl = query_row[4]
-        manufacturing_purchase_order.price_total_local_VAT_incl = query_row[5]
-        manufacturing_purchase_order.active = av.input_bool(query_row[6], 'active', f'{cls.__name__}.from_DB_manufacturing_purchase_order')
-        manufacturing_purchase_order.created_on = query_row[7]
-        manufacturing_purchase_order.name = query_row[8]
+        manufacturing_purchase_order.currency = Currency.from_DB_manufacturing_purchase_order(query_row)
+        manufacturing_purchase_order.cost_total_local_VAT_excl = query_row[4]
+        manufacturing_purchase_order.cost_total_local_VAT_incl = query_row[5]
+        manufacturing_purchase_order.price_total_local_VAT_excl = query_row[6]
+        manufacturing_purchase_order.price_total_local_VAT_incl = query_row[7]
+        manufacturing_purchase_order.active = av.input_bool(query_row[8], 'active', f'{cls.__name__}.from_DB_manufacturing_purchase_order')
+        manufacturing_purchase_order.created_on = query_row[9]
+        manufacturing_purchase_order.name = query_row[10]
         return manufacturing_purchase_order
 
     def __repr__(self):
@@ -74,6 +77,7 @@ class Manufacturing_Purchase_Order(db.Model, Store_Base):
             self.FLAG_COST_TOTAL_LOCAL_VAT_INCL: self.cost_total_local_VAT_incl,
             self.FLAG_PRICE_TOTAL_LOCAL_VAT_EXCL: self.price_total_local_VAT_excl,
             self.FLAG_PRICE_TOTAL_LOCAL_VAT_INCL: self.price_total_local_VAT_incl,
+            self.FLAG_ORDER_ITEMS: [item.to_json() for item in self.items],
             self.FLAG_ACTIVE: av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json'),
             self.FLAG_CREATED_ON: self.created_on,
             self.FLAG_NAME: self.name,
@@ -107,7 +111,6 @@ class Manufacturing_Purchase_Order(db.Model, Store_Base):
         return preview
 
 class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
-    FLAG_LATENCY_MANUFACTURE_DAYS: ClassVar[str] = 'latency_manufacture_days'
     FLAG_QUANTITY_PRODUCED: ClassVar[str] = 'quantity_produced'
     FLAG_QUANTITY_USED: ClassVar[str] = 'quantity_used'
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_MANUFACTURING_PURCHASE_ORDER_PRODUCT_LINK
@@ -120,7 +123,8 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
     name_permutation = db.Column(db.String(255))
     quantity_used = db.Column(db.Float)
     quantity_produced = db.Column(db.Float)
-    latency_manufacture_days = db.Column(db.Integer)
+    id_unit_latency_manufacture = db.Column(db.Integer)
+    latency_manufacture = db.Column(db.Integer)
     display_order = db.Column(db.Integer)
     cost_unit_local_VAT_excl = db.Column(db.Float)
     cost_unit_local_VAT_incl = db.Column(db.Float)
@@ -142,13 +146,14 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
         link.id_unit_quantity = query_row[4]
         link.quantity_used = query_row[5]
         link.quantity_produced = query_row[6]
-        link.latency_manufacture_days = query_row[7]
-        link.display_order = query_row[8]
-        link.cost_unit_local_VAT_excl = query_row[9]
-        link.cost_unit_local_VAT_incl = query_row[10]
-        link.price_unit_local_VAT_excl = query_row[11]
-        link.price_unit_local_VAT_incl = query_row[12]
-        link.active = query_row[13]
+        link.id_unit_latency_manufacture = query_row[7]
+        link.latency_manufacture = query_row[8]
+        link.display_order = query_row[9]
+        link.cost_unit_local_VAT_excl = query_row[10]
+        link.cost_unit_local_VAT_incl = query_row[11]
+        link.price_unit_local_VAT_excl = query_row[12]
+        link.price_unit_local_VAT_incl = query_row[13]
+        link.active = query_row[14]
         return link
     def __repr__(self):
         return f'''
@@ -159,7 +164,8 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
 {self.ATTR_ID_UNIT_MEASUREMENT_QUANTITY}: {self.id_unit_quantity},
 {self.FLAG_QUANTITY_USED}: {self.quantity_used},
 {self.FLAG_QUANTITY_PRODUCED}: {self.quantity_produced},
-{self.FLAG_LATENCY_MANUFACTURE_DAYS}: {self.latency_manufacture_days},
+{self.ATTR_ID_UNIT_MEASUREMENT_LATENCY_MANUFACTURE}: {self.id_unit_latency_manufacture},
+{self.FLAG_LATENCY_MANUFACTURE}: {self.latency_manufacture},
 {self.FLAG_DISPLAY_ORDER}: {self.display_order},
 {self.FLAG_COST_UNIT_LOCAL_VAT_EXCL}: {self.cost_unit_local_VAT_excl},
 {self.FLAG_COST_UNIT_LOCAL_VAT_INCL}: {self.cost_unit_local_VAT_incl},
@@ -177,7 +183,8 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
             self.ATTR_ID_UNIT_MEASUREMENT_QUANTITY: self.id_unit_quantity,
             self.FLAG_QUANTITY_USED: self.quantity_used,
             self.FLAG_QUANTITY_PRODUCED: self.quantity_produced,
-            self.FLAG_LATENCY_MANUFACTURE_DAYS: self.latency_manufacture_days,
+            self.ATTR_ID_UNIT_MEASUREMENT_LATENCY_MANUFACTURE: self.id_unit_latency_manufacture,
+            self.FLAG_LATENCY_MANUFACTURE: self.latency_manufacture,
             self.FLAG_DISPLAY_ORDER: self.display_order,
             self.FLAG_COST_UNIT_LOCAL_VAT_EXCL: self.cost_unit_local_VAT_excl,
             self.FLAG_COST_UNIT_LOCAL_VAT_INCL: self.cost_unit_local_VAT_incl,
@@ -201,7 +208,8 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
         link.id_unit_quantity = json[cls.ATTR_ID_UNIT_MEASUREMENT_QUANTITY]
         link.quantity_used = json[cls.FLAG_QUANTITY_USED]
         link.quantity_produced = json[cls.FLAG_QUANTITY_PRODUCED]
-        link.latency_manufacture_days = json[cls.FLAG_LATENCY_MANUFACTURE_DAYS]
+        link.id_unit_latency_manufacture = json[cls.ATTR_ID_UNIT_MEASUREMENT_LATENCY_MANUFACTURE]
+        link.latency_manufacture = json[cls.FLAG_LATENCY_MANUFACTURE]
         link.display_order = json[cls.FLAG_DISPLAY_ORDER]
         link.cost_unit_local_VAT_excl = json[cls.FLAG_COST_UNIT_LOCAL_VAT_EXCL]
         link.cost_unit_local_VAT_incl = json[cls.FLAG_COST_UNIT_LOCAL_VAT_INCL]
@@ -269,7 +277,8 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     id_unit_quantity: int = db.Column(db.Integer)
     quantity_used: float = db.Column(db.Float)
     quantity_produced: float = db.Column(db.Float)
-    latency_manufacture_days: int = db.Column(db.Integer)
+    id_unit_latency_manufacture = db.Column(db.Integer)
+    latency_manufacture: int = db.Column(db.Integer)
     display_order: int = db.Column(db.Integer)
     cost_unit_local_VAT_excl: float = db.Column(db.Float)
     cost_unit_local_VAT_incl: float = db.Column(db.Float)
@@ -286,7 +295,8 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
         row.id_unit_quantity = manufacturing_purchase_order_product_link.id_unit_quantity
         row.quantity_used = manufacturing_purchase_order_product_link.quantity_used
         row.quantity_produced = manufacturing_purchase_order_product_link.quantity_produced
-        row.latency_manufacture_days = manufacturing_purchase_order_product_link.latency_manufacture_days
+        row.id_unit_latency_manufacture = manufacturing_purchase_order_product_link.id_unit_latency_manufacture
+        row.latency_manufacture = manufacturing_purchase_order_product_link.latency_manufacture
         row.display_order = manufacturing_purchase_order_product_link.display_order
         row.cost_unit_local_VAT_excl = manufacturing_purchase_order_product_link.cost_unit_local_VAT_excl
         row.cost_unit_local_VAT_incl = manufacturing_purchase_order_product_link.cost_unit_local_VAT_incl
@@ -302,7 +312,8 @@ id_permutation: {self.id_permutation}
 id_unit_quantity: {self.id_unit_quantity}
 quantity_used: {self.quantity_used}
 quantity_produced: {self.quantity_produced}
-latency_manufacture_days: {self.latency_manufacture_days}
+{self.ATTR_ID_UNIT_MEASUREMENT_LATENCY_MANUFACTURE}: {self.id_unit_latency_manufacture}
+latency_manufacture: {self.latency_manufacture}
 display_order: {self.display_order}
 cost_unit_local_VAT_excl: {self.cost_unit_local_VAT_excl}
 cost_unit_local_VAT_incl: {self.cost_unit_local_VAT_incl}

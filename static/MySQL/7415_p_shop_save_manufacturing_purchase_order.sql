@@ -48,9 +48,11 @@ BEGIN
             , msg
 		)
         SELECT 
-			NULL
+			MET.id_type
             , @errno
             , @text
+		FROM partsltd_prod.Shop_Msg_Error_Type MET
+        WHERE code = 'MYSQL_ERROR'
 		;
         SELECT *
         FROM tmp_Msg_Error;
@@ -68,13 +70,16 @@ BEGIN
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
     
-	DROP TEMPORARY TABLE IF EXISTS tmp_Manufacturing;
+	DROP TEMPORARY TABLE IF EXISTS tmp_Manufacturing_Purchase_Order;
+	DROP TEMPORARY TABLE IF EXISTS tmp_Manufacturing_Purchase_Order_Product_Link;
 	DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
 
     -- Temporary tables
     CREATE TEMPORARY TABLE tmp_Manufacturing_Purchase_Order (
 		id_order INT NOT NULL PRIMARY KEY
 		, id_currency_cost INT NOT NULL
+		, is_new BIT NOT NULL
+		, name_error VARCHAR(1000) NOT NULL
     );
     
     CREATE TEMPORARY TABLE tmp_Manufacturing_Purchase_Order_Product_Link (
@@ -82,10 +87,11 @@ BEGIN
 		, id_order INT NOT NULL
         , id_permutation INT NOT NULL
 		, id_currency_cost INT NOT NULL
-		, quantity_ordered FLOAT NOT NULL
+		, quantity_used FLOAT NOT NULL
 		, id_unit_quantity INT NOT NULL
-		, quantity_received FLOAT NULL
-		, latency_delivery_days INT NOT NULL
+		, quantity_produced FLOAT NULL
+		, id_unit_latency_manufacture INT NULL
+		, latency_manufacture INT NULL
 		, display_order INT NOT NULL
         , active BIT NOT NULL
         , name_error VARCHAR(200) NOT NULL
@@ -94,6 +100,8 @@ BEGIN
 		, cost_unit_local_VAT_excl FLOAT NOT NULL
 		, cost_unit_local_VAT_incl FLOAT NOT NULL
 		, has_order BIT NULL
+		, is_new BIT NOT NULL
+		, name_error VARCHAR(1000) NOT NULL
     );
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
@@ -120,10 +128,11 @@ BEGIN
 		, id_order
 		, id_permutation
 		, id_currency_cost
-		, quantity_ordered
 		, id_unit_quantity
-		, quantity_received
-		, latency_delivery_days
+		, quantity_used
+		, quantity_produced
+		, id_unit_latency_manufacture
+		, latency_manufacture
 		, display_order
 		, active
 		, name_error
@@ -139,22 +148,23 @@ BEGIN
 		, IFNULL(IFNULL(SPOPL_T.id_order, MPOPL.id_order), 0) AS id_order
 		, IFNULL(IFNULL(SPOPL_T.id_permutation, MPOPL.id_permutation), 0) AS id_permutation
 		, IFNULL(IFNULL(SPOPL_T.id_currency_cost, MPOPL.id_currency_cost), 0) AS id_currency_cost
-		, IFNULL(IFNULL(SPOPL_T.quantity_ordered, MPOPL.quantity_ordered), 0) AS quantity_ordered
 		, IFNULL(IFNULL(SPOPL_T.id_unit_quantity, MPOPL.id_unit_quantity), 0) AS id_unit_quantity
-		, IFNULL(SPOPL_T.quantity_received, MPOPL.quantity_received) AS quantity_received
-		, IFNULL(SPOPL_T.latency_delivery_days, MPOPL.latency_delivery_days) AS latency_delivery_days
-		, RANK() OVER (PARTITION BY IFNULL(IFNULL(SPOPL_T.id_order, MPOPL.id_order), 0) ORDER BY IFNULL(IFNULL(SPOPL_T.display_order, MPOPL.display_order), 0)) AS display_order
+		, SPOPL_T.quantity_used AS quantity_used
+		, SPOPL_T.quantity_produced AS quantity_produced
+		, SPOPL_T.id_unit_latency_manufacture AS id_unit_latency_manufacture
+		, SPOPL_T.latency_manufacture AS latency_manufacture
+		, IFNULL(SPOPL_T.display_order, RANK() OVER (PARTITION BY IFNULL(IFNULL(SPOPL_T.id_order, MPOPL.id_order), 0) ORDER BY IFNULL(IFNULL(SPOPL_T.display_order, MPOPL.display_order), 0))) AS display_order
 		, IFNULL(IFNULL(SPOPL_T.active, MPOPL.active), 1) AS active
 		, CONCAT(
 			fn_shop_get_product_permutation_name(SPOPL_T.id_permutation)
 			, ' - x'
-			, IFNULL(SPOPL_T.quantity_ordered, '(No Quantity)')
+			, IFNULL(SPOPL_T.quantity_used, '(No Quantity)')
 		) AS name_error
 	    , IFNULL(SPOPL_T.id_link, 0) < 1 AS is_new
-		, IFNULL(IFNULL(SPOPL_T.cost_total_local_VAT_excl, MPOPL.cost_total_local_VAT_excl), 0) AS cost_total_local_VAT_excl
-		, IFNULL(IFNULL(SPOPL_T.cost_total_local_VAT_incl, MPOPL.cost_total_local_VAT_incl), 0) AS cost_total_local_VAT_incl
-		, IFNULL(SPOPL_T.cost_total_local_VAT_excl / SPOPL_T.quantity_ordered, MPOPL.cost_unit_local_VAT_excl) AS cost_unit_local_VAT_excl
-		, IFNULL(SPOPL_T.cost_total_local_VAT_incl / SPOPL_T.quantity_ordered, MPOPL.cost_unit_local_VAT_incl) AS cost_unit_local_VAT_incl
+		, SPOPL_T.cost_total_local_VAT_excl AS cost_total_local_VAT_excl
+		, SPOPL_T.cost_total_local_VAT_incl AS cost_total_local_VAT_incl
+		, SPOPL_T.cost_total_local_VAT_excl / SPOPL_T.quantity_used AS cost_unit_local_VAT_excl
+		, SPOPL_T.cost_total_local_VAT_incl / SPOPL_T.quantity_used AS cost_unit_local_VAT_incl
 		, NOT ISNULL(t_MPO.id_order) AS has_order
 	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp SPOPL_T
 	LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON SPOPL_T.id_link = MPOPL.id_link
@@ -277,8 +287,8 @@ BEGIN
 		SELECT * 
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link 
 		WHERE 
-			ISNULL(t_MPOPL.quantity_ordered)
-			OR t_MPOPL.quantity_ordered <= 0
+			ISNULL(t_MPOPL.quantity_used)
+			OR t_MPOPL.quantity_used <= 0
 	) THEN
 		INSERT INTO tmp_Msg_Error ( 
 			id_type, code, msg
@@ -292,15 +302,15 @@ BEGIN
 			)
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
 		WHERE 
-			ISNULL(t_MPOPL.quantity_ordered)
-			OR t_MPOPL.quantity_ordered <= 0
+			ISNULL(t_MPOPL.quantity_used)
+			OR t_MPOPL.quantity_used <= 0
 		;
 	END IF;
 	# Invalid quantity received
 	IF EXISTS (
 		SELECT * 
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link 
-		WHERE t_MPOPL.quantity_received < 0
+		WHERE t_MPOPL.quantity_produced < 0
 	) THEN
 		INSERT INTO tmp_Msg_Error ( 
 			id_type, code, msg
@@ -310,17 +320,52 @@ BEGIN
 			v_code_error_type_bad_data, 
 			CONCAT(
 				'A valid quantity received is required for the following Manufacturing Purchase Order Item(s): '
-				, GROUP_CONCAT(t_MPOPL.name_error, ' - ', t_MPOPL.quantity_received SEPARATOR ', ')
+				, GROUP_CONCAT(t_MPOPL.name_error, ' - ', t_MPOPL.quantity_produced SEPARATOR ', ')
 			)
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-		WHERE t_MPOPL.quantity_received < 0
+		WHERE t_MPOPL.quantity_produced < 0
 		;
 	END IF;
-	# Invalid delivery latency
+    # id_unit_latency_manufacture
+    IF EXISTS (
+		SELECT * 
+        FROM tmp_Manufacturing_Purchase_Order t_MPO
+        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPO.id_unit_latency_manufacture = UM.id_unit_measurement
+        WHERE 1=1
+			AND (
+				NOT ISNULL(t_MPO.id_unit_latency_manufacture)
+				OR ISNULL(UM.id_unit_measurement)
+				OR UM.active = 0
+			)
+		LIMIT 1
+	) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT(
+				'A valid unit measurement of manufacture latency is required for the following Manufacturing Purchase Order(s): '
+				, GROUP_CONCAT(CONCAT(IFNULL(t_MPO.id_stock, '(No Manufacturing Purchase Order)'), ' - ', t_MPO.id_unit_latency_manufacture) SEPARATOR ', ')
+			) AS msg
+		FROM tmp_Stock_Item t_SPO
+        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPO.id_unit_latency_manufacture = UM.id_unit_measurement
+        WHERE 1=1
+			AND (
+				NOT ISNULL(t_MPO.id_unit_latency_manufacture)
+				OR ISNULL(UM.id_unit_measurement)
+				OR UM.active = 0
+			)
+		;
+    END IF;
+	# Invalid manufacture latency
 	IF EXISTS (
 		SELECT * 
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link 
-		WHERE t_MPOPL.latency_delivery_days < 0
+		WHERE t_MPOPL.latency_manufacture < 0
 	) THEN
 		INSERT INTO tmp_Msg_Error ( 
 			id_type, code, msg
@@ -329,11 +374,11 @@ BEGIN
 			v_id_error_type_bad_data, 
 			v_code_error_type_bad_data, 
 			CONCAT(
-				'A valid delivery latency is required for the following Manufacturing Purchase Order Item(s): '
-				, GROUP_CONCAT(t_MPOPL.name_error, ' - ', t_MPOPL.latency_delivery_days SEPARATOR ', ')
+				'A valid manufacture latency is required for the following Manufacturing Purchase Order Item(s): '
+				, GROUP_CONCAT(t_MPOPL.name_error, ' - ', t_MPOPL.latency_manufacture SEPARATOR ', ')
 			)
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-		WHERE t_MPOPL.latency_delivery_days < 0
+		WHERE t_MPOPL.latency_manufacture < 0
 		;
 	END IF;
     
@@ -415,7 +460,7 @@ BEGIN
 	);
 	IF a_debug = 1 THEN
 		SELECT 
-			v_guid
+			a_guid
 			, a_id_user
 			, FALSE -- get inactive users
 			, v_ids_permission_manufacturing_purchase_order
@@ -427,7 +472,7 @@ BEGIN
 	END IF;
 	
 	CALL p_shop_calc_user(
-		v_guid
+		a_guid
 		, a_id_user
 		, FALSE -- get inactive users
 		, v_ids_permission_manufacturing_purchase_order
@@ -440,7 +485,7 @@ BEGIN
 		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -505,9 +550,10 @@ BEGIN
 				, id_permutation
 				, id_currency_cost
 				, id_unit_quantity
-				, quantity_ordered
-				, quantity_received
-				, latency_delivery_days
+				, quantity_used
+				, quantity_produced
+				, id_unit_latency_manufacture
+				, latency_manufacture
 				, display_order
 				, active
 				, cost_total_local_VAT_excl
@@ -520,9 +566,10 @@ BEGIN
 				, t_MPOPL.id_permutation
 				, t_MPOPL.id_currency_cost
 				, t_MPOPL.id_unit_quantity
-				, t_MPOPL.quantity_ordered
-				, t_MPOPL.quantity_received
-				, t_MPOPL.latency_delivery_days
+				, t_MPOPL.quantity_used
+				, t_MPOPL.quantity_produced
+				, t_MPOPL.id_unit_latency_manufacture
+				, t_MPOPL.latency_manufacture
 				, t_MPOPL.display_order
 				, t_MPOPL.active
 				, t_MPOPL.cost_total_local_VAT_excl
@@ -551,18 +598,19 @@ BEGIN
 				ON MPOPL.id_link = t_MPOPL.id_link
 				AND t_MPOPL.is_new = 0
 			SET
-				MPOPL.id_order = t_MPOPL.id_order,
-				MPOPL.id_permutation = t_MPOPL.id_permutation,
-				MPOPL.id_currency_cost = t_MPOPL.id_currency_cost,
-				MPOPL.id_unit_quantity = t_MPOPL.id_unit_quantity,
-				MPOPL.quantity_ordered = t_MPOPL.quantity_ordered,
-				MPOPL.quantity_received = t_MPOPL.quantity_received,
-				MPOPL.latency_delivery_days = t_MPOPL.latency_delivery_days,
-				MPOPL.display_order = t_MPOPL.display_order,
-				MPOPL.active = t_MPOPL.active,
-				MPOPL.cost_total_local_VAT_excl = t_MPOPL.cost_total_local_VAT_excl,
-				MPOPL.cost_total_local_VAT_incl = t_MPOPL.cost_total_local_VAT_incl,
-				MPOPL.id_change_set = v_id_change_set
+				MPOPL.id_order = t_MPOPL.id_order
+				, MPOPL.id_permutation = t_MPOPL.id_permutation
+				, MPOPL.id_currency_cost = t_MPOPL.id_currency_cost
+				, MPOPL.id_unit_quantity = t_MPOPL.id_unit_quantity
+				, MPOPL.quantity_used = t_MPOPL.quantity_used
+				, MPOPL.quantity_produced = t_MPOPL.quantity_produced
+				, MPOPL.id_unit_latency_manufacture = t_MPOPL.id_unit_latency_manufacture
+				, MPOPL.latency_manufacture = t_MPOPL.latency_manufacture
+				, MPOPL.display_order = t_MPOPL.display_order
+				, MPOPL.active = t_MPOPL.active
+				, MPOPL.cost_total_local_VAT_excl = t_MPOPL.cost_total_local_VAT_excl
+				, MPOPL.cost_total_local_VAT_incl = t_MPOPL.cost_total_local_VAT_incl
+				, MPOPL.id_change_set = v_id_change_set
 			;
 		
 			DELETE SPO_T
@@ -584,7 +632,8 @@ BEGIN
 	;
     
 	IF a_debug = 1 THEN
-		SELECT * from tmp_Manufacturing;
+		SELECT * from tmp_Manufacturing_Purchase_Order;
+		SELECT * from tmp_Manufacturing_Purchase_Order_Product_Link;
 	END IF;
 
     DROP TEMPORARY TABLE tmp_Manufacturing_Purchase_Order;
@@ -613,10 +662,10 @@ INSERT INTO Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
 	id_permutation,
 	cost_total_local,
 	id_currency_cost,
-	quantity_ordered,
+	quantity_used,
 	id_unit_quantity,
-	quantity_received,
-	latency_delivery_days,
+	quantity_produced,
+	latency_manufacture,
 	display_order,
     active
 )
@@ -628,10 +677,10 @@ VALUES
 		1, # id_permutation,
 		100, # cost_total_local,
 		1, # id_currency_cost,
-		1, # quantity_ordered,
+		1, # quantity_used,
 		1, # id_unit_quantity,
-		1, # quantity_received,
-		14, # latency_delivery_days ,
+		1, # quantity_produced,
+		14, # latency_manufacture ,
 		1, # display_order
         1 # active
     )

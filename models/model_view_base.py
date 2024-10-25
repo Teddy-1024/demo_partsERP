@@ -29,7 +29,7 @@ from business_objects.user import User, User_Filters
 # external
 from abc import ABC, abstractmethod
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, session, current_app
+from flask import Flask, session, current_app, jsonify
 from pydantic import BaseModel, ConfigDict
 from typing import ClassVar
 
@@ -357,6 +357,16 @@ class Model_View_Base(BaseModel, ABC):
     def convert_dict_values_to_json(dict):
         return {key: dict[key].to_json() for key in dict.keys()}
     @staticmethod
+    def convert_list_objects_to_preview_str(list_objects):
+        preview_str = ''
+        for obj in list_objects:
+            if preview_str != '':
+                preview_str += '\n'
+            obj_json = obj.to_json()
+            print(f'obj_json: {obj_json}')
+            preview_str += obj_json[obj_json[Base.FLAG_NAME_ATTR_OPTION_TEXT]]
+        return preview_str
+    @staticmethod
     def join_with_linebreaks(strs):
         str_multiline = ''
         for str in strs:
@@ -374,3 +384,6 @@ class Model_View_Base(BaseModel, ABC):
         if date_time is None:
             return ''
         return date_time.strftime('%Y-%m-%dT%H:%M')
+    @staticmethod
+    def jsonify(data):
+        return jsonify(data)

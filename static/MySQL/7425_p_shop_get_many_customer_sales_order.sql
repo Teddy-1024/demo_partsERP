@@ -203,7 +203,7 @@ BEGIN
 		price_GBP_min FLOAT NOT NULL,
 		*/
         /*
-        latency_manufacture_days INT NOT NULL,
+        latency_manufacture INT NOT NULL,
 		quantity_min FLOAT NOT NULL,
 		quantity_max FLOAT NOT NULL,
 		quantity_step FLOAT NOT NULL,
@@ -398,7 +398,7 @@ BEGIN
 				price_GBP_VAT_excl,
 				price_GBP_min,
 				*
-				latency_manufacture_days,
+				latency_manufacture,
 				quantity_min,
 				quantity_max,
 				quantity_step,
@@ -430,7 +430,7 @@ BEGIN
 				PP.price_GBP_VAT_excl,
 				PP.price_GBP_min,
 				*
-				PP.latency_manufacture_days,
+				PP.latency_manufacture,
 				PP.quantity_min,
 				PP.quantity_max,
 				PP.quantity_step,

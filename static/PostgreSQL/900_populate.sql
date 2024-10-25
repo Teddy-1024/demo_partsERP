@@ -198,7 +198,7 @@ INSERT INTO Shop_Product_Permutation (
     id_currency_cost,
     profit_local_min,
     -- id_currency_profit_min,
-    latency_manufacture_days,
+    latency_manufacture,
 	quantity_min,
 	quantity_max,
 	quantity_step,

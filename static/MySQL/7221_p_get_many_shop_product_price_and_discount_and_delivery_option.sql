@@ -691,7 +691,7 @@ BEGIN
         CURRENCY.code AS code_currency_cost,
         CURRENCY.symbol AS symbol_currency_cost,
         PP.profit_local_min,
-        t_P.latency_manufacture_days,
+        t_P.latency_manufacture,
         t_P.quantity_min,
         t_P.quantity_max,
         t_P.quantity_step,

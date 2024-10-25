@@ -63,9 +63,9 @@ BEGIN
 	SELECT NEW.id_link, 'quantity_produced', OLD.quantity_produced, NEW.quantity_produced, NEW.id_change_set
 		WHERE NOT OLD.quantity_produced <=> NEW.quantity_produced
     UNION
-	-- Changed latency_manufacture_days
-	SELECT NEW.id_link, 'latency_manufacture_days', OLD.latency_manufacture_days, NEW.latency_manufacture_days, NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
+	-- Changed latency_manufacture
+	SELECT NEW.id_link, 'latency_manufacture', OLD.latency_manufacture, NEW.latency_manufacture, NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
     UNION
 	-- Changed display_order
 	SELECT NEW.id_link, 'display_order', OLD.display_order, NEW.display_order, NEW.id_change_set

@@ -2674,7 +2674,7 @@ CREATE TABLE `shop_product_permutation` (
   `id_currency_cost_manufacturing` int NOT NULL,
   `profit_local_min` float NOT NULL,
   `id_currency_profit_min` int NOT NULL,
-  `latency_manufacture_days` int NOT NULL,
+  `latency_manufacture` int NOT NULL,
   `quantity_min` float NOT NULL,
   `quantity_max` float NOT NULL,
   `quantity_step` float NOT NULL,
@@ -2794,9 +2794,9 @@ DELIMITER ;;;
 		WHERE NOT (OLD.price_GBP_min <=> NEW.price_GBP_min)
 	UNION
     */
-    # Changed latency_manufacture_days
-	SELECT NEW.id_product, 'latency_manufacture_days', CONVERT(OLD.latency_manufacture_days, CHAR), CONVERT(NEW.latency_manufacture_days, CHAR), NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
+    # Changed latency_manufacture
+	SELECT NEW.id_product, 'latency_manufacture', CONVERT(OLD.latency_manufacture, CHAR), CONVERT(NEW.latency_manufacture, CHAR), NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
 	UNION
     # Changed quantity_min
 	SELECT NEW.id_product, 'quantity_min', CONVERT(OLD.quantity_min, CHAR), CONVERT(NEW.quantity_min, CHAR), NEW.id_change_set
@@ -6110,7 +6110,7 @@ BEGIN
         price_GBP_full FLOAT NOT NULL,
 		price_GBP_min FLOAT NOT NULL,
 		*/
-        latency_manufacture_days INT NOT NULL,
+        latency_manufacture INT NOT NULL,
 		quantity_min FLOAT NOT NULL,
 		quantity_max FLOAT NOT NULL,
 		quantity_step FLOAT NOT NULL,
@@ -6224,7 +6224,7 @@ BEGIN
 		price_GBP_VAT_excl,
 		price_GBP_min,
 		*/
-        latency_manufacture_days,
+        latency_manufacture,
 		quantity_min,
 		quantity_max,
 		quantity_step,
@@ -6254,7 +6254,7 @@ BEGIN
 		PP.price_GBP_VAT_excl,
 		PP.price_GBP_min,
 		*/
-        PP.latency_manufacture_days,
+        PP.latency_manufacture,
 		PP.quantity_min,
 		PP.quantity_max,
 		PP.quantity_step,
@@ -6705,7 +6705,7 @@ BEGIN
         t_P.description,
         P.has_variations,
         P.id_category,
-        t_P.latency_manufacture_days,
+        t_P.latency_manufacture,
         t_P.quantity_min,
         t_P.quantity_max,
         t_P.quantity_step,

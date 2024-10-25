@@ -1,5 +1,5 @@
 {% if is_blank_row %}
-    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_SUPPLIER }}>
+    <tr class="{{ model.FLAG_ROW_NEW }} {{ model.FLAG_SUPPLIER }}" {{ model.ATTR_ID_SUPPLIER }}>
         <td class="{{ model.FLAG_NAME_COMPANY }}">
             <textarea class="{{ model.FLAG_NAME_COMPANY }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
         </td>
@@ -32,7 +32,7 @@
         </td>
     </tr>
 {% else %}
-    <tr {{ model.ATTR_ID_SUPPLIER }}="{{ supplier.id_supplier }}">
+    <tr class="{{ model.FLAG_SUPPLIER }}" {{ model.ATTR_ID_SUPPLIER }}="{{ supplier.id_supplier }}">
         <td class="{{ model.FLAG_NAME_COMPANY }}">
             <textarea class="{{ model.FLAG_NAME_COMPANY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.name_company }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.name_company }}">{{ supplier.name_company }}</textarea>
         </td>

@@ -25,5 +25,5 @@ CREATE TABLE Shop_Supplier_Address (
     , id_change_set INT
     , CONSTRAINT FK_Shop_Supplier_Address_id_change_set
 		FOREIGN KEY (id_change_set)
-        REFERENCES partsltd_prod.Shop_User_Change_Set(id_change_set)
+        REFERENCES partsltd_prod.Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );

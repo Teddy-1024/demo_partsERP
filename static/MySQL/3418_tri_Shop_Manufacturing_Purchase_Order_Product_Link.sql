@@ -71,9 +71,13 @@ BEGIN
 	SELECT NEW.id_order, 'price_unit_local_VAT_incl', OLD.price_unit_local_VAT_incl, NEW.price_unit_local_VAT_incl, NEW.id_change_set
 		WHERE NOT OLD.price_unit_local_VAT_incl <=> NEW.price_unit_local_VAT_incl
     UNION
-	# Changed latency_manufacture_days
-	SELECT NEW.id_link, 'latency_manufacture_days', OLD.latency_manufacture_days, NEW.latency_manufacture_days, NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
+	# Changed id_unit_latency_manufacture
+	SELECT NEW.id_link, 'id_unit_latency_manufacture', OLD.id_unit_latency_manufacture, NEW.id_unit_latency_manufacture, NEW.id_change_set
+		WHERE NOT OLD.id_unit_latency_manufacture <=> NEW.id_unit_latency_manufacture
+    UNION
+	# Changed latency_manufacture
+	SELECT NEW.id_link, 'latency_manufacture', OLD.latency_manufacture, NEW.latency_manufacture, NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
     UNION
 	# Changed display_order
 	SELECT NEW.id_link, 'display_order', OLD.display_order, NEW.display_order, NEW.id_change_set

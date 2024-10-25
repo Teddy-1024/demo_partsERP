@@ -55,17 +55,21 @@ class DataStore_Store_Manufacturing_Purchase_Order(DataStore_Store_Base):
         result_set_1 = cursor.fetchall()
         print(f'raw manufacturing_purchase_orders: {result_set_1}')
         manufacturing_purchase_orders = []
+        indices_manufacturing_purchase_order = {}
         for row in result_set_1:
             new_manufacturing_purchase_order = Manufacturing_Purchase_Order.from_DB_manufacturing_purchase_order(row)
+            indices_manufacturing_purchase_order[new_manufacturing_purchase_order.id_order] = len(manufacturing_purchase_orders)
             manufacturing_purchase_orders.append(new_manufacturing_purchase_order)
         
         # Manufacturing_Purchase_Orders Items
+        cursor.nextset()
         result_set_1 = cursor.fetchall()
         print(f'raw manufacturing_purchase_order_product_links: {result_set_1}')
         order_product_links = []
         for row in result_set_1:
             new_link = Manufacturing_Purchase_Order_Product_Link.from_DB_manufacturing_purchase_order(row)
-            manufacturing_purchase_orders.append(new_manufacturing_purchase_order)
+            order_product_links.append(new_link)
+            manufacturing_purchase_orders[indices_manufacturing_purchase_order[new_link.id_order]].items.append(new_link)
 
         # Errors
         cursor.nextset()

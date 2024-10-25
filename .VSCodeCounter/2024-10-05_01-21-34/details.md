@@ -516,7 +516,7 @@ Total : 584 files,  70074 codes, 18431 comments, 9994 blanks, all 98499 lines
 | [static/js/components/common/temporary/overlay_error.js](/static/js/components/common/temporary/overlay_error.js) | JavaScript | 17 | 0 | 2 | 19 |
 | [static/js/components/common/video.js](/static/js/components/common/video.js) | JavaScript | 10 | 0 | 4 | 14 |
 | [static/js/dom.js](/static/js/dom.js) | JavaScript | 169 | 18 | 11 | 198 |
-| [static/js/lib/business_objects.js](/static/js/lib/business_objects.js) | JavaScript | 15 | 7 | 2 | 24 |
+| [static/js/lib/business_objects/business_objects.js](/static/js/lib/business_objects/business_objects.js) | JavaScript | 15 | 7 | 2 | 24 |
 | [static/js/lib/common.js](/static/js/lib/common.js) | JavaScript | 63 | 3 | 19 | 85 |
 | [static/js/lib/constants.js](/static/js/lib/constants.js) | JavaScript | 4 | 1 | 2 | 7 |
 | [static/js/lib/events.js](/static/js/lib/events.js) | JavaScript | 9 | 0 | 1 | 10 |

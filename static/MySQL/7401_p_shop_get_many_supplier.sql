@@ -196,8 +196,8 @@ BEGIN
     SELECT 
 		t_S.id_supplier,
 		S.id_currency,
-        C.symbol AS symbol_currency,
         C.code AS code_currency,
+        C.symbol AS symbol_currency,
         S.name_company,
 		S.name_contact,
 		S.department_contact,

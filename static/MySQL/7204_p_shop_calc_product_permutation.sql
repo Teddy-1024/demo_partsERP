@@ -549,7 +549,7 @@ BEGIN
 				, cost_local
 				, id_currency_cost
 				, profit_local_min
-				, latency_manufacture_days
+				, latency_manufacture
 				, id_unit_measurement_quantity
 				, count_unit_measurement_per_quantity_step
 				, quantity_min
@@ -575,7 +575,7 @@ BEGIN
 				, PP.cost_local
 				, PP.id_currency_cost
 				, PP.profit_local_min
-				, PP.latency_manufacture_days
+				, PP.latency_manufacture
 				, PP.id_unit_measurement_quantity
 				, PP.count_unit_measurement_per_quantity_step
 				, PP.quantity_min

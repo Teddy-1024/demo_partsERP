@@ -13,11 +13,18 @@ Data model for manufacturing purchase order view page
 # internal
 from models.model_view_store import Model_View_Store
 from datastores.datastore_store_manufacturing_purchase_order import DataStore_Store_Manufacturing_Purchase_Order
-from business_objects.store.manufacturing_purchase_order import Manufacturing_Purchase_Order, Parameters_Manufacturing_Purchase_Order
+from business_objects.store.product import Product, Parameters_Product
+from business_objects.store.product_category import Product_Category_Container
+from business_objects.store.manufacturing_purchase_order import Manufacturing_Purchase_Order, Parameters_Manufacturing_Purchase_Order, Manufacturing_Purchase_Order_Product_Link
 from forms.store.manufacturing_purchase_order import Filters_Manufacturing_Purchase_Order
 import lib.argument_validation as av
+# external
+from typing import ClassVar
 
 class Model_View_Store_Manufacturing_Purchase_Order(Model_View_Store):
+    FLAG_QUANTITY_PRODUCED: ClassVar[str] = Manufacturing_Purchase_Order_Product_Link.FLAG_QUANTITY_PRODUCED
+    FLAG_QUANTITY_USED: ClassVar[str] = Manufacturing_Purchase_Order_Product_Link.FLAG_QUANTITY_USED
+    category_list_filters: Product_Category_Container = None
     currencies: list = None
     currency_options: list = None
     form_filters: Filters_Manufacturing_Purchase_Order = None
@@ -25,6 +32,8 @@ class Model_View_Store_Manufacturing_Purchase_Order(Model_View_Store):
     manufacturing_purchase_orders: list = None
     units_measurement: list = None
     units_measurement_time: list = None
+    variation_types: list = None
+    variations: list = None
 
     @property
     def title(self):
@@ -38,6 +47,8 @@ class Model_View_Store_Manufacturing_Purchase_Order(Model_View_Store):
         parameters_manufacturing_purchase_order = Parameters_Manufacturing_Purchase_Order.from_filters_manufacturing_purchase_order(form_filters_old)
         datastore_manufacturing_purchase_order = DataStore_Store_Manufacturing_Purchase_Order()
         self.manufacturing_purchase_orders, errors = datastore_manufacturing_purchase_order.get_many_manufacturing_purchase_order(parameters_manufacturing_purchase_order)
+        self.category_list_filters, errors = DataStore_Store_Manufacturing_Purchase_Order.get_many_product(Parameters_Product.get_default())
+        self.variation_types, self.variations, errors = self.get_many_product_variation()
         self.units_measurement = self.get_many_unit_measurement()
         self.units_measurement_time = [unit_measurement for unit_measurement in self.units_measurement if unit_measurement.is_unit_of_time]
         self.currencies = self.get_many_currency()

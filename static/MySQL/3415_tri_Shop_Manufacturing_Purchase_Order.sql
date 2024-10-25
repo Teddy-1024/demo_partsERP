@@ -13,7 +13,11 @@ BEFORE INSERT ON Shop_Manufacturing_Purchase_Order
 FOR EACH ROW
 BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
-	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
+	-- SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
+	IF NOT EXISTS (SELECT * FROM partsltd_prod.Shop_User U WHERE U.id_user = NEW.created_on LIMIT 1) THEN
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Valid created by User ID must be provided.';
+    END IF;
 END //
 DELIMITER ;;
 
@@ -27,6 +31,10 @@ BEGIN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'New change Set ID must be provided.';
     END IF;
+	IF NOT EXISTS (SELECT * FROM partsltd_prod.Shop_User U WHERE U.id_user = NEW.created_on LIMIT 1) THEN
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Valid created by User ID must be provided.';
+    END IF;
     
     INSERT INTO Shop_Manufacturing_Purchase_Order_Audit (
 		id_order,
@@ -35,6 +43,10 @@ BEGIN
         value_new,
         id_change_set
     )
+	# Changed id_order_temp
+	SELECT NEW.id_order, 'id_order_temp', OLD.id_order_temp, NEW.id_order_temp, NEW.id_change_set
+		WHERE NOT OLD.id_order_temp <=> NEW.id_order_temp
+    UNION
 	# Changed id_currency
 	SELECT NEW.id_order, 'id_currency', OLD.id_currency, NEW.id_currency, NEW.id_change_set
 		WHERE NOT OLD.id_currency <=> NEW.id_currency

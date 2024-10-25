@@ -45,7 +45,7 @@
                 <th class="{{ model.FLAG_CURRENCY }}">Currency</th>
                 <th class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_EXCL }}">Cost Total VAT Excl.</th>
                 <th class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_INCL }}">Cost Total VAT Incl.</th>
-                <th class="{{ model.FLAG_ITEMS }}">Items</th>
+                <th class="{{ model.FLAG_ORDER_ITEMS }} {{ model.FLAG_COLLAPSED }}">Items</th>
                 <th class="{{ model.FLAG_ACTIVE}}">Active</th>
             </tr>
         </thead>
@@ -67,7 +67,12 @@
 
     <script>
         var currencies = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.currencies) | tojson | safe }};
-        var supplier_purchase_orders = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.supplier_purchase_orders) | tojson | safe }};
+        var products = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.get_list_products()) | tojson | safe }};
+        var productCategories = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.categories) | tojson | safe }};
+        var productVariations = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.variations) | tojson | safe }};
+        var productVariationTypes = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.variation_types) | tojson | safe }};
+        var supplierPurchaseOrders = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.supplier_purchase_orders) | tojson | safe }};
         var suppliers = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.suppliers) | tojson | safe }};
+        var unitMeasurements = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.units_measurement) | tojson | safe }};
     </script>
 {% endblock %}
