@@ -1,0 +1,17 @@
+
+
+{% with _is_blank_row = (is_blank_row or model.suppliers | length == 0 or supplier is not defined or supplier is none) %}
+    {% if not _is_blank_row %}
+        <div 
+            class="{{ model.FLAG_SUPPLIER }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.id_supplier }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.id_supplier }}"
+        >{{ supplier.name_company }}</div>
+    {% else %}
+        <div 
+            class="{{ model.FLAG_SUPPLIER }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="" 
+            {{ model.ATTR_VALUE_PREVIOUS }}=""
+        ></div>
+    {% endif %}
+{% endwith %}

@@ -73,7 +73,6 @@ th, td {
 #tableMain thead tr th.product_variations.collapsed, #tableMain tbody tr td.product_variations.collapsed {
     width: 10vh;
     min-width: 10vh;
-    display: table-cell !important;
 }
 #tableMain thead tr th.product_variations, #tableMain tbody tr td.product_variations {
     width: 20vh;
@@ -106,7 +105,6 @@ th, td {
 #tableMain thead tr th.storage-location.collapsed, #tableMain tbody tr td.storage-location.collapsed {
     width: 10vh;
     min-width: 10vh;
-    display: table-cell !important;
 }
 #tableMain thead tr th.storage-location, #tableMain tbody tr td.storage-location {
     width: 20vh;

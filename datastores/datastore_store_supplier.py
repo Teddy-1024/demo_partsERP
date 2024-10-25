@@ -36,11 +36,12 @@ class DataStore_Store_Supplier(DataStore_Store_Base):
     def __init__(self):
         super().__init__()
 
-    def get_many_supplier(self, parameters_supplier):
+    @classmethod
+    def get_many_supplier(cls, parameters_supplier):
         _m = 'DataStore_Store_Supplier.get_many_supplier'
         av.val_instance(parameters_supplier, 'parameters_supplier', _m, Parameters_Supplier)
         argument_dict = parameters_supplier.to_json()
-        user = self.get_user_session()
+        user = cls.get_user_session()
         argument_dict = {
             'a_id_user': user.id_user
             , **argument_dict
@@ -48,7 +49,7 @@ class DataStore_Store_Supplier(DataStore_Store_Base):
         }
         print(f'argument_dict: {argument_dict}')
         print('executing p_shop_get_many_supplier')
-        result = self.db_procedure_execute('p_shop_get_many_supplier', argument_dict)
+        result = cls.db_procedure_execute('p_shop_get_many_supplier', argument_dict)
         cursor = result.cursor
         print('data received')
         

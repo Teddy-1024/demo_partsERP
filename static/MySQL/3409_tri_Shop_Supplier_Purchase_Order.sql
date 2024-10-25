@@ -35,6 +35,10 @@ BEGIN
         value_new,
         id_change_set
     )
+	# Changed id_order_temp
+	SELECT NEW.id_order, 'id_order_temp', OLD.id_order_temp, NEW.id_order_temp, NEW.id_change_set
+		WHERE NOT OLD.id_order_temp <=> NEW.id_order_temp
+    UNION
 	# Changed id_supplier_ordered
 	SELECT NEW.id_order, 'id_supplier_ordered', OLD.id_supplier_ordered, NEW.id_supplier_ordered, NEW.id_change_set
 		WHERE NOT OLD.id_supplier_ordered <=> NEW.id_supplier_ordered

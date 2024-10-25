@@ -9,7 +9,7 @@ thead, tbody {
 }
 
 th {
-    
+    background-color: var(--c_purple_pastel);
 }
 td {
     font-size: min(12px, calc(1vh * 3));
@@ -24,6 +24,17 @@ tr:not(:last-child) > td {
 td > table > tbody > tr > td {
     border: none !important;
 }
+th.collapsed, td.collapsed {
+    display: table-cell !important;
+}
+td.dirty {
+    background-color: var(--c_purple_dark);
+}
+td:not(.dirty) {
+    /* color: var(--c_purple_dark); */
+    background-color: var(--c_purple_pastel);
+}
+
 tr {
     min-height: 1px;
     border-bottom: 1px solid var(--c_purple_dark);

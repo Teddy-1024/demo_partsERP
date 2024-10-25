@@ -27,7 +27,7 @@ class Supplier(db.Model, Store_Base):
     FLAG_NAME_COMPANY: ClassVar[str] = 'name_company'
     FLAG_NAME_CONTACT: ClassVar[str] = 'name_contact'
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_SUPPLIER
-    NAME_ATTR_OPTION_TEXT: ClassVar[str] = Store_Base.FLAG_NAME
+    NAME_ATTR_OPTION_TEXT: ClassVar[str] = FLAG_NAME_COMPANY
     __tablename__ = 'Shop_Supplier_Temp'
     id_supplier = db.Column(db.Integer, primary_key=True)
     # id_address = db.Column(db.Integer)
@@ -64,7 +64,12 @@ class Supplier(db.Model, Store_Base):
         supplier.website = query_row[10]
         supplier.active = av.input_bool(query_row[11], 'active', f'{cls.__name__}.from_DB_supplier')
         return supplier
-
+    @classmethod
+    def from_DB_supplier_purchase_order(cls, query_row):
+        supplier = cls()
+        supplier.id_supplier = query_row[1]
+        supplier.name_company = query_row[2]
+        return supplier
     def __repr__(self):
         return f'''
 id: {self.id_supplier},

@@ -317,6 +317,8 @@ BEGIN
     SELECT 
 		t_MPO.id_order
 		, MPO.id_currency
+        , C.code
+        , C.symbol
 		, MPO.cost_total_local_VAT_excl
 		, MPO.cost_total_local_VAT_incl
 		, MPO.price_total_local_VAT_excl
@@ -330,6 +332,7 @@ BEGIN
 		) AS name
     FROM tmp_Manufacturing_Purchase_Order t_MPO 
 	INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON MPO.id_order = t_MPO.id_order
+    LEFT JOIN partsltd_prod.Shop_Currency C ON MPO.id_currency_cost = C.id_currency
     ;
     
     # Manufacturing Purchase Order Product Link
@@ -341,7 +344,8 @@ BEGIN
 		, MPOPL.id_unit_quantity
 		, MPOPL.quantity_used
 		, MPOPL.quantity_produced
-		, MPOPL.latency_manufacture_days
+        , MPOPL.id_unit_latency_manufacture
+		, MPOPL.latency_manufacture
 		, MPOPL.display_order
         , MPOPL.cost_unit_local_VAT_excl
         , MPOPL.cost_unit_local_VAT_incl

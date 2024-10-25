@@ -342,7 +342,7 @@ BEGIN
         C.code AS code_currency_cost,
         C.symbol AS symbol_currency_cost,
         PP.profit_local_min,
-        PP.latency_manufacture_days,
+        PP.latency_manufacture,
         PP.id_unit_measurement_quantity,
         UM_Q.symbol AS symbol_unit_measurement_quantity,
         UM_Q.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_quantity,

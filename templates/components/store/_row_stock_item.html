@@ -2,7 +2,7 @@
     {% set date_time_now = model.format_date(datetime.now()) %}
 {% endif %}
 {% if is_blank_row %}
-    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_STOCK_ITEM }}>
+    <tr class="{{ model.FLAG_ROW_NEW }} {{ model.FLAG_STOCK_ITEM }}" {{ model.ATTR_ID_STOCK_ITEM }}>
         <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
             {% include 'components/store/_preview_DDL_product_category.html' %}
         </td>
@@ -59,7 +59,7 @@
         </td>
     </tr>
 {% else %}
-    <tr {{ model.ATTR_ID_STOCK_ITEM }}="{{ stock_item.id_stock }}">
+    <tr class="{{ model.FLAG_STOCK_ITEM }}" {{ model.ATTR_ID_STOCK_ITEM }}="{{ stock_item.id_stock }}">
         <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_category }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_category }}">
             {% include 'components/store/_preview_DDL_product_category.html' %}
         </td>

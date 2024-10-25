@@ -72,6 +72,10 @@ BEGIN
 	# Changed id_currency
 	SELECT NEW.id_supplier, 'id_currency', OLD.id_currency, NEW.id_currency, NEW.id_change_set
 		WHERE NOT OLD.id_currency <=> NEW.id_currency
+    UNION
+	# Changed id_supplier_temp
+	SELECT NEW.id_supplier, 'id_supplier_temp', OLD.id_supplier_temp, NEW.id_supplier_temp, NEW.id_change_set
+		WHERE NOT OLD.id_supplier_temp <=> NEW.id_supplier_temp
     ;
 END //
 DELIMITER ;;

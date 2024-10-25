@@ -1,6 +1,6 @@
 
 {% if is_blank_row %}
-    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_PERMUTATION }}>
+    <tr class="{{ model.FLAG_ROW_NEW }} {{ model.FLAG_PRODUCT_PERMUTATION }}" {{ model.ATTR_ID_PERMUTATION }}>
         <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}="0">
             {% include 'components/store/_preview_DDL_product_category.html' %}
         </td>
@@ -63,15 +63,15 @@
             <input class="{{ model.FLAG_PROFIT_LOCAL_MIN }}" type="number" min="0" step="0.01"
             value="0" {{ model.ATTR_VALUE_CURRENT }}="0" {{ model.ATTR_VALUE_PREVIOUS }}>
         </td>
-        <td class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}">
-            <input class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}" type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}>
+        <td class="{{ model.FLAG_LATENCY_MANUFACTURE }}">
+            <input class="{{ model.FLAG_LATENCY_MANUFACTURE }}" type="number" min="0" value="1" {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}>
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
             <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}" checked>
         </td>
     </tr>
 {% else %}
-    <tr {{ model.ATTR_ID_PRODUCT_PERMUTATION }}="{{ permutation.id_permutation }}">
+    <tr class="{{ model.FLAG_PRODUCT_PERMUTATION }}" {{ model.ATTR_ID_PRODUCT_PERMUTATION }}="{{ permutation.id_permutation }}">
         <td class="{{ model.FLAG_PRODUCT_CATEGORY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.id_category }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.id_category }}">
             {% include 'components/store/_preview_DDL_product_category.html' %}
         </td>
@@ -151,8 +151,8 @@
         <td class="{{ model.FLAG_PROFIT_LOCAL_MIN }}">
             <input class="{{ model.FLAG_PROFIT_LOCAL_MIN }}" type="number" min="0" value="{{ permutation.profit_local_min }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.profit_local_min }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.profit_local_min }}">
         </td>
-        <td class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}">
-            <input class="{{ model.FLAG_LATENCY_MANUFACTURE_DAYS }}" type="number" min="0" value="{{ permutation.latency_manufacture_days }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.latency_manufacture_days }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.latency_manufacture_days }}">
+        <td class="{{ model.FLAG_LATENCY_MANUFACTURE }}">
+            <input class="{{ model.FLAG_LATENCY_MANUFACTURE }}" type="number" min="0" value="{{ permutation.latency_manufacture }}" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.latency_manufacture }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.latency_manufacture }}">
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
             <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ permutation.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ permutation.active | lower }}" {% if permutation.active %}checked{% endif %}>

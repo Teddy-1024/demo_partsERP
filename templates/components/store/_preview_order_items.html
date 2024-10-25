@@ -1,13 +1,13 @@
 
 {% with _is_blank_row = (is_blank_row or order_items is not defined or order_items is none or is_blank_row is not defined) %}
     {% if not _is_blank_row %}
-        {% set str_items = order_items.to_preview_str() %}
+        {% set str_items = model.convert_list_objects_to_preview_str(order_items) %}
         <div 
-            class="{{ model.FLAG_ITEMS }}" 
+            class="{{ model.FLAG_ORDER_ITEMS }}" 
             {{ model.ATTR_VALUE_CURRENT }}="{{ json_str_items }}" 
             {{ model.ATTR_VALUE_PREVIOUS }}="{{ json_str_items }}"
         >{{ str_items }}</div>
     {% else %}
-        <div class="{{ model.FLAG_ITEMS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></div>
+        <div class="{{ model.FLAG_ORDER_ITEMS }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></div>
     {% endif %}
 {% endwith %}

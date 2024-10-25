@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
     CONSTRAINT FK_Manufacturing_Purchase_Order_id_unit_quantity
 		FOREIGN KEY (id_unit_quantity)
         REFERENCES Shop_Unit_Measurement(id_unit_measurement),
-    latency_manufacture_days INTEGER NOT NULL,
+    latency_manufacture INTEGER NOT NULL,
 	quantity_produced REAL NOT NULL,
 	display_order INTEGER NOT NULL,
     active BOOLEAN NOT NULL,

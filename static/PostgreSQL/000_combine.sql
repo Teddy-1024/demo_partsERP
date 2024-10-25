@@ -911,7 +911,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
     id_currency_cost INTEGER NOT NULL,
 	profit_local_min REAL NOT NULL,
     -- id_currency_profit_min INTEGER NOT NULL,
-	latency_manufacture_days INTEGER NOT NULL,
+	latency_manufacture INTEGER NOT NULL,
 	quantity_min REAL NOT NULL,
 	quantity_max REAL NOT NULL,
 	quantity_step REAL NOT NULL,
@@ -2216,7 +2216,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
     CONSTRAINT FK_Manufacturing_Purchase_Order_id_unit_quantity
 		FOREIGN KEY (id_unit_quantity)
         REFERENCES Shop_Unit_Measurement(id_unit_measurement),
-    latency_manufacture_days INTEGER NOT NULL,
+    latency_manufacture INTEGER NOT NULL,
 	quantity_produced REAL NOT NULL,
 	display_order INTEGER NOT NULL,
     active BOOLEAN NOT NULL,
@@ -2260,7 +2260,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
 		FOREIGN KEY (id_unit_quantity)
         REFERENCES Shop_Unit_Measurement(id_unit_measurement),
     quantity_produced REAL NULL,
-    latency_manufacture_days INTEGER NOT NULL,
+    latency_manufacture INTEGER NOT NULL,
 	display_order INTEGER NOT NULL,
     active BOOLEAN NOT NULL
 );
@@ -3512,9 +3512,9 @@ BEGIN
 		WHERE NOT (OLD.price_GBP_min <=> NEW.price_GBP_min)
 	UNION
     */
-    -- Changed latency_manufacture_days
-	SELECT NEW.id_product, 'latency_manufacture_days', CONVERT(OLD.latency_manufacture_days, CHAR), CONVERT(NEW.latency_manufacture_days, CHAR), NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
+    -- Changed latency_manufacture
+	SELECT NEW.id_product, 'latency_manufacture', CONVERT(OLD.latency_manufacture, CHAR), CONVERT(NEW.latency_manufacture, CHAR), NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
 	UNION
     -- Changed quantity_min
 	SELECT NEW.id_product, 'quantity_min', CONVERT(OLD.quantity_min, CHAR), CONVERT(NEW.quantity_min, CHAR), NEW.id_change_set
@@ -5271,9 +5271,9 @@ BEGIN
 	SELECT NEW.id_link, 'quantity_produced', OLD.quantity_produced, NEW.quantity_produced, NEW.id_change_set
 		WHERE NOT OLD.quantity_produced <=> NEW.quantity_produced
     UNION
-	-- Changed latency_manufacture_days
-	SELECT NEW.id_link, 'latency_manufacture_days', OLD.latency_manufacture_days, NEW.latency_manufacture_days, NEW.id_change_set
-		WHERE NOT OLD.latency_manufacture_days <=> NEW.latency_manufacture_days
+	-- Changed latency_manufacture
+	SELECT NEW.id_link, 'latency_manufacture', OLD.latency_manufacture, NEW.latency_manufacture, NEW.id_change_set
+		WHERE NOT OLD.latency_manufacture <=> NEW.latency_manufacture
     UNION
 	-- Changed display_order
 	SELECT NEW.id_link, 'display_order', OLD.display_order, NEW.display_order, NEW.id_change_set
@@ -7163,7 +7163,7 @@ BEGIN
 			FOREIGN KEY (id_unit_quantity)
 			REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 		quantity_produced REAL NULL,
-		latency_manufacture_days INTEGER NOT NULL,
+		latency_manufacture INTEGER NOT NULL,
 		display_order INTEGER NOT NULL,
         active BOOLEAN NOT NULL,
         name_error VARCHAR(200) NOT NULL
@@ -7246,7 +7246,7 @@ BEGIN
 		id_unit_quantity, 
 		quantity_produced, 
 		value_produced_total_local,
-		latency_manufacture_days, 
+		latency_manufacture, 
 		display_order, 
 		active,
 		name_error
@@ -7261,7 +7261,7 @@ BEGIN
 		MPOPL_T.id_unit_quantity, 
 		MPOPL_T.quantity_produced, 
 		(PP.cost_local + PP.profit_local_min) * MPOPL_T.quantity_produced AS value_produced_total_local,
-		MPOPL_T.latency_manufacture_days, 
+		MPOPL_T.latency_manufacture, 
 		MPOPL_T.display_order, 
 		MPOPL_T.active,
 		PP.id_permutation, ' - ' || COALESCE(P.name ,'') AS name_error
@@ -7281,7 +7281,7 @@ BEGIN
 		MPOPL_T.id_unit_quantity, 
 		MPOPL_T.quantity_produced, 
 		value_produced_total_local,
-		MPOPL_T.latency_manufacture_days, 
+		MPOPL_T.latency_manufacture, 
 		MPOPL_T.display_order, 
 		MPOPL_T.active,
 		name_error
@@ -7488,7 +7488,7 @@ BEGIN
 				quantity_used,
 				id_unit_quantity,
 				quantity_produced,
-				latency_manufacture_days,
+				latency_manufacture,
 				display_order,
 				active,
 				created_by,
@@ -7503,7 +7503,7 @@ BEGIN
 				quantity_used,
 				id_unit_quantity,
 				quantity_produced,
-				latency_manufacture_days,
+				latency_manufacture,
 				display_order,
 				active,
 				v_id_user,
@@ -7534,7 +7534,7 @@ BEGIN
 					MPOPL.quantity_used = t_MPOPL.quantity_used,
 					MPOPL.id_unit_quantity = t_MPOPL.id_unit_quantity,
 					MPOPL.quantity_produced = t_MPOPL.quantity_produced,
-					MPOPL.latency_manufacture_days = t_MPOPL.latency_manufacture_days,
+					MPOPL.latency_manufacture = t_MPOPL.latency_manufacture,
 					MPOPL.display_order = t_MPOPL.display_order,
 					MPOPL.active = t_MPOPL.active,
 					MPOPL.id_change_set = v_id_change_set
@@ -7552,7 +7552,7 @@ BEGIN
 					quantity_used,
 					id_unit_quantity,
 					quantity_produced,
-					latency_manufacture_days,
+					latency_manufacture,
 					display_order,
 					active,
 					created_by,
@@ -7567,7 +7567,7 @@ BEGIN
 					quantity_used,
 					id_unit_quantity,
 					quantity_produced,
-					latency_manufacture_days,
+					latency_manufacture,
 					display_order,
 					active,
 					v_id_user,
@@ -7634,7 +7634,7 @@ INSERT INTO Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
 	quantity_used,
 	id_unit_quantity,
 	quantity_produced,
-	latency_manufacture_days,
+	latency_manufacture,
 	display_order,
     active
 )
@@ -7649,7 +7649,7 @@ VALUES
 		1, -- quantity_used,
 		1, -- id_unit_quantity,
 		1, -- quantity_produced,
-		14, -- latency_manufacture_days ,
+		14, -- latency_manufacture ,
 		1, -- display_order
         1 -- active
     )
@@ -9749,7 +9749,7 @@ BEGIN
         price_GBP_full REAL NOT NULL,
 		price_GBP_min REAL NOT NULL,
 		*/
-        latency_manufacture_days INTEGER NOT NULL,
+        latency_manufacture INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
@@ -9872,7 +9872,7 @@ BEGIN
 		price_GBP_VAT_excl,
 		price_GBP_min,
 		*/
-        latency_manufacture_days,
+        latency_manufacture,
 		quantity_min,
 		quantity_max,
 		quantity_step,
@@ -9905,7 +9905,7 @@ BEGIN
 		PP.price_GBP_VAT_excl,
 		PP.price_GBP_min,
 		*/
-        PP.latency_manufacture_days,
+        PP.latency_manufacture,
 		PP.quantity_min,
 		PP.quantity_max,
 		PP.quantity_step,
@@ -10412,7 +10412,7 @@ BEGIN
 			PP.cost_local,
 			PP.id_currency_cost,
 			PP.profit_local_min,
-			t_P.latency_manufacture_days,
+			t_P.latency_manufacture,
 			t_P.quantity_min,
 			t_P.quantity_max,
 			t_P.quantity_step,
@@ -12162,7 +12162,7 @@ BEGIN
         price_GBP_full REAL NOT NULL,
 		price_GBP_min REAL NOT NULL,
 		*/
-        latency_manufacture_days INTEGER NOT NULL,
+        latency_manufacture INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
@@ -12318,7 +12318,7 @@ BEGIN
 			price_GBP_VAT_excl,
 			price_GBP_min,
 			*/
-			latency_manufacture_days,
+			latency_manufacture,
 			quantity_min,
 			quantity_max,
 			quantity_step,
@@ -12350,7 +12350,7 @@ BEGIN
 			PP.price_GBP_VAT_excl,
 			PP.price_GBP_min,
 			*/
-			PP.latency_manufacture_days,
+			PP.latency_manufacture,
 			PP.quantity_min,
 			PP.quantity_max,
 			PP.quantity_step,
@@ -12849,7 +12849,7 @@ BEGIN
 		price_GBP_min REAL NOT NULL,
 		*/
         /*
-        latency_manufacture_days INTEGER NOT NULL,
+        latency_manufacture INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
@@ -12953,7 +12953,7 @@ BEGIN
 			price_GBP_VAT_excl,
 			price_GBP_min,
 			*/
-			latency_manufacture_days,
+			latency_manufacture,
 			quantity_min,
 			quantity_max,
 			quantity_step,
@@ -12985,7 +12985,7 @@ BEGIN
 			PP.price_GBP_VAT_excl,
 			PP.price_GBP_min,
 			*/
-			PP.latency_manufacture_days,
+			PP.latency_manufacture,
 			PP.quantity_min,
 			PP.quantity_max,
 			PP.quantity_step,
@@ -13193,7 +13193,7 @@ BEGIN
 			MPOPL.quantity_used,
 			MPOPL.id_unit_quantity,
 			MPOPL.quantity_produced,
-			MPOPL.latency_manufacture_days,
+			MPOPL.latency_manufacture,
 			MPOPL.display_order
 		FROM Shop_manufacturing_Purchase_Order_Product_Link MPOPL
 		-- INNER JOIN tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL ON MPOPL.id_link = t_MPOPL.id_link
@@ -13731,7 +13731,7 @@ BEGIN
 		price_GBP_min REAL NOT NULL,
 		*/
         /*
-        latency_manufacture_days INTEGER NOT NULL,
+        latency_manufacture INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
@@ -13887,7 +13887,7 @@ BEGIN
 			price_GBP_VAT_excl,
 			price_GBP_min,
 			*/
-			latency_manufacture_days,
+			latency_manufacture,
 			quantity_min,
 			quantity_max,
 			quantity_step,
@@ -13919,7 +13919,7 @@ BEGIN
 			PP.price_GBP_VAT_excl,
 			PP.price_GBP_min,
 			*/
-			PP.latency_manufacture_days,
+			PP.latency_manufacture,
 			PP.quantity_min,
 			PP.quantity_max,
 			PP.quantity_step,
@@ -14468,7 +14468,7 @@ INSERT INTO Shop_Product_Permutation (
     id_currency_cost,
     profit_local_min,
     -- id_currency_profit_min,
-    latency_manufacture_days,
+    latency_manufacture,
 	quantity_min,
 	quantity_max,
 	quantity_step,

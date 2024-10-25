@@ -66,7 +66,7 @@ class DataStore_Store_Product_Permutation(DataStore_Store_Base):
                 cost_local, 
                 id_currency_cost, 
                 profit_local_min, 
-                latency_manufacture_days,
+                latency_manufacture,
                 id_unit_measurement_quantity,
                 count_unit_measurement_quantity,
                 quantity_min, 

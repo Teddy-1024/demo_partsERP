@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
 		FOREIGN KEY (id_unit_quantity)
         REFERENCES Shop_Unit_Measurement(id_unit_measurement),
     quantity_produced REAL NULL,
-    latency_manufacture_days INTEGER NOT NULL,
+    latency_manufacture INTEGER NOT NULL,
 	display_order INTEGER NOT NULL,
     active BOOLEAN NOT NULL
 );

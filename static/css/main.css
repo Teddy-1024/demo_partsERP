@@ -579,12 +579,11 @@ li {
 }
 
 
-.dirty {
-    /* color: var(--c_purple_dark); */
-    border-color: var(--c_purple_dark);
-}
-td.dirty {
+:not(input,textarea,select).dirty {
     background-color: var(--c_purple_dark);
+}
+input.dirty, textarea.dirty, select.dirty {
+    border-color: var(--c_purple_dark);
 }
 
 

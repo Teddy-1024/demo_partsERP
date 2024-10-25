@@ -61,7 +61,7 @@ export default class PageStoreProducts extends TableBasePage {
         DOM.setElementValuesCurrentAndPrevious(inputActive, rowJson[flagActive]);
         row.setAttribute(rowJson[flagKeyPrimary], rowJson[rowJson[flagKeyPrimary]]);
         
-        let table = this.getTableMain();
+        let table = TableBasePage.getTableMain();
         let bodyTable = table.querySelector('tbody');
         bodyTable.appendChild(row);
     }

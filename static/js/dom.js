@@ -37,9 +37,20 @@ export default class DOM {
     static getCellFromElement(element) {
         return element.closest('td');
     }
-    static getRowFromElement(element) {
-        return element.closest('tr');
+    static getRowFromElement(element, flagRow) {
+        let selector = Validation.isEmpty(flagRow) ? 'tr' : 'tr.' + flagRow;
+        return element.closest(selector);
     }
+    static getClosestParent(element, selector) {
+        let parent = element.parentElement;
+        while (parent) {
+            if (parent.matches(selector)) {
+                return parent;
+            }
+            parent = parent.parentElement;
+        }
+        return null;
+      }
     static convertForm2JSON(elementForm) {
         let dataForm = {};
         if (Validation.isEmpty(elementForm)) {

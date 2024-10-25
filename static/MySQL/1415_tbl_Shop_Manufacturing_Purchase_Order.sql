@@ -5,6 +5,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 
 CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order (
 	id_order INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_order_temp INT NULL,
     /*
 	cost_total_local FLOAT NOT NULL,
     id_currency_cost INT NOT NULL,

@@ -99,7 +99,7 @@
     width: 9vh;
     min-width: 9vh;
 }
-#tableMain thead tr th.latency_manufacture_days, #tableMain tbody tr td.latency_manufacture_days {
+#tableMain thead tr th.latency_manufacture, #tableMain tbody tr td.latency_manufacture {
     width: 9vh;
     min-width: 9vh;
 }

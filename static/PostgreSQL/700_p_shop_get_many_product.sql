@@ -203,7 +203,7 @@ BEGIN
         price_GBP_full REAL NOT NULL,
 		price_GBP_min REAL NOT NULL,
 		*/
-        latency_manufacture_days INTEGER NOT NULL,
+        latency_manufacture INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
@@ -326,7 +326,7 @@ BEGIN
 		price_GBP_VAT_excl,
 		price_GBP_min,
 		*/
-        latency_manufacture_days,
+        latency_manufacture,
 		quantity_min,
 		quantity_max,
 		quantity_step,
@@ -359,7 +359,7 @@ BEGIN
 		PP.price_GBP_VAT_excl,
 		PP.price_GBP_min,
 		*/
-        PP.latency_manufacture_days,
+        PP.latency_manufacture,
 		PP.quantity_min,
 		PP.quantity_max,
 		PP.quantity_step,
@@ -866,7 +866,7 @@ BEGIN
 			PP.cost_local,
 			PP.id_currency_cost,
 			PP.profit_local_min,
-			t_P.latency_manufacture_days,
+			t_P.latency_manufacture,
 			t_P.quantity_min,
 			t_P.quantity_max,
 			t_P.quantity_step,

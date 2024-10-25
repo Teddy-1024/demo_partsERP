@@ -90,7 +90,7 @@ BEGIN
 			FOREIGN KEY (id_unit_quantity)
 			REFERENCES Shop_Unit_Measurement(id_unit_measurement),
 		quantity_produced REAL NULL,
-		latency_manufacture_days INTEGER NOT NULL,
+		latency_manufacture INTEGER NOT NULL,
 		display_order INTEGER NOT NULL,
         active BOOLEAN NOT NULL,
         name_error VARCHAR(200) NOT NULL
@@ -173,7 +173,7 @@ BEGIN
 		id_unit_quantity, 
 		quantity_produced, 
 		value_produced_total_local,
-		latency_manufacture_days, 
+		latency_manufacture, 
 		display_order, 
 		active,
 		name_error
@@ -188,7 +188,7 @@ BEGIN
 		MPOPL_T.id_unit_quantity, 
 		MPOPL_T.quantity_produced, 
 		(PP.cost_local + PP.profit_local_min) * MPOPL_T.quantity_produced AS value_produced_total_local,
-		MPOPL_T.latency_manufacture_days, 
+		MPOPL_T.latency_manufacture, 
 		MPOPL_T.display_order, 
 		MPOPL_T.active,
 		PP.id_permutation, ' - ' || COALESCE(P.name ,'') AS name_error
@@ -208,7 +208,7 @@ BEGIN
 		MPOPL_T.id_unit_quantity, 
 		MPOPL_T.quantity_produced, 
 		value_produced_total_local,
-		MPOPL_T.latency_manufacture_days, 
+		MPOPL_T.latency_manufacture, 
 		MPOPL_T.display_order, 
 		MPOPL_T.active,
 		name_error
@@ -415,7 +415,7 @@ BEGIN
 				quantity_used,
 				id_unit_quantity,
 				quantity_produced,
-				latency_manufacture_days,
+				latency_manufacture,
 				display_order,
 				active,
 				created_by,
@@ -430,7 +430,7 @@ BEGIN
 				quantity_used,
 				id_unit_quantity,
 				quantity_produced,
-				latency_manufacture_days,
+				latency_manufacture,
 				display_order,
 				active,
 				v_id_user,
@@ -461,7 +461,7 @@ BEGIN
 					MPOPL.quantity_used = t_MPOPL.quantity_used,
 					MPOPL.id_unit_quantity = t_MPOPL.id_unit_quantity,
 					MPOPL.quantity_produced = t_MPOPL.quantity_produced,
-					MPOPL.latency_manufacture_days = t_MPOPL.latency_manufacture_days,
+					MPOPL.latency_manufacture = t_MPOPL.latency_manufacture,
 					MPOPL.display_order = t_MPOPL.display_order,
 					MPOPL.active = t_MPOPL.active,
 					MPOPL.id_change_set = v_id_change_set
@@ -479,7 +479,7 @@ BEGIN
 					quantity_used,
 					id_unit_quantity,
 					quantity_produced,
-					latency_manufacture_days,
+					latency_manufacture,
 					display_order,
 					active,
 					created_by,
@@ -494,7 +494,7 @@ BEGIN
 					quantity_used,
 					id_unit_quantity,
 					quantity_produced,
-					latency_manufacture_days,
+					latency_manufacture,
 					display_order,
 					active,
 					v_id_user,
@@ -561,7 +561,7 @@ INSERT INTO Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
 	quantity_used,
 	id_unit_quantity,
 	quantity_produced,
-	latency_manufacture_days,
+	latency_manufacture,
 	display_order,
     active
 )
@@ -576,7 +576,7 @@ VALUES
 		1, -- quantity_used,
 		1, -- id_unit_quantity,
 		1, -- quantity_produced,
-		14, -- latency_manufacture_days ,
+		14, -- latency_manufacture ,
 		1, -- display_order
         1 -- active
     )

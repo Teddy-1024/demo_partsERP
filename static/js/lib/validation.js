@@ -151,13 +151,4 @@ export default class Validation {
         img.onerror = function() { callback(false); };
         img.src = url;
     }
-
-    static validateImageUrl(id, img) {
-        Validation.imageExists(img, function(exists) {
-            if (exists) {
-                document.querySelectorAll("#" + id).css({ "background-image": "url(" + url + ")", "background-size": "35px 35px"})
-            }
-        })
-    }
-
 }

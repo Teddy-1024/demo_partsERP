@@ -147,7 +147,7 @@ BEGIN
 		price_GBP_min REAL NOT NULL,
 		*/
         /*
-        latency_manufacture_days INTEGER NOT NULL,
+        latency_manufacture INTEGER NOT NULL,
 		quantity_min REAL NOT NULL,
 		quantity_max REAL NOT NULL,
 		quantity_step REAL NOT NULL,
@@ -251,7 +251,7 @@ BEGIN
 			price_GBP_VAT_excl,
 			price_GBP_min,
 			*/
-			latency_manufacture_days,
+			latency_manufacture,
 			quantity_min,
 			quantity_max,
 			quantity_step,
@@ -283,7 +283,7 @@ BEGIN
 			PP.price_GBP_VAT_excl,
 			PP.price_GBP_min,
 			*/
-			PP.latency_manufacture_days,
+			PP.latency_manufacture,
 			PP.quantity_min,
 			PP.quantity_max,
 			PP.quantity_step,
@@ -491,7 +491,7 @@ BEGIN
 			MPOPL.quantity_used,
 			MPOPL.id_unit_quantity,
 			MPOPL.quantity_produced,
-			MPOPL.latency_manufacture_days,
+			MPOPL.latency_manufacture,
 			MPOPL.display_order
 		FROM Shop_manufacturing_Purchase_Order_Product_Link MPOPL
 		-- INNER JOIN tmp_Shop_Manufacturing_Purchase_Order_Product_Link t_MPOPL ON MPOPL.id_link = t_MPOPL.id_link

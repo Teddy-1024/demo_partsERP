@@ -379,13 +379,13 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_ids_permission_supplier_purchase_order LIMIT 1))
 		)
 		;
 	END IF;
     
 	IF EXISTS ( SELECT * FROM tmp_Msg_Error LIMIT 1 ) THEN
-		DELETE FROM tmp_Supplier_Purchase_Order_Product_Link;
+		DELETE FROM tmp_Permutation;
 		DELETE FROM tmp_Supplier_Purchase_Order;
 	END IF;
 	
@@ -414,7 +414,10 @@ BEGIN
     SELECT 
 		t_SPO.id_order
 		, SPO.id_supplier_ordered
+        , S.name_company
 		, SPO.id_currency_cost
+        , C.symbol
+        , C.code
 		, SPO.cost_total_local_VAT_excl
 		, SPO.cost_total_local_VAT_incl
         , SPO.active
@@ -426,12 +429,16 @@ BEGIN
 		) AS name
     FROM tmp_Supplier_Purchase_Order t_SPO 
 	INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON SPO.id_order = t_SPO.id_order
+    LEFT JOIN partsltd_prod.Shop_Supplier S ON SPO.id_supplier_ordered = S.id_supplier
+    LEFT JOIN partsltd_prod.Shop_Currency C ON SPO.id_currency_cost = C.id_currency
     ;
     
     # Supplier Purchase Order Product Link
     SELECT
 		SPOPL.id_link
 		, SPOPL.id_order
+        , P.id_category
+        , P.id_product
 		, SPOPL.id_permutation
         , fn_shop_get_product_permutation_name(SPOPL.id_permutation) AS name_permutation
 		-- , SPOPL.id_currency_cost
@@ -447,6 +454,8 @@ BEGIN
         , SPOPL.active
     FROM tmp_Supplier_Purchase_Order t_SPO
     INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPO.id_order = SPOPL.id_order
+    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON SPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
     ;
     
     # Errors

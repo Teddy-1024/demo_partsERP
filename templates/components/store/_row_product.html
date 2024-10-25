@@ -1,5 +1,5 @@
 {% if is_blank_row %}
-    <tr class="{{ model.FLAG_ROW_NEW }}" {{ model.ATTR_ID_PRODUCT_CATEGORY }}>
+    <tr class="{{ model.FLAG_ROW_NEW }} {{ model.FLAG_PRODUCT }}" {{ model.ATTR_ID_PRODUCT_CATEGORY }}>
         <td class="{{ model.FLAG_DISPLAY_ORDER }}">
             {% include 'components/common/buttons/_slider_display_order.html' %}
         </td>
@@ -25,7 +25,7 @@
         </td>
     </tr>
 {% else %}
-    <tr {{ model.ATTR_ID_PRODUCT }}="{{ product.id_product }}">
+    <tr class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_ID_PRODUCT }}="{{ product.id_product }}">
         <td class="{{ model.FLAG_DISPLAY_ORDER }}">
             {% set display_order = category.display_order %}
             {% include 'components/common/buttons/_slider_display_order.html' %}

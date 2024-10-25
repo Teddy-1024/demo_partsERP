@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
     id_currency_cost INTEGER NOT NULL,
 	profit_local_min REAL NOT NULL,
     -- id_currency_profit_min INTEGER NOT NULL,
-	latency_manufacture_days INTEGER NOT NULL,
+	latency_manufacture INTEGER NOT NULL,
 	quantity_min REAL NOT NULL,
 	quantity_max REAL NOT NULL,
 	quantity_step REAL NOT NULL,

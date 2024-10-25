@@ -74,7 +74,7 @@ BEGIN
 		, cost_local FLOAT NOT NULL
 		, id_currency_cost INT NOT NULL
 		, profit_local_min FLOAT NOT NULL
-		, latency_manufacture_days INT NOT NULL
+		, latency_manufacture INT NOT NULL
 		, id_unit_measurement_quantity INT NOT NULL
 		, count_unit_measurement_per_quantity_step FLOAT NOT NULL
 		, quantity_min FLOAT NOT NULL
@@ -112,7 +112,7 @@ BEGIN
 		, cost_local
 		, id_currency_cost
 		, profit_local_min
-		, latency_manufacture_days
+		, latency_manufacture
 		, id_unit_measurement_quantity
 		, count_unit_measurement_per_quantity_step
 		, quantity_min
@@ -136,7 +136,7 @@ BEGIN
 		, IFNULL(PP_T.cost_local, PP.cost_local) AS cost_local
 		, IFNULL(PP_T.id_currency_cost, PP.id_currency_cost) AS a_id_currency_cost
 		, IFNULL(PP_T.profit_local_min, PP.profit_local_min) AS profit_local_min
-		, IFNULL(PP_T.latency_manufacture_days, PP.latency_manufacture_days) AS latency_manufacture_days
+		, IFNULL(PP_T.latency_manufacture, PP.latency_manufacture) AS latency_manufacture
 		, IFNULL(PP_T.id_unit_measurement_quantity, PP.id_unit_measurement_quantity) AS id_unit_measurement_quantity
 		, IFNULL(PP_T.count_unit_measurement_per_quantity_step, PP.count_unit_measurement_per_quantity_step) AS count_unit_measurement_per_quantity_step
 		, IFNULL(PP_T.quantity_min, PP.quantity_min) AS quantity_min
@@ -210,12 +210,12 @@ BEGIN
 		WHERE ISNULL(t_P.profit_local_min)
 		;
     END IF;
-    -- 	latency_manufacture_days
-    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.latency_manufacture_days) LIMIT 1) THEN
+    -- 	latency_manufacture
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.latency_manufacture) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
 			guid
 			, id_type
-			, latency_manufacture_days
+			, latency_manufacture
 			, msg
 		)
 		SELECT
@@ -224,7 +224,7 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following product permutation(s) do not have a manufacturing latency: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
-		WHERE ISNULL(t_P.latency_manufacture_days)
+		WHERE ISNULL(t_P.latency_manufacture)
 		;
     END IF;
     -- id_unit_measurement_quantity
@@ -396,7 +396,7 @@ BEGIN
 				, PP.cost_local = t_P.cost_local
 				, PP.id_currency_cost = t_P.id_currency_cost
 				, PP.profit_local_min = t_P.profit_local_min
-				, PP.latency_manufacture_days = t_P.latency_manufacture_days
+				, PP.latency_manufacture = t_P.latency_manufacture
 				, PP.id_unit_measurement_quantity = t_P.id_unit_measurement_quantity
 				, PP.count_unit_measurement_per_quantity_step = t_P.count_unit_measurement_per_quantity_step
 				, PP.quantity_min = t_P.quantity_min
@@ -420,7 +420,7 @@ BEGIN
 			, cost_local
 			, id_currency_cost
 			, profit_local_min
-			, latency_manufacture_days
+			, latency_manufacture
 			, id_unit_measurement_quantity
 			, count_unit_measurement_per_quantity_step
 			, quantity_min
@@ -443,7 +443,7 @@ BEGIN
 			, t_P.cost_local AS cost_local
 			, t_P.id_currency_cost AS id_currency_cost
 			, t_P.profit_local_min AS profit_local_min
-			, t_P.latency_manufacture_days AS latency_manufacture_days
+			, t_P.latency_manufacture AS latency_manufacture
 			, t_P.id_unit_measurement_quantity AS id_unit_measurement_quantity
 			, t_P.count_unit_measurement_per_quantity_step AS count_unit_measurement_per_quantity_step
 			, t_P.quantity_min AS quantity_min
@@ -492,7 +492,7 @@ INSERT INTO Shop_Product_Permutation_Temp (
 	cost_local, 
 	id_currency_cost, 
 	profit_local_min, 
-	latency_manufacture_days,
+	latency_manufacture,
 	id_unit_measurement_quantity,
 	count_unit_measurement_per_quantity_step,
 	quantity_min, 
@@ -516,7 +516,7 @@ VALUES
 		, 5.0 -- cost_local, 
 		, 1 -- id_currency_cost, 
 		, 3.0 -- profit_local_min, 
-		, 14 -- latency_manufacture_days,
+		, 14 -- latency_manufacture,
 		, 1 -- id_unit_measurement_quantity,
 		, 1.0 -- count_unit_measurement_quantity,
 		, 3.0 -- quantity_min, 

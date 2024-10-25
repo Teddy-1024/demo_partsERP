@@ -1,6 +1,6 @@
 
 import API from "../../api.js";
-import BusinessObjects from "../../lib/business_objects.js";
+import BusinessObjects from "../../lib/business_objects/business_objects.js";
 import DOM from "../../dom.js";
 import Events from "../../lib/events.js";
 import TableBasePage from "../base_table.js";
@@ -69,7 +69,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
     loadRowTable(rowJson) {
         /*
         if (rowJson == null) return;
-        let tableMain = this.getTableMain();
+        let tableMain = TableBasePage.getTableMain();
         let row = _rowBlank.cloneNode(true);
         row.classList.remove(flagRowNew);
         console.log("applying data row: ", rowJson);
@@ -100,8 +100,8 @@ export default class PageStoreProductPermutations extends TableBasePage {
         DOM.setElementValuesCurrentAndPrevious(ddlCurrencyCost, rowJson[flagCurrencyCost]);
         let inputProfitLocalMin = row.querySelector('td.' + flagProfitLocalMin + ' input');
         DOM.setElementValuesCurrentAndPrevious(inputProfitLocalMin, rowJson[flagProfitLocalMin]);
-        let inputLatencyManufactureDays = row.querySelector('td.' + flagLatencyManufactureDays + ' input');
-        DOM.setElementValuesCurrentAndPrevious(inputLatencyManufactureDays, rowJson[flagLatencyManufactureDays]);
+        let inputLatencyManufactureDays = row.querySelector('td.' + flagLatencyManufacture + ' input');
+        DOM.setElementValuesCurrentAndPrevious(inputLatencyManufactureDays, rowJson[flagLatencyManufacture]);
         let inputQuantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
         DOM.setElementValuesCurrentAndPrevious(inputQuantityStock, rowJson[flagQuantityStock]);
         let inputQuantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
@@ -133,7 +133,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         let inputCostLocal = row.querySelector('td.' + flagCostLocal + ' input');
         let tdCurrencyCost = row.querySelector('td.' + flagCurrencyCost);
         let inputProfitLocalMin = row.querySelector('td.' + flagProfitLocalMin + ' input');
-        let inputLatencyManufactureDays = row.querySelector('td.' + flagLatencyManufactureDays + ' input');
+        let inputLatencyManufactureDays = row.querySelector('td.' + flagLatencyManufacture + ' input');
         let inputQuantityStock = row.querySelector('td.' + flagQuantityStock + ' input');
         let inputQuantityMin = row.querySelector('td.' + flagQuantityMin + ' input');
         let inputQuantityMax = row.querySelector('td.' + flagQuantityMax + ' input');
@@ -158,7 +158,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         jsonRow[flagCostLocal] = inputCostLocal.getAttribute(attrValueCurrent);
         jsonRow[flagCurrencyCost] = tdCurrencyCost.getAttribute(attrValueCurrent);
         jsonRow[flagProfitLocalMin] = inputProfitLocalMin.getAttribute(attrValueCurrent);
-        jsonRow[flagLatencyManufactureDays] = inputLatencyManufactureDays.getAttribute(attrValueCurrent);
+        jsonRow[flagLatencyManufacture] = inputLatencyManufactureDays.getAttribute(attrValueCurrent);
         jsonRow[flagQuantityStock] = inputQuantityStock.getAttribute(attrValueCurrent);
         jsonRow[flagQuantityMin] = inputQuantityMin.getAttribute(attrValueCurrent);
         jsonRow[flagQuantityMax] = inputQuantityMax.getAttribute(attrValueCurrent);
@@ -197,9 +197,9 @@ export default class PageStoreProductPermutations extends TableBasePage {
 
     hookupTableMain() {
         super.hookupTableMain();
-        this.hookupProductCategoryFields();
+        this.hookupFieldsProductCategory();
         this.hookupProductFields();
-        this.hookupProductPermutationVariationFields();
+        this.hookupFieldsProductPermutationVariation();
         this.hookupDescriptionTextareas();
         this.hookupCostFields();
         this.hookupLatencyManufactureInputs();
@@ -209,38 +209,15 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupExpirationFields();
         this.hookupActiveCheckboxes();
     }
-    hookupProductCategoryFields() {
-        this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagProductCategory, Utils.getListFromDict(productCategories), (event, element) => { this.hookupProductCategoryDdls(event, element); });
-    }
-    hookupProductCategoryDdls(ddlSelector) {
-        this.hookupChangeHandlerTableCells(ddlSelector, (event, element) => { this.handleChangeProductCategoryDdl(event, element); });
-    }
-    handleChangeProductCategoryDdl(event, ddlCategory) {
-        this.handleChangeTableCellDdl(event, ddlCategory);
-        let idProductCategorySelected = DOM.getElementValueCurrent(ddlCategory);
-        let row = DOM.getRowFromElement(ddlCategory);
-        let tdProduct = row.querySelector('td.' + flagProduct);
-        tdProduct.dispatchEvent(new Event('click'));
-        let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
-        ddlProduct.innerHTML = '';
-        ddlProduct.appendChild(DOM.createOption(null));
-        let optionJson, option;
-        Utils.getListFromDict(products).forEach((product) => {
-            if (product[attrIdProductCategory] != idProductCategorySelected) return;
-            optionJson = BusinessObjects.getOptionJsonFromObjectJson(product);
-            option = DOM.createOption(optionJson);
-            ddlProduct.appendChild(option);
-        });
-        this.handleChangeTableCellDdl(event, ddlProduct);
+    hookupFieldsProductCategory() {
+        this.hookupTableCellDdlPreviews(
+            idTableMain + ' td.' + flagProductCategory
+            , Utils.getListFromDict(productCategories)
+            , (cellSelector) => { this.hookupProductCategoryDdls(cellSelector); }
+        );
     }
     hookupProductFields() {
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagProduct, Utils.getListFromDict(products));
-    }
-    handleClickButtonProductPermutationVariationsAdd(event, element) {
-        let row = DOM.getRowFromElement(element);
-        let tbody = row.querySelector('tbody');
-        let permutationVariation = PageStoreProductPermutations.createOptionUnselectedProductVariation();
-        this.addProductPermutationVariationRow(tbody, permutationVariation);
     }
 
     hookupDescriptionTextareas() {
@@ -269,7 +246,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagProfitLocalMin + ' input');
     }
     hookupLatencyManufactureInputs(){
-        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagLatencyManufactureDays + ' input');
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagLatencyManufacture + ' input');
     }
     hookupQuantityFields(){
         this.hookupQuantityMinInputs();
@@ -301,7 +278,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
     }
     hookupIsSubscriptionFields(){
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagIsSubscription + ' input', (event, element) => {
-            this.handleChangeElementCellTable(event, element);
+            this.handleChangeNestedElementCellTable(event, element);
             let isSubscription = DOM.getElementValueCurrent(element);
             let row = DOM.getRowFromElement(element);
             let inputCountIntervalRecurrence = row.querySelector('td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
@@ -333,7 +310,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
     }
     hookupDoesExpireFasterOnceUnsealedCheckboxes(){
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagDoesExpireFasterOnceUnsealed + ' input', (event, element) => {
-            this.handleChangeElementCellTable(event, element);
+            this.handleChangeNestedElementCellTable(event, element);
             let doesExpireFasterOnceUnsealed = DOM.getElementValueCurrent(element);
             let row = DOM.getRowFromElement(element);
             let inputCountIntervalExpirationUnsealed = row.querySelector('td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');

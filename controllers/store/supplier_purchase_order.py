@@ -93,18 +93,18 @@ def save_supplier_purchase_order():
         for supplier_purchase_order in supplier_purchase_orders:
             objs_supplier_purchase_order.append(Supplier_Purchase_Order.from_json(supplier_purchase_order))
         print(f'objs_supplier_purchase_order={objs_supplier_purchase_order}')
-        save_errors = Model_View_Store_Supplier_Purchase_Order.save_supplier_purchase_orders(data.get('comment', 'No comment'), objs_supplier_purchase_order)
+        save_errors, save_warnings = Model_View_Store_Supplier_Purchase_Order.save_supplier_purchase_orders(data.get('comment', 'No comment'), objs_supplier_purchase_order)
         if len(save_errors) > 0:
             return jsonify({
                 Model_View_Store_Supplier_Purchase_Order.FLAG_STATUS: Model_View_Store_Supplier_Purchase_Order.FLAG_FAILURE, 
                 Model_View_Store_Supplier_Purchase_Order.FLAG_MESSAGE: f'Save errors: {save_errors}'
             })
-        model_return = Model_View_Store_Supplier_Purchase_Order(filters_supplier_purchase_order_old = form_filters)
+        model_return = Model_View_Store_Supplier_Purchase_Order(form_filters_old = form_filters)
         if not model_return.is_user_logged_in:
             raise Exception('User not logged in.')
         return jsonify({
             Model_View_Store_Supplier_Purchase_Order.FLAG_STATUS: Model_View_Store_Supplier_Purchase_Order.FLAG_SUCCESS, 
-            Model_View_Store_Supplier_Purchase_Order.FLAG_DATA: model_return.category_list.to_json()
+            Model_View_Store_Supplier_Purchase_Order.FLAG_DATA: model_return.convert_list_objects_to_json(model_return.supplier_purchase_orders)
         })
     except Exception as e:
         return jsonify({

@@ -55,9 +55,22 @@ class DataStore_Store_Supplier_Purchase_Order(DataStore_Store_Base):
         result_set_1 = cursor.fetchall()
         print(f'raw supplier_purchase_orders: {result_set_1}')
         supplier_purchase_orders = []
+        indices_supplier_purchase_order = {}
         for row in result_set_1:
             new_supplier_purchase_order = Supplier_Purchase_Order.from_DB_supplier_purchase_order(row)
-            supplier_purchase_orders.append(new_supplier_purchase_order) # , row)
+            indices_supplier_purchase_order[new_supplier_purchase_order.id_order] = len(supplier_purchase_orders)
+            supplier_purchase_orders.append(new_supplier_purchase_order)
+        
+        # Supplier_Purchase_Orders Items
+        cursor.nextset()
+        result_set_2 = cursor.fetchall()
+        print(f'raw supplier_purchase_order_product_links: {result_set_2}')
+        order_product_links = []
+        for row in result_set_2:
+            new_link = Supplier_Purchase_Order_Product_Link.from_DB_supplier_purchase_order(row)
+            order_product_links.append(new_link)
+            supplier_purchase_orders[indices_supplier_purchase_order[new_link.id_order]].items.append(new_link)
+
         
         # Errors
         cursor.nextset()
