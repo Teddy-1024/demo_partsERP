@@ -1163,3 +1163,83 @@ Traceback (most recent call last):
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ModuleNotFoundError: No module named 'app.forms'; 'app' is not a package
 [UID:1401][2482366] Child process with pid: 2482420 was killed by signal: 15, core dumped: no
+session: <SecureCookieSession {}>
+DataStore_Base.get_user_session
+model_view_base init end - model.user: 
+            id_user: 0
+            id_user_auth0: None
+            firstname: None
+            surname: None
+            email: None
+            is_email_verified: None
+            is_super_user: None
+            id_currency_default: None
+            id_region_default: None
+            is_included_VAT_default: None
+            can_admin_store: None
+            can_admin_user: None
+            
+session: <SecureCookieSession {'csrf_token': '71ed59a166e4960a4163c877d0d23042d975a695'}>
+DataStore_Base.get_user_session
+model_view_base init end - model.user: 
+            id_user: 0
+            id_user_auth0: None
+            firstname: None
+            surname: None
+            email: None
+            is_email_verified: None
+            is_super_user: None
+            id_currency_default: None
+            id_region_default: None
+            is_included_VAT_default: None
+            can_admin_store: None
+            can_admin_user: None
+            
+session: <SecureCookieSession {'csrf_token': '71ed59a166e4960a4163c877d0d23042d975a695'}>
+DataStore_Base.get_user_session
+model_view_base init end - model.user: 
+            id_user: 0
+            id_user_auth0: None
+            firstname: None
+            surname: None
+            email: None
+            is_email_verified: None
+            is_super_user: None
+            id_currency_default: None
+            id_region_default: None
+            is_included_VAT_default: None
+            can_admin_store: None
+            can_admin_user: None
+            
+session: <SecureCookieSession {'csrf_token': '71ed59a166e4960a4163c877d0d23042d975a695'}>
+DataStore_Base.get_user_session
+model_view_base init end - model.user: 
+            id_user: 0
+            id_user_auth0: None
+            firstname: None
+            surname: None
+            email: None
+            is_email_verified: None
+            is_super_user: None
+            id_currency_default: None
+            id_region_default: None
+            is_included_VAT_default: None
+            can_admin_store: None
+            can_admin_user: None
+            
+session: <SecureCookieSession {'csrf_token': '71ed59a166e4960a4163c877d0d23042d975a695'}>
+DataStore_Base.get_user_session
+model_view_base init end - model.user: 
+            id_user: 0
+            id_user_auth0: None
+            firstname: None
+            surname: None
+            email: None
+            is_email_verified: None
+            is_super_user: None
+            id_currency_default: None
+            id_region_default: None
+            is_included_VAT_default: None
+            can_admin_store: None
+            can_admin_user: None
+            
