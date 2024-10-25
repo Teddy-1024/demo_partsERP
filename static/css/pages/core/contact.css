@@ -6,7 +6,10 @@
 }
 #pageBody > .card:not(:first-of-type) {
 }
-
+#email {
+    min-width: 40vw;
+    width: 40vw;
+}
 
 /*
 .content > a {
