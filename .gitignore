@@ -6,6 +6,8 @@ git-filter-repo/
 *.class
 *.o
 *.pyc
+.VSCodeCounter/
+__pycache__/
 
 # Ignore logs and databases
 *.log
