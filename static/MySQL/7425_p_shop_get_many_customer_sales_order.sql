@@ -244,7 +244,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_customer = 1 OR a_get_all_customer = 1 THEN
-		CALL p_split(a_guid, a_ids_customer, ',');
+		CALL p_split(v_guid, a_ids_customer, ',');
         
 		IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Customer S ON TS.substring = S.id_customer WHERE ISNULL(S.id_customer)) THEN 
 			INSERT INTO tmp_Msg_Error (
@@ -301,7 +301,7 @@ BEGIN
     
     IF v_has_filter_category = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_guid, a_ids_category, ',');
+			CALL p_split(v_guid, a_ids_category, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Category C ON TS.substring = C.id_category WHERE ISNULL(C.id_category)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -327,7 +327,7 @@ BEGIN
     
     IF v_has_filter_product = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_guid, a_ids_product, ',');
+			CALL p_split(v_guid, a_ids_product, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product ON TS.substring = P.id_product WHERE ISNULL(P.id_product)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -353,7 +353,7 @@ BEGIN
     
     IF v_has_filter_permutation = 1 THEN
 		IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-			CALL p_split(a_guid, a_ids_permutation, ',');
+			CALL p_split(v_guid, a_ids_permutation, ',');
 			
 			IF EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Product_Permutation PP ON TS.substring = PP.id_permutation WHERE ISNULL(PP.id_permutation)) THEN 
 				INSERT INTO tmp_Msg_Error (
@@ -486,7 +486,7 @@ BEGIN
     
     -- Get orders
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error WHERE guid = v_guid LIMIT 1) THEN
-		CALL p_split(a_guid, a_ids_order, ',');
+		CALL p_split(v_guid, a_ids_order, ',');
         
 		IF v_has_filter_order AND EXISTS (SELECT * FROM Split_Temp TS LEFT JOIN Shop_Customer_Sales_Order CSO ON TS.substring = CSO.id_order WHERE ISNULL(CSO.id_order)) THEN 
 			INSERT INTO tmp_Msg_Error (

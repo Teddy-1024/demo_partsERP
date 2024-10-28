@@ -309,6 +309,7 @@ DROP PROCEDURE IF EXISTS p_shop_save_supplier;
 DROP PROCEDURE IF EXISTS p_shop_save_supplier_test;
 DROP PROCEDURE IF EXISTS p_shop_get_many_supplier;
 DROP PROCEDURE IF EXISTS p_shop_save_supplier_purchase_order;
+DROP PROCEDURE IF EXISTS p_shop_save_supplier_purchase_order_test;
 DROP PROCEDURE IF EXISTS p_shop_get_many_supplier_purchase_order;
 DROP PROCEDURE IF EXISTS p_shop_save_manufacturing_purchase_order;
 DROP PROCEDURE IF EXISTS p_shop_get_many_manufacturing_purchase_order;

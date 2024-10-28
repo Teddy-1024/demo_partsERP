@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/core.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/core/contact.css') }}">
     -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/core_contact.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/core_contact.bundle.css') }}">
 
     <script>
         function loadRecaptcha() {
@@ -92,8 +92,14 @@
             <h4>{{ model.app.MAIL_CONTACT_PUBLIC }}</h4>
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="padding-top: 0; width: fit-content;">
-            <a href="{{ model.URL_LINKEDIN }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_LinkedIn.png') }}" alt="LinkedIn" aria-label="LinkedIn"></img><!--<h4>LinkedIn</h4>--></a>
-            <a href="{{ model.URL_GITHUB }}" class="container-icon-label"><img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}" alt="GitHub" aria-label="GitHub"></img><!--<h4>GitHub</h4>--></a>
+            <a href="{{ model.URL_LINKEDIN }}" class="{{ model.FLAG_CONTAINER_ICON_AND_LABEL }} {{ model.FLAG_COLUMN }}">
+                <img class="img-icon" src="{{ url_for('static', filename='images/Logo_LinkedIn.png') }}" alt="LinkedIn" aria-label="LinkedIn"></img>
+                <h4>LinkedIn</h4>
+            </a>
+            <a href="{{ model.URL_GITHUB }}" class="{{ model.FLAG_CONTAINER_ICON_AND_LABEL }} {{ model.FLAG_COLUMN }}">
+                <img class="img-icon" src="{{ url_for('static', filename='images/Logo_GitHub.png') }}" alt="GitHub" aria-label="GitHub"></img>
+                <h4>GitHub</h4>
+            </a>
         </div>
     </div>
     

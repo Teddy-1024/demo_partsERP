@@ -99,15 +99,15 @@ h1, h2, h3, h4, h5, p, a, label {
 */
 
 h1 {
-    font-size: 24px;
+    font-size: min(24px, calc(1vh * 6));
 }
 
 h2 {
-    font-size: 22px;
+    font-size: min(20px, calc(1vh * 5));
 }
 
 h3 {
-    font-size: 18px;
+    font-size: min(16px, calc(1vh * 4));
     margin-top: 1vh;
 }
 
@@ -239,8 +239,8 @@ h5 {
 }
 #pageBody > * > * {
     align-self: center;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
     color: var(--c_purple_dark);
 }
 #pageBody > .card {
@@ -572,6 +572,7 @@ button:hover, input[type="submit"]:hover, #overlayHamburger .row *:hover {
 
 ul {
     max-width: 90%;
+    padding: 5px 0 10px 0;
 }
 li {
     text-align: left;

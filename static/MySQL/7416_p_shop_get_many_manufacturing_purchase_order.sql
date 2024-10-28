@@ -87,7 +87,7 @@ BEGIN
     
     -- Permutations
     IF v_has_filter_permutation = 1 THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_permutation, ',', a_debug);
+		CALL partsltd_prod.p_split(v_guid, a_ids_permutation, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -98,12 +98,12 @@ BEGIN
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
 		FROM partsltd_prod.Split_Temp
 		WHERE 1=1
-			AND GUID = a_guid
+			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL partsltd_prod.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
@@ -152,7 +152,7 @@ BEGIN
     
     -- Manufacturing Purchase Orders
     IF v_has_filter_order = 1 THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_order, ',', a_debug);
+		CALL partsltd_prod.p_split(v_guid, a_ids_order, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -163,12 +163,12 @@ BEGIN
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
 		FROM partsltd_prod.Split_Temp
 		WHERE 1=1
-			AND GUID = a_guid
+			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL partsltd_prod.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
@@ -380,6 +380,7 @@ END //
 DELIMITER ;;
 
 
+/*
 
 CALL p_shop_get_many_manufacturing_purchase_order (
 	1 # a_id_user
@@ -392,5 +393,4 @@ CALL p_shop_get_many_manufacturing_purchase_order (
 	, 0 # a_debug
 );
 
-/*
 */

@@ -67,6 +67,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_COMMENT: ClassVar[str] = 'comment'
     # FLAG_CONTACT_US: ClassVar[str] = 'button-contact'
     FLAG_CONTAINER: ClassVar[str] = 'container'
+    FLAG_CONTAINER_ICON_AND_LABEL: ClassVar[str] = 'container-icon-label'
     FLAG_CONTAINER_INPUT: ClassVar[str] = FLAG_CONTAINER + '-input'
     FLAG_COUNTY: ClassVar[str] = Base.FLAG_COUNTY
     FLAG_CURRENCY: ClassVar[str] = 'currency'

@@ -412,7 +412,7 @@ BEGIN
     SELECT * 
 	FROM tmp_Shop_Product t_P 
 	WHERE 
-		/*(
+		*(
 			a_get_all_category 
 			OR a_get_all_product
 			OR a_get_all_product_permutation
@@ -628,7 +628,7 @@ BEGIN
 		-- select * from Shop_Calc_User_Temp;
 		-- select * from tmp_Shop_Product;
         
-        DELETE -- t_P
+        DELETE t_P
         FROM tmp_Shop_Product t_P
 		WHERE 
 			FIND_IN_SET(t_P.id_product, (SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') FROM Shop_Calc_User_Temp UET)) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM Shop_Calc_User_Temp), '%');
