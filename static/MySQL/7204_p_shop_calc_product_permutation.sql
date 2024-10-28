@@ -441,17 +441,17 @@ BEGIN
 				WHERE ISNULL(t_P.can_view)
 			);
 			
-			DELETE 
+			DELETE t_C
 			FROM tmp_Category_calc t_C
 			WHERE FIND_IN_SET(t_C.id_category, v_ids_category_invalid) > 0
 			;
 			
-			DELETE 
+			DELETE t_P
 			FROM tmp_Product_calc t_P
 			WHERE FIND_IN_SET(t_P.id_product, v_ids_product_invalid) > 0
 			;
 			
-			DELETE
+			DELETE t_PP
 			FROM tmp_Permutation_calc t_PP
 			WHERE FIND_IN_SET(t_PP.id_product, v_ids_product_invalid) > 0
 			;

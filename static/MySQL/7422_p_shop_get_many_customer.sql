@@ -106,7 +106,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_customer = 1 OR a_get_all_customer = 1 THEN
-		CALL p_split(a_guid, a_ids_customer, ',');
+		CALL p_split(v_guid, a_ids_customer, ',');
         
 		IF EXISTS (SELECT * FROM Split_Temp S_T LEFT JOIN Shop_Customer C ON S_T.substring = C.id_customer WHERE ISNULL(C.id_customer)) THEN 
 			INSERT INTO tmp_Msg_Error (

@@ -20,11 +20,14 @@ from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session, Blueprint, current_app
-from extensions import db, oauth
+from flask_sqlalchemy import SQLAlchemy
+from extensions import oauth # db, 
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.base_client import OAuthError
 from urllib.parse import quote, urlparse, parse_qs
+
+db = SQLAlchemy()
 
 routes_user = Blueprint('routes_user', __name__)
 

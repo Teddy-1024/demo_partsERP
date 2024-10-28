@@ -35,9 +35,10 @@ END //
 
 DELIMITER ;
 
-
+/*
 SELECT 
 	fn_shop_get_product_permutation_name(
 		3 -- id_product_permutation
 	)
 ;
+*/

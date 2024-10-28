@@ -3,19 +3,28 @@
     padding-right: 5vw;
     max-width: 80vw;
 }
-#pageBody > .card:first-of-type{
+
+#pageBody .card h1,
+#pageBody .card h2 {
+    width: 100%;
 }
-#pageBody > .card:last-of-type {
-    padding-left: 5vw;
-    padding-right: 5vw;
-}
-#pageBody > .card:not(:first-of-type) {
+
+#pageBody .card p {
+    font-size: min(16px, calc(1vh * 4));
 }
 
 table {
     left: 5vw;
     max-width: 70vw;
     width: fit-content !important;
+}
+
+table td {
+    padding: 10px;
+}
+
+table th {
+    font-size: min(16px, calc(1vh * 4));
 }
 
 /*

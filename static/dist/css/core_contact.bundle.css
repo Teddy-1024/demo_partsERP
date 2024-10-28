@@ -6,6 +6,11 @@
 }
 #pageBody > .card:not(:first-of-type) {
 }
+
+#pageBody label {
+    font-size: min(16px, calc(1vh * 4));
+}
+
 #email {
     min-width: 40vw;
     width: 40vw;
