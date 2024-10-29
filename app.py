@@ -56,6 +56,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from flask_wtf.csrf import CSRFProtect
+from werkzeug.exceptions import HTTPException
 from authlib.integrations.flask_client import OAuth
 import os
 import sys
@@ -80,6 +81,9 @@ app.logger.addHandler(handler)
 
 @app.errorhandler(Exception)
 def internal_server_error(error):
+    if isinstance(error, HTTPException) and error.code == 404:
+        return "Not Found", 404
+
     app.logger.error('Server Error: %s', (error))
     app.logger.error('Request: %s %s %s %s %s',
                      request.remote_addr,
