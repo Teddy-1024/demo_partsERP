@@ -20,6 +20,8 @@ load_dotenv(find_dotenv())
 
 # CLASSES
 class Config:
+    is_development = False
+    is_production = False
     # Miscellaneous
     DEBUG = False # av.input_bool(os.getenv('DEBUG'), 'DEBUG', 'Config')
     TESTING = False
@@ -68,11 +70,13 @@ class Config:
     RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
 class DevelopmentConfig(Config):
+    is_development = True
     DEBUG = True
     MAIL_DEBUG = True
     # Add development-specific configuration variables
 
 class ProductionConfig(Config):
+    is_production = True
     # Add production-specific configuration variables
     pass
 

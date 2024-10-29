@@ -92,13 +92,11 @@ BEGIN
     
     IF ISNULL(a_id_user) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid,
 			id_type,
 			code,
 			msg
 		)
 		VALUES (
-			v_guid,
 			v_id_type_error_bad_data,
 			v_code_error_bad_data, 
 			CONCAT('User ID required for authorisation.')
@@ -479,9 +477,9 @@ END //
 DELIMITER ;;
 
 
-/*
 
-CALL p_get_many_user (
+CALL p_get_many_user (NULL, 'google-oauth2|109567376920138999933', False, False, False, NULL, 'google-oauth2|109567376920138999933', 0);
+/*
 	NULL # a_id_user
     , 'auth0|6582b95c895d09a70ba10fef' # a_id_user_auth0
     , 0 # a_get_all_user
@@ -489,9 +487,10 @@ CALL p_get_many_user (
     , 0 # a_get_first_user_only
 	, NULL # a_ids_user
 	, 'auth0|6582b95c895d09a70ba10fef' # a_ids_user_auth0
-    , 1 -- a_debug
-);
+    , 0 -- a_debug
+);*/
 
+/*
 select * FROM partsltd_prod.Shop_Calc_User_Temp;
 delete FROM partsltd_prod.Shop_Calc_User_Temp;
 
