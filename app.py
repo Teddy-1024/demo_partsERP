@@ -71,6 +71,7 @@ app = Flask(__name__)
 
 # AppConfig(app)
 app.config.from_object(app_config) # for db init with required keys
+app.app_config = app_config
 # app.config["config"] = app_config()
 
 # logging

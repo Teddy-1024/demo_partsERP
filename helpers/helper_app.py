@@ -36,5 +36,7 @@ class Helper_App(BaseModel):
     
     @staticmethod
     def console_log(message):
-        if current_app.config["DEBUG"]:
+        if current_app.app_config.is_development:
             print(message)
+        elif current_app.app_config.is_production:
+            current_app.logger.info(message)
