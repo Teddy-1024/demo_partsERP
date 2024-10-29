@@ -14,6 +14,7 @@ Configuration variables
 from lib import argument_validation as av
 import os
 from dotenv import load_dotenv, find_dotenv
+from flask import current_app
 
 load_dotenv(find_dotenv())
 
@@ -77,14 +78,18 @@ class ProductionConfig(Config):
 
 # Set the configuration class based on the environment
 # You can change 'development' to 'production' when deploying
-config_env = os.getenv('FLASK_ENV')
+config_env = os.getenv('FLASK_ENV', "not found")
+with open('app.log', 'a') as f:
+    f.write(f'config_env: {config_env}\n')
+    # current_app.logger.error(f'config_env: {config_env}')
 if config_env == 'development':
     app_config = DevelopmentConfig
-elif config_env == 'production':
+else: ##if config_env == 'production':
     app_config = ProductionConfig
+"""
 else:
     raise ValueError("Invalid configuration environment")
-
+"""
 
 # environment variables
 """
