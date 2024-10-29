@@ -73,7 +73,6 @@ app = Flask(__name__)
 app.config.from_object(app_config) # for db init with required keys
 # app.config["config"] = app_config()
 
-
 # logging
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
 handler.setLevel(logging.DEBUG)
@@ -94,6 +93,7 @@ def internal_server_error(error):
     app.logger.error('Request data: %s', request.get_data())
     app.logger.error('Traceback: %s', traceback.format_exc())
     return "Internal Server Error", 500
+
 
 
 """
