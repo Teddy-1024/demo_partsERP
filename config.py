@@ -78,18 +78,16 @@ class ProductionConfig(Config):
 
 # Set the configuration class based on the environment
 # You can change 'development' to 'production' when deploying
-config_env = os.getenv('FLASK_ENV', "not found")
+config_env = os.getenv('FLASK_ENV', "production")
 with open('app.log', 'a') as f:
     f.write(f'config_env: {config_env}\n')
-    # current_app.logger.error(f'config_env: {config_env}')
+    # current_app.logger.error(f'config_env: {config_env}') # logger not yet initialised
 if config_env == 'development':
     app_config = DevelopmentConfig
-else: ##if config_env == 'production':
+elif config_env == 'production':
     app_config = ProductionConfig
-"""
 else:
     raise ValueError("Invalid configuration environment")
-"""
 
 # environment variables
 """
