@@ -20,7 +20,7 @@ load_dotenv(find_dotenv())
 # CLASSES
 class Config:
     # Miscellaneous
-    DEBUG = av.input_bool(os.getenv('DEBUG'), 'DEBUG', 'Config')
+    DEBUG = False # av.input_bool(os.getenv('DEBUG'), 'DEBUG', 'Config')
     TESTING = False
     URL_HOST = os.getenv('URL_HOST')
     SECRET_KEY = os.getenv('KEY_SECRET_FLASK') # gen cmd: openssl rand -hex 32
@@ -53,7 +53,7 @@ class Config:
     # id_currency = 1
     # id_region_delivery = 1
     # Mail
-    MAIL_DEBUG = av.input_bool(os.getenv('DEBUG'), 'DEBUG', 'Config')
+    MAIL_DEBUG = False # av.input_bool(os.getenv('DEBUG'), 'DEBUG', 'Config')
     MAIL_SERVER = 'mail.partsltd.co.uk' # 'smtp.gmail.com'
     MAIL_PORT = 465 # 587
     MAIL_USE_TLS = False
@@ -68,6 +68,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    MAIL_DEBUG = True
     # Add development-specific configuration variables
 
 class ProductionConfig(Config):
@@ -76,7 +77,7 @@ class ProductionConfig(Config):
 
 # Set the configuration class based on the environment
 # You can change 'development' to 'production' when deploying
-config_env = 'development'
+config_env = os.getenv('FLASK_ENV')
 if config_env == 'development':
     app_config = DevelopmentConfig
 elif config_env == 'production':
