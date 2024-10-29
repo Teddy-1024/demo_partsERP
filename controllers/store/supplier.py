@@ -30,13 +30,13 @@ routes_store_supplier = Blueprint('routes_store_supplier', __name__)
 
 @routes_store_supplier.route(Model_View_Store_Supplier.HASH_PAGE_STORE_SUPPLIERS, methods=['GET'])
 def suppliers():
-    print('suppliers')
+    Helper_App.console_log('suppliers')
     try:
         form_filters = Filters_Supplier.from_json(request.args)
     except Exception as e:
-        print(f'Error: {e}')
+        Helper_App.console_log(f'Error: {e}')
         form_filters = Filters_Supplier()
-    print(f'form_filters={form_filters}')
+    Helper_App.console_log(f'form_filters={form_filters}')
     model = Model_View_Store_Supplier(form_filters)
     if not model.is_user_logged_in:
         return redirect(url_for('routes_core.home'))
@@ -80,7 +80,7 @@ def save_supplier():
     data = Helper_App.get_request_data(request)
     try:
         form_filters = Filters_Supplier.from_json(data[Model_View_Store_Supplier.FLAG_FORM_FILTERS])
-        print(f'form_filters: {form_filters}')
+        Helper_App.console_log(f'form_filters: {form_filters}')
 
         suppliers = data[Model_View_Store_Supplier.FLAG_SUPPLIER]
         if len(suppliers) == 0:
@@ -88,11 +88,11 @@ def save_supplier():
                 Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_FAILURE, 
                 Model_View_Store_Supplier.FLAG_MESSAGE: f'No stock items.'
             })
-        print(f'suppliers={suppliers}')
+        Helper_App.console_log(f'suppliers={suppliers}')
         objs_supplier = []
         for supplier in suppliers:
             objs_supplier.append(Supplier.from_json(supplier))
-        print(f'objs_supplier={objs_supplier}')
+        Helper_App.console_log(f'objs_supplier={objs_supplier}')
 
         save_errors = Model_View_Store_Supplier.save_suppliers(data.get('comment', 'No comment'), objs_supplier)
         if len(save_errors) > 0:

@@ -27,6 +27,7 @@ from business_objects.store.store_base import Store_Base
 # from models.model_view_store import Model_View_Store # circular
 # from datastores.datastore_store import DataStore_Store # circular
 # from forms import Form_Basket_Add, Form_Basket_Edit # possibly circular
+from helpers.helper_app import Helper_App
 # external
 # from enum import Enum
 from flask import jsonify
@@ -138,8 +139,8 @@ class Basket(Store_Base):
                 quantities_permutation += ','
             ids_permutation += str(product.get_id_permutation())
             quantities_permutation += str(basket_item.quantity)
-        print(f'ids_permutation_basket = {ids_permutation}')
-        print(f'quantities_permutation_basket = {quantities_permutation}')
+        Helper_App.console_log(f'ids_permutation_basket = {ids_permutation}')
+        Helper_App.console_log(f'quantities_permutation_basket = {quantities_permutation}')
         return ids_permutation, quantities_permutation
     def to_json_list(self):
         json_list = []
@@ -170,7 +171,7 @@ class Basket(Store_Base):
     def __repr__(self):
         repr = f'Basket:'
         for basket_item in self.items:
-            print(f'{basket_item}')
+            Helper_App.console_log(f'{basket_item}')
             repr = f'{repr}\n{basket_item}'
         return repr
     

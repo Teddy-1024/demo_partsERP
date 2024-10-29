@@ -15,6 +15,7 @@ import lib.argument_validation as av
 from business_objects.address import Address
 from business_objects.store.store_base import Store_Base
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from typing import ClassVar
 
@@ -81,7 +82,7 @@ class Plant(db.Model, Store_Base):
         }
     @classmethod
     def from_json(cls, json):
-        print(f'{cls.__name__}.from_json: {json}')
+        Helper_App.console_log(f'{cls.__name__}.from_json: {json}')
         plant = cls()
         plant.id_plant = json[cls.ATTR_ID_PLANT],
         plant.code = json[cls.FLAG_CODE],

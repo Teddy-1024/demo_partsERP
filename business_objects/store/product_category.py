@@ -21,6 +21,7 @@ from business_objects.store.discount import Discount
 from business_objects.store.stock_item import Stock_Item
 from business_objects.store.store_base import Store_Base
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from pydantic import BaseModel
 from typing import ClassVar
@@ -101,7 +102,7 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         # self.product_index[Category.key_product_index_from_ids_product_permutation(product.id_product, product.id_permutation)] = len(self.products)
         try:
             self.get_index_product(product)
-            print(f'category: {self}')
+            Helper_App.console_log(f'category: {self}')
             raise ValueError(f"{av.error_msg_str(product, 'product', _m, Product)}\nProduct already in category.")
         except KeyError:
             self.product_index[product.id_product] = len(self.products)
@@ -141,13 +142,13 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
     def get_all_product_variation_trees(self):
         for product in self.products:
             if product.has_variations:
-                print(f'product with id:{product.id_product} has variations')
+                Helper_App.console_log(f'product with id:{product.id_product} has variations')
                 product.get_variation_trees()
     """
     def index_product_from_ids_product_permutation(self, id_product, id_permutation):
         key = Category.key_product_index_from_ids_product_permutation(id_product, id_permutation)
-        print(f'product_index: {self.product_index}')
-        print(f'Key Error: {key}')
+        Helper_App.console_log(f'product_index: {self.product_index}')
+        Helper_App.console_log(f'Key Error: {key}')
         try:
             return self.product_index[key]
         except KeyError:
@@ -167,7 +168,7 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
     """
     def get_permutation_first(self):
         if not (len(self.products) == 0):
-            print(f'getting first permutation from product')
+            Helper_App.console_log(f'getting first permutation from product')
         return None if len(self.products) == 0 else self.products[0].get_permutation_selected()
     """
     def is_available(self):
@@ -204,7 +205,7 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         }
     @classmethod
     def from_json(cls, json):
-        print(f' Category.from_json: {json}')
+        Helper_App.console_log(f' Category.from_json: {json}')
         category = cls()
         category.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
         category.code = json[cls.FLAG_CODE]
@@ -382,9 +383,9 @@ class Product_Category_Container(Store_Base):
         return f'categories: {self.categories}'
     """
     def get_permutation_first(self):
-        print(f'getting first permutation from category list')
+        Helper_App.console_log(f'getting first permutation from category list')
         if not (len(self.categories) == 0):
-            print(f'getting first permutation from category')
+            Helper_App.console_log(f'getting first permutation from category')
         return None if len(self.categories) == 0 else self.categories[0].get_permutation_first()
     """
     def get_category_count(self):

@@ -12,6 +12,7 @@ from business_objects.base import Base
 import lib.argument_validation as av
 from forms.forms import Form_Filters_User
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from dataclasses import dataclass
 from typing import ClassVar
@@ -64,7 +65,7 @@ class User(db.Model, Base):
         _m = 'User.from_json'
         user = User()
         if json is None: return user
-        print(f'{_m}\njson: {json}')
+        Helper_App.console_log(f'{_m}\njson: {json}')
         user.id_user = json['id_user']
         user.id_user_auth0 = json['id_user_auth0']
         user.firstname = json['firstname']
@@ -78,16 +79,16 @@ class User(db.Model, Base):
         user.can_admin_store = av.input_bool(json['can_admin_store'], 'can_admin_store', _m)
         user.can_admin_user = av.input_bool(json['can_admin_user'], 'can_admin_user', _m)
         user.is_logged_in = (user.id_user_auth0 is not None)
-        print(f'user: {user}')
+        Helper_App.console_log(f'user: {user}')
         return user
     
-    # print(f'user: {user}')
+    # Helper_App.console_log(f'user: {user}')
     @staticmethod
     def from_json_auth0(json):
         _m = 'User.from_json_auth0'
         user = User()
         if json is None: return user
-        print(f'{_m}\njson: {json}')
+        Helper_App.console_log(f'{_m}\njson: {json}')
         user_info = json['userinfo']
         user.id_user = None
         user.id_user_auth0 = user_info['sub']
@@ -102,7 +103,7 @@ class User(db.Model, Base):
         user.can_admin_store = None
         user.can_admin_user = None
         user.is_logged_in = (user.id_user_auth0 is not None and user.id_user_auth0 != '')
-        print(f'user: {user}')
+        Helper_App.console_log(f'user: {user}')
         return user
     
     def to_json(self):
@@ -120,7 +121,7 @@ class User(db.Model, Base):
             'can_admin_store': self.can_admin_store,
             'can_admin_user': self.can_admin_user
         }
-        print(f'as_json: {as_json}')
+        Helper_App.console_log(f'as_json: {as_json}')
         return as_json
         
     def __repr__(self):

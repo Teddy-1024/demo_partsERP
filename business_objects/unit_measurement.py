@@ -12,6 +12,7 @@ from business_objects.base import Base
 from business_objects.db_base import SQLAlchemy_ABC, Get_Many_Parameters_Base
 from extensions import db
 # from forms.forms import Form_Filters_User
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 # external
 from dataclasses import dataclass
@@ -78,7 +79,7 @@ class Unit_Measurement(SQLAlchemy_ABC, Base):
         }
     @classmethod
     def from_json(cls, json):
-        print(f' Unit_Measurement.from_json: {json}')
+        Helper_App.console_log(f' Unit_Measurement.from_json: {json}')
         unit = cls()
         unit.id_unit_measurement = json[cls.ATTR_ID_UNIT_MEASUREMENT]
         unit.name_singular = json[cls.FLAG_NAME_SINGULAR]

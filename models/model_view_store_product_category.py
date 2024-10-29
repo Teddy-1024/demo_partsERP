@@ -21,6 +21,7 @@ from forms.store.product_category import Filters_Product_Category
 # from routes import bp_home
 from business_objects.store.product import Product, Parameters_Product, Product_Permutation
 from business_objects.store.product_variation import Product_Variation_Container
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 
 # external
@@ -40,7 +41,7 @@ class Model_View_Store_Product_Category(Model_View_Store):
     
     def __init__(self, form_filters, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCT_CATEGORIES):
         _m = 'Model_View_Store_Product_Category.__init__'
-        print(f'{_m}\nstarting...')
+        Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current=hash_page_current, form_filters=form_filters) # filters_category=filters_category)
         # BaseModel.__init__(self, app=app, filters_product=filters_product, **kwargs)
         self.access_levels = self.get_many_access_level(Filters_Access_Level())

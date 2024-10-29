@@ -14,6 +14,7 @@ Business object for address region
 import lib.argument_validation as av
 from business_objects.base import Base
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from typing import ClassVar
 
@@ -61,7 +62,7 @@ class Region(db.Model, Base):
         }
     @classmethod
     def from_json(cls, json):
-        print(f'{cls.__name__}.from_json: {json}')
+        Helper_App.console_log(f'{cls.__name__}.from_json: {json}')
         plant = cls()
         plant.id_region = json[cls.ATTR_ID_REGION]
         plant.code = json[cls.FLAG_CODE]

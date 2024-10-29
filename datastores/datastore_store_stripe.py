@@ -30,6 +30,7 @@ from datastores.datastore_store_base import DataStore_Store_Base
 # from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 # from abc import ABC, abstractmethod, abstractproperty
 from flask_sqlalchemy import SQLAlchemy
@@ -72,10 +73,10 @@ class DataStore_Store_Stripe(DataStore_Store_Base):
             'a_id_user': self.info_user
         }
 
-        print(f'executing {_m_db}')
+        Helper_App.console_log(f'executing {_m_db}')
         result = self.db_procedure_execute(_m_db, argument_dict_list)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
 
         
         # Products
@@ -85,16 +86,16 @@ class DataStore_Store_Stripe(DataStore_Store_Base):
         for row in result_set_1:
             new_product = Product.from_DB_Stripe_product(row) # Product(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
             products.append(new_product)
-        print(f'products: {products}')        
+        Helper_App.console_log(f'products: {products}')        
         
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
 
         DataStore_Store_Stripe.db_cursor_clear(cursor)
 
@@ -110,10 +111,10 @@ class DataStore_Store_Stripe(DataStore_Store_Base):
             'a_id_user': self.info_user
         }
 
-        print(f'executing {_m_db}')
+        Helper_App.console_log(f'executing {_m_db}')
         result = self.db_procedure_execute(_m_db, argument_dict_list)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
 
         
         # Products
@@ -123,16 +124,16 @@ class DataStore_Store_Stripe(DataStore_Store_Base):
         for row in result_set_1:
             new_product = Product.from_DB_Stripe_price(row) # Product(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
             products.append(new_product)
-        print(f'products: {products}')        
+        Helper_App.console_log(f'products: {products}')        
         
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
 
         DataStore_Store_Stripe.db_cursor_clear(cursor)
 
@@ -161,14 +162,14 @@ class DataStore_Store_Stripe(DataStore_Store_Base):
         # av.val_str(product_description, 'product_description', _m)
         av.val_instance(product, 'product', _m, Product)
 
-        print(f'stripe.api_key = {stripe.api_key}')
+        Helper_App.console_log(f'stripe.api_key = {stripe.api_key}')
         new_product = stripe.Product.create(
             name = product.name,
             description = product.description,
         )
 
         # Save these identifiers
-        print(f"Success! Here is your new Stripe product id: {new_product.id}")
+        Helper_App.console_log(f"Success! Here is your new Stripe product id: {new_product.id}")
 
         return new_product.id
     
@@ -188,7 +189,7 @@ class DataStore_Store_Stripe(DataStore_Store_Base):
         av.val_instance(product, 'product', _m, Product)
         av.val_str(currency, 'currency', _m)
 
-        print(f'stripe.api_key = {stripe.api_key}')
+        Helper_App.console_log(f'stripe.api_key = {stripe.api_key}')
 
         new_product_price = stripe.Price.create(
             unit_amount = product.unit_price,
@@ -198,7 +199,7 @@ class DataStore_Store_Stripe(DataStore_Store_Base):
         )
 
         # Save these identifiers
-        print(f"Success! Here is your Stripe product price id: {new_product_price.id} for {product.name}")
+        Helper_App.console_log(f"Success! Here is your Stripe product price id: {new_product_price.id} for {product.name}")
 
         return new_product_price.id
     

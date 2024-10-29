@@ -13,6 +13,7 @@ Business object for product image
 # internal
 from business_objects.store.store_base import Store_Base
 from extensions import db
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 # external
 from enum import Enum
@@ -79,7 +80,7 @@ class Image(db.Model, Store_Base):
 """
     def from_DB_get_many_product_catalogue(query_row):
         _m = 'Image.from_DB_get_many_product_catalogue'
-        # print(f'image: {query_row}')
+        # Helper_App.console_log(f'image: {query_row}')
         image = Image()
         image.id_image = query_row[0]
         image.id_product = query_row[1]

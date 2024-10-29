@@ -47,7 +47,7 @@ def contact():
         user = DataStore_Base.get_user_session()
         form = Form_Contact()
         form.email.data = user.email
-        form.name.data = user.firstname + (' ' if user.firstname and user.surname else '') + user.surname
+        form.name.data = (user.firstname if user.firstname else '') + (' ' if user.firstname and user.surname else '') + (user.surname if user.surname else '')
         model = Model_View_Contact(form)
         html_body = render_template('pages/core/_contact.html', model = model)
     except Exception as e:

@@ -30,13 +30,13 @@ routes_store_supplier_purchase_order = Blueprint('routes_store_supplier_purchase
 
 @routes_store_supplier_purchase_order.route(Model_View_Store_Supplier_Purchase_Order.HASH_PAGE_STORE_SUPPLIER_PURCHASE_ORDERS, methods=['GET'])
 def supplier_purchase_orders():
-    print('supplier_purchase_orders')
+    Helper_App.console_log('supplier_purchase_orders')
     try:
         form_filters = Filters_Supplier_Purchase_Order.from_json(request.args)
     except Exception as e:
-        print(f'Error: {e}')
+        Helper_App.console_log(f'Error: {e}')
         form_filters = Filters_Supplier_Purchase_Order()
-    print(f'form_filters={form_filters}')
+    Helper_App.console_log(f'form_filters={form_filters}')
     model = Model_View_Store_Supplier_Purchase_Order(form_filters)
     if not model.is_user_logged_in:
         return redirect(url_for('routes_core.home'))
@@ -80,7 +80,7 @@ def save_supplier_purchase_order():
     data = Helper_App.get_request_data(request)
     try:
         form_filters = Filters_Supplier_Purchase_Order.from_json(data[Model_View_Store_Supplier_Purchase_Order.FLAG_FORM_FILTERS])
-        print(f'form_filters: {form_filters}')
+        Helper_App.console_log(f'form_filters: {form_filters}')
 
         supplier_purchase_orders = data[Model_View_Store_Supplier_Purchase_Order.FLAG_SUPPLIER_PURCHASE_ORDER]
         if len(supplier_purchase_orders) == 0:
@@ -88,11 +88,11 @@ def save_supplier_purchase_order():
                 Model_View_Store_Supplier_Purchase_Order.FLAG_STATUS: Model_View_Store_Supplier_Purchase_Order.FLAG_FAILURE, 
                 Model_View_Store_Supplier_Purchase_Order.FLAG_MESSAGE: f'No stock items.'
             })
-        print(f'supplier_purchase_orders={supplier_purchase_orders}')
+        Helper_App.console_log(f'supplier_purchase_orders={supplier_purchase_orders}')
         objs_supplier_purchase_order = []
         for supplier_purchase_order in supplier_purchase_orders:
             objs_supplier_purchase_order.append(Supplier_Purchase_Order.from_json(supplier_purchase_order))
-        print(f'objs_supplier_purchase_order={objs_supplier_purchase_order}')
+        Helper_App.console_log(f'objs_supplier_purchase_order={objs_supplier_purchase_order}')
         save_errors, save_warnings = Model_View_Store_Supplier_Purchase_Order.save_supplier_purchase_orders(data.get('comment', 'No comment'), objs_supplier_purchase_order)
         if len(save_errors) > 0:
             return jsonify({

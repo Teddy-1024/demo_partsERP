@@ -30,27 +30,27 @@ routes_store_product_category = Blueprint('routes_store_product_category', __nam
 
 @routes_store_product_category.route(Model_View_Store_Product_Category.HASH_PAGE_STORE_PRODUCT_CATEGORIES, methods=['GET'])
 def categories():
-    print('categories')
+    Helper_App.console_log('categories')
     # data = Helper_App.get_request_data(request)
     try:
         form_filters = Filters_Product_Category.from_json(request.args)
     except Exception as e:
-        print(f'Error: {e}')
+        Helper_App.console_log(f'Error: {e}')
         form_filters = Filters_Product_Category()
-    print(f'form_filters={form_filters}')
+    Helper_App.console_log(f'form_filters={form_filters}')
     """
     filters = Filters_Product_Category.get_default()
     have_changed_filters = False
     arg_filter_is_not_empty = request.args.get(Model_View_Store_Product_Category.FLAG_IS_NOT_EMPTY, None)
     have_changed_filters = have_changed_filters or arg_filter_is_not_empty is None
-    print(f'arg_filter_is_not_empty={arg_filter_is_not_empty}')
+    Helper_App.console_log(f'arg_filter_is_not_empty={arg_filter_is_not_empty}')
     filters.is_not_empty = filters.is_not_empty if arg_filter_is_not_empty is None else av.input_bool(arg_filter_is_not_empty, 'is_not_empty', 'filter_category')
     arg_filter_active = request.args.get(Model_View_Store_Product_Category.FLAG_ACTIVE, None)
     have_changed_filters = have_changed_filters or arg_filter_active is None
-    print(f'arg_filter_active={arg_filter_active}')
+    Helper_App.console_log(f'arg_filter_active={arg_filter_active}')
     filters.active = filters.active if arg_filter_active is None else av.input_bool(arg_filter_active, 'active', 'filter_category')
     if have_changed_filters:
-        print('redirecting')
+        Helper_App.console_log('redirecting')
         return redirect(url_for('routes_store_product_category.categories', **filters.to_json()))
     """
     model = Model_View_Store_Product_Category(form_filters)
@@ -107,7 +107,7 @@ def save_category():
         for category in categories:
             objsCategory.append(Product_Category.from_json(category))
         # model_save = Model_View_Store_Product_Category() # filters_product=filters_form)
-        print(f'objsCategory={objsCategory}')
+        Helper_App.console_log(f'objsCategory={objsCategory}')
         Model_View_Store_Product_Category.save_categories(data.get('comment', 'No comment'), objsCategory)
 
         model_return = Model_View_Store_Product_Category(form_filters=form_filters)

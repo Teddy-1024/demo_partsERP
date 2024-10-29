@@ -185,6 +185,7 @@ DROP TABLE IF EXISTS Shop_Interval_Recurrence;
 
 DROP TABLE IF EXISTS Shop_Product_Audit;
 DROP TABLE IF EXISTS Shop_Product;
+DROP TABLE IF EXISTS Shop_Product_Temp;
 
 DROP TABLE IF EXISTS Shop_Product_Category_Temp;
 DROP TABLE IF EXISTS Shop_Product_Category_Audit;

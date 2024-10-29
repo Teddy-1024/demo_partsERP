@@ -486,7 +486,7 @@ CALL partsltd_prod.p_shop_get_many_product (
     , 0 # a_get_inactive_image
 	, '' # a_ids_image
     , 0 # a_get_products_quantity_stock_below_minimum
-    , 1 # a_debug
+    , 0 # a_debug
 );
 
 select * FROM partsltd_prod.Shop_Calc_User_Temp;

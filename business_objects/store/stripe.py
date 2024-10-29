@@ -15,7 +15,7 @@ import lib.argument_validation as av
 from lib import data_types
 from forms.forms import Form_Basket_Add, Form_Basket_Edit # Form_Product
 from extensions import db
-
+from helpers.helper_app import Helper_App
 # external
 from datetime import datetime, timedelta
 import locale
@@ -61,7 +61,7 @@ class Stripe_Product(db.Model):
         av.val_str(id_stripe_product, 'id_stripe_product', _m, max_len=100, v_arg_type=v_arg_type)
         av.val_str(id_stripe_price, 'id_stripe_price', _m, max_len=100, v_arg_type=v_arg_type)
         av.full_val_bool(is_subscription, 'is_subscription', _m, v_arg_type=v_arg_type)
-        print(f'is_subscription: {is_subscription}, {av.input_bool(is_subscription, "is_subscription", _m, v_arg_type=v_arg_type)}')
+        Helper_App.console_log(f'is_subscription: {is_subscription}, {av.input_bool(is_subscription, "is_subscription", _m, v_arg_type=v_arg_type)}')
         is_subscription = av.input_bool(is_subscription, "is_subscription", _m, v_arg_type=v_arg_type)
         if is_subscription:
             av.val_str(name_recurring_interval, 'name_recurring_interval', _m, max_len=255, v_arg_type=v_arg_type)

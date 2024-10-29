@@ -19,6 +19,7 @@ from business_objects.store.product_variation_tree import Product_Variation_Tree
 from business_objects.store.storage_location import Storage_Location
 from business_objects.store.store_base import Store_Base
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from dataclasses import dataclass
 from typing import ClassVar, Optional
@@ -106,7 +107,7 @@ class Stock_Item(db.Model, Store_Base):
         stock_item.id_permutation = json.get(cls.ATTR_ID_PRODUCT_PERMUTATION, 0)
         stock_item.id_product = json[cls.ATTR_ID_PRODUCT]
         stock_item.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
-        print(f'json: {json}\nhalf stock item: {stock_item}')
+        Helper_App.console_log(f'json: {json}\nhalf stock item: {stock_item}')
         stock_item.variation_tree = Product_Variation_Tree.from_json_str(json[cls.FLAG_PRODUCT_VARIATIONS])
         stock_item.date_purchased = json[cls.FLAG_DATE_PURCHASED]
         stock_item.date_received = json[cls.FLAG_DATE_RECEIVED]

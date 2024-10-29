@@ -18,6 +18,7 @@ from forms.store.product_permutation import Filters_Product_Permutation
 # from routes import bp_home
 from business_objects.store.product import Product, Parameters_Product, Product_Permutation
 from business_objects.store.product_variation import Product_Variation_Container
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 
 # external
@@ -44,7 +45,7 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
     
     def __init__(self, form_filters, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS):
         _m = 'Model_View_Store_Permutation.__init__'
-        print(f'{_m}\nstarting...')
+        Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current=hash_page_current, form_filters=form_filters)
         # self.form_filters = Filters_Product_Permutation()
         filters_product = Parameters_Product.from_form_filters_product_permutation(self.form_filters)
@@ -67,11 +68,11 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
                 get_products_quantity_stock_below_min = filters_product.get_products_quantity_stock_below_min
             )
         )
-        print(f'category filters: {self.category_list_filters.categories}')
+        Helper_App.console_log(f'category filters: {self.category_list_filters.categories}')
         self.form_filters.id_category.choices += [(str(category.id_category), category.name) for category in self.category_list_filters.categories]
-        print(f'category options: {self.form_filters.id_category.choices}')
+        Helper_App.console_log(f'category options: {self.form_filters.id_category.choices}')
         self.list_options_product = self.category_list_filters.to_product_option_list()
-        print(f'product options: {self.list_options_product}')
+        Helper_App.console_log(f'product options: {self.list_options_product}')
         self.form_filters.id_product.choices += [(str(product['value']), product['text']) for product in self.list_options_product]
         self.variation_types, self.variations, errors = self.get_many_product_variation()
         self.units_measurement = self.get_many_unit_measurement()

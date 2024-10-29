@@ -16,6 +16,7 @@ from business_objects.currency import Currency
 from business_objects.db_base import Get_Many_Parameters_Base
 from business_objects.store.store_base import Store_Base
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from pydantic import BaseModel
 from typing import ClassVar, Optional
@@ -89,7 +90,7 @@ class Manufacturing_Purchase_Order(db.Model, Store_Base):
         }
     @classmethod
     def from_json(cls, json):
-        print(f'{cls.__name__}.from_json: {json}')
+        Helper_App.console_log(f'{cls.__name__}.from_json: {json}')
         manufacturing_purchase_order = cls()
         manufacturing_purchase_order.id_order = json[cls.ATTR_ID_MANUFACTURING_PURCHASE_ORDER]
         manufacturing_purchase_order.id_currency = json[cls.ATTR_ID_CURRENCY]
@@ -199,7 +200,7 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
         }
     @classmethod
     def from_json(cls, json):
-        print(f'{cls.__name__}.from_json: {json}')
+        Helper_App.console_log(f'{cls.__name__}.from_json: {json}')
         link = cls()
         link.id_link = json[cls.ATTR_ID_MANUFACTURING_PURCHASE_ORDER_PRODUCT_LINK]
         link.id_order = json[cls.ATTR_ID_MANUFACTURING_PURCHASE_ORDER]

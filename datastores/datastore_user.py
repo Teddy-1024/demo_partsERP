@@ -17,6 +17,7 @@ from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from datastores.datastore_base import DataStore_Base
+from helpers.helper_app import Helper_App
 from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
@@ -57,16 +58,16 @@ class DataStore_User(DataStore_Base):
         cursor = result.cursor
         
         result_set_1 = cursor.fetchall()
-        print(f'raw user data: {result_set_1}')
+        Helper_App.console_log(f'raw user data: {result_set_1}')
 
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_2]
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
 
         DataStore_User.db_cursor_clear(cursor)
 
@@ -85,10 +86,10 @@ class DataStore_User(DataStore_Base):
             'a_id_checkout_session': id_checkout_session
         }
 
-        print('executing p_shop_get_many_user_order')
+        Helper_App.console_log('executing p_shop_get_many_user_order')
         result = self.db_procedure_execute('p_shop_get_many_user_order', argument_dict_list)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
 
         
         # Discount Delivery Regions
@@ -98,16 +99,16 @@ class DataStore_User(DataStore_Base):
         for row in result_set_1:
             new_order = Order(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
             orders.append(new_order)
-        print(f'orders: {orders}')        
+        Helper_App.console_log(f'orders: {orders}')        
         
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
 
         DataStore_User.db_cursor_clear(cursor)
 
@@ -116,7 +117,7 @@ class DataStore_User(DataStore_Base):
 
     def get_many_user(self, user_filters, user=None):
         _m = 'DataStore_User.get_many_user'
-        print(_m)
+        Helper_App.console_log(_m)
         # av.val_str(user_filters, 'user_filters', _m)
         # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
         av.val_instance(user_filters, 'user_filters', _m, User_Filters)
@@ -150,33 +151,33 @@ class DataStore_User(DataStore_Base):
         """
         cursor = result.cursor
         result_set = cursor.fetchall()
-        print(f'raw users: {result_set}')
-        print(f'type result set: {str(type(result_set))}')
-        print(f'len result set: {len(result_set)}') 
+        Helper_App.console_log(f'raw users: {result_set}')
+        Helper_App.console_log(f'type result set: {str(type(result_set))}')
+        Helper_App.console_log(f'len result set: {len(result_set)}') 
         """
         user_permission_evals = []
         for row in result_set:
             user_permission_eval = User_Permission_Evaluation.from_DB_user_eval(row)
             user_permission_evals.append(user_permission_eval)
-        print(f'user_permission_evals: {user_permission_evals}')
+        Helper_App.console_log(f'user_permission_evals: {user_permission_evals}')
         """
         users = []
         if len(result_set) > 0:
             for row in result_set:
-                print(f'row: {row}')
+                Helper_App.console_log(f'row: {row}')
                 user = User.from_DB_user(row)
                 users.append(user)
-                print(f'user {str(type(user))}: {user}')
-        print(f'type users: {str(type(users))}\n type user 0: {str(type(None if len(users) == 0 else users[0]))}')
+                Helper_App.console_log(f'user {str(type(user))}: {user}')
+        Helper_App.console_log(f'type users: {str(type(users))}\n type user 0: {str(type(None if len(users) == 0 else users[0]))}')
         # error_list, cursor = self.get_error_list_from_cursor(cursor)
         errors = []
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
 
         DataStore_User.db_cursor_clear(cursor)
 
@@ -184,7 +185,7 @@ class DataStore_User(DataStore_Base):
 
     def get_many_user(self, user_filters, user=None):
         _m = 'DataStore_User.get_many_user'
-        print(_m)
+        Helper_App.console_log(_m)
         # av.val_str(user_filters, 'user_filters', _m)
         # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
         av.val_instance(user_filters, 'user_filters', _m, User_Filters)
@@ -218,33 +219,33 @@ class DataStore_User(DataStore_Base):
         """
         cursor = result.cursor
         result_set = cursor.fetchall()
-        print(f'raw users: {result_set}')
-        print(f'type result set: {str(type(result_set))}')
-        print(f'len result set: {len(result_set)}') 
+        Helper_App.console_log(f'raw users: {result_set}')
+        Helper_App.console_log(f'type result set: {str(type(result_set))}')
+        Helper_App.console_log(f'len result set: {len(result_set)}') 
         """
         user_permission_evals = []
         for row in result_set:
             user_permission_eval = User_Permission_Evaluation.from_DB_user_eval(row)
             user_permission_evals.append(user_permission_eval)
-        print(f'user_permission_evals: {user_permission_evals}')
+        Helper_App.console_log(f'user_permission_evals: {user_permission_evals}')
         """
         users = []
         if len(result_set) > 0:
             for row in result_set:
-                print(f'row: {row}')
+                Helper_App.console_log(f'row: {row}')
                 user = User.from_DB_user(row)
                 users.append(user)
-                print(f'user {str(type(user))}: {user}')
-        print(f'type users: {str(type(users))}\n type user 0: {str(type(None if len(users) == 0 else users[0]))}')
+                Helper_App.console_log(f'user {str(type(user))}: {user}')
+        Helper_App.console_log(f'type users: {str(type(users))}\n type user 0: {str(type(None if len(users) == 0 else users[0]))}')
         # error_list, cursor = self.get_error_list_from_cursor(cursor)
         errors = []
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
 
         DataStore_User.db_cursor_clear(cursor)
 

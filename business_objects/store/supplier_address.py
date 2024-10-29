@@ -15,6 +15,7 @@ import lib.argument_validation as av
 from business_objects.store.store_base import Store_Base
 from business_objects.region import Region
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from typing import ClassVar
 from flask import jsonify
@@ -71,7 +72,7 @@ class Supplier_Address(db.Model, Store_Base):
 {self.FLAG_ACTIVE}: {self.active}
             '''
     def to_json(self):
-        print(f'{self.__class__.__name__}.to_json\n{self.__dict__}\n{self}')
+        Helper_App.console_log(f'{self.__class__.__name__}.to_json\n{self.__dict__}\n{self}')
         return {
             **self.get_shared_json_attributes(self),
             self.ATTR_ID_ADDRESS: self.id_address,
@@ -88,7 +89,7 @@ class Supplier_Address(db.Model, Store_Base):
         return jsonify(self.to_json())
     @classmethod
     def from_json(cls, json):
-        print(f'{cls.__name__}.from_json: {json}')
+        Helper_App.console_log(f'{cls.__name__}.from_json: {json}')
         address = cls()
         address.id_address = json[cls.ATTR_ID_ADDRESS]
         address.id_supplier = json[cls.ATTR_ID_SUPPLIER]

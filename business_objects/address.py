@@ -15,6 +15,7 @@ import lib.argument_validation as av
 from business_objects.base import Base
 from business_objects.region import Region
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from typing import ClassVar
 from flask import jsonify
@@ -92,7 +93,7 @@ class Address(db.Model, Base):
         return jsonify(self.to_json())
     @classmethod
     def from_json(cls, json):
-        print(f'{cls.__name__}.from_json: {json}')
+        Helper_App.console_log(f'{cls.__name__}.from_json: {json}')
         address = cls()
         address.id_address = json[cls.ATTR_ID_ADDRESS],
         address.region = Region.from_json(json[cls.FLAG_REGION]),

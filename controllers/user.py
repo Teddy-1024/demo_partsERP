@@ -38,27 +38,27 @@ def login():
         data = request.json
     except:
         data = {}
-    print(f'data={data}')
+    Helper_App.console_log(f'data={data}')
     # callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}{data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
     
     # encoded_path = quote(data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME))
     uri_redirect = url_for('routes_user.login_callback', _external=True) # , subpath=encoded_path
     
     # uri_redirect = f'{current_app.URL_HOST}/login_callback?subpath={data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
-    print(f'redirect uri: {uri_redirect}')
+    Helper_App.console_log(f'redirect uri: {uri_redirect}')
     hash_callback = data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)
-    print(f'hash_callback: {hash_callback}')
+    Helper_App.console_log(f'hash_callback: {hash_callback}')
 
     red = oauth.auth0.authorize_redirect(
         redirect_uri = uri_redirect,
         state = quote(hash_callback)
     )
-    print(f'redirect: {red}')
+    Helper_App.console_log(f'redirect: {red}')
     headers = red.headers['Location']
-    print(f'headers: {headers}')
+    Helper_App.console_log(f'headers: {headers}')
     parsed_url = urlparse(headers)
     query_params = parse_qs(parsed_url.query)
-    print(f"""
+    Helper_App.console_log(f"""
     OAuth Authorize Redirect URL:
     
     Base URL: {parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}
@@ -76,25 +76,25 @@ def login_callback():
         if has_error:
             error_description = request.args.get(Model_View_User.FLAG_ERROR_DESCRIPTION_OAUTH)
             error_text = f'Error: {error_state}: {error_description}'
-            print(error_text)
+            Helper_App.console_log(error_text)
             return login()
-        # print(f'code: {code}')
+        # Helper_App.console_log(f'code: {code}')
         token = None
         try:
             token = oauth.auth0.authorize_access_token()
         except Exception as e:
             # Log the error for debugging
-            print(f"Error: {str(e)}")
+            Helper_App.console_log(f"Error: {str(e)}")
         session[current_app.config['ID_TOKEN_USER']] = token
         # import user id
         """
-        print(f'str(type(token)) = {str(type(token))}')
-        print(f'token = {token}')
+        Helper_App.console_log(f'str(type(token)) = {str(type(token))}')
+        Helper_App.console_log(f'token = {token}')
         userinfo = token.get('userinfo')
-        print(f'user info: {userinfo}')
+        Helper_App.console_log(f'user info: {userinfo}')
         # id_user = token.get('sub')
         id_user = userinfo.get('sub')
-        print(f'user ID: {id_user}')
+        Helper_App.console_log(f'user ID: {id_user}')
         """
         user = User.from_json_auth0(token) # datastore_user.get_user_auth0()
         user_filters = User_Filters.from_user(user)
@@ -102,30 +102,30 @@ def login_callback():
         users, errors = datastore_user.get_many_user(user_filters, user)
         try:
             user = users[0]
-            print('User logged in')
-            print(f'user ({str(type(user))}): {user}')
-            print(f'user key: {Model_View_Base.FLAG_USER}')
+            Helper_App.console_log('User logged in')
+            Helper_App.console_log(f'user ({str(type(user))}): {user}')
+            Helper_App.console_log(f'user key: {Model_View_Base.FLAG_USER}')
             user_json = user.to_json()
             session[Model_View_Base.FLAG_USER] = user_json
-            print(f'user stored on session')
+            Helper_App.console_log(f'user stored on session')
         except:
-            print(f'User not found: {user_filters}\nDatabase query error: {errors}')
+            Helper_App.console_log(f'User not found: {user_filters}\nDatabase query error: {errors}')
         
         try:
             hash_callback = token.get('hash_callback')
             if hash_callback is None:
-                print('hash is none')
+                Helper_App.console_log('hash is none')
                 state = request.args.get('state')
-                print(f'state: {state}')
+                Helper_App.console_log(f'state: {state}')
                 hash_callback = state # .get('hash_callback')
-            print(f'hash_callback: {hash_callback}')
+            Helper_App.console_log(f'hash_callback: {hash_callback}')
         except:
-            print("get hash callback failed")
+            Helper_App.console_log("get hash callback failed")
         # id_user = get_id_user()
         # add user to database
         # DataStore_Store().add_new_user(id_user) # this is part of get basket - should occur on page load
 
-        print(f'user session: {session[Model_View_Base.FLAG_USER]}')
+        Helper_App.console_log(f'user session: {session[Model_View_Base.FLAG_USER]}')
         return redirect(f"{current_app.config['URL_HOST']}{hash_callback}")
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
@@ -141,7 +141,7 @@ def logout():
         # quote_via=quote_plus,
     )
     current_app.logger.debug(f"Redirecting to {url_logout}")
-    print(f"Redirecting to {url_logout}")
+    Helper_App.console_log(f"Redirecting to {url_logout}")
     return redirect(url_logout)
 
 @routes_user.route("/logout_callback") # <path:subpath>/<code>
@@ -153,18 +153,18 @@ def logout_callback():
         try:
             hash_callback = token.get('hash_callback')
             if hash_callback is None:
-                print('hash is none')
+                Helper_App.console_log('hash is none')
                 state = request.args.get('state')
-                print(f'state: {state}')
+                Helper_App.console_log(f'state: {state}')
                 hash_callback = state # .get('hash_callback')
-            print(f'hash_callback: {hash_callback}')
+            Helper_App.console_log(f'hash_callback: {hash_callback}')
         except:
-            print("get hash callback failed")
+            Helper_App.console_log("get hash callback failed")
         # id_user = get_id_user()
         # add user to database
         # DataStore_Store().add_new_user(id_user) # this is part of get basket - should occur on page load
 
-        print(f'user session: {session[Model_View_Base.FLAG_USER]}')
+        Helper_App.console_log(f'user session: {session[Model_View_Base.FLAG_USER]}')
         return redirect(f'{current_app.URL_HOST}{hash_callback}')
     except Exception as e:
         return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})

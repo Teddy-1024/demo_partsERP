@@ -27,6 +27,7 @@ from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container
 # from datastores.datastore_base import Table_Shop_Product_Category, Table_Shop_Product_Category_Temp
 from datastores.datastore_store_base import DataStore_Store_Base
+from helpers.helper_app import Helper_App
 from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
@@ -48,8 +49,8 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
     @classmethod
     def save_categories(cls, comment, categories):
         _m = 'DataStore_Store_Product_Category.save_categories'
-        print(f'{_m}\nstarting...')
-        print(f'comment: {comment}\ncategories: {categories}')
+        Helper_App.console_log(f'{_m}\nstarting...')
+        Helper_App.console_log(f'comment: {comment}\ncategories: {categories}')
         # av.val_str(comment, 'comment', _m)
         # av.val_list_instances(categories, 'categories', _m, Product_Category, 1)
 
@@ -66,25 +67,25 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
                 id_category_new -= 1
                 row.id_category = id_category_new
             else:
-                print(f'row.id_category: {row.id_category}')
+                Helper_App.console_log(f'row.id_category: {row.id_category}')
             row.guid = guid
             # row.created_on = now
             # row.created_by = user.id_user
             rows.append(row)
         
-        print(f'rows: {rows}')
+        Helper_App.console_log(f'rows: {rows}')
         """
         cursor = db.cursor()
-        print('cursor created') 
+        Helper_App.console_log('cursor created') 
         cursor.executemany(
             'INSERT INTO Shop_Product_Category_Temp (id_category, code, name, description, active, display_order, guid, created_on, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
             categories
         )
-        print('bulk upload executed')
+        Helper_App.console_log('bulk upload executed')
         db.commit()
-        print('bulk upload committed')
+        Helper_App.console_log('bulk upload committed')
         cursor.close()
-        print('cursor closed')
+        Helper_App.console_log('cursor closed')
         """
         DataStore_Store_Base.upload_bulk(Product_Category_Temp.__tablename__, rows, 1000)
 
@@ -95,5 +96,5 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
         }
         save_result = cls.db_procedure_execute('p_shop_save_product_category', argument_dict_list)
         save_result.close()
-        print('save procedure executed')
+        Helper_App.console_log('save procedure executed')
 
