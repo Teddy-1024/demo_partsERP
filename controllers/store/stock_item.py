@@ -30,13 +30,13 @@ routes_store_stock_item = Blueprint('routes_store_stock_item', __name__)
 
 @routes_store_stock_item.route(Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS, methods=['GET'])
 def stock_items():
-    print('stock_items')
+    Helper_App.console_log('stock_items')
     try:
         form_filters = Filters_Stock_Item.from_json(request.args)
     except Exception as e:
-        print(f'Error: {e}')
+        Helper_App.console_log(f'Error: {e}')
         form_filters = Filters_Stock_Item()
-    print(f'form_filters={form_filters}')
+    Helper_App.console_log(f'form_filters={form_filters}')
     model = Model_View_Store_Stock_Item(form_filters)
     if not model.is_user_logged_in:
         # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Stock_Item.FLAG_CALLBACK: Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS })))
@@ -108,7 +108,7 @@ def save_stock_item():
                 })
         """
         # filters_form = Filters_Stock_Item.from_form(form_filters)
-        print(f'form_filters: {form_filters}')
+        Helper_App.console_log(f'form_filters: {form_filters}')
 
         stock_items = data[Model_View_Store_Stock_Item.FLAG_STOCK_ITEM]
         if len(stock_items) == 0:
@@ -116,12 +116,12 @@ def save_stock_item():
                 Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
                 Model_View_Store_Stock_Item.FLAG_MESSAGE: f'No stock items.'
             })
-        print(f'stock_items={stock_items}')
+        Helper_App.console_log(f'stock_items={stock_items}')
         objs_stock_item = []
         for stock_item in stock_items:
             objs_stock_item.append(Stock_Item.from_json(stock_item))
         # model_save = Model_View_Store_Stock_Item() # filters_product=filters_form)
-        print(f'objs_stock_item={objs_stock_item}')
+        Helper_App.console_log(f'objs_stock_item={objs_stock_item}')
         save_errors = Model_View_Store_Stock_Item.save_stock_items(data.get('comment', 'No comment'), objs_stock_item)
         if len(save_errors) > 0:
             return jsonify({

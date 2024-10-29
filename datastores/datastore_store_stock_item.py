@@ -16,6 +16,7 @@ import lib.argument_validation as av
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item, Parameters_Stock_Item, Stock_Item_Temp
 from datastores.datastore_store_base import DataStore_Store_Base
+from helpers.helper_app import Helper_App
 from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
@@ -53,13 +54,13 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
             , 'a_debug': 0
         }
         ids_permutation = category_list.get_csv_ids_permutation()
-        print(f'ids_permutation: {ids_permutation}')
+        Helper_App.console_log(f'ids_permutation: {ids_permutation}')
         argument_dict['a_ids_product_permutation'] = ids_permutation
-        print(f'argument_dict: {argument_dict}')
-        print('executing p_shop_get_many_stock_item')
+        Helper_App.console_log(f'argument_dict: {argument_dict}')
+        Helper_App.console_log('executing p_shop_get_many_stock_item')
         result = self.db_procedure_execute('p_shop_get_many_stock_item', argument_dict)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
         category_list, errors = DataStore_Store_Stock_Item.input_many_stock_item(cursor, category_list)
         DataStore_Store_Stock_Item.db_cursor_clear(cursor)
 
@@ -69,7 +70,7 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
     def input_many_stock_item(cursor, category_list):
         _m = 'DataStore_Store_Stock_Item.input_many_stock_item'
         result_set_1 = cursor.fetchall()
-        print(f'raw categories: {result_set_1}')
+        Helper_App.console_log(f'raw categories: {result_set_1}')
         for row in result_set_1:
             new_stock_item = Stock_Item.from_DB_stock_item(row)
             category_list.add_stock_item(new_stock_item) # , row)
@@ -77,12 +78,12 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         """
         if len(errors) > 0:
             for error in errors:
@@ -117,10 +118,10 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
             row.guid = guid
             rows.append(row)
         
-        print(f'rows: {rows}')
+        Helper_App.console_log(f'rows: {rows}')
         
         DataStore_Store_Base.upload_bulk(Stock_Item_Temp.__tablename__, rows, 1000)
-        print('bulk uploaded')
+        Helper_App.console_log('bulk uploaded')
 
         argument_dict_list = {
             'a_comment': comment,
@@ -129,17 +130,17 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
             'a_debug': 0
         }
         result = cls.db_procedure_execute('p_shop_save_stock_item', argument_dict_list)
-        print('saved product permutations')
+        Helper_App.console_log('saved product permutations')
         
         # Errors
         cursor = result.cursor
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         DataStore_Store_Stock_Item.db_cursor_clear(cursor)
         return errors

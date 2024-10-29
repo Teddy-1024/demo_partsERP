@@ -55,7 +55,7 @@ secrets.yaml
 TODO.md
 
 # Ignore all files in a directory
-temp_files/
+tmp/
 
 # Ignore all .txt files in the doc/ directory
 doc/*.txt

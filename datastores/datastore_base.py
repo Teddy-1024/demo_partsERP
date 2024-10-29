@@ -35,6 +35,7 @@ from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from extensions import db
 from forms.access_level import Filters_Access_Level
 from forms.unit_measurement import Filters_Unit_Measurement
+from helpers.helper_app import Helper_App
 # external
 # from abc import ABC, abstractmethod, abstractproperty
 from flask_sqlalchemy import SQLAlchemy
@@ -86,7 +87,7 @@ class DataStore_Base(BaseModel):
                 proc_string += f'{"" if i == 0 else ", "}:{arg_keys[i]}'
         proc_string += ')'
         proc_string = text(proc_string)
-        print(f'{_m}\nproc_string: {proc_string}\nargs: {argument_dict_list}')
+        Helper_App.console_log(f'{_m}\nproc_string: {proc_string}\nargs: {argument_dict_list}')
 
         # with self.db.session.begin() as session:
         # conn = Helper_DB_MySQL(self.app).get_db_connection()
@@ -95,20 +96,20 @@ class DataStore_Base(BaseModel):
             result = db.session.execute(proc_string, argument_dict_list)
         else:
             result = db.session.execute(proc_string)
-        print(f'result: {result}')
+        Helper_App.console_log(f'result: {result}')
         # conn.session.remove()
         return result
         cursor = result.cursor
         result_set_1 = cursor.fetchall()
-        print(f'categories: {result_set_1}')
+        Helper_App.console_log(f'categories: {result_set_1}')
         cursor.nextset()
         result_set_2 = cursor.fetchall()
-        print(f'products: {result_set_2}')
+        Helper_App.console_log(f'products: {result_set_2}')
     
     @staticmethod
     def db_cursor_clear(cursor):
         while cursor.nextset():
-            print(f'new result set: {cursor.fetchall()}')
+            Helper_App.console_log(f'new result set: {cursor.fetchall()}')
     @classmethod
     def get_many_region_and_currency(cls):
         _m  = 'DataStore_Base.get_many_region_and_currency'
@@ -122,10 +123,10 @@ class DataStore_Base(BaseModel):
             'a_get_inactive_currency': 0
         }
 
-        print(f'executing {_m_db_currency}')
+        Helper_App.console_log(f'executing {_m_db_currency}')
         result = cls.db_procedure_execute(_m_db_currency, argument_dict_list_currency)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
 
         # cursor.nextset()
         result_set_1 = cursor.fetchall()
@@ -133,13 +134,13 @@ class DataStore_Base(BaseModel):
         for row in result_set_1:
             currency = Currency.make_from_DB_currency(row)
             currencies.append(currency)
-        print(f'currencies: {currencies}')
+        Helper_App.console_log(f'currencies: {currencies}')
         DataStore_Base.db_cursor_clear(cursor)
 
-        print(f'executing {_m_db_region}')
+        Helper_App.console_log(f'executing {_m_db_region}')
         result = cls.db_procedure_execute(_m_db_region, argument_dict_list_region)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
 
         # cursor.nextset()
         result_set_1 = cursor.fetchall()
@@ -147,25 +148,25 @@ class DataStore_Base(BaseModel):
         for row in result_set_1:
             region = Region.make_from_DB_region(row)
             regions.append(region)
-        print(f'regions: {regions}')
+        Helper_App.console_log(f'regions: {regions}')
         DataStore_Base.db_cursor_clear(cursor)
         cursor.close()
 
         return regions, currencies
     @staticmethod
     def get_user_session():
-        print('DataStore_Base.get_user_session')
+        Helper_App.console_log('DataStore_Base.get_user_session')
         return User.from_json(session.get(User.FLAG_USER))
         user = User.get_default()
         try:
-            print(f'user session: {session[self.app.ID_TOKEN_USER]}')
+            Helper_App.console_log(f'user session: {session[self.app.ID_TOKEN_USER]}')
             info_user = session[self.app.ID_TOKEN_USER].get('userinfo')
-            print(f'info_user: {info_user}')
+            Helper_App.console_log(f'info_user: {info_user}')
             user.is_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
             user.id_user_auth0 = info_user['sub'] if user.is_logged_in else None
-            print(f'user.id_user_auth0: {user.id_user_auth0}')
+            Helper_App.console_log(f'user.id_user_auth0: {user.id_user_auth0}')
         except:
-            print('get user login failed')
+            Helper_App.console_log('get user login failed')
         return user
     """
     @staticmethod
@@ -175,39 +176,39 @@ class DataStore_Base(BaseModel):
     @staticmethod
     def upload_bulk(permanent_table_name, records, batch_size):
         _m = 'DataStore_Base.upload_bulk'
-        print(f'{_m}\nstarting...')
-        print(f'permanent_table_name: {permanent_table_name}')
+        Helper_App.console_log(f'{_m}\nstarting...')
+        Helper_App.console_log(f'permanent_table_name: {permanent_table_name}')
         if db.session.dirty or db.session.new or db.session.deleted:
-            print("Session is not clean")
+            Helper_App.console_log("Session is not clean")
             return
         # Assuming `permanent_table_name` is a string representing the table name
         table_object = db.metadata.tables.get(permanent_table_name)
         if table_object is None:
-            print(f"Table {permanent_table_name} not found in metadata.")
+            Helper_App.console_log(f"Table {permanent_table_name} not found in metadata.")
             return
         else:
             expected_columns = set(column.name for column in db.inspect(table_object).columns)
-            print(f'expected_columns: {expected_columns}')
+            Helper_App.console_log(f'expected_columns: {expected_columns}')
 
         try:
             for i in range(0, len(records), batch_size):
                 batch = records[i:i+batch_size]
-                print(f'batch: {batch}')
+                Helper_App.console_log(f'batch: {batch}')
                 db.session.bulk_save_objects(batch)
                 """
                 data = [object.to_json() for object in batch]
-                print(f'data: {data}')
+                Helper_App.console_log(f'data: {data}')
                 for row in data:
                     row_keys = set(row.keys())
                     if row_keys != expected_columns:
-                        print(f"Column mismatch in row: {row}")
-                        print(f'missing columns: {expected_columns - row_keys}')
-                        print(f'extra columns: {row_keys - expected_columns}')
+                        Helper_App.console_log(f"Column mismatch in row: {row}")
+                        Helper_App.console_log(f'missing columns: {expected_columns - row_keys}')
+                        Helper_App.console_log(f'extra columns: {row_keys - expected_columns}')
                 # db.session.bulk_insert_mappings(permanent_table_name, data)
                 """
             db.session.commit()
         except Exception as e:
-            print(f'{_m}\n{e}')
+            Helper_App.console_log(f'{_m}\n{e}')
             db.session.rollback()
             raise e
     @classmethod
@@ -219,15 +220,15 @@ class DataStore_Base(BaseModel):
         argument_dict = filters.to_json()
         # user = cls.get_user_session()
         # argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
-        print(f'argument_dict: {argument_dict}')
-        print('executing p_shop_get_many_access_level')
+        Helper_App.console_log(f'argument_dict: {argument_dict}')
+        Helper_App.console_log('executing p_shop_get_many_access_level')
         result = cls.db_procedure_execute('p_shop_get_many_access_level', argument_dict)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
         
         # access_levels
         result_set_1 = cursor.fetchall()
-        print(f'raw access levels: {result_set_1}')
+        Helper_App.console_log(f'raw access levels: {result_set_1}')
         access_levels = []
         for row in result_set_1:
             new_access_level = Access_Level.from_DB_access_level(row)
@@ -236,12 +237,12 @@ class DataStore_Base(BaseModel):
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         
         DataStore_Base.db_cursor_clear(cursor)
         cursor.close()
@@ -256,15 +257,15 @@ class DataStore_Base(BaseModel):
         argument_dict = filters.to_json()
         # user = cls.get_user_session()
         # argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
-        print(f'argument_dict: {argument_dict}')
-        print('executing p_shop_get_many_unit_measurement')
+        Helper_App.console_log(f'argument_dict: {argument_dict}')
+        Helper_App.console_log('executing p_shop_get_many_unit_measurement')
         result = cls.db_procedure_execute('p_shop_get_many_unit_measurement', argument_dict)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
         
         # units of measurement
         result_set_1 = cursor.fetchall()
-        print(f'raw units of measurement: {result_set_1}')
+        Helper_App.console_log(f'raw units of measurement: {result_set_1}')
         units = []
         for row in result_set_1:
             new_unit = Unit_Measurement.from_DB_unit_measurement(row)
@@ -273,12 +274,12 @@ class DataStore_Base(BaseModel):
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         
         DataStore_Base.db_cursor_clear(cursor)
         cursor.close()

@@ -17,6 +17,7 @@ from business_objects.currency import Currency
 from business_objects.db_base import Get_Many_Parameters_Base
 from business_objects.store.store_base import Store_Base
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from pydantic import BaseModel
 from typing import ClassVar
@@ -106,7 +107,7 @@ addresses: {self.addresses}
         }
     @classmethod
     def from_json(cls, json):
-        print(f'{cls.__name__}.from_json: {json}')
+        Helper_App.console_log(f'{cls.__name__}.from_json: {json}')
         supplier = cls()
         supplier.id_supplier = json[cls.ATTR_ID_SUPPLIER]
         supplier.id_currency = json[cls.ATTR_ID_CURRENCY]

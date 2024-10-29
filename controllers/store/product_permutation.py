@@ -88,13 +88,13 @@ def permutation_save():
 
 @routes_store_product_permutation.route(Model_View_Store_Product_Permutation.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS, methods=['GET'])
 def permutations():
-    print('permutations')
+    Helper_App.console_log('permutations')
     try:
         form_filters = Filters_Product_Permutation.from_json(request.args)
     except Exception as e:
-        print(f'Error: {e}')
+        Helper_App.console_log(f'Error: {e}')
         form_filters = Filters_Product_Permutation()
-    print(f'form_filters={form_filters}')
+    Helper_App.console_log(f'form_filters={form_filters}')
     model = Model_View_Store_Product_Permutation(form_filters)
     if not model.is_user_logged_in:
         # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Permutation.FLAG_CALLBACK: Model_View_Store_Product_Permutation.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS })))
@@ -135,7 +135,7 @@ def save_permutation():
                 Model_View_Store_Product_Permutation.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'
             })
         # filters_form = Filters_Product_Permutation.from_form(form_filters)
-        print(f'form_filters: {form_filters}')
+        Helper_App.console_log(f'form_filters: {form_filters}')
 
         permutations = data[Model_View_Store_Product_Permutation.FLAG_PRODUCT_PERMUTATION]
         if len(permutations) == 0:
@@ -147,13 +147,13 @@ def save_permutation():
         for permutation in permutations:
             objsPermutation.append(Product_Permutation.from_json(permutation))
         # model_save = Model_View_Store_Product_Permutation() # filters_product=filters_form)
-        print(f'objsPermutation={objsPermutation}')
+        Helper_App.console_log(f'objsPermutation={objsPermutation}')
         Model_View_Store_Product_Permutation.save_permutations(data.get('comment', 'No comment'), objsPermutation)
 
         model_return = Model_View_Store_Product_Permutation(form_filters=form_filters)
         if not model_return.is_user_logged_in:
             raise Exception('User not logged in')
-        print('nips')
+        Helper_App.console_log('nips')
         return jsonify({
             Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_SUCCESS, 
             Model_View_Store_Product_Permutation.FLAG_DATA: model_return.category_list.to_json()

@@ -11,10 +11,7 @@ Initializes the Flask application, sets the configuration based on the environme
 """
 
 # IMPORTS
-# VARIABLE INSTANTIATION
-# METHODS
-
-# IMPORTS
+from helpers.helper_app import Helper_App
 import os
 import stripe
 import json
@@ -28,7 +25,7 @@ key_public = os.environ.get("KEY_PUBLIC_STRIPE") # 'pk_test_51OGrxlL7BuLKjoMpfpf
 
 # METHODS
 def create_product_price():
-    print(f'stripe.api_key = {stripe.api_key}')
+    Helper_App.console_log(f'stripe.api_key = {stripe.api_key}')
     starter_subscription = stripe.Product.create(
     name="Starter Subscription",
     description="$12/Month subscription",
@@ -42,8 +39,8 @@ def create_product_price():
     )
 
     # Save these identifiers
-    print(f"Success! Here is your starter subscription product id: {starter_subscription.id}")
-    print(f"Success! Here is your starter subscription price id: {starter_subscription_price.id}")
+    Helper_App.console_log(f"Success! Here is your starter subscription product id: {starter_subscription.id}")
+    Helper_App.console_log(f"Success! Here is your starter subscription price id: {starter_subscription_price.id}")
 
     return starter_subscription_price.id
 
@@ -54,7 +51,7 @@ def get_file_str(f_address):
 # Ensure environment variables are set.
 price = os.getenv('PRICE')
 if price is None or price == 'price_12345' or price == '':
-    print('You must set a Price ID in .env. Please see the README.')
+    Helper_App.console_log('You must set a Price ID in .env. Please see the README.')
     exit(0)
 
 # For sample support and debugging, not required for production:
@@ -152,10 +149,10 @@ def webhook_received():
         event_type = request_data['type']
     data_object = data['object']
 
-    print('event ' + event_type)
+    Helper_App.console_log('event ' + event_type)
 
     if event_type == 'checkout.session.completed':
-        print('🔔 Payment succeeded!')
+        Helper_App.console_log('🔔 Payment succeeded!')
 
     return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS})
 

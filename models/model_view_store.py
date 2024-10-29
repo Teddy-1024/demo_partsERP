@@ -29,6 +29,7 @@ from datastores.datastore_store_base import DataStore_Store_Base
 from datastores.datastore_user import DataStore_User
 from datastores.datastore_store_basket import DataStore_Store_Basket
 from forms.forms import Form_Basket_Edit, Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 from models.model_view_base import Model_View_Base
 # external
@@ -212,7 +213,7 @@ class Model_View_Store(Model_View_Base):
         # Initialiser - validation
         _m = 'Model_View_Store.__new__'
         v_arg_type = 'class attribute'
-        print(f'{_m}\nstarting')
+        Helper_App.console_log(f'{_m}\nstarting')
         # av.val_str(id_user, 'id_user', _m)
         # return super().__new__(cls, *args, **kwargs)
         # cls.FLAG_BUTTON_BASKET_ADD = cls.FLAG_BUTTON_SUBMIT + '.buttonAddToBasket'
@@ -225,7 +226,7 @@ class Model_View_Store(Model_View_Base):
     def __init__(self, hash_page_current, **kwargs): # , id_currency, id_region_delivery, is_included_VAT):
         # Constructor
         _m = 'Model_View_Store.__init__'
-        print(f'{_m}\nstarting')
+        Helper_App.console_log(f'{_m}\nstarting')
         super().__init__(hash_page_current=hash_page_current, **kwargs)
         self.is_page_store = True
         """
@@ -279,7 +280,7 @@ class Model_View_Store(Model_View_Base):
     
     def get_many_product_image_src(self, product_id, image_ids = '', get_primary_only = True, resolution_level = ''):
         _m = 'Model_View_Store.get_many_product_image'
-        # print(f'{_m}\n')
+        # Helper_App.console_log(f'{_m}\n')
         # av.val_instance(filters, 'filters', _m, Product_Image_Filters)
         av.val_int(product_id, 'product_id', _m)
         # av.full_val_int(product_id, 'product_id', _m)
@@ -324,14 +325,14 @@ class Model_View_Store(Model_View_Base):
         # av.full_val_int(product_id, 'product_id', _m)
         # product_id = int(product_id)
         # av.val_instance(db, 'db', _m, SQLAlchemy)
-        print(f'{_m} starting')
-        # print(f'product_id: {product_id}\npermutation_id: {permutation_id}\nquantity = {quantity}')
+        Helper_App.console_log(f'{_m} starting')
+        # Helper_App.console_log(f'product_id: {product_id}\npermutation_id: {permutation_id}\nquantity = {quantity}')
         # av.full_val_int(product_id, 'product_id', _m)
-        # print('valid product id')
+        # Helper_App.console_log('valid product id')
         av.full_val_int(quantity, 'quantity', _m)
         quantity = int(quantity)
         # item_added = False
-        print(f'basket: {self.basket}')
+        Helper_App.console_log(f'basket: {self.basket}')
         ids_permutation, quantities_permutation = self.basket.to_csv()
         self.basket = DataStore_Store_Basket().edit_basket(ids_permutation, quantities_permutation, permutation_id, quantity, quantity_sum_not_replace, self.id_currency, self.id_region_delivery, self.is_included_VAT)
         return True
@@ -360,14 +361,14 @@ class Model_View_Store(Model_View_Base):
                 permutation_ids += id_permutation # str(basket[b].product.id)
                 # item_index_dict[Basket.get_key_product_index_from_ids_product_permutation(id_product, id_permutation)] = index_item
                 item_index_dict[id_permutation] = index_item
-        print(f'product_ids = {product_ids}')
-        print(f'permutation_ids = {permutation_ids}')
+        Helper_App.console_log(f'product_ids = {product_ids}')
+        Helper_App.console_log(f'permutation_ids = {permutation_ids}')
         return product_ids, permutation_ids, item_index_dict
 
     def _get_basket_from_json(self, json_data):
         basket = json_data[self.KEY_BASKET]['items']
         av.val_instance(basket, 'basket', 'Model_View_Store._get_basket_from_json', list)
-        print(f'basket = {basket}')
+        Helper_App.console_log(f'basket = {basket}')
         return basket
         
     def import_JSON_basket(self, json_data):
@@ -378,7 +379,7 @@ class Model_View_Store(Model_View_Base):
         id_currency = basket[self.KEY_ID_CURRENCY]
         id_region_delivery = basket[self.KEY_ID_REGION_DELIVERY]
         is_included_VAT = basket[self.KEY_IS_INCLUDED_VAT]
-        print(f'json basket items: {items}')
+        Helper_App.console_log(f'json basket items: {items}')
         product_ids, permutation_ids, item_index_dict = self._get_json_basket_id_CSVs_product_permutation(items)
         category_list, errors = DataStore_Store_Base().get_many_product(Parameters_Product(
             self.id_user, # :a_id_user
@@ -390,7 +391,7 @@ class Model_View_Store(Model_View_Base):
             False, str(id_currency), False, #  :a_get_all_currency, :a_ids_currency, :a_get_inactive_currency
             True, '', False # :a_get_all_discount, :a_ids_discount, :a_get_inactive_discount
         )) # product_ids=product_ids, get_all_category=False, get_all_product=False)
-        # print(f'categories = {categories}')                    
+        # Helper_App.console_log(f'categories = {categories}')                    
         self.basket = Basket(id_currency, id_region_delivery, is_included_VAT)
         if len(category_list.categories) > 0: # not (categories is None):
             for category in category_list.categories:
@@ -404,8 +405,8 @@ class Model_View_Store(Model_View_Base):
         if len(items) > 0:
             for index_item in range(len(items)):
         """
-        print(f'basket data: {json_data}')
-        print(f'basket: {self.basket}')
+        Helper_App.console_log(f'basket data: {json_data}')
+        Helper_App.console_log(f'basket: {self.basket}')
 
         # ids_permutation_unavailable_region_or_currency = []
         # id_permutation_unavailable_otherwise = []
@@ -445,11 +446,11 @@ class Model_View_Store(Model_View_Base):
     
     def import_JSON_basket_item(self, json_data, form_basket = None):
         _m = 'Model_View_Store.import_JSON_basket_item'
-        print(f'starting {_m}')
-        # print('getting product id')
+        Helper_App.console_log(f'starting {_m}')
+        # Helper_App.console_log('getting product id')
         # product_id = av.input_int(json_data[self.key_id_product], self.key_id_product, _m)
 
-        # print(f'product id: {product_id}, type: {str(type(product_id))}')
+        # Helper_App.console_log(f'product id: {product_id}, type: {str(type(product_id))}')
         try:
             permutation_id = json_data[self.KEY_ID_PERMUTATION]
             av.full_val_int(permutation_id, self.KEY_ID_PERMUTATION, _m)
@@ -457,21 +458,21 @@ class Model_View_Store(Model_View_Base):
         except:
             permutation_id = None
             if not permutation_id == 'None':
-                print(f'permutation_id invalid: {permutation_id}')
+                Helper_App.console_log(f'permutation_id invalid: {permutation_id}')
                 raise ValueError("Invalid permutation id")
-        print(f'permutation_id: {permutation_id}')
+        Helper_App.console_log(f'permutation_id: {permutation_id}')
             
         try:
-            print(f'form_basket: {form_basket}')
-            print('getting quantity')
-            print(f'form_basket.quantity: {form_basket.quantity}')
-            print(f'form_basket.quantity.data: {form_basket.quantity.data}')
+            Helper_App.console_log(f'form_basket: {form_basket}')
+            Helper_App.console_log('getting quantity')
+            Helper_App.console_log(f'form_basket.quantity: {form_basket.quantity}')
+            Helper_App.console_log(f'form_basket.quantity.data: {form_basket.quantity.data}')
             quantity = int(form_basket.quantity.data)
         except:
             quantity = 0
-        print(f'quantity: {quantity}')
+        Helper_App.console_log(f'quantity: {quantity}')
 
-        print(f'permutation_id: {permutation_id}\nquantity: {quantity}')
+        Helper_App.console_log(f'permutation_id: {permutation_id}\nquantity: {quantity}')
 
         return permutation_id, quantity
     

@@ -11,7 +11,7 @@ Feature:    App Helper
 
 # external
 from pydantic import BaseModel, ConfigDict
-# from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
+from flask import current_app
 # from flask_sqlalchemy import SQLAlchemy
 
 
@@ -19,7 +19,7 @@ class Helper_App(BaseModel):
 
     @staticmethod
     def get_request_data(request):
-        print(f'request={request}')
+        Helper_App.console_log(f'request={request}')
         data = {}
         try:
             data = request.json
@@ -31,5 +31,10 @@ class Helper_App(BaseModel):
                     data = request.form
                 except:
                     pass
-        print(f'data={data}')
+        Helper_App.console_log(f'data={data}')
         return data
+    
+    @staticmethod
+    def console_log(message):
+        if current_app.config["DEBUG"]:
+            print(message)

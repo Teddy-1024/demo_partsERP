@@ -7,24 +7,7 @@ Created on Thu Apr 27 12:33:59 2023
 Argument Validation
 """
 
-# CLASSES
-# ATTRIBUTE DECLARATION
-# METHODS
-    # FUNCTION
-    # ARGUMENTS
-    # ARGUMENT VALIDATION
-    # ATTRIBUTE + VARIABLE INSTANTIATION
-    # METHODS
-    # RETURNS
-    
-# NORMAL METHODS
-# FUNCTION
-# ARGUMENTS
-# ARGUMENT VALIDATION
-# VARIABLE INSTANTIATION
-# METHODS
-# RETURNS
-
+from helpers.helper_app import Helper_App
 from typing import Optional
 
 def error_msg_str(v, v_name, method, v_type, suppress_errors = False, suppress_console_outputs = False, v_arg_type = 'argument'):
@@ -454,7 +437,7 @@ def input_bool(v_input, v_name, method, suppress_errors = False, suppress_consol
     val_bool(suppress_errors, 'suppress_errors', my_f)
     # suppress_console_outputs
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return None
     # v_name
     if not val_str(v_name, 'v_name', my_f, 1, -1, suppress_errors, suppress_console_outputs): return None
@@ -510,7 +493,7 @@ def full_val_bool(v_input, v_name, method, suppress_errors = False, suppress_con
     my_f = 'full_val_bool'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -539,7 +522,7 @@ def input_int(v_input, v_name, method, v_min = None, v_max = None, suppress_erro
     my_f = 'input_int'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return None
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return None
@@ -564,20 +547,20 @@ def input_int(v_input, v_name, method, v_min = None, v_max = None, suppress_erro
     except:
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg)
+                Helper_App.console_log(error_msg)
             return None
         int(v_input)
     if not str(type(v_min)) == "<class 'NoneType'>":
         if my_int < v_min:
             if suppress_errors:
                 if not suppress_console_outputs:
-                    print(f"{error_msg}\nInt input less than minimum value. Value = {v_input}, minimum = {v_min}.")
+                    Helper_App.console_log(f"{error_msg}\nInt input less than minimum value. Value = {v_input}, minimum = {v_min}.")
                 return None
     if not str(type(v_max)) == "<class 'NoneType'>":
         if my_int > v_max:
             if suppress_errors:
                 if not suppress_console_outputs:
-                    print(f"{error_msg}\nInt input greater than maximum value. Value = {v_input}, maximum = {v_max}.")
+                    Helper_App.console_log(f"{error_msg}\nInt input greater than maximum value. Value = {v_input}, maximum = {v_max}.")
                 return None
 # RETURNS
     return my_int
@@ -599,7 +582,7 @@ def full_val_int(v_input, v_name, method, v_min = None, v_max = None, suppress_e
     my_f = 'full_val_int'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return False
     # v_name
     if not val_str(v_name, 'v_name', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -633,7 +616,7 @@ def input_float(v_input, v_name, method, v_min = None, v_max = None, suppress_er
     my_f = 'input_float'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return None
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return None
@@ -658,20 +641,20 @@ def input_float(v_input, v_name, method, v_min = None, v_max = None, suppress_er
     except:
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg)
+                Helper_App.console_log(error_msg)
             return None
         float(v_input)
     if not str(type(v_min)) == "<class 'NoneType'>":
         if v_input < v_min:
             if suppress_errors:
                 if not suppress_console_outputs:
-                    print(f"{error_msg}\nInt input less than minimum value. Value = {v_input}, minimum = {v_min}.")
+                    Helper_App.console_log(f"{error_msg}\nInt input less than minimum value. Value = {v_input}, minimum = {v_min}.")
                 return None
     if not str(type(v_max)) == "<class 'NoneType'>":
         if v_input > v_max:
             if suppress_errors:
                 if not suppress_console_outputs:
-                    print(f"{error_msg}\nInt input greater than maximum value. Value = {v_input}, maximum = {v_max}.")
+                    Helper_App.console_log(f"{error_msg}\nInt input greater than maximum value. Value = {v_input}, maximum = {v_max}.")
                 return None
 # RETURNS
     return my_float
@@ -692,7 +675,7 @@ def full_val_float(v_input, v_name, method, v_min = None, v_max = None, suppress
     my_f = 'full_val_float'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -746,7 +729,7 @@ def val_type(v_input, v_name, method, v_type, suppress_errors = False, suppress_
     my_f = 'val_type'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -765,7 +748,7 @@ def val_type(v_input, v_name, method, v_type, suppress_errors = False, suppress_
     if not mytype == v_type: # f"<class '{v_type}'>":
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_message)
+                Helper_App.console_log(error_message)
             return False
         raise ValueError(error_message)
 # RETURNS
@@ -787,7 +770,7 @@ def val_instance(v_input, v_name, method, v_type, suppress_errors = False, suppr
     my_f = 'val_type'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -801,7 +784,7 @@ def val_instance(v_input, v_name, method, v_type, suppress_errors = False, suppr
     if not isinstance(v_type, type): # mytype == v_type: # f"<class '{v_type}'>":
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_message)
+                Helper_App.console_log(error_message)
             return False
         raise ValueError(error_message) # val_str(v_type, 'v_type', my_f, 6, -1, suppress_errors, suppress_console_outputs): return False
     # v_input
@@ -811,7 +794,7 @@ def val_instance(v_input, v_name, method, v_type, suppress_errors = False, suppr
     if not isinstance(v_input, v_type): # mytype == v_type: # f"<class '{v_type}'>":
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_message)
+                Helper_App.console_log(error_message)
             return False
         raise ValueError(error_message)
 # RETURNS
@@ -836,7 +819,7 @@ def val_list(v_input, v_name, method, v_type = '', min_len = -1, max_len = -1, s
     my_f =  'val_list'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -865,20 +848,20 @@ def val_list(v_input, v_name, method, v_type = '', min_len = -1, max_len = -1, s
     if not str(type(v_input)) == "<class 'list'>":
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg)
+                Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     L = len(v_input)
     if max_len > -1 and L > max_len:
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg + f'\nInvalid list length. Maximum = {max_len}, length = {L}')
+                Helper_App.console_log(error_msg + f'\nInvalid list length. Maximum = {max_len}, length = {L}')
             return False
         raise ValueError(error_msg + f'\nInvalid list length. Maximum = {max_len}, length = {L}')
     if L < min_len:
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg + f"Invalid list length. Minimum = {min_len}, length = {L}")
+                Helper_App.console_log(error_msg + f"Invalid list length. Minimum = {min_len}, length = {L}")
             return False
         raise ValueError(error_msg + f'\nInvalid list length. Minimum = {min_len}, length = {L}')
     if v_type != '' and L > 0:
@@ -888,7 +871,7 @@ def val_list(v_input, v_name, method, v_type = '', min_len = -1, max_len = -1, s
                 error_msg = error_msg + '\n' + error_msg_str(v_input[i], f'{v_name}[{i}]', my_f, v_type, False, False, 'list element')
                 if suppress_errors:
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
                 raise ValueError(error_msg)
 # RETURNS
@@ -913,7 +896,7 @@ def val_list_instances(v_input, v_name, method, v_type = None, min_len = -1, max
     my_f =  'val_list_instances'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>", suppress_errors))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -942,20 +925,20 @@ def val_list_instances(v_input, v_name, method, v_type = None, min_len = -1, max
     if not str(type(v_input)) == "<class 'list'>":
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg)
+                Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     L = len(v_input)
     if max_len > -1 and L > max_len:
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg + f'\nInvalid list length. Maximum = {max_len}, length = {L}')
+                Helper_App.console_log(error_msg + f'\nInvalid list length. Maximum = {max_len}, length = {L}')
             return False
         raise ValueError(error_msg + f'\nInvalid list length. Maximum = {max_len}, length = {L}')
     if L < min_len:
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg + f"Invalid list length. Minimum = {min_len}, length = {L}")
+                Helper_App.console_log(error_msg + f"Invalid list length. Minimum = {min_len}, length = {L}")
             return False
         raise ValueError(error_msg + f'\nInvalid list length. Minimum = {min_len}, length = {L}')
     if v_type != '' and L > 0:
@@ -965,7 +948,7 @@ def val_list_instances(v_input, v_name, method, v_type = None, min_len = -1, max
                 error_msg = error_msg + '\n' + error_msg_str(v_input[i], f'{v_name}[{i}]', my_f, v_type, False, False, 'list element')
                 if suppress_errors:
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
                 raise ValueError(error_msg)
 # RETURNS
@@ -995,7 +978,7 @@ def val_nested_list(v_input, v_name, method, depth_i, depth_max, v_type = '', v_
     my_f = 'val_nested_list'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>"))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>"))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -1015,14 +998,14 @@ def val_nested_list(v_input, v_name, method, depth_i, depth_max, v_type = '', v_
     if not (val_list(v_mins, 'v_mins', my_f, "<class 'int'>", depth_max + 1, depth_max + 1, True, True) or v_mins == []):
         error_msg = error_msg_str(v_mins, 'v_mins', my_f, "<class 'int'>")
         if not suppress_console_outputs:
-            print(error_msg)
+            Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     # v_maxs
     if not (val_list(v_maxs, 'v_maxs', my_f, "<class 'int'>", depth_max + 1, depth_max + 1, True, True) or v_maxs == []):
         error_msg = error_msg_str(v_maxs, 'v_maxs', my_f, "<class 'int'>")
         if not suppress_console_outputs:
-            print(error_msg)
+            Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     # allow_nuns
@@ -1032,7 +1015,7 @@ def val_nested_list(v_input, v_name, method, depth_i, depth_max, v_type = '', v_
     error_msg = error_msg_str(v_input, v_name, method, mytype, suppress_errors, suppress_console_outputs, v_arg_type)
     if not val_list(v_input, v_name, method, mytype, v_min, v_max, suppress_errors, suppress_console_outputs, allow_nuns, v_arg_type):
         if not suppress_console_outputs:
-            print(error_msg)
+            Helper_App.console_log(error_msg)
         return False
 # METHODS
     L = len(v_input)
@@ -1040,7 +1023,7 @@ def val_nested_list(v_input, v_name, method, depth_i, depth_max, v_type = '', v_
         if v_min > -1:
             if suppress_errors:
                 if not suppress_console_outputs:
-                    print(error_msg + f'\nMinimum length {v_min} not met.')
+                    Helper_App.console_log(error_msg + f'\nMinimum length {v_min} not met.')
                 return False
             raise ValueError(error_msg + f'\nMinimum length {v_min} not met.')
     elif depth_i < depth_max:
@@ -1048,22 +1031,22 @@ def val_nested_list(v_input, v_name, method, depth_i, depth_max, v_type = '', v_
             if not (v_mins == [] or v_maxs == []):
                 if not val_nested_list(v_input[i], v_name, method, depth_i + 1, depth_max, v_type, v_mins[depth_i + 1], v_mins, v_maxs[depth_i + 1], v_maxs, suppress_errors, suppress_console_outputs, v_arg_type):
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
             elif not v_mins == []:
                 if not val_nested_list(v_input[i], v_name, method, depth_i + 1, depth_max, v_type, v_mins[depth_i + 1], v_mins, -1, v_maxs, suppress_errors, suppress_console_outputs, v_arg_type):
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
             elif not v_maxs == []:
                 if not val_nested_list(v_input[i], v_name, method, depth_i + 1, depth_max, v_type, -1, v_mins, v_maxs[depth_i + 1], v_maxs, suppress_errors, suppress_console_outputs, v_arg_type):
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
             else:
                 if not val_nested_list(v_input[i], v_name, method, depth_i + 1, depth_max, v_type, -1, v_mins, -1, v_maxs, suppress_errors, suppress_console_outputs, v_arg_type):
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
 # RETURNS
     return True
@@ -1092,7 +1075,7 @@ def val_nested_list_instances(v_input, v_name, method, depth_i, depth_max, v_typ
     my_f = 'val_nested_list'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>"))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>"))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -1112,14 +1095,14 @@ def val_nested_list_instances(v_input, v_name, method, depth_i, depth_max, v_typ
     if not (val_list(v_mins, 'v_mins', my_f, "<class 'int'>", depth_max + 1, depth_max + 1, True, True) or v_mins == []):
         error_msg = error_msg_str(v_mins, 'v_mins', my_f, "<class 'int'>")
         if not suppress_console_outputs:
-            print(error_msg)
+            Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     # v_maxs
     if not (val_list(v_maxs, 'v_maxs', my_f, "<class 'int'>", depth_max + 1, depth_max + 1, True, True) or v_maxs == []):
         error_msg = error_msg_str(v_maxs, 'v_maxs', my_f, "<class 'int'>")
         if not suppress_console_outputs:
-            print(error_msg)
+            Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     # allow_nuns
@@ -1129,7 +1112,7 @@ def val_nested_list_instances(v_input, v_name, method, depth_i, depth_max, v_typ
     error_msg = error_msg_str(v_input, v_name, method, mytype, suppress_errors, suppress_console_outputs, v_arg_type)
     if not val_list_instances(v_input, v_name, method, mytype, v_min, v_max, suppress_errors, suppress_console_outputs, allow_nuns, v_arg_type):
         if not suppress_console_outputs:
-            print(error_msg)
+            Helper_App.console_log(error_msg)
         return False
 # METHODS
     L = len(v_input)
@@ -1137,7 +1120,7 @@ def val_nested_list_instances(v_input, v_name, method, depth_i, depth_max, v_typ
         if v_min > -1:
             if suppress_errors:
                 if not suppress_console_outputs:
-                    print(error_msg + f'\nMinimum length {v_min} not met.')
+                    Helper_App.console_log(error_msg + f'\nMinimum length {v_min} not met.')
                 return False
             raise ValueError(error_msg + f'\nMinimum length {v_min} not met.')
     elif depth_i < depth_max:
@@ -1145,22 +1128,22 @@ def val_nested_list_instances(v_input, v_name, method, depth_i, depth_max, v_typ
             if not (v_mins == [] or v_maxs == []):
                 if not val_nested_list(v_input[i], v_name, method, depth_i + 1, depth_max, v_type, v_mins[depth_i + 1], v_mins, v_maxs[depth_i + 1], v_maxs, suppress_errors, suppress_console_outputs, allow_nuns, v_arg_type):
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
             elif not v_mins == []:
                 if not val_nested_list(v_input[i], v_name, method, depth_i + 1, depth_max, v_type, v_mins[depth_i + 1], v_mins, -1, v_maxs, suppress_errors, suppress_console_outputs, allow_nuns, v_arg_type):
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
             elif not v_maxs == []:
                 if not val_nested_list(v_input[i], v_name, method, depth_i + 1, depth_max, v_type, -1, v_mins, v_maxs[depth_i + 1], v_maxs, suppress_errors, suppress_console_outputs, allow_nuns, v_arg_type):
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
             else:
                 if not val_nested_list(v_input[i], v_name, method, depth_i + 1, depth_max, v_type, -1, v_mins, -1, v_maxs, suppress_errors, suppress_console_outputs, allow_nuns, v_arg_type):
                     if not suppress_console_outputs:
-                        print(error_msg)
+                        Helper_App.console_log(error_msg)
                     return False
 # RETURNS
     return True
@@ -1183,7 +1166,7 @@ def val_url(v_input, v_name, method, min_len = 12, max_len = -1, suppress_errors
     v_type = "<class 'str'>"
     val_bool(suppress_errors, 'suppress_errors', _m)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', _m, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', _m, "<class 'bool'>"))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', _m, "<class 'bool'>"))
         return False
     # method
     if not val_str(method, 'method', _m, -1, -1, suppress_errors, suppress_console_outputs): return False
@@ -1203,7 +1186,7 @@ def val_url(v_input, v_name, method, min_len = 12, max_len = -1, suppress_errors
     if not (v_input[:8] == r'https://' or v_input[:7] == r'http://'):
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg)
+                Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
 # RETURNS
@@ -1243,7 +1226,7 @@ def val_DataFrame(v_input, v_name, method, v_types=[], min_col=-1, max_col=-1, c
     my_f = 'val_DataFrame'
     val_bool(suppress_errors, 'suppress_errors', my_f)
     if not val_bool(suppress_console_outputs, 'suppress_console_outputs', my_f, suppress_errors):
-        print(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>"))
+        Helper_App.console_log(error_msg_str(suppress_console_outputs, 'suppress_console_outputs', my_f, "<class 'bool'>"))
         return False
     # method
     if not val_str(method, 'method', my_f, 1, -1, suppress_errors, suppress_console_outputs): return False
@@ -1264,14 +1247,14 @@ def val_DataFrame(v_input, v_name, method, v_types=[], min_col=-1, max_col=-1, c
     if not (val_list(v_types, 'v_types', my_f, "<class 'str'>", min_col, max_col, True, True, True) or v_types == []):
         error_msg = error_msg_str(v_types, 'v_types', my_f, str)
         if not suppress_console_outputs:
-            print(error_msg)
+            Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     # cols
     if not (val_list(cols, 'cols', my_f, "<class 'str'>", min_col, max_col, True, True) or cols == []):
         error_msg = error_msg_str(cols, 'cols', my_f, "<class 'str'>")
         if not suppress_console_outputs:
-            print(error_msg)
+            Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     # v_input
@@ -1282,14 +1265,14 @@ def val_DataFrame(v_input, v_name, method, v_types=[], min_col=-1, max_col=-1, c
     if (min_col > 0 and n_c < min_col) or (max_col > 0 and n_c > max_col):
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg)
+                Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     my_sz = len(v_input.index)
     if (min_sz > 0 and my_sz < min_sz) or (max_sz > 0 and my_sz > max_sz):
         if suppress_errors:
             if not suppress_console_outputs:
-                print(error_msg)
+                Helper_App.console_log(error_msg)
             return False
         raise ValueError(error_msg)
     if not v_types == []:
@@ -1297,7 +1280,7 @@ def val_DataFrame(v_input, v_name, method, v_types=[], min_col=-1, max_col=-1, c
             if not (v_types[col_i] == None or str(type(v_types[col_i])) == "<class 'str'>" and val_type(v_input.at[0, v_input.columns[col_i]], 'v_input.at[0, v_input.columns[col_i]]', my_f, v_types[col_i], True, False) or val_instance(v_input.at[0, v_input.columns[col_i]], 'v_input.at[0, v_input.columns[col_i]]', my_f, v_types[col_i], True, False)): # str(type(v_input[v_input.columns[col_i]][0])) == v_types[col_i] or v_types[col_i] == '':
                 if suppress_errors:
                     if not suppress_console_outputs:
-                        print(error_msg + f'\nInvalid data type {str(type(v_input.at[0, v_input.columns[col_i]]))} in column {v_input.columns[col_i]}')
+                        Helper_App.console_log(error_msg + f'\nInvalid data type {str(type(v_input.at[0, v_input.columns[col_i]]))} in column {v_input.columns[col_i]}')
                     return False
                 raise ValueError(error_msg + f'\nInvalid data type {str(type(v_input.at[0, v_input.columns[col_i]]))} in column {v_input.columns[col_i]}')    
     if not cols == []:
@@ -1305,7 +1288,7 @@ def val_DataFrame(v_input, v_name, method, v_types=[], min_col=-1, max_col=-1, c
             if not v_input.columns[col_i] == cols[col_i] or cols[col_i] == '':
                 if suppress_errors:
                     if not suppress_console_outputs:
-                        print(error_msg + f'\nInvalid column heading for column {v_input.columns[col_i]}')
+                        Helper_App.console_log(error_msg + f'\nInvalid column heading for column {v_input.columns[col_i]}')
                     return False
                 raise ValueError(error_msg + f'\nInvalid column heading for column {v_input.columns[col_i]}')
 # RETURNS
@@ -1314,5 +1297,5 @@ def val_DataFrame(v_input, v_name, method, v_types=[], min_col=-1, max_col=-1, c
 
 
 if __name__ == '__main__':
-    print(input_bool('true', 'input_bool', 'test'))
-    print(input_bool(None, 'input_bool', 'test'))
+    Helper_App.console_log(input_bool('true', 'input_bool', 'test'))
+    Helper_App.console_log(input_bool(None, 'input_bool', 'test'))

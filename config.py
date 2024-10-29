@@ -11,6 +11,7 @@ Configuration variables
 """
 
 # IMPORTS
+from lib import argument_validation as av
 import os
 from dotenv import load_dotenv, find_dotenv
 
@@ -19,7 +20,7 @@ load_dotenv(find_dotenv())
 # CLASSES
 class Config:
     # Miscellaneous
-    DEBUG = False
+    DEBUG = av.input_bool(os.getenv('DEBUG'), 'DEBUG', 'Config')
     TESTING = False
     URL_HOST = os.getenv('URL_HOST')
     SECRET_KEY = os.getenv('KEY_SECRET_FLASK') # gen cmd: openssl rand -hex 32
@@ -52,7 +53,7 @@ class Config:
     # id_currency = 1
     # id_region_delivery = 1
     # Mail
-    MAIL_DEBUG = True
+    MAIL_DEBUG = av.input_bool(os.getenv('DEBUG'), 'DEBUG', 'Config')
     MAIL_SERVER = 'mail.partsltd.co.uk' # 'smtp.gmail.com'
     MAIL_PORT = 465 # 587
     MAIL_USE_TLS = False
@@ -83,7 +84,6 @@ elif config_env == 'production':
 else:
     raise ValueError("Invalid configuration environment")
 
-# print(f'config: {app_config}\nid auth0 client: {app_config.ID_AUTH0_CLIENT}')
 
 # environment variables
 """

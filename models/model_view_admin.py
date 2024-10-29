@@ -11,6 +11,7 @@ Data model for store permutations view
 """
 
 # internal
+from helpers.helper_app import Helper_App
 from models.model_view_base import Model_View_Base
 
 # external
@@ -21,5 +22,5 @@ class Model_View_Admin(Model_View_Base):
     
     def __init__(self, hash_page_current, **kwargs):
         _m = 'Model_View_Admin.__init__'
-        print(f'{_m}\nstarting')
+        Helper_App.console_log(f'{_m}\nstarting')
         super().__init__(hash_page_current=hash_page_current, **kwargs)

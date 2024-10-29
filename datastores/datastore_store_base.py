@@ -27,6 +27,7 @@ from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation_Type, Product_Variation, Product_Variation_Filters, Product_Variation_Container
 from datastores.datastore_base import DataStore_Base
 from extensions import db
+from helpers.helper_app import Helper_App
 from helpers.helper_db_mysql import Helper_DB_MySQL
 import lib.argument_validation as av
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
@@ -70,38 +71,38 @@ class DataStore_Store_Base(DataStore_Base):
             , **argument_dict
             , 'a_debug': 0
         }
-        print(f'argument_dict: {argument_dict}')
-        print('executing p_shop_get_many_product')
+        Helper_App.console_log(f'argument_dict: {argument_dict}')
+        Helper_App.console_log('executing p_shop_get_many_product')
         result = cls.db_procedure_execute('p_shop_get_many_product', argument_dict)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
         
         
         category_list = Product_Category_Container()
-        print(f'initial category_list: {category_list}')
+        Helper_App.console_log(f'initial category_list: {category_list}')
 
         # Categories
         result_set_1 = cursor.fetchall()
-        print(f'raw categories: {result_set_1}')
+        Helper_App.console_log(f'raw categories: {result_set_1}')
         for row in result_set_1:
             new_category = Product_Category.from_DB_get_many_product_catalogue(row)
-            print(f'new_category: {new_category}')
+            Helper_App.console_log(f'new_category: {new_category}')
             category_list.add_product_category(new_category)
 
-        print(f'category-loaded category_list: {category_list}')
+        Helper_App.console_log(f'category-loaded category_list: {category_list}')
 
         # Products
         cursor.nextset()
         result_set_2 = cursor.fetchall()
-        print(f'raw products: {result_set_2}')
+        Helper_App.console_log(f'raw products: {result_set_2}')
         for row in result_set_2:
-            print(f'row: {row}')
+            Helper_App.console_log(f'row: {row}')
             new_product = Product.from_DB_get_many_product_catalogue(row)
-            print(f'new_product: {new_product}')
+            Helper_App.console_log(f'new_product: {new_product}')
             try:
                 category_list.add_product(new_product)
             except Exception as e:
-                print(f'Error adding product: {e}')
+                Helper_App.console_log(f'Error adding product: {e}')
 
         # Permutations
         cursor.nextset()
@@ -111,7 +112,7 @@ class DataStore_Store_Base(DataStore_Base):
             try:
                 category_list.add_product_permutation(new_permutation)
             except Exception as e:
-                print(f'Error adding permutation: {e}')
+                Helper_App.console_log(f'Error adding permutation: {e}')
 
         # Product_Variations
         cursor.nextset()
@@ -121,7 +122,7 @@ class DataStore_Store_Base(DataStore_Base):
             try:
                 category_list.add_product_variation(new_variation)
             except Exception as e:
-                print(f'Error adding variation: {e}')
+                Helper_App.console_log(f'Error adding variation: {e}')
 
         # Images
         cursor.nextset()
@@ -133,20 +134,20 @@ class DataStore_Store_Base(DataStore_Base):
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         
         category_list.get_all_product_variation_trees()
         """
         for category in category_list.categories:
-            print(f'category: {category.name}')
+            Helper_App.console_log(f'category: {category.name}')
             for product in category.products:
                 permutation = product.get_permutation_selected()
-                print(f'product: {product.name}\nselected permutation: {permutation}')
+                Helper_App.console_log(f'product: {product.name}\nselected permutation: {permutation}')
         """
         
         if len(errors) > 0:
@@ -168,7 +169,7 @@ class DataStore_Store_Base(DataStore_Base):
         DataStore_Store_Base.db_cursor_clear(cursor)
         cursor.close()
 
-        print(f'get many category_list: {category_list}')
+        Helper_App.console_log(f'get many category_list: {category_list}')
         return category_list, errors # categories, category_index
     
     """
@@ -201,10 +202,10 @@ class DataStore_Store_Base(DataStore_Base):
             'a_get_inactive_currency': 0
         }
 
-        print(f'executing {_m_db_currency}')
+        Helper_App.console_log(f'executing {_m_db_currency}')
         result = cls.db_procedure_execute(_m_db_currency, argument_dict_list_currency)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
 
         # cursor.nextset()
         result_set_1 = cursor.fetchall()
@@ -212,7 +213,7 @@ class DataStore_Store_Base(DataStore_Base):
         for row in result_set_1:
             currency = Currency.from_DB_currency(row)
             currencies.append(currency)
-        print(f'currencies: {currencies}')
+        Helper_App.console_log(f'currencies: {currencies}')
         DataStore_Store_Base.db_cursor_clear(cursor)
 
         return currencies
@@ -226,10 +227,10 @@ class DataStore_Store_Base(DataStore_Base):
             'a_get_inactive_currency': 0
         }
 
-        print(f'executing {_m_db_region}')
+        Helper_App.console_log(f'executing {_m_db_region}')
         result = cls.db_procedure_execute(_m_db_region, argument_dict_list_region)
         cursor = result.cursor
-        print('data received')
+        Helper_App.console_log('data received')
 
         # cursor.nextset()
         result_set_1 = cursor.fetchall()
@@ -237,7 +238,7 @@ class DataStore_Store_Base(DataStore_Base):
         for row in result_set_1:
             region = Region.from_DB_region(row)
             regions.append(region)
-        print(f'regions: {regions}')
+        Helper_App.console_log(f'regions: {regions}')
         DataStore_Store_Base.db_cursor_clear(cursor)
         cursor.close()
 
@@ -253,7 +254,7 @@ class DataStore_Store_Base(DataStore_Base):
     @classmethod
     def get_many_product_variation(cls, variation_filters):
         _m = 'DataStore_Store_Base.get_many_product_variation'
-        print(_m)
+        Helper_App.console_log(_m)
         av.val_instance(variation_filters, 'variation_filters', _m, Product_Variation_Filters)
 
         guid = Helper_DB_MySQL.create_guid()
@@ -290,7 +291,7 @@ class DataStore_Store_Base(DataStore_Base):
             variation_types.append(new_variation_type)
             variation_types_dict[new_variation_type.id_type] = new_variation_type
 
-        print(f'variation_types_dict: {variation_types_dict}')
+        Helper_App.console_log(f'variation_types_dict: {variation_types_dict}')
 
         # Product_Variations
         cursor.nextset()
@@ -306,11 +307,11 @@ class DataStore_Store_Base(DataStore_Base):
         errors = []
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_e]
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
 
         DataStore_Store_Base.db_cursor_clear(cursor)
         

@@ -17,6 +17,7 @@ from business_objects.store.product import Product, Parameters_Product
 from business_objects.store.product_category import Product_Category_Container
 from business_objects.store.manufacturing_purchase_order import Manufacturing_Purchase_Order, Parameters_Manufacturing_Purchase_Order, Manufacturing_Purchase_Order_Product_Link
 from forms.store.manufacturing_purchase_order import Filters_Manufacturing_Purchase_Order
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 # external
 from typing import ClassVar
@@ -41,7 +42,7 @@ class Model_View_Store_Manufacturing_Purchase_Order(Model_View_Store):
     
     def __init__(self, form_filters_old, hash_page_current=Model_View_Store.HASH_PAGE_STORE_MANUFACTURING_PURCHASE_ORDERS):
         _m = 'Model_View_Store_Manufacturing.__init__'
-        print(f'{_m}\nstarting...')
+        Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current = hash_page_current, form_filters_old = form_filters_old)
         self.form_filters = form_filters_old # Filters_Manufacturing_Purchase_Order.from_json(form_filters_old.to_json())
         parameters_manufacturing_purchase_order = Parameters_Manufacturing_Purchase_Order.from_filters_manufacturing_purchase_order(form_filters_old)

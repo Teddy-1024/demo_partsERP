@@ -18,6 +18,7 @@ from business_objects.store.product_category import Product_Category_Container
 from business_objects.store.product import Product, Parameters_Product, Product_Permutation
 from business_objects.store.stock_item import Stock_Item, Parameters_Stock_Item
 from forms.store.stock_item import Filters_Stock_Item
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 
 # external
@@ -43,7 +44,7 @@ class Model_View_Store_Stock_Item(Model_View_Store):
     
     def __init__(self, filters_stock_item, hash_page_current=Model_View_Store.HASH_PAGE_STORE_STOCK_ITEMS):
         _m = 'Model_View_Store_Stock_Item.__init__'
-        print(f'{_m}\nstarting...')
+        Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current=hash_page_current, filters_stock_item=filters_stock_item)
         # BaseModel.__init__(self, app=app, filters_stock_item=filters_stock_item, **kwargs)
         self.form_filters = Filters_Stock_Item.from_json(filters_stock_item.to_json()) # .from_form_stock_item(filters_stock_item)
@@ -68,17 +69,17 @@ class Model_View_Store_Stock_Item(Model_View_Store):
         )
         """
         
-        print(f'category_list_filters: {self.category_list_filters.categories}')
+        Helper_App.console_log(f'category_list_filters: {self.category_list_filters.categories}')
         self.form_filters.id_category.choices += [(str(category.id_category), category.name) for category in self.category_list_filters.categories] # [Filters_Stock_Item.get_choice_all()] +
-        print(f'category options: {self.form_filters.id_category.choices}')
+        Helper_App.console_log(f'category options: {self.form_filters.id_category.choices}')
         product_list = self.category_list_filters.to_product_option_list()
         filtered_product_list = []
         if product_list is not None:
             for product in product_list:
-                # print(f'product: {product}\n{product[Stock_Item.ATTR_ID_PRODUCT_CATEGORY]}\n{self.form_filters.id_category.data}\n{str(type(product[Stock_Item.ATTR_ID_PRODUCT_CATEGORY]))}\n{str(type(self.form_filters.id_category.data))}')
+                # Helper_App.console_log(f'product: {product}\n{product[Stock_Item.ATTR_ID_PRODUCT_CATEGORY]}\n{self.form_filters.id_category.data}\n{str(type(product[Stock_Item.ATTR_ID_PRODUCT_CATEGORY]))}\n{str(type(self.form_filters.id_category.data))}')
                 if (self.form_filters.id_category.data == '' or str(product[Stock_Item.ATTR_ID_PRODUCT_CATEGORY]) == self.form_filters.id_category.data):
                     filtered_product_list.append(product)
-        print(f'product_list: {product_list}\nfiltered_product_list: {filtered_product_list}')
+        Helper_App.console_log(f'product_list: {product_list}\nfiltered_product_list: {filtered_product_list}')
         self.form_filters.id_product.choices += [(str(product['value']), product['text']) for product in filtered_product_list] #  [Filters_Stock_Item.get_choice_all()] +
         # self.form_filters.import_values(filters_stock_item)
         self.variation_types, self.variations, errors = self.get_many_product_variation()

@@ -17,15 +17,16 @@ Base data model for views
 # IMPORTS
 # internal
 # from routes import bp_home
-import lib.argument_validation as av
-from forms.forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
-from datastores.datastore_base import DataStore_Base
-from datastores.datastore_user import DataStore_User
 from business_objects.base import Base
 from business_objects.store.product_category import Product_Category
-from forms.access_level import Filters_Access_Level
-from forms.unit_measurement import Filters_Unit_Measurement
 from business_objects.user import User, User_Filters
+from datastores.datastore_base import DataStore_Base
+from datastores.datastore_user import DataStore_User
+from forms.access_level import Filters_Access_Level
+from forms.forms import Form_Is_Included_VAT, Form_Delivery_Region, Form_Currency
+from forms.unit_measurement import Filters_Unit_Measurement
+from helpers.helper_app import Helper_App
+import lib.argument_validation as av
 # external
 from abc import ABC, abstractmethod
 from flask_sqlalchemy import SQLAlchemy
@@ -243,7 +244,7 @@ class Model_View_Base(BaseModel, ABC):
         # Initialiser - validation
         _m = 'Model_View_Base.__new__'
         v_arg_type = 'class attribute'
-        print(f'{_m}\nstarting')
+        Helper_App.console_log(f'{_m}\nstarting')
         # return super().__new__(cls, *args, **kwargs)
         av.val_instance(db, 'db', _m, SQLAlchemy, v_arg_type=v_arg_type)
         return super(Model_View_Base, cls).__new__(cls)
@@ -253,7 +254,7 @@ class Model_View_Base(BaseModel, ABC):
         """
         _m = 'Model_View_Base.__init__'
         v_arg_type = 'class attribute'
-        print(f'{_m}\nstarting')
+        Helper_App.console_log(f'{_m}\nstarting')
         av.val_instance(db, 'db', _m, SQLAlchemy, v_arg_type=v_arg_type)
         """
         BaseModel.__init__(self, hash_page_current=hash_page_current, **kwargs)
@@ -261,9 +262,9 @@ class Model_View_Base(BaseModel, ABC):
         self.db = db
         self.session = session
         info_user = self.get_info_user()
-        print(f'info_user: {info_user}\ntype: {str(type(info_user))}')
+        Helper_App.console_log(f'info_user: {info_user}\ntype: {str(type(info_user))}')
         self.is_user_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
-        print(f'is_user_logged_in: {self.is_user_logged_in}')
+        Helper_App.console_log(f'is_user_logged_in: {self.is_user_logged_in}')
         self.id_user = info_user['sub'] if self.is_user_logged_in else ''
         self.app = app
         """
@@ -274,12 +275,12 @@ class Model_View_Base(BaseModel, ABC):
         # self.form_delivery_region = Form_Delivery_Region()
         # self.form_currency = Form_Currency()
         self.is_page_store = False
-        print(f'session: {self.session}')
+        Helper_App.console_log(f'session: {self.session}')
         
         datastore_user = DataStore_User()
         self.user = datastore_user.get_user_session()
         self.is_user_logged_in = self.user.is_logged_in
-        print(f'model_view_base init end - model.user: {self.user}')
+        Helper_App.console_log(f'model_view_base init end - model.user: {self.user}')
         
     def output_bool(self, boolean):
         return str(boolean).lower()
@@ -364,7 +365,7 @@ class Model_View_Base(BaseModel, ABC):
             if preview_str != '':
                 preview_str += '\n'
             obj_json = obj.to_json()
-            print(f'obj_json: {obj_json}')
+            Helper_App.console_log(f'obj_json: {obj_json}')
             preview_str += obj_json[obj_json[Base.FLAG_NAME_ATTR_OPTION_TEXT]]
         return preview_str
     @staticmethod

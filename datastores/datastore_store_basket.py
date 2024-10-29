@@ -27,6 +27,7 @@ from business_objects.store.stock_item import Stock_Item
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container
 from datastores.datastore_store_base import DataStore_Store_Base
+from helpers.helper_app import Helper_App
 # from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
@@ -65,7 +66,7 @@ class DataStore_Store_Basket(DataStore_Store_Base):
     def edit_basket(self, ids_permutation_basket, quantities_permutation_basket, id_permutation_edit, quantity_permutation_edit, sum_not_edit, id_currency, id_region_delivery, is_included_VAT):
         # redundant argument validation? 
         _m = 'DataStore_Store_Base.edit_basket'
-        print(f'{_m}\nstarting...')
+        Helper_App.console_log(f'{_m}\nstarting...')
         # av.val_instance(filters, 'filters', _m, Parameters_Product_Category)
         # av.val_str(ids_product_basket, 'ids_product_basket', _m)
         av.val_str(ids_permutation_basket, 'ids_permutation_basket', _m)
@@ -75,24 +76,24 @@ class DataStore_Store_Basket(DataStore_Store_Base):
         if id_product_edit == 'None':
             id_product_edit = None
         else:
-            print(f'id_product_edit: {id_product_edit}')
+            Helper_App.console_log(f'id_product_edit: {id_product_edit}')
             av.val_int(id_product_edit, 'id_product_edit', _m)
         """
         if id_permutation_edit == 'None' or str(type(id_permutation_edit)) =="<class 'NoneType'>":
             id_permutation_edit = None
         else:
-            print(f'id_permutation_edit: {id_permutation_edit}')
-            print(str(type(id_permutation_edit)))
+            Helper_App.console_log(f'id_permutation_edit: {id_permutation_edit}')
+            Helper_App.console_log(str(type(id_permutation_edit)))
             av.val_int(id_permutation_edit, 'id_permutation_edit', _m)
         if quantity_permutation_edit == 'None' or str(type(quantity_permutation_edit)) =="<class 'NoneType'>":
             quantity_permutation_edit = None
         else:
-            print(f'quantity_permutation_edit: {quantity_permutation_edit}')
+            Helper_App.console_log(f'quantity_permutation_edit: {quantity_permutation_edit}')
             av.val_int(quantity_permutation_edit, 'quantity_permutation_edit', _m)
         if sum_not_edit == 'None':
             sum_not_edit = None
         else:
-            print(f'sum_not_edit: {sum_not_edit}')
+            Helper_App.console_log(f'sum_not_edit: {sum_not_edit}')
             av.val_bool(sum_not_edit, 'sum_not_edit', _m)
 
         argument_dict_list = {
@@ -110,21 +111,21 @@ class DataStore_Store_Basket(DataStore_Store_Base):
         }
 
         result = self.db_procedure_execute('p_shop_edit_user_basket', argument_dict_list)
-        print('data received')
+        Helper_App.console_log('data received')
 
         cursor = result.cursor
 
         # categories, category_index = DataStore_Store_Base.input_many_product(cursor)
         category_list, errors = DataStore_Store_Base.input_many_product(cursor)
 
-        print(f'cursor: {str(cursor)}')
+        Helper_App.console_log(f'cursor: {str(cursor)}')
 
         # Basket
         if not cursor.nextset():
             raise Exception("No more query results! Cannot open basket contents")
         result_set = cursor.fetchall()
-        print(f'raw basket: {result_set}')
-        # print(f'variations: {result_set_3}')
+        Helper_App.console_log(f'raw basket: {result_set}')
+        # Helper_App.console_log(f'variations: {result_set_3}')
         # variations = [Product_Variation(**row) for row in result_set_3]
         basket = Basket(is_included_VAT, id_currency, id_region_delivery)
         for row in result_set:
@@ -133,20 +134,20 @@ class DataStore_Store_Basket(DataStore_Store_Base):
             index_product = category.get_index_product_from_id(row[1])
             product = category.products[index_product]
             basket_item = Basket_Item.from_product_and_quantity_and_VAT_included(product, row[7], self.app.is_included_VAT)
-            print(f'adding basket item: {row}')
-            print(f'basket item: {basket_item}')
+            Helper_App.console_log(f'adding basket item: {row}')
+            Helper_App.console_log(f'basket item: {basket_item}')
             basket.add_item(basket_item) # basket.append(basket_item) # Basket_Item(category.name, product, row[4]))
             
-        print(f'basket: {basket}')
+        Helper_App.console_log(f'basket: {basket}')
 
         # Errors
         cursor.nextset()
         result_set_e = cursor.fetchall()
-        print(f'raw errors: {result_set_e}')
+        Helper_App.console_log(f'raw errors: {result_set_e}')
         if len(result_set_e) > 0:
             errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # [SQL_Error(row[0], row[1]) for row in result_set_2]
             for error in errors:
-                print(f"Error [{error.code}]: {error.msg}")
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         
         DataStore_Store_Base.db_cursor_clear(cursor)
 

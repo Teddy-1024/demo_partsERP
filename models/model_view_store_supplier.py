@@ -15,6 +15,7 @@ from models.model_view_store import Model_View_Store
 from datastores.datastore_store_supplier import DataStore_Store_Supplier
 from business_objects.store.supplier import Supplier, Parameters_Supplier
 from forms.store.supplier import Filters_Supplier
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 # external
 from typing import ClassVar
@@ -39,7 +40,7 @@ class Model_View_Store_Supplier(Model_View_Store):
     
     def __init__(self, form_filters_old, hash_page_current=Model_View_Store.HASH_PAGE_STORE_SUPPLIERS):
         _m = 'Model_View_Store_Supplier.__init__'
-        print(f'{_m}\nstarting...')
+        Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current = hash_page_current, form_filters_old = form_filters_old)
         self.form_filters = form_filters_old # Filters_Supplier.from_json(form_filters_old.to_json())
         parameters_supplier = Parameters_Supplier.from_filters_supplier(self.form_filters)

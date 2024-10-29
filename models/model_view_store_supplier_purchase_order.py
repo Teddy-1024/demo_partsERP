@@ -19,6 +19,7 @@ from business_objects.store.product_category import Product_Category_Container
 from business_objects.store.supplier import Supplier, Parameters_Supplier
 from business_objects.store.supplier_purchase_order import Supplier_Purchase_Order, Parameters_Supplier_Purchase_Order
 from forms.store.supplier_purchase_order import Filters_Supplier_Purchase_Order
+from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 
 class Model_View_Store_Supplier_Purchase_Order(Model_View_Store):
@@ -40,7 +41,7 @@ class Model_View_Store_Supplier_Purchase_Order(Model_View_Store):
     
     def __init__(self, form_filters_old, hash_page_current=Model_View_Store.HASH_PAGE_STORE_SUPPLIER_PURCHASE_ORDERS):
         _m = 'Model_View_Store_Supplier.__init__'
-        print(f'{_m}\nstarting...')
+        Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current = hash_page_current, form_filters_old = form_filters_old)
         self.form_filters = form_filters_old # Filters_Supplier_Purchase_Order.from_json(form_filters_old.to_json())
         parameters_supplier_purchase_order = Parameters_Supplier_Purchase_Order.from_filters_supplier_purchase_order(self.form_filters)

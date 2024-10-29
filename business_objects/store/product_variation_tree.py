@@ -13,6 +13,7 @@ Business object for product
 # internal
 from business_objects.store.product_variation import Product_Variation
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 
 
@@ -133,16 +134,16 @@ class Product_Variation_Tree():
             variations.append(node.variation)
         return variations
     def to_preview_str(self):
-        print(f'Product_Variation_Tree.to_preview_str')
+        Helper_App.console_log(f'Product_Variation_Tree.to_preview_str')
         variations = self.get_product_variations()
-        print(f'variations: {variations}')
+        Helper_App.console_log(f'variations: {variations}')
         preview_str = ''
         for variation in variations:
             is_first = (preview_str == '')
             preview_str += f'{variation.variation_type.name_singular}: {variation.name}'
             if is_first:
                 preview_str += '\n'
-        print(f'preview_str: {preview_str}')
+        Helper_App.console_log(f'preview_str: {preview_str}')
         return preview_str
     def to_json(self):
         variations = self.get_product_variations()
@@ -179,7 +180,7 @@ class Product_Variation_Container(BaseModel):
         list_variations = []
         for variation in self.variations:
             list_variations.append(variation.to_json_option())
-        print(f'list_variations: {list_variations}')
+        Helper_App.console_log(f'list_variations: {list_variations}')
         return list_variations
     def to_list_variation_type_options(self):
         list_variation_types = []

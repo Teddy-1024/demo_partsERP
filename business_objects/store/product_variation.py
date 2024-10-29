@@ -21,6 +21,7 @@ import lib.argument_validation as av
 from business_objects.store.store_base import Store_Base
 from business_objects.store.product_variation_type import Product_Variation_Type
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from dataclasses import dataclass
 from typing import ClassVar
@@ -201,7 +202,7 @@ class Product_Variation_Container(BaseModel):
         list_variations = []
         for variation in self.variations:
             list_variations.append(variation.to_json_option())
-        print(f'list_variations: {list_variations}')
+        Helper_App.console_log(f'list_variations: {list_variations}')
         return list_variations
     def to_list_variation_type_options(self):
         list_variation_types = []

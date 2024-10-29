@@ -18,7 +18,6 @@ Initializes the Flask application, sets the configuration based on the environme
 # internal
 from config import app_config, Config
 # from routes import bp_home
-from extensions import db, csrf, cors, mail, oauth
 """
 from forms import Form_Contact, Form_Supplier, Form_Filters_Permutation, Filters_Stock_Item
 from models.model_view_base import Model_View_Base
@@ -48,6 +47,8 @@ from controllers.store.stock_item import routes_store_stock_item
 from controllers.store.supplier import routes_store_supplier
 from controllers.store.supplier_purchase_order import routes_store_supplier_purchase_order
 from controllers.user import routes_user
+from extensions import db, csrf, cors, mail, oauth
+from helpers.helper_app import Helper_App
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
 # from flask_appconfig import AppConfig
@@ -74,10 +75,10 @@ app.config.from_object(app_config) # for db init with required keys
 
 # logging
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
-handler.setLevel(logging.ERROR)
+handler.setLevel(logging.DEBUG)
 app.logger.addHandler(handler)
 
-@app.errorhandler(500)
+@app.errorhandler(Exception)
 def internal_server_error(error):
     app.logger.error('Server Error: %s', (error))
     app.logger.error('Request: %s %s %s %s %s',
@@ -88,7 +89,7 @@ def internal_server_error(error):
                      request.headers)
     app.logger.error('Request data: %s', request.get_data())
     app.logger.error('Traceback: %s', traceback.format_exc())
-    return "500 Internal Server Error", 500
+    return "Internal Server Error", 500
 
 
 """
@@ -140,5 +141,5 @@ app.register_blueprint(routes_user)
 
 @app.template_filter('console_log')
 def console_log(value):
-    print(value)
+    Helper_App.console_log(value)
     return value

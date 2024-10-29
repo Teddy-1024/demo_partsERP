@@ -28,6 +28,7 @@ from business_objects.store.product_variation_tree import Product_Variation_Tree
 from extensions import db
 from forms.base import Form_Base
 from forms.store.product import Filters_Product
+from helpers.helper_app import Helper_App
 # external
 from dataclasses import dataclass
 from typing import ClassVar, List
@@ -141,7 +142,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
             """
         if self.index_permutation_selected is None:
             self.index_permutation_selected = self.permutation_index[permutation.id_permutation]
-            print(f'setting selected permutation for product {self.id_product} to {self.index_permutation_selected}') # :\n{self.permutations[self.index_permutation_selected]}
+            Helper_App.console_log(f'setting selected permutation for product {self.id_product} to {self.index_permutation_selected}') # :\n{self.permutations[self.index_permutation_selected]}
     """
     def from_permutations(permutations):
         _m = 'Product.from_permutations'
@@ -273,7 +274,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
     """
     def add_product_variation(self, variation):
         av.val_instance(variation, 'variation', 'Product.add_product_variation', Product_Variation)
-        # print(f'variation: {variation}')
+        # Helper_App.console_log(f'variation: {variation}')
         index_permutation = self.permutation_index[variation.id_permutation] # self.get_index_permutation_from_id(variation.id_permutation)
         self.permutations[index_permutation].add_product_variation(variation)
     def add_product_price(self, price):
@@ -493,7 +494,7 @@ class Parameters_Product(Get_Many_Parameters_Base):
         has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '' or form.id_category.data is None)
         has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '' or form.id_product.data is None)
         get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form")
-        print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\ntype form: {type(form)}')
+        Helper_App.console_log(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\ntype form: {type(form)}')
         return Parameters_Product(
             get_all_product_category = not has_category_filter,
             get_inactive_product_category = False,
@@ -727,7 +728,7 @@ class Parameters_Product(Get_Many_Parameters_Base):
         has_category_filter = not (form.id_category.data is None or form.id_category.data == '0' or form.id_category.data == '')
         has_product_filter = not (form.id_product.data is None or form.id_product.data == '0' or form.id_product.data == '')
         get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form")
-        print(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
+        Helper_App.console_log(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
         return Parameters_Product(
             get_all_product_category = not has_category_filter,
             get_inactive_product_category = False,

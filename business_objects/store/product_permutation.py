@@ -25,6 +25,7 @@ from business_objects.store.product_variation import Product_Variation
 from business_objects.store.product_variation_tree import Product_Variation_Tree
 from business_objects.unit_measurement import Unit_Measurement
 from extensions import db
+from helpers.helper_app import Helper_App
 # external
 from datetime import datetime, timedelta
 import locale
@@ -142,7 +143,7 @@ class Product_Permutation(db.Model, Store_Base):
     def from_DB_get_many_product_catalogue(cls, query_row):
         _m = f'{cls.__name__}.from_DB_get_many_product_catalogue'
         v_arg_type = 'class attribute'
-        print(f'query_row: {query_row}')
+        Helper_App.console_log(f'query_row: {query_row}')
         permutation = cls()
         permutation.id_permutation = query_row[0]
         permutation.id_product = query_row[1]
@@ -469,7 +470,7 @@ class Product_Permutation(db.Model, Store_Base):
             Product_Permutation.FLAG_QUANTITY_MAX: self.quantity_max,
             Product_Permutation.FLAG_COST_LOCAL: f"<strong>{self.symbol_currency_cost}</strong>{self.cost_local}"
         }
-        print('permutation row: ', a)
+        Helper_App.console_log('permutation row: ', a)
         return a
 
 
