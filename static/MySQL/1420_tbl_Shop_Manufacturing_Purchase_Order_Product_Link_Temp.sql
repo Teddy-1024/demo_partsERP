@@ -9,7 +9,9 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
 	id_link INT NOT NULL PRIMARY KEY,
     id_order INT NOT NULL,
-    id_permutation INT NOT NULL,
+    id_product INT NULL,
+    id_permutation INT NULL,
+    csv_list_variations VARCHAR(4000) NULL,
 	id_unit_quantity INT NOT NULL,
 	quantity_used FLOAT NULL,
 	quantity_produced FLOAT NULL,

@@ -429,7 +429,7 @@ BEGIN
 	-- Transaction    
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN		
 		START TRANSACTION;
-			INSERT INTO partsltd_prod.Shop_Sales_And_Purchasing_Change_Set (
+			INSERT INTO partsltd_prod.Shop_User_Change_Set (
 				comment
 				, updated_last_by
 				, updated_last_on

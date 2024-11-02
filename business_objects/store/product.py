@@ -201,7 +201,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
         product.name = json[cls.FLAG_NAME]
         product.has_variations = av.input_bool(json.get(cls.FLAG_HAS_VARIATIONS, None), cls.FLAG_HAS_VARIATIONS, f'{cls.__name__}.from_json')
         product.id_access_level_required = json.get(cls.ATTR_ID_ACCESS_LEVEL, None)
-        product.active = av.input_bool(json.get(cls.FLAG_ACTIVE, None), cls.FLAG_ACTIVE, f'{cls.__name__}.from_json')
+        product.active = 1 if av.input_bool(json[cls.FLAG_ACTIVE], cls.FLAG_ACTIVE, f'{cls.__name__}.from_json') else 0
         product.can_view = json.get(cls.FLAG_CAN_VIEW, None)
         product.can_edit = json.get(cls.FLAG_CAN_EDIT, None)
         product.can_admin = json.get(cls.FLAG_CAN_ADMIN, None)
@@ -894,3 +894,14 @@ class Product_Temp(db.Model, Store_Base):
         'created_on': self.created_on,
         'created_by': self.created_by
         """
+    def __repr__(self):
+        return f'''Product_Temp
+            id_product: {self.id_product}
+            id_category: {self.id_category}
+            name: {self.name}
+            has_variations: {self.has_variations}
+            id_access_level_required: {self.id_access_level_required}
+            active: {self.active}
+            display_order: {self.display_order}
+            guid: {self.guid}
+            '''

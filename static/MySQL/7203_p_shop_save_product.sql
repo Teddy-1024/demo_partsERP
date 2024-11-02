@@ -64,7 +64,7 @@ BEGIN
     SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
     SET v_id_access_level_edit := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
-    SET a_guid := IFNULL(a_guid, UUID());
+    CALL p_validate_guid ( a_guid );
     SET a_debug := IFNULL(a_debug, 0);
     
     IF a_debug = 1 THEN

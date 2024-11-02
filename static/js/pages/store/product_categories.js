@@ -33,13 +33,13 @@ export default class PageStoreProductCategories extends TableBasePage {
 
     loadRowTable(rowJson) {
         if (rowJson == null) return;
+        if (_verbose) { console.log("applying data row: ", rowJson); }
         let row = _rowBlank.cloneNode(true);
         row.classList.remove(flagRowNew);
         row.classList.remove(flagInitialised);
         row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
             element.classList.remove(flagInitialised);
         });
-        console.log("applying data row: ", rowJson);
         let sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
         let textareaCode = row.querySelector('td.' + flagCode + ' textarea');
         let textareaName = row.querySelector('td.' + flagName + ' textarea');
@@ -75,13 +75,13 @@ export default class PageStoreProductCategories extends TableBasePage {
 
         let jsonCategory = {};
         jsonCategory[attrIdProductCategory] = row.getAttribute(attrIdProductCategory);
-        jsonCategory[flagCode] = DOM.getElementValueCurrent(textareaCode);
-        jsonCategory[flagName] = DOM.getElementValueCurrent(textareaName);
-        jsonCategory[flagDescription] = DOM.getElementValueCurrent(textareaDescription);
+        jsonCategory[flagCode] = DOM.getElementAttributeValueCurrent(textareaCode);
+        jsonCategory[flagName] = DOM.getElementAttributeValueCurrent(textareaName);
+        jsonCategory[flagDescription] = DOM.getElementAttributeValueCurrent(textareaDescription);
         // jsonCategory[flagAccessLevelRequired] = tdAccessLevel.getAttribute(flagAccessLevelRequired);
-        jsonCategory[attrIdAccessLevel] = DOM.getElementValueCurrent(tdAccessLevel);
-        jsonCategory[flagActive] = DOM.getElementValueCurrent(inputActive);
-        jsonCategory[flagDisplayOrder] = sliderDisplayOrder.getAttribute(attrValueCurrent);
+        jsonCategory[attrIdAccessLevel] = DOM.getElementAttributeValueCurrent(tdAccessLevel);
+        jsonCategory[flagActive] = DOM.getElementAttributeValueCurrent(inputActive);
+        jsonCategory[flagDisplayOrder] = DOM.getElementAttributeValueCurrent(sliderDisplayOrder);
         return jsonCategory;
     }
     initialiseRowNew(row) {

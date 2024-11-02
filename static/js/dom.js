@@ -54,11 +54,9 @@ export default class DOM {
     static convertForm2JSON(elementForm) {
         let dataForm = {};
         if (Validation.isEmpty(elementForm)) {
-            console.log("empty form element");
             return dataForm;
         }
         let containersFilter = elementForm.querySelectorAll('.' + flagContainerInput + '.' + flagFilter);
-        console.log("containersFilter: " + containersFilter);
         let containerFilter, labelFilter, keyFilter, filter;
         for (let indexFilter = 0; indexFilter < containersFilter.length; indexFilter++) {
             containerFilter = containersFilter[indexFilter];

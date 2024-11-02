@@ -10,7 +10,8 @@ DELIMITER //
 CREATE PROCEDURE p_shop_save_product_category (
     IN a_comment VARCHAR(500),
 	IN a_guid BINARY(36),
-    IN a_id_user INT
+    IN a_id_user INT,
+    IN a_debug BIT
 )
 BEGIN
 	DECLARE v_code_type_error_bad_data VARCHAR(100);
@@ -19,7 +20,7 @@ BEGIN
     DECLARE v_ids_product_permission LONGTEXT;
     DECLARE v_id_change_set INT;
     DECLARE v_id_access_level_edit INT;
-    DECLARE v_now DATETIME;
+    DECLARE v_time_start TIMESTAMP(6);
     
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
@@ -38,33 +39,33 @@ BEGIN
         
 		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 			display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
-			, guid BINARY(36) NOT NULL
 			, id_type INT NULL
 			, code VARCHAR(50) NOT NULL
 			, msg VARCHAR(4000) NOT NULL
 		);
         INSERT INTO tmp_Msg_Error (
-			guid
-            , id_type
+			id_type
             , code
             , msg
 		)
         SELECT 
-			a_guid
-            , NULL
+			MET.id_type
             , @errno
             , @text
+		FROM partsltd_prod.Shop_Msg_Error_Type MET
+        WHERE MET.code = 'MYSQL_ERROR'
 		;
         SELECT *
         FROM tmp_Msg_Error;
 		DROP TABLE IF EXISTS tmp_Msg_Error;
     END;
     
+    SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_code_type_error_bad_data := 'BAD_DATA';
     SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
     SET v_id_access_level_edit := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
-    SET a_guid := IFNULL(a_guid, UUID());
+    CALL p_validate_guid ( a_guid );
     
     DROP TABLE IF EXISTS tmp_Category;
     
@@ -85,7 +86,6 @@ BEGIN
         
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
-        , guid BINARY(36) NOT NULL
 		, id_type INT NULL
         , code VARCHAR(50) NOT NULL
         , msg VARCHAR(4000) NOT NULL
@@ -110,7 +110,7 @@ BEGIN
         , IFNULL(PC_T.name, PC.code) AS name
         , IFNULL(PC_T.description, PC.description) AS description
         , IFNULL(PC_T.id_access_level_required, PC.id_access_level_required) AS id_access_level_required
-        , IFNULL(PC_T.active, PC.active) AS active
+        , IFNULL(IFNULL(PC_T.active, PC.active), 1) AS active
         , IFNULL(PC_T.display_order, PC.display_order) AS display_order
         , IFNULL(PC_T.name, IFNULL(PC.name, IFNULL(PC_T.code, IFNULL(PC.code, IFNULL(PC_T.id_category, '(No Product Category)'))))) AS name_error
         , CASE WHEN IFNULL(PC_T.id_category, 0) < 1 THEN 1 ELSE 0 END AS is_new
@@ -124,14 +124,12 @@ BEGIN
     -- code
     IF EXISTS (SELECT * FROM tmp_Category t_C WHERE ISNULL(t_C.code) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
+			id_type
 			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
 			, CONCAT('The following category(s) do not have a code: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
@@ -141,14 +139,12 @@ BEGIN
     -- name
     IF EXISTS (SELECT * FROM tmp_Category t_C WHERE ISNULL(t_C.name) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
+			id_type
 			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
 			, CONCAT('The following category(s) do not have a name: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
@@ -158,14 +154,12 @@ BEGIN
     -- display_order
     IF EXISTS (SELECT * FROM tmp_Category t_C WHERE ISNULL(t_C.display_order) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
+			id_type
 			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
 			, CONCAT('The following category(s) do not have a display order: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
@@ -201,8 +195,6 @@ BEGIN
 			CALL p_shop_clear_calc_user(a_guid);
 		END IF;
     END IF;
-    
-    SET v_now := CURRENT_DATETIME();
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
@@ -247,7 +239,7 @@ BEGIN
 				, t_C.active AS active
 				, t_C.display_order AS display_order
 				, a_id_user AS created_by
-				, v_now AS created_on
+				, v_time_start AS created_on
 			FROM tmp_Category t_C
 			WHERE is_new = 1
 				AND active = 1
@@ -259,10 +251,22 @@ BEGIN
 		COMMIT;
     END IF;
     
-    SELECT * FROM tmp_Msg_Error;
+    # Errors
+    SELECT *
+    FROM tmp_Msg_Error t_ME
+	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	;
     
-    DROP TEMPORARY TABLE IF EXISTS tmp_Catgory;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+	IF a_debug = 1 THEN
+		SELECT * from tmp_Catgory;
+	END IF;
+
+    DROP TEMPORARY TABLE tmp_Catgory;
+    DROP TEMPORARY TABLE tmp_Msg_Error;
+    
+	IF a_debug = 1 THEN
+		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+	END IF;
 END //
 DELIMITER ;;
 

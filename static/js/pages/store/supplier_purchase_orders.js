@@ -129,7 +129,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         });
     }
     handleClickOrderItemsPreview(event, element) {
-        console.log("click order items preview");
+        if (_verbose) { console.log("click order items preview"); }
         this.toggleColumnHeaderCollapsed(flagOrderItems, false);
         element.classList.remove(flagCollapsed);
 
@@ -216,11 +216,11 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         let cellNew = cell.cloneNode(false);
         cellNew.appendChild(tblOrderItems);
         row.replaceChild(cellNew, cell);
-        console.log("tblOrderItems: ", tblOrderItems);
+        if (_verbose) { console.log("tblOrderItems: ", tblOrderItems); }
         this.hookupOrderItemsFields();
     }
     addRowSupplierPurchaseOrderItem(tbody, orderItem) { //  productVariationTypeOptions, productVariationOptions, productCategoryOptions, productOptions, unitMeasurementOptions, 
-        console.log("addRowSupplierPurchaseOrderItem: ", orderItem);
+        if (_verbose) { console.log("addRowSupplierPurchaseOrderItem: ", orderItem); }
 
         let tdDisplayOrder = document.createElement("td");
         tdDisplayOrder.classList.add(flagDisplayOrder);
@@ -255,6 +255,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
 
         let tdVariations = document.createElement("td");
         tdVariations.classList.add(flagProductVariations);
+        tdVariations.classList.add(flagCollapsed);
         DOM.setElementAttributesValuesCurrentAndPrevious(tdVariations, orderItem[attrIdProductVariation]);
         let divVariations = document.createElement("div");
         divVariations.classList.add(flagProductVariations);
@@ -312,14 +313,14 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         tdCostUnitLocalVatExcl.classList.add(flagCostUnitLocalVatExcl);
         let divCostUnitLocalVatExcl = document.createElement("div");
         divCostUnitLocalVatExcl.classList.add(flagCostUnitLocalVatExcl);
-        DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatExcl, orderItem[flagCostUnitLocalVatExcl]);
+        DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatExcl, orderItem[flagCostUnitLocalVatExcl].toFixed(3));
         tdCostUnitLocalVatExcl.appendChild(divCostUnitLocalVatExcl);
 
         let tdCostUnitLocalVatIncl = document.createElement("td");
         tdCostUnitLocalVatIncl.classList.add(flagCostUnitLocalVatIncl);
         let divCostUnitLocalVatIncl = document.createElement("div");
         divCostUnitLocalVatIncl.classList.add(flagCostUnitLocalVatIncl);
-        DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatIncl, orderItem[flagCostUnitLocalVatIncl]);
+        DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatIncl, orderItem[flagCostUnitLocalVatIncl].toFixed(3));
         tdCostUnitLocalVatIncl.appendChild(divCostUnitLocalVatIncl);
 
         let tdLatencyDeliveryDays = document.createElement("td");
@@ -384,20 +385,11 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         this.hookupEventHandler("click", idTableMain + ' td.' + flagOrderItems + ' td.' + flagProductVariations, (event, element) => this.handleClickProductPermutationVariationsPreview(event, element));
     }
     */
-    handleChangeElementProductVariationsSubtableCell(event, element) {
-        this.handleChangeNestedElementCellTable(event, element); //  flagProductVariations);
-    }
     hookupDdlsProductPermutationVariation() {
-        this.hookupTableCellDdls(
-            idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation
-            , (event, element) => { this.handleChangeElementProductVariationsSubtableCell(event, element); }
-        );
+        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation);
     }
     hookupDdlsProductPermutationVariationType() {
-        this.hookupTableCellDdls(
-            idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariationType
-            , (event, element) => { this.handleChangeElementProductVariationsSubtableCell(event, element); }
-        );
+        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariationType);
     }
     hookupFieldsOrderItemUnitQuantity() {
         this.hookupTableCellDdlPreviews(
@@ -442,7 +434,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
 
         let divCostUnitLocalVatExcl = row.querySelector('td.' + flagCostUnitLocalVatExcl + ' div');
         let costUnitLocalVatExcl = quantityOrdered == 0 ? 0 : costTotalLocalVatExcl / quantityOrdered;
-        DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatExcl, costUnitLocalVatExcl);
+        DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatExcl, costUnitLocalVatExcl.toFixed(3));
 
         let rowSupplierPurchaseOrder = row.closest(idTableMain + ' > tbody > tr');
         let divCostGrandTotalLocalVatExcl = rowSupplierPurchaseOrder.querySelector('td.' + flagCostTotalLocalVatExcl + ' div');
@@ -459,7 +451,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
 
         let divCostUnitLocalVatIncl = row.querySelector('td.' + flagCostUnitLocalVatIncl + ' div');
         let costUnitLocalVatIncl = quantityOrdered == 0 ? 0 : costTotalLocalVatIncl / quantityOrdered;
-        DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatIncl, costUnitLocalVatIncl);
+        DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatIncl, costUnitLocalVatIncl.toFixed(3));
 
         let rowSupplierPurchaseOrder = row.closest(idTableMain + ' > tbody > tr');
         let divCostGrandTotalLocalVatIncl = rowSupplierPurchaseOrder.querySelector('td.' + flagCostTotalLocalVatIncl + ' div');
@@ -485,7 +477,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         this.hookupEventHandler("click", idTableMain + ' td.' + flagOrderItems + ' th button.' + flagAdd, (event, element) => {
             let row = element.closest(idTableMain + ' > tbody > tr');
             let idSupplierPurchaseOrder = row.getAttribute(attrIdSupplierPurchaseOrder);
-            let hasActiveOrderItem = row.querySelectorAll('td.' + flagOrderItems + ' input.' + flagActive + ':checked').length > 0;
+            // let hasActiveOrderItem = row.querySelectorAll('td.' + flagOrderItems + ' input.' + flagActive + ':checked').length > 0;
             let countSupplierOrderItems = row.querySelectorAll('td.' + flagOrderItems + ' td.' + flagSupplierPurchaseOrder).length;
             let supplierOrderItem = {
                 [attrIdSupplierPurchaseOrder]: idSupplierPurchaseOrder,
@@ -502,7 +494,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
                 [flagCostUnitLocalVatIncl]: '',
                 [flagLatencyDeliveryDays]: '',
                 [flagDisplayOrder]: countSupplierOrderItems + 1,
-                [flagActive]: !hasActiveOrderItem,
+                [flagActive]: true, // !hasActiveOrderItem,
             };
             let tbody = row.querySelector('td.' + flagOrderItems + ' table tbody');
             this.addRowSupplierPurchaseOrderItem(tbody, supplierOrderItem);

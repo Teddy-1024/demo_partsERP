@@ -1,7 +1,8 @@
+
 #tableMain {
     overflow-x: auto;
     padding: 1vh 2vh;
-    max-width: min(calc(1vh * 80), calc(1vw * 90));
+    max-width: 95vw; /* min(calc(1vh * 80), calc(1vw * 90)); */
     width: fit-content;
     margin: 1vh 2vh;
     align-items: normal;
@@ -12,4 +13,12 @@
     width: 20vh;
     min-width: 20vh;
     padding: 0 0.5vh;
+}
+#tableMain thead tr th.active, #tableMain tbody tr td.active {
+    width: 6vh;
+    min-width: 6vh;
+}
+#tableMain tbody tr td.display_order, #tableMain thead tr th.display_order {
+    width: 5vh;
+    min-width: 5vh;
 }

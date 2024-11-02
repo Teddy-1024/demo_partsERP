@@ -115,8 +115,10 @@ export default class PageStoreStockItems extends TableBasePage {
         let ddlProductFilter = document.querySelector(idFormFilters + ' #' + attrIdProduct);
         let idProductFilter = DOM.getElementValueCurrent(ddlProductFilter);
         let hasProductFilter = !(Validation.isEmpty(idProductFilter) || idProductFilter == '0');
-        console.log("initialiseRowNew: ", row);
-        console.log({ddlCategoryFilter, idProductCategoryFilter, hasCategoryFilter, ddlProductFilter, idProductFilter, hasProductFilter});
+        if (_verbose) { 
+            console.log("initialiseRowNew: ", row);
+            console.log({ddlCategoryFilter, idProductCategoryFilter, hasCategoryFilter, ddlProductFilter, idProductFilter, hasProductFilter});
+        }
         if (!hasCategoryFilter && !hasProductFilter) return;
         if (hasCategoryFilter) {
             let ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
@@ -222,7 +224,7 @@ export default class PageStoreStockItems extends TableBasePage {
         DOM.setElementAttributesValuesCurrentAndPrevious(ddlPlant, plantJson[attrIdPlant]);
         
         optionPlant = DOM.createOption(null);
-        console.log("optionPlant: ", optionPlant);
+        if (_verbose) { console.log("optionPlant: ", optionPlant); }
         ddlPlant.appendChild(optionPlant);
 
         plantKeys.forEach((plantKey) => {
@@ -232,7 +234,7 @@ export default class PageStoreStockItems extends TableBasePage {
                 valueSelected = plantJson[attrIdPlant]
             );
             optionPlant = DOM.createOption(optionPlantJson);
-            console.log("optionPlant: ", optionPlant);
+            if (_verbose) { console.log("optionPlant: ", optionPlant); }
             ddlPlant.appendChild(optionPlant);
         });
         
@@ -245,7 +247,7 @@ export default class PageStoreStockItems extends TableBasePage {
         DOM.setElementAttributesValuesCurrentAndPrevious(ddlStorageLocation, storageLocationJson[attrIdStorageLocation]);
         
         optionStorageLocation = DOM.createOption(null);
-        console.log("optionStorageLocation: ", optionStorageLocation);
+        if (_verbose) { console.log("optionStorageLocation: ", optionStorageLocation); }
         ddlStorageLocation.appendChild(optionStorageLocation);
 
         StorageLocationKeys.forEach((StorageLocationKey) => {
@@ -255,7 +257,7 @@ export default class PageStoreStockItems extends TableBasePage {
                 valueSelected = storageLocationJson[attrIdStorageLocation]
             );
             optionStorageLocation = DOM.createOption(optionStorageLocationJson);
-            console.log("optionStorageLocation: ", optionStorageLocation);
+            if (_verbose) { console.log("optionStorageLocation: ", optionStorageLocation); }
             ddlStorageLocation.appendChild(optionStorageLocation);
         });
 
@@ -270,12 +272,12 @@ export default class PageStoreStockItems extends TableBasePage {
         let parent = element.parentElement;
         parent.innerHTML = '';
         parent.appendChild(tblStorageLocation);
-        console.log("tblStorageLocation: ", tblStorageLocation);
+        if (_verbose) { console.log("tblStorageLocation: ", tblStorageLocation); }
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagPlant + ' select', (event, element) => { this.handleChangeStoragePlantDdl(event, element); });
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagStorageLocation + ' select', (event, element) => { this.handleChangeStorageLocationDdl(event, element); });
     }
     handleChangeStoragePlantDdl(event, ddlPlant) {
-        this.handleChangeTableCellDdl(event, ddlPlant);
+        this.handleChangeNestedElementCellTable(event, ddlPlant);
         let row = DOM.getRowFromElement(ddlPlant);
         let ddlStorageLocation = row.querySelector('td.' + flagStorageLocation + ' select');
         ddlStorageLocation.innerHTML = '';
@@ -288,10 +290,10 @@ export default class PageStoreStockItems extends TableBasePage {
             option = DOM.createOption(optionJson);
             ddlStorageLocation.appendChild(option);
         });
-        this.handleChangeTableCellDdl(event, ddlStorageLocation);
+        this.handleChangeNestedElementCellTable(event, ddlStorageLocation);
     }
     handleChangeStorageLocationDdl(event, ddlStorageLocation) {
-        this.handleChangeTableCellDdl(event, ddlStorageLocation);
+        this.handleChangeNestedElementCellTable(event, ddlStorageLocation);
     }
 
     hookupSealingInputs() {

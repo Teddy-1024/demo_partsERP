@@ -93,6 +93,7 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
             'a_comment': comment,
             'a_guid': guid,
             'a_id_user': user.id_user,
+            'a_debug': 0,
         }
         save_result = cls.db_procedure_execute('p_shop_save_product_category', argument_dict_list)
         save_result.close()

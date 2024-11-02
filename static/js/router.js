@@ -143,7 +143,7 @@ export default class Router {
             return module; // [pageJson.name];
         }
         catch (error) {
-            console.log("this.pages: ", this.pages);
+            if (_verbose) { console.log("this.pages: ", this.pages); };
             console.error('Page not found:', hashPage);
             throw error;
         }
@@ -169,7 +169,6 @@ export default class Router {
         // this.beforeLeave();
         /*
         if (this.routes[hash]) {
-            console.log("navigating to hash: " + hash);
             this.routes[hash](isPopState);
         } else {
             console.error(`Hash ${hash} not found`);
@@ -323,7 +322,6 @@ export default class Router {
     */
    
     static loadPageBodyFromResponse(response) {
-        console.log(response.data);
         DOM.loadPageBody(response.data);
     }
 }

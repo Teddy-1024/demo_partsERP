@@ -187,6 +187,7 @@
 7204_p_shop_get_many_product.sql
 7205_p_shop_get_many_stripe_product_new.sql
 7206_p_shop_save_product_permutation.sql
+7206_p_shop_save_product_permutation_test.sql
 7210_p_shop_get_many_product_variation.sql
 7219_p_shop_get_many_stock_item.sql
 7220_p_shop_save_stock_item.sql
@@ -203,6 +204,7 @@
 7403_p_shop_save_supplier_purchase_order_test.sql
 7404_p_shop_get_many_supplier_purchase_order.sql
 7415_p_shop_save_manufacturing_purchase_order.sql
+7415_p_shop_save_Manufacturing_purchase_order_test.sql
 7416_p_shop_get_many_manufacturing_purchase_order.sql
 7421_p_shop_save_customer.sql
 7422_p_shop_get_many_customer.sql

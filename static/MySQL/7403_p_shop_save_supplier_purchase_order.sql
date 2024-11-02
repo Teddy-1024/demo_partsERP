@@ -285,7 +285,7 @@ BEGIN
 				'A valid ID is required for the following Supplier Purchase Order(s): '
 				, GROUP_CONCAT(CONCAT(IFNULL(t_SPO.id_stock, '(No Supplier Purchase Order)')) SEPARATOR ', ')
 			) AS msg
-		FROM tmp_Stock_Item t_SPO
+		FROM tmp_Supplier_Purchase_Order t_SPO
         LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_SPO.id_order = SPO.id_order
         WHERE 1=1
 			AND t_SPO.id_stock > 0
@@ -316,7 +316,7 @@ BEGIN
 				'A valid supplier is required for the following Supplier Purchase Order(s): '
 				, GROUP_CONCAT(CONCAT(IFNULL(t_SPO.id_stock, '(No Supplier Purchase Order)'), ' - ', t_SPO.id_supplier_ordered) SEPARATOR ', ')
 			) AS msg
-		FROM tmp_Stock_Item t_SPO
+		FROM tmp_Supplier_Purchase_Order t_SPO
         LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SPO.id_supplier_ordered = S.id_supplier
         WHERE 1=1
 			AND (
@@ -349,7 +349,7 @@ BEGIN
 				'A valid currency is required for the following Supplier Purchase Order(s): '
 				, GROUP_CONCAT(CONCAT(IFNULL(t_SPO.id_stock, '(No Supplier Purchase Order)'), ' - ', t_SPO.id_currency_cost) SEPARATOR ', ')
 			) AS msg
-		FROM tmp_Stock_Item t_SPO
+		FROM tmp_Supplier_Purchase_Order t_SPO
         LEFT JOIN partsltd_prod.Shop_Currency C ON t_SPO.id_currency_cost = C.id_currency
         WHERE 1=1
 			AND (
@@ -559,7 +559,7 @@ BEGIN
 		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid) THEN
+	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -567,11 +567,18 @@ BEGIN
 			, code
 			, msg
 		)
-		VALUES (
+		SELECT
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
-		)
+			, CONCAT(
+				'You do not have view permissions for '
+				, GROUP_CONCAT(name SEPARATOR ', ') 
+			) AS msg
+		FROM partsltd_prod.Shop_Permission PERM
+		INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T 
+			ON PERM.id_permission = UE_T.id_permission
+			AND UE_T.GUID = a_guid
+			AND IFNULL(UE_T.can_view, 0) = 0
 		;
 	END IF;
 

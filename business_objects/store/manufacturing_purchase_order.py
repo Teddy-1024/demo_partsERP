@@ -94,13 +94,13 @@ class Manufacturing_Purchase_Order(db.Model, Store_Base):
         manufacturing_purchase_order = cls()
         manufacturing_purchase_order.id_order = json[cls.ATTR_ID_MANUFACTURING_PURCHASE_ORDER]
         manufacturing_purchase_order.id_currency = json[cls.ATTR_ID_CURRENCY]
-        manufacturing_purchase_order.cost_total_local_VAT_excl = json[cls.FLAG_COST_TOTAL_LOCAL_VAT_EXCL]
-        manufacturing_purchase_order.cost_total_local_VAT_incl = json[cls.FLAG_COST_TOTAL_LOCAL_VAT_INCL]
-        manufacturing_purchase_order.price_total_local_VAT_excl = json[cls.FLAG_PRICE_TOTAL_LOCAL_VAT_EXCL]
-        manufacturing_purchase_order.price_total_local_VAT_incl = json[cls.FLAG_PRICE_TOTAL_LOCAL_VAT_INCL]
+        manufacturing_purchase_order.cost_total_local_VAT_excl = json.get(cls.FLAG_COST_TOTAL_LOCAL_VAT_EXCL, None)
+        manufacturing_purchase_order.cost_total_local_VAT_incl = json.get(cls.FLAG_COST_TOTAL_LOCAL_VAT_INCL, None)
+        manufacturing_purchase_order.price_total_local_VAT_excl = json.get(cls.FLAG_PRICE_TOTAL_LOCAL_VAT_EXCL, None)
+        manufacturing_purchase_order.price_total_local_VAT_incl = json.get(cls.FLAG_PRICE_TOTAL_LOCAL_VAT_INCL, None)
         manufacturing_purchase_order.active = json[cls.FLAG_ACTIVE]
-        manufacturing_purchase_order.created_on = json[cls.FLAG_CREATED_ON]
-        manufacturing_purchase_order.name = json[cls.FLAG_NAME]
+        manufacturing_purchase_order.created_on = json.get(cls.FLAG_CREATED_ON, None)
+        manufacturing_purchase_order.name = json.get(cls.FLAG_NAME, None)
         return manufacturing_purchase_order
     def get_items_preview_str(self):
         preview = ''
@@ -281,10 +281,12 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     id_unit_latency_manufacture = db.Column(db.Integer)
     latency_manufacture: int = db.Column(db.Integer)
     display_order: int = db.Column(db.Integer)
+    """
     cost_unit_local_VAT_excl: float = db.Column(db.Float)
     cost_unit_local_VAT_incl: float = db.Column(db.Float)
     price_unit_local_VAT_excl: float = db.Column(db.Float)
     price_unit_local_VAT_incl: float = db.Column(db.Float)
+    """
     active: bool = db.Column(db.Boolean)
     guid: str = db.Column(db.String(36))
     @classmethod
@@ -299,10 +301,12 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
         row.id_unit_latency_manufacture = manufacturing_purchase_order_product_link.id_unit_latency_manufacture
         row.latency_manufacture = manufacturing_purchase_order_product_link.latency_manufacture
         row.display_order = manufacturing_purchase_order_product_link.display_order
+        """
         row.cost_unit_local_VAT_excl = manufacturing_purchase_order_product_link.cost_unit_local_VAT_excl
         row.cost_unit_local_VAT_incl = manufacturing_purchase_order_product_link.cost_unit_local_VAT_incl
         row.price_unit_local_VAT_excl = manufacturing_purchase_order_product_link.price_unit_local_VAT_excl
         row.price_unit_local_VAT_incl = manufacturing_purchase_order_product_link.price_unit_local_VAT_incl
+        """
         row.active = 1 if manufacturing_purchase_order_product_link.active else 0
         return row
     def __repr__(self):
@@ -316,10 +320,6 @@ quantity_produced: {self.quantity_produced}
 {self.ATTR_ID_UNIT_MEASUREMENT_LATENCY_MANUFACTURE}: {self.id_unit_latency_manufacture}
 latency_manufacture: {self.latency_manufacture}
 display_order: {self.display_order}
-cost_unit_local_VAT_excl: {self.cost_unit_local_VAT_excl}
-cost_unit_local_VAT_incl: {self.cost_unit_local_VAT_incl}
-price_unit_local_VAT_excl: {self.price_unit_local_VAT_excl}
-price_unit_local_VAT_incl: {self.price_unit_local_VAT_incl}
 active: {self.active}
 guid: {self.guid}
             '''

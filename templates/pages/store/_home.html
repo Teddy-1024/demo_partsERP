@@ -1,6 +1,10 @@
 {% extends 'layouts/layout.html' %}
 
-{% block title %}{{ model.title }}{% endblock %}
+{% block page_head %}
+    <link rel="preload" as="style" href="{{ url_for('static', filename='dist/css/store_home.bundle.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_home.bundle.css') }}"></noscript>
+{% endblock %}
+
 
 {% block page_body %}
     {% include 'components/store/_home_body.html' %}

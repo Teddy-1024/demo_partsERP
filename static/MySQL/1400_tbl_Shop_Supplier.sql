@@ -28,6 +28,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier (
     , id_change_set INT
     , CONSTRAINT FK_Shop_Supplier_id_change_set
         FOREIGN KEY (id_change_set)
-        REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
+        REFERENCES Shop_User_Change_Set(id_change_set)
 	, id_supplier_temp INT NOT NULL
 );
