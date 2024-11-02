@@ -14,7 +14,7 @@ export default class BasePage {
             throw new Error("Router is required");
         }
         else {
-            console.log("initialising with router: ", router);
+            if (_verbose) { console.log("initialising with router: ", router); }
         }
         this.router = router;
         this.title = titlePageCurrent;
@@ -38,7 +38,7 @@ export default class BasePage {
     }
 
     logInitialisation() {
-        console.log('Initializing ' + this.title + ' page');
+        if (_verbose) { console.log('Initializing ' + this.title + ' page'); }
     }
     
     hookupCommonElements() {
@@ -189,7 +189,7 @@ export default class BasePage {
         Events.initialiseEventHandler('form.' + flagFilter + ' button.' + flagSave, flagInitialised, (button) => {
             button.addEventListener("click", (event) => {
                 event.stopPropagation();
-                console.log('saving page: ', this.title);
+                if (_verbose) { console.log('saving page: ', this.title); }
                 OverlayConfirm.show();
             });
             // button.classList.add(flagCollapsed);
@@ -204,7 +204,7 @@ export default class BasePage {
     }
 
     leave() {
-        console.log('Leaving ' + this.title + ' page');
+        if (_verbose) { console.log('Leaving ' + this.title + ' page'); }
         if (this.constructor === BasePage) {
             throw new Error("Must implement leave() method.");
         }
@@ -222,11 +222,11 @@ export default class BasePage {
         if (show) {
             buttonCancel.classList.remove(flagCollapsed);
             buttonSave.classList.remove(flagCollapsed);
-            console.log('showing buttons');
+            if (_verbose) { console.log('showing buttons'); }
         } else {
             buttonCancel.classList.add(flagCollapsed);
             buttonSave.classList.add(flagCollapsed);
-            console.log('hiding buttons');
+            if (_verbose) { console.log('hiding buttons'); }
         }
     }
 

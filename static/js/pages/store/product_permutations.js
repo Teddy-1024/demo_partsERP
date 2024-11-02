@@ -67,12 +67,12 @@ export default class PageStoreProductPermutations extends TableBasePage {
     }
 
     loadRowTable(rowJson) {
-        /*
         if (rowJson == null) return;
+        if (_verbose) { console.log("applying data row: ", rowJson); }
+        /*
         let tableMain = TableBasePage.getTableMain();
         let row = _rowBlank.cloneNode(true);
         row.classList.remove(flagRowNew);
-        console.log("applying data row: ", rowJson);
         let dllCategory = row.querySelector('td.' + flagProductCategory + ' select');
         dllCategory.value = rowJson[attrIdProductCategory];
         let ddlProduct = row.querySelector('td.' + flagProduct + ' select');
@@ -130,7 +130,8 @@ export default class PageStoreProductPermutations extends TableBasePage {
         let tdProduct = row.querySelector('td.' + flagProduct);
         let tdProductVariations = row.querySelector('td.' + flagProductVariations);
         let inputDescription = row.querySelector('td.' + flagDescription + ' textarea');
-        let inputCostLocal = row.querySelector('td.' + flagCostLocal + ' input');
+        let inputCostLocalVatExcl = row.querySelector('td.' + flagCostUnitLocalVatExcl + ' input');
+        let inputCostLocalVatIncl = row.querySelector('td.' + flagCostUnitLocalVatIncl + ' input');
         let tdCurrencyCost = row.querySelector('td.' + flagCurrencyCost);
         let inputProfitLocalMin = row.querySelector('td.' + flagProfitLocalMin + ' input');
         let inputLatencyManufactureDays = row.querySelector('td.' + flagLatencyManufacture + ' input');
@@ -155,7 +156,8 @@ export default class PageStoreProductPermutations extends TableBasePage {
         jsonRow[flagProductVariations] = tdProductVariations.getAttribute(attrValueCurrent);
         jsonRow[flagHasVariations] = jsonRow[flagProductVariations] != '';
         jsonRow[flagDescription] = inputDescription.getAttribute(attrValueCurrent);
-        jsonRow[flagCostLocal] = inputCostLocal.getAttribute(attrValueCurrent);
+        jsonRow[flagCostUnitLocalVatExcl] = inputCostLocalVatExcl.getAttribute(attrValueCurrent);
+        jsonRow[flagCostUnitLocalVatIncl] = inputCostLocalVatIncl.getAttribute(attrValueCurrent);
         jsonRow[flagCurrencyCost] = tdCurrencyCost.getAttribute(attrValueCurrent);
         jsonRow[flagProfitLocalMin] = inputProfitLocalMin.getAttribute(attrValueCurrent);
         jsonRow[flagLatencyManufacture] = inputLatencyManufactureDays.getAttribute(attrValueCurrent);
@@ -181,8 +183,10 @@ export default class PageStoreProductPermutations extends TableBasePage {
         let ddlProductFilter = document.querySelector(idFormFilters + ' #' + attrIdProduct);
         let idProductFilter = DOM.getElementValueCurrent(ddlProductFilter);
         let hasProductFilter = !(Validation.isEmpty(idProductFilter) || idProductFilter == '0');
-        console.log("initialiseRowNew: ", row);
-        console.log({ddlCategoryFilter, idProductCategoryFilter, hasCategoryFilter, ddlProductFilter, idProductFilter, hasProductFilter});
+        if (_verbose) { 
+            console.log("initialiseRowNew: ", row);
+            console.log({ddlCategoryFilter, idProductCategoryFilter, hasCategoryFilter, ddlProductFilter, idProductFilter, hasProductFilter}); 
+        }
         if (!hasCategoryFilter && !hasProductFilter) return;
         if (hasCategoryFilter) {
             let ddlCategory = row.querySelector('td.' + flagProductCategory + ' select');
@@ -231,7 +235,10 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagCurrencyCost, Utils.getListFromDict(currencies));
     }
     hookupCostInputs(){
-        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostLocal + ' input');
+        /*
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostUnitLocalVatExcl + ' input');
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostUnitLocalVatIncl + ' input');
+        */
     }
     hookupProfitFields(){
         // this.hookupCurrencyProfitFields();
@@ -268,7 +275,6 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCountUnitMeasurementPerQuantityStep + ' input');
     }
     hookupUnitMeasurementQuantityFields() {
-        console.log("hooking up unit measurement quantity fields");
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagUnitMeasurementQuantity, Utils.getListFromDict(unitMeasurements));
     }
     hookupSubscriptionFields() {

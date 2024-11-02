@@ -32,7 +32,7 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT_CATEGORY
     NAME_ATTR_OPTION_TEXT: ClassVar[str] = Store_Base.FLAG_NAME
 
-    __tablename__ = 'Shop_Product_Category_Temp'
+    __tablename__ = 'Shop_Product_Category'
     id_category = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(50))
     name = db.Column(db.String(255))
@@ -214,7 +214,7 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         category.id_access_level_required = json[cls.ATTR_ID_ACCESS_LEVEL]
         category.name_access_level_required = json.get(cls.FLAG_ACCESS_LEVEL_REQUIRED, '')
         category.display_order = json[cls.FLAG_DISPLAY_ORDER]
-        category.active = json[cls.FLAG_ACTIVE]
+        category.active = 1 if av.input_bool(json[cls.FLAG_ACTIVE], cls.FLAG_ACTIVE, f'{cls.__name__}.from_json') else 0
         category.can_view = json.get(cls.FLAG_CAN_VIEW, False)
         category.can_edit = json.get(cls.FLAG_CAN_EDIT, False)
         category.can_admin = json.get(cls.FLAG_CAN_ADMIN, False)
@@ -471,7 +471,7 @@ class Product_Category_Temp(db.Model, Store_Base):
     id_access_level_required: int = db.Column(db.Integer)
     active: bool = db.Column(db.Boolean)
     display_order: int = db.Column(db.Integer)
-    guid: str = db.Column(db.BINARY(36))
+    guid: str = db.Column(db.String(36))
     # created_on: datetime = db.Column(db.DateTime)
     # created_by: int = db.Column(db.Integer)
 

@@ -99,6 +99,7 @@ class DataStore_Store_Product_Permutation(DataStore_Store_Base):
             'a_comment': comment,
             'a_guid': guid,
             'a_id_user': user.id_user,
+            'a_debug': 0,
         }
         cls.db_procedure_execute('p_shop_save_product_permutation', argument_dict_list)
         Helper_App.console_log('saved product permutations')

@@ -8,7 +8,8 @@ DELIMITER //
 CREATE PROCEDURE p_shop_save_product_permutation (
     IN a_comment VARCHAR(500),
 	IN a_guid BINARY(36),
-    IN a_id_user INT
+    IN a_id_user INT,
+    IN a_debug BIT
 )
 BEGIN
     
@@ -18,7 +19,7 @@ BEGIN
     DECLARE v_ids_product_permission LONGTEXT;
     DECLARE v_id_change_set INT;
     DECLARE v_id_access_level_edit INT;
-    DECLARE v_now DATETIME;
+    DECLARE v_time_start TIMESTAMP(6);
     
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
@@ -37,33 +38,34 @@ BEGIN
         
 		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 			display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
-			, guid BINARY(36) NOT NULL
 			, id_type INT NULL
 			, code VARCHAR(50) NOT NULL
 			, msg VARCHAR(4000) NOT NULL
 		);
         INSERT INTO tmp_Msg_Error (
-			guid
-            , id_type
+			id_type
             , code
             , msg
 		)
         SELECT 
-			a_guid
-            , NULL
+			MET.id_type
             , @errno
             , @text
+		FROM partsltd_prod.Shop_Msg_Error_Type MET
+        WHERE MET.code = 'MYSQL_ERROR'
+        LIMIT 1
 		;
         SELECT *
         FROM tmp_Msg_Error;
 		DROP TABLE IF EXISTS tmp_Msg_Error;
     END;
     
+    SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_code_type_error_bad_data := 'BAD_DATA';
     SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
     SET v_id_access_level_edit := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
-    SET a_guid := IFNULL(a_guid, UUID());
+    CALL p_validate_guid ( a_guid );
     
     DROP TABLE IF EXISTS tmp_Permutation;
     
@@ -71,14 +73,15 @@ BEGIN
 		id_permutation INT NOT NULL
 		, id_product INT NOT NULL
 		, description VARCHAR(4000) NOT NULL
-		, cost_local FLOAT NOT NULL
+		, cost_local_VAT_excl FLOAT NULL
+		, cost_local_VAT_incl FLOAT NULL
 		, id_currency_cost INT NOT NULL
-		, profit_local_min FLOAT NOT NULL
+		, profit_local_min FLOAT NULL
 		, latency_manufacture INT NOT NULL
 		, id_unit_measurement_quantity INT NOT NULL
 		, count_unit_measurement_per_quantity_step FLOAT NOT NULL
-		, quantity_min FLOAT NOT NULL
-		, quantity_max FLOAT NOT NULL
+		, quantity_min FLOAT NULL
+		, quantity_max FLOAT NULL
 		, quantity_stock FLOAT NOT NULL
 		, is_subscription BIT NOT NULL
 		, id_unit_measurement_interval_recurrence INT
@@ -97,7 +100,6 @@ BEGIN
         
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
-        , guid BINARY(36) NOT NULL
 		, id_type INT NULL
         , code VARCHAR(50) NOT NULL
         , msg VARCHAR(4000) NOT NULL
@@ -109,7 +111,8 @@ BEGIN
 		id_permutation
 		, id_product
 		, description
-		, cost_local
+		, cost_local_VAT_excl
+		, cost_local_VAT_incl
 		, id_currency_cost
 		, profit_local_min
 		, latency_manufacture
@@ -133,7 +136,8 @@ BEGIN
 		PP_T.id_permutation
 		, IFNULL(PP_T.id_product, PP.id_product) AS id_product
         , IFNULL(PP_T.description, PP.description) AS description
-		, IFNULL(PP_T.cost_local, PP.cost_local) AS cost_local
+		, IFNULL(PP_T.cost_local_VAT_excl, PP.cost_local_VAT_excl) AS cost_local_VAT_excl
+		, IFNULL(PP_T.cost_local_VAT_incl, PP.cost_local_VAT_incl) AS cost_local_VAT_incl
 		, IFNULL(PP_T.id_currency_cost, PP.id_currency_cost) AS a_id_currency_cost
 		, IFNULL(PP_T.profit_local_min, PP.profit_local_min) AS profit_local_min
 		, IFNULL(PP_T.latency_manufacture, PP.latency_manufacture) AS latency_manufacture
@@ -150,7 +154,7 @@ BEGIN
 		, IFNULL(PP_T.id_unit_measurement_interval_expiration_unsealed, PP.id_unit_measurement_interval_expiration_unsealed) AS id_unit_measurement_interval_expiration_unsealed
 		, IFNULL(PP_T.count_interval_expiration_unsealed, PP.count_interval_expiration_unsealed) AS count_interval_expiration_unsealed
         , IFNULL(PP_T.active, PP.active) AS active
-		, fn_shop_get_product_permutation_name(PP_T.id_permutation)
+		, IFNULL(fn_shop_get_product_permutation_name(PP_T.id_permutation), '(No Permutation)') AS name_error
         , CASE WHEN IFNULL(PP_T.id_permutation, 0) < 1 THEN 1 ELSE 0 END AS is_new
 	FROM Shop_Product_Permutation_Temp PP_T
     LEFT JOIN Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
@@ -162,67 +166,77 @@ BEGIN
     -- id_product
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.id_product) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, id_product
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a product: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a product: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
 		WHERE ISNULL(t_P.id_product)
 		;
     END IF;
-    -- cost_local
-    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.cost_local) LIMIT 1) THEN
+    -- cost_local_VAT_excl
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE NOT ISNULL(t_P.cost_local_VAT_excl) AND t_P.cost_local_VAT_excl < 0 LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, cost_local
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a local cost: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a valid local cost excluding VAT: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
-		WHERE ISNULL(t_P.cost_local)
+		WHERE NOT ISNULL(t_P.cost_local_VAT_excl) AND t_P.cost_local_VAT_excl < 0
+		;
+    END IF;
+    -- cost_local_VAT_incl
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE NOT ISNULL(t_P.cost_local_VAT_incl) AND t_P.cost_local_VAT_incl < 0 LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have a valid local cost including VAT: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE NOT ISNULL(t_P.cost_local_VAT_incl) AND t_P.cost_local_VAT_incl < 0
 		;
     END IF;
     -- profit_local_min 
-    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.profit_local_min) LIMIT 1) THEN
+    IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE NOT ISNULL(t_P.profit_local_min) AND t_P.profit_local_min < 0 LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, profit_local_min
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a local minimum profit: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a local minimum profit: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
-		WHERE ISNULL(t_P.profit_local_min)
+		WHERE NOT ISNULL(t_P.profit_local_min) AND t_P.profit_local_min < 0
 		;
     END IF;
+    
+    SELECT 'NIPS';
+    
     -- 	latency_manufacture
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.latency_manufacture) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, latency_manufacture
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a manufacturing latency: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a manufacturing latency: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
 		WHERE ISNULL(t_P.latency_manufacture)
 		;
@@ -230,16 +244,14 @@ BEGIN
     -- id_unit_measurement_quantity
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.id_unit_measurement_quantity) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, id_unit_measurement_quantity
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a unit measurement for stock quantities: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a unit measurement for stock quantities: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
 		WHERE ISNULL(t_P.id_unit_measurement_quantity)
 		;
@@ -247,16 +259,14 @@ BEGIN
     -- 	count_unit_measurement_per_quantity_step
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.count_unit_measurement_per_quantity_step) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, count_unit_measurement_per_quantity_step
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a count unit measurement per quantity step: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a count unit measurement per quantity step: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
 		WHERE ISNULL(t_P.count_unit_measurement_per_quantity_step)
 		;
@@ -264,16 +274,14 @@ BEGIN
     -- quantity_min
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.quantity_min) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, quantity_min
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a minimum quantity: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a minimum quantity: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
 		WHERE ISNULL(t_P.quantity_min)
 		;
@@ -281,16 +289,14 @@ BEGIN
     -- 	quantity_max
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.quantity_max) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, quantity_max
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a maximum quantity: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a maximum quantity: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
 		WHERE ISNULL(t_P.quantity_max)
 		;
@@ -298,16 +304,14 @@ BEGIN
     -- is_subscription
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.is_subscription) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, is_subscription
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have an is subscription?: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have an is subscription?: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
 		WHERE ISNULL(t_P.is_subscription)
 		;
@@ -315,68 +319,82 @@ BEGIN
     -- does_expire_faster_once_unsealed
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.does_expire_faster_once_unsealed) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
-			guid
-			, id_type
-			, does_expire_faster_once_unsealed
+			id_type
+			, code
 			, msg
 		)
 		SELECT
-			a_guid AS GUID
-			, v_id_type_error_bad_data
+			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following product permutation(s) do not have a does expire faster once unsealed: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following product permutation(s) do not have a does expire faster once unsealed: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
 		WHERE ISNULL(t_P.does_expire_faster_once_unsealed)
 		;
     END IF;
     
     -- Permissions
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN -- (SELECT * FROM tmp_Product WHERE is_new = 0 LIMIT 1) THEN
-        SET v_ids_product_permission := (
-			SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') 
-            FROM Shop_Product P 
-            INNER JOIN tmp_Permutation t_P
-				ON P.id_product = t_P.id_product 
-                -- AND t_P.is_new = 0
-		);
-        IF NOT ISNULL(v_ids_product_permission) THEN
-			SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
-			
-			CALL p_shop_calc_user(a_guid, a_id_user, FALSE, v_id_permission_product, v_id_access_level_edit, v_ids_product_permission);
-			
-			UPDATE tmp_Permutation t_P
-            INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
-			INNER JOIN Shop_Calc_User_Temp UE_T
-				ON P.id_product = UE_T.id_product
-				AND UE_T.GUID = a_guid
-			SET 
-				t_P.can_view = UE_T.can_view
-				, t_P.can_edit = UE_T.can_edit
-				, t_P.can_admin = UE_T.can_admin
-			;
-			
-			CALL p_shop_clear_calc_user(a_guid);
-
-			IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.can_edit) LIMIT 1) THEN
-				INSERT INTO tmp_Msg_Error (
-					guid
-					, id_type
-					, code
-					, msg
-				)
-				SELECT
-					a_guid AS GUID
-					, v_id_type_error_bad_data
-					, v_code_type_error_bad_data
-					, CONCAT('The following product permutation(s) do not have product edit permission: ', GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', ')) AS msg
-				FROM tmp_Permutation t_P
-				WHERE ISNULL(t_P.can_edit)
-				;
-			END IF;
-		END IF;
+	SET v_ids_product_permission := (
+		SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') 
+		FROM Shop_Product P 
+		INNER JOIN tmp_Permutation t_P
+			ON P.id_product = t_P.id_product 
+			-- AND t_P.is_new = 0
+	);
+    
+	SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
+	
+    IF a_debug = 1 THEN
+		SELECT
+			a_guid
+			, a_id_user
+			, FALSE AS a_get_inactive_user
+			, v_id_permission_product
+			, v_id_access_level_edit
+			, v_ids_product_permission
+			, 0 AS a_debug
+		;
     END IF;
     
-    SET v_now := CURRENT_DATETIME();
+	CALL p_shop_calc_user(
+		a_guid
+        , a_id_user
+        , FALSE -- a_get_inactive_user
+        , v_id_permission_product
+        , v_id_access_level_edit
+        , v_ids_product_permission
+        , 0 -- a_debug
+	);
+	
+	UPDATE tmp_Permutation t_P
+	INNER JOIN Shop_Product P ON t_P.id_product = P.id_product
+	INNER JOIN Shop_Calc_User_Temp UE_T
+		ON P.id_product = UE_T.id_product
+		AND UE_T.GUID = a_guid
+	SET 
+		t_P.can_view = UE_T.can_view
+		, t_P.can_edit = UE_T.can_edit
+		, t_P.can_admin = UE_T.can_admin
+	;
+	
+	CALL p_shop_clear_calc_user(
+		a_guid
+        , 0 -- a_debug
+	);
+
+	IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.can_edit) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following product permutation(s) do not have product edit permission: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
+		FROM tmp_Permutation t_P
+		WHERE ISNULL(t_P.can_edit)
+		;
+	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
@@ -393,7 +411,8 @@ BEGIN
 			SET 
 				PP.id_product = t_P.id_product
 				, PP.description = t_P.description
-				, PP.cost_local = t_P.cost_local
+				, PP.cost_local_VAT_excl = t_P.cost_local_VAT_excl
+				, PP.cost_local_VAT_incl = t_P.cost_local_VAT_incl
 				, PP.id_currency_cost = t_P.id_currency_cost
 				, PP.profit_local_min = t_P.profit_local_min
 				, PP.latency_manufacture = t_P.latency_manufacture
@@ -417,7 +436,8 @@ BEGIN
 		INSERT INTO Shop_Product_Permutation (
 			id_product
 			, description
-			, cost_local
+			, cost_local_VAT_excl
+            , cost_local_VAT_incl
 			, id_currency_cost
 			, profit_local_min
 			, latency_manufacture
@@ -440,7 +460,8 @@ BEGIN
 		SELECT
 			t_P.id_product AS id_product
 			, t_P.description AS description
-			, t_P.cost_local AS cost_local
+			, t_P.cost_local_VAT_excl AS cost_local_VAT_excl
+			, t_P.cost_local_VAT_incl AS cost_local_VAT_incl
 			, t_P.id_currency_cost AS id_currency_cost
 			, t_P.profit_local_min AS profit_local_min
 			, t_P.latency_manufacture AS latency_manufacture
@@ -458,7 +479,7 @@ BEGIN
 			, t_P.count_interval_expiration_unsealed AS count_interval_expiration_unsealed
 			, t_P.active AS active
 			, a_id_user AS created_by
-			, v_now AS created_on
+			, v_time_start AS created_on
 		FROM tmp_Permutation t_P
 		WHERE 
 			is_new = 1
@@ -471,10 +492,22 @@ BEGIN
 		COMMIT;
     END IF;
     
-    SELECT * FROM tmp_Msg_Error;
+    # Errors
+    SELECT *
+    FROM tmp_Msg_Error t_ME
+	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	;
     
-    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
-    DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
+	IF a_debug = 1 THEN
+		SELECT * from tmp_Permutation;
+	END IF;
+
+    DROP TEMPORARY TABLE tmp_Permutation;
+    DROP TEMPORARY TABLE tmp_Msg_Error;
+    
+	IF a_debug = 1 THEN
+		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+	END IF;
 END //
 DELIMITER ;;
 

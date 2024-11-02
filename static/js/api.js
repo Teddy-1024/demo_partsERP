@@ -22,8 +22,6 @@ export default class API {
             options.body = JSON.stringify(data);
         }
 
-        console.log('API request:', method, url, data);
-
         try {
             const response = await fetch(url, options);
             if (!response.ok) {
@@ -38,10 +36,7 @@ export default class API {
     
     static getUrlFromHash(hash, params = null) {
         if (hash == null) hash = hashPageHome;
-        console.log("getUrlFromHash:");
-        console.log("base url: " + _pathHost + "\nhash: " + hash + '\nparams: ' + params);
         let url = API.parameteriseUrl(_pathHost + hash, params);
-        console.log("url: " + url);
         return url;
     }
     static parameteriseUrl(url, params) {

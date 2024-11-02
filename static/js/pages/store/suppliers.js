@@ -132,7 +132,7 @@ export default class PageStoreSuppliers extends TableBasePage {
         });
     }
     handleClickAddressPreview(event, element) {
-        console.log("click address preview");
+        if (_verbose) { console.log("click address preview"); }
         this.toggleColumnHeaderCollapsed(flagAddress, false);
         element.classList.remove(flagCollapsed);
         let row = DOM.getRowFromElement(element);
@@ -192,11 +192,11 @@ export default class PageStoreSuppliers extends TableBasePage {
         let cellNew = cell.cloneNode(false);
         cellNew.appendChild(tblAddresses);
         row.replaceChild(cellNew, cell);
-        console.log("tblAddresses: ", tblAddresses);
+        if (_verbose) { console.log("tblAddresses: ", tblAddresses); }
         this.hookupAddressFields();
     }
     addRowSupplierAddress(tbody, supplierAddress, regionOptions) {
-        console.log("addRowSupplierAddress: ", supplierAddress);
+        if (_verbose) { console.log("addRowSupplierAddress: ", supplierAddress); }
         let tdPostcode = document.createElement("td");
         tdPostcode.classList.add(flagPostcode);
         let textareaPostcode = document.createElement("textarea");
@@ -279,28 +279,25 @@ export default class PageStoreSuppliers extends TableBasePage {
         tbody.appendChild(tr);
     }
     hookupAddressPostcodeInputs() {
-        this.handleChangeElementAddressSubtableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagPostcode);
-    }
-    handleChangeElementAddressSubtableCells(event, element) {
-        this.handleChangeNestedElementCellTable(event, element); //  flagAddress);
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagPostcode);
     }
     hookupAddressLine1Inputs() {
-        this.handleChangeElementAddressSubtableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagAddressLine1);
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagAddressLine1);
     }
     hookupAddressLine2Inputs() {
-        this.handleChangeElementAddressSubtableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagAddressLine2);
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagAddressLine2);
     }
     hookupAddressCityInputs() {
-        this.handleChangeElementAddressSubtableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagCity);
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagCity);
     }
     hookupAddressCountyInputs() {
-        this.handleChangeElementAddressSubtableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagCounty);
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagAddress + ' textarea.' + flagCounty);
     }
     hookupAddressRegionDdls() {
-        this.handleChangeElementAddressSubtableCells(idTableMain + ' td.' + flagAddress + ' select.' + flagRegion);
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagAddress + ' select.' + flagRegion);
     }
     hookupAddressActiveCheckboxes() {
-        this.handleChangeElementAddressSubtableCells(idTableMain + ' td.' + flagAddress + ' input.' + flagActive, (event, element) => {
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagAddress + ' input.' + flagActive, (event, element) => {
             let rowSupplierAddress = element.closest('tr');
             let idAddress = rowSupplierAddress.getAttribute(attrIdSupplierAddress);
             DOM.setElementAttributeValueCurrent(rowSupplierAddress, idAddress);

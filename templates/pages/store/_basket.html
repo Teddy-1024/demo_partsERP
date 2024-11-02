@@ -1,14 +1,12 @@
 {% extends 'layouts/layout.html' %}
 
-{% block title %}{{ model.title }}{% endblock %}
+{% block page_head %}
+    <link rel="preload" as="style" href="{{ url_for('static', filename='dist/css/store_basket.bundle.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_basket.bundle.css') }}"></noscript>
+{% endblock %}
+
 
 {% block page_body %}
-    <!-- Include Stylesheets
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/store/basket.css') }}">
-    -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_basket.bundle.css') }}">
-
     <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }}">
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">

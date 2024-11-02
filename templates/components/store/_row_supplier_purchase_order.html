@@ -4,6 +4,9 @@
         <td class="{{ model.FLAG_SUPPLIER }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
             {% include 'components/store/_preview_DDL_supplier.html' %}
         </td>
+        <td class="{{ model.FLAG_ORDER_ITEMS }} {{ model.FLAG_COLLAPSED }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
+            {% include 'components/store/_preview_order_items.html' %}
+        </td>
         <td class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
             {% include 'components/store/_preview_DDL_currency.html' %}
         </td>
@@ -19,9 +22,6 @@
                 {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}=""
             ></div>
         </td>
-        <td class="{{ model.FLAG_ORDER_ITEMS }} {{ model.FLAG_COLLAPSED }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
-            {% include 'components/store/_preview_order_items.html' %}
-        </td>
         <td class="{{ model.FLAG_ACTIVE }}">
             <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}">
         </td>
@@ -31,6 +31,11 @@
         {% set supplier = order.supplier %}
         <td class="{{ model.FLAG_SUPPLIER }}" {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.id_supplier }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.id_supplier }}">
             {% include 'components/store/_preview_DDL_supplier.html' %}
+        </td>
+        {% set order_items = order.items %}
+        {% set json_str_items = model.jsonify(model.convert_list_objects_to_list_options(order_items)) %}
+        <td class="{{ model.FLAG_ORDER_ITEMS }} {{ model.FLAG_COLLAPSED }}" {{ model.ATTR_VALUE_CURRENT }}="{{ json_str_items }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ json_str_items }}">
+            {% include 'components/store/_preview_order_items.html' %}
         </td>
         {% set currency = order.currency %}
         <td class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ currency.id_currency }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ currency.id_currency }}">
@@ -55,11 +60,6 @@
                 {{ model.ATTR_VALUE_CURRENT }}="{{ order.cost_total_local_VAT_incl }}" 
                 {{ model.ATTR_VALUE_PREVIOUS }}="{{ order.cost_total_local_VAT_incl }}"
             ></div>
-        </td>
-        {% set order_items = order.items %}
-        {% set json_str_items = model.jsonify(model.convert_list_objects_to_list_options(order_items)) %}
-        <td class="{{ model.FLAG_ORDER_ITEMS }} {{ model.FLAG_COLLAPSED }}" {{ model.ATTR_VALUE_CURRENT }}="{{ json_str_items }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ json_str_items }}">
-            {% include 'components/store/_preview_order_items.html' %}
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
             <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ order.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ order.active | lower }}">

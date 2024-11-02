@@ -235,13 +235,17 @@
         var _pathHost = "{{ model.get_url_host() }}";
         var _rowBlank = null;
         var titlePageCurrent = "{{ model.title }}";
+        var _verbose = ("{{ model.app.app_config.DEBUG }}" == "True");
     </script>
 
 
     <!-- Stylesheets 
     <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" loading="eager" href="{{ url_for('static', filename='dist/css/main.bundle.css') }}">
     -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/main.bundle.css') }}">
+    <link rel="preload" as="style" href="{{ url_for('static', filename='dist/css/main.bundle.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='dist/css/main.bundle.css') }}"></noscript>
+    {% block page_head %}{% endblock %}
 </head>
 <body data-page="{{ model.hash_page_current }}">
 <div class="topnav">

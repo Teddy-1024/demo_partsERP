@@ -17,7 +17,10 @@
         <td class="{{ model.FLAG_HAS_VARIATIONS }}">
             <input class="{{ model.FLAG_HAS_VARIATIONS }}" type="checkbox" {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_FALSE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_FALSE }}">
         </td>
-        <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="View">
+        <td class="{{ model.FLAG_ACCESS_LEVEL }}" 
+            {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="View"
+            {{ model.ATTR_VALUE_CURRENT }}="1" {{ model.ATTR_VALUE_PREVIOUS }}="1"
+        >
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1">View</div>
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">
@@ -46,7 +49,10 @@
             <input class="{{ model.FLAG_HAS_VARIATIONS }}" type="checkbox" {% if product.has_variations %}checked{% endif %} 
             {{ model.ATTR_VALUE_CURRENT }}="{{ product.has_variations | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.has_variations | lower }}">
         </td>
-        <td class="{{ model.FLAG_ACCESS_LEVEL }}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="{{ product.name_access_level_required }}">
+        <td class="{{ model.FLAG_ACCESS_LEVEL }}" 
+            {{ model.ATTR_ID_ACCESS_LEVEL }}="{{ product.id_access_level_required }}" {{ model.FLAG_ACCESS_LEVEL_REQUIRED }}="{{ product.name_access_level_required }}"
+            {{ model.ATTR_VALUE_CURRENT }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.id_access_level_required }}"
+        >
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.id_access_level_required }}">{{ product.name_access_level_required }}</div>
         </td>
         <td class="{{ model.FLAG_ACTIVE }}">

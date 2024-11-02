@@ -33,7 +33,9 @@ BEGIN
 			, active
 			, guid
 		)
-		VALUES (
+		VALUES 
+        /* Test 1 - Update
+        (
 			4 -- id_product
 			, 1 -- id_category
 			, 'Laptops' -- name
@@ -42,7 +44,20 @@ BEGIN
 			, 2 -- display_order
 			, 1 -- active
 			, v_guid
-		);
+		)
+        */
+        /* Test 2 - Insert */
+        (
+			-14 -- id_product
+			, 5 -- id_category
+			, 'Clip' -- name
+			, 0 -- has_variations
+			, 1 -- id_access_level_required
+			, 1 -- display_order
+			, 1 -- active
+			, v_guid
+		)
+        ;
 		
 	COMMIT;
     

@@ -251,10 +251,11 @@ VALUES
 
 # Product Permutations
 INSERT INTO Shop_Product_Permutation (
-	display_order,
+	-- display_order,
 	id_product,
 	description,
-    cost_local,
+    cost_local_VAT_excl,
+    cost_local_VAT_incl,
     id_currency_cost,
     profit_local_min,
     # id_currency_profit_min,
@@ -275,10 +276,11 @@ INSERT INTO Shop_Product_Permutation (
 )
 VALUES 
 	(
-		1, 
+		-- 1, 
 		1, 
 		'Good Red',
         5,
+        6,
         1,
         3,
         # 1,
@@ -298,10 +300,11 @@ VALUES
 		, NULL
 	),
 	(
-		2, 
+		-- 2, 
 		1, 
 		'Good Blue',
         6,
+        7.2,
         1,
         4,
         # 1,
@@ -321,10 +324,11 @@ VALUES
 		, NULL
 	),
 	(
-		3, 
+		-- 3, 
 		2, 
 		'Test product describes good',
         10,
+        12,
         1,
         5,
         # 1,
@@ -344,10 +348,11 @@ VALUES
 		, NULL
 	),
 	(
-		4, 
+		-- 4, 
 		3, 
 		'Phone describes good',
         10,
+        12,
         1,
         5,
         # 1,
@@ -367,10 +372,11 @@ VALUES
 		, NULL
 	),
 	(
-		5, 
+		-- 5, 
 		4, 
 		'Laptop describes good',
         10,
+        12,
         1,
         5,
         # 1,
@@ -390,10 +396,11 @@ VALUES
 		, NULL
 	),
 	(
-		6, 
+		-- 6, 
 		5, 
 		'Smart watch describes good',
         10,
+        12,
         1,
         5,
         # 1,
@@ -740,6 +747,18 @@ VALUES
         , NULL
         , 'farmshop@maltkilnfarmshop.co.uk'
         , 'https://www.maltkilnfarmshop.co.uk/'
+        , 1
+	)
+	, (
+		-3
+		, 'Asda'
+        , NULL
+        , NULL
+        -- , 1
+        , ''
+        , NULL
+        , ''
+        , ''
         , 1
 	)
 ;

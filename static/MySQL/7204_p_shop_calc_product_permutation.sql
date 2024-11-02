@@ -52,7 +52,7 @@ BEGIN
 	WHERE MET.code = 'BAD_DATA'
 	;
     
-    SET a_id_user := TRIM(IFNULL(a_id_user, 0));
+    SET a_id_user := IFNULL(a_id_user, 0);
     SET a_get_all_product_category := IFNULL(a_get_all_product_category, 0);
     SET a_get_inactive_product_category := IFNULL(a_get_inactive_product_category, 0);
     SET a_ids_product_category := TRIM(IFNULL(a_ids_product_category, ''));
@@ -473,6 +473,9 @@ BEGIN
 		DELETE FROM tmp_Product_calc;
 		DELETE FROM tmp_Permutation_calc;
     ELSE
+		SELECT * FROM Shop_Product_Category_Temp;
+		SELECT * FROM Shop_Product_Temp;
+		SELECT * FROM Shop_Product_Permutation_Temp;
     */
 		START TRANSACTION; 
 		
@@ -546,7 +549,8 @@ BEGIN
 				id_permutation
 				, id_product
 				, description
-				, cost_local
+				, cost_local_VAT_excl
+				, cost_local_VAT_incl
 				, id_currency_cost
 				, profit_local_min
 				, latency_manufacture
@@ -572,7 +576,8 @@ BEGIN
 				t_PP.id_permutation
 				, PP.id_product
 				, PP.description
-				, PP.cost_local
+				, PP.cost_local_VAT_excl
+				, PP.cost_local_VAT_incl
 				, PP.id_currency_cost
 				, PP.profit_local_min
 				, PP.latency_manufacture

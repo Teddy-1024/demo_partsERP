@@ -1,8 +1,11 @@
 {% extends 'layouts/layout.html' %}
 
+{% block page_head %}
+    <link rel="preload" as="style" href="{{ url_for('static', filename='dist/css/store_manufacturing_purchase_orders.bundle.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_manufacturing_purchase_orders.bundle.css') }}"></noscript>
+{% endblock %}
+
 {% block page_body %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_manufacturing_purchase_orders.bundle.css') }}">
-    
     <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_manufacturing_purchase_order.filter_manufacturing_purchase_order') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
@@ -41,12 +44,12 @@
     <table id="{{ model.ID_TABLE_MAIN }}" class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
         <thead>
             <tr class="{{ model.FLAG_MANUFACTURING_PURCHASE_ORDER }}">
+                <th class="{{ model.FLAG_ORDER_ITEMS }} {{ model.FLAG_COLLAPSED }}">Items</th>
                 <th class="{{ model.FLAG_CURRENCY }}">Currency</th>
                 <th class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_EXCL }}">Cost Total VAT Excl.</th>
                 <th class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_INCL }}">Cost Total VAT Incl.</th>
                 <th class="{{ model.FLAG_PRICE_TOTAL_LOCAL_VAT_EXCL }}">Price Total VAT Excl.</th>
                 <th class="{{ model.FLAG_PRICE_TOTAL_LOCAL_VAT_INCL }}">Price Total VAT Incl.</th>
-                <th class="{{ model.FLAG_ORDER_ITEMS }} {{ model.FLAG_COLLAPSED }}">Items</th>
                 <th class="{{ model.FLAG_ACTIVE}}">Active</th>
             </tr>
         </thead>

@@ -40,7 +40,6 @@ export default class PageStoreProducts extends TableBasePage {
         row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
             element.classList.remove(flagInitialised);
         });
-        console.log("applying data row: ", rowJson);
         let sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
         let tdProductCategory = row.querySelector('td.' + flagProductCategory);
         let divProductCategory = tdProductCategory.querySelector('div.' + flagProductCategory);

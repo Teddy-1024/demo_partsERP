@@ -38,7 +38,6 @@ class Product_Permutation(db.Model, Store_Base):
     FLAG_CURRENCY_COST = f'{Currency.ATTR_ID_CURRENCY}_cost'
     FLAG_CODE_CURRENCY_COST = f'{Currency.FLAG_CODE}_cost'
     FLAG_SYMBOL_CURRENCY_COST = f'{Currency.FLAG_SYMBOL}_cost'
-    FLAG_COST_LOCAL = 'cost_local'
     FLAG_PROFIT_LOCAL_MIN = 'profit_local_min'
     FLAG_HAS_VARIATIONS = 'has_variations'
     FLAG_LATENCY_MANUFACTURE = 'latency_manufacture'
@@ -78,7 +77,8 @@ class Product_Permutation(db.Model, Store_Base):
     symbol_currency_cost = db.Column(db.String(3))
     """
     # currency_cost: Currency
-    cost_local = db.Column(db.Float)
+    cost_local_VAT_excl = db.Column(db.Float)
+    cost_local_VAT_incl = db.Column(db.Float)
     profit_local_min = db.Column(db.Float)
     has_variations = db.Column(db.Boolean)
     latency_manufacture = db.Column(db.Integer)
@@ -149,40 +149,41 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.id_product = query_row[1]
         permutation.id_category = query_row[2]
         permutation.description = query_row[3]
-        permutation.cost_local = query_row[4]
+        permutation.cost_local_VAT_excl = query_row[4]
+        permutation.cost_local_VAT_incl = query_row[5]
         permutation.currency_cost = Currency.from_DB_get_many_product_catalogue_product_permutation(query_row)
-        permutation.profit_local_min = query_row[8]
-        permutation.latency_manufacture = query_row[9]
-        permutation.id_unit_measurement_quantity = query_row[10]
-        permutation.symbol_unit_measurement_quantity = query_row[11]
-        permutation.symbol_is_suffix_not_prefix_unit_measurement_quantity = av.input_bool(query_row[12], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_QUANTITY, _m, v_arg_type=v_arg_type)
-        permutation.name_singular_unit_measurement_quantity = query_row[13]
-        permutation.name_plural_unit_measurement_quantity = query_row[14]
-        permutation.count_unit_measurement_per_quantity_step = query_row[15]
-        permutation.quantity_min = query_row[16]
-        permutation.quantity_max = query_row[17]
-        permutation.quantity_stock = query_row[18]
-        permutation.is_subscription = av.input_bool(query_row[19], "is_subscription", _m, v_arg_type=v_arg_type)
-        permutation.id_unit_measurement_interval_recurrence = query_row[20]
-        permutation.symbol_unit_measurement_interval_recurrence = query_row[21]
-        permutation.symbol_is_suffix_not_prefix_unit_measurement_interval_recurrence = av.input_bool(query_row[22], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_RECURRENCE, _m, v_arg_type=v_arg_type)
-        permutation.name_singular_unit_measurement_interval_recurrence = query_row[23]
-        permutation.name_plural_unit_measurement_interval_recurrence = query_row[24]
-        permutation.count_interval_recurrence = query_row[25]
-        permutation.id_stripe_product = query_row[26]
-        permutation.does_expire_faster_once_unsealed = av.input_bool(query_row[27], "does_expire_faster_once_unsealed", _m, v_arg_type=v_arg_type)
-        permutation.id_unit_measurement_interval_expiration_unsealed = query_row[28]
-        permutation.symbol_unit_measurement_interval_expiration_unsealed = query_row[29]
-        permutation.symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed = av.input_bool(query_row[30], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED, _m, v_arg_type=v_arg_type)
-        permutation.name_singular_unit_measurement_interval_expiration_unsealed = query_row[31]
-        permutation.name_plural_unit_measurement_interval_expiration_unsealed = query_row[32]
-        permutation.count_interval_expiration_unsealed = query_row[33]
-        permutation.has_variations = av.input_bool(query_row[34], cls.FLAG_HAS_VARIATIONS, _m, v_arg_type=v_arg_type)
-        permutation.active = av.input_bool(query_row[35], cls.FLAG_ACTIVE, _m, v_arg_type=v_arg_type)
+        permutation.profit_local_min = query_row[9]
+        permutation.latency_manufacture = query_row[10]
+        permutation.id_unit_measurement_quantity = query_row[11]
+        permutation.symbol_unit_measurement_quantity = query_row[12]
+        permutation.symbol_is_suffix_not_prefix_unit_measurement_quantity = av.input_bool(query_row[13], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_QUANTITY, _m, v_arg_type=v_arg_type)
+        permutation.name_singular_unit_measurement_quantity = query_row[14]
+        permutation.name_plural_unit_measurement_quantity = query_row[15]
+        permutation.count_unit_measurement_per_quantity_step = query_row[16]
+        permutation.quantity_min = query_row[17]
+        permutation.quantity_max = query_row[18]
+        permutation.quantity_stock = query_row[19]
+        permutation.is_subscription = av.input_bool(query_row[20], "is_subscription", _m, v_arg_type=v_arg_type)
+        permutation.id_unit_measurement_interval_recurrence = query_row[21]
+        permutation.symbol_unit_measurement_interval_recurrence = query_row[22]
+        permutation.symbol_is_suffix_not_prefix_unit_measurement_interval_recurrence = av.input_bool(query_row[23], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_RECURRENCE, _m, v_arg_type=v_arg_type)
+        permutation.name_singular_unit_measurement_interval_recurrence = query_row[24]
+        permutation.name_plural_unit_measurement_interval_recurrence = query_row[25]
+        permutation.count_interval_recurrence = query_row[26]
+        permutation.id_stripe_product = query_row[27]
+        permutation.does_expire_faster_once_unsealed = av.input_bool(query_row[28], "does_expire_faster_once_unsealed", _m, v_arg_type=v_arg_type)
+        permutation.id_unit_measurement_interval_expiration_unsealed = query_row[29]
+        permutation.symbol_unit_measurement_interval_expiration_unsealed = query_row[30]
+        permutation.symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed = av.input_bool(query_row[31], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED, _m, v_arg_type=v_arg_type)
+        permutation.name_singular_unit_measurement_interval_expiration_unsealed = query_row[32]
+        permutation.name_plural_unit_measurement_interval_expiration_unsealed = query_row[33]
+        permutation.count_interval_expiration_unsealed = query_row[34]
+        permutation.has_variations = av.input_bool(query_row[35], cls.FLAG_HAS_VARIATIONS, _m, v_arg_type=v_arg_type)
+        permutation.active = av.input_bool(query_row[36], cls.FLAG_ACTIVE, _m, v_arg_type=v_arg_type)
         # permutation.display_order = query_row[27]
-        permutation.can_view = av.input_bool(query_row[36], "can_view", _m, v_arg_type=v_arg_type)
-        permutation.can_edit = av.input_bool(query_row[37], "can_edit", _m, v_arg_type=v_arg_type)
-        permutation.can_admin = av.input_bool(query_row[38], "can_admin", _m, v_arg_type=v_arg_type)
+        permutation.can_view = av.input_bool(query_row[37], "can_view", _m, v_arg_type=v_arg_type)
+        permutation.can_edit = av.input_bool(query_row[38], "can_edit", _m, v_arg_type=v_arg_type)
+        permutation.can_admin = av.input_bool(query_row[39], "can_admin", _m, v_arg_type=v_arg_type)
         return permutation
     
     def from_DB_Stripe_product(query_row):
@@ -222,7 +223,8 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.id_product = json[cls.ATTR_ID_PRODUCT]
         permutation.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
         permutation.description = json[cls.FLAG_DESCRIPTION]
-        permutation.cost_local = json[cls.FLAG_COST_LOCAL]
+        permutation.cost_local_VAT_excl = json[cls.FLAG_COST_UNIT_LOCAL_VAT_EXCL]
+        permutation.cost_local_VAT_incl = json.get(cls.FLAG_COST_UNIT_LOCAL_VAT_INCL, None)
         permutation.currency_cost = Currency.from_json(json, '_cost')
         permutation.profit_local_min = json[cls.FLAG_PROFIT_LOCAL_MIN]
         permutation.latency_manufacture = json[cls.FLAG_LATENCY_MANUFACTURE]
@@ -267,7 +269,8 @@ class Product_Permutation(db.Model, Store_Base):
             self.ATTR_ID_PRODUCT: self.id_product,
             self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
             self.FLAG_DESCRIPTION: self.description,
-            self.FLAG_COST_LOCAL: self.cost_local,
+            self.FLAG_COST_UNIT_LOCAL_VAT_EXCL: self.cost_local_VAT_excl,
+            self.FLAG_COST_UNIT_LOCAL_VAT_INCL: self.cost_local_VAT_incl,
             self.FLAG_CURRENCY_COST: self.currency_cost.to_json(),
             self.FLAG_PROFIT_LOCAL_MIN: self.profit_local_min,
             self.FLAG_LATENCY_MANUFACTURE: self.latency_manufacture,
@@ -352,7 +355,8 @@ class Product_Permutation(db.Model, Store_Base):
             id_product: {self.id_product}
             id_category: {self.id_category}
             description: {self.description}
-            cost_local: {self.cost_local}
+            cost_local_VAT_excl: {self.cost_local_VAT_excl}
+            cost_local_VAT_incl: {self.cost_local_VAT_incl}
             currency_cost: {self.currency_cost}
             latency_manufacture: {self.latency_manufacture}
             id_unit_measurement_quantity: {self.id_unit_measurement_quantity}
@@ -468,7 +472,7 @@ class Product_Permutation(db.Model, Store_Base):
             Product_Permutation.FLAG_QUANTITY_STOCK: self.quantity_stock,
             Product_Permutation.FLAG_QUANTITY_MIN: self.quantity_min,
             Product_Permutation.FLAG_QUANTITY_MAX: self.quantity_max,
-            Product_Permutation.FLAG_COST_LOCAL: f"<strong>{self.symbol_currency_cost}</strong>{self.cost_local}"
+            Product_Permutation.FLAG_COST_UNIT_LOCAL_VAT_EXCL: f"<strong>{self.symbol_currency_cost}</strong>{self.cost_local_VAT_excl}"
         }
         Helper_App.console_log('permutation row: ', a)
         return a
@@ -498,7 +502,8 @@ class Product_Permutation_Temp(db.Model, Store_Base):
     id_permutation: int = db.Column(db.Integer, primary_key=True)
     id_product: int = db.Column(db.Integer)
     description: str = db.Column(db.String(4000))
-    cost_local: float = db.Column(db.Float)
+    cost_local_VAT_excl: float = db.Column(db.Float)
+    cost_local_VAT_incl: float = db.Column(db.Float)
     id_currency_cost: int = db.Column(db.Integer)
     profit_local_min: float = db.Column(db.Float)
     latency_manufacture: int = db.Column(db.Integer)
@@ -519,13 +524,15 @@ class Product_Permutation_Temp(db.Model, Store_Base):
 
     @classmethod
     def from_product_permutation(cls, product_permutation):
+        Helper_App.console_log(f'Product_Permutation_Temp.from_product_permutation: {product_permutation}\ntype(cost local): {str(type(product_permutation.cost_local_VAT_excl))}')
         row = cls()
         row.id_permutation = product_permutation.id_permutation
         row.id_product = product_permutation.id_product
         row.description = product_permutation.description
-        row.cost_local = product_permutation.cost_local
+        row.cost_local_VAT_excl = product_permutation.cost_local_VAT_excl if product_permutation.cost_local_VAT_excl != 'None' else None
+        row.cost_local_VAT_incl = product_permutation.cost_local_VAT_incl if product_permutation.cost_local_VAT_incl != 'None' else None
         row.id_currency_cost = product_permutation.currency_cost.id_currency
-        row.profit_local_min = product_permutation.profit_local_min
+        row.profit_local_min = product_permutation.profit_local_min if product_permutation.profit_local_min != 'None' else None
         row.latency_manufacture = product_permutation.latency_manufacture
         row.id_unit_measurement_quantity = product_permutation.id_unit_measurement_quantity
         row.count_unit_measurement_per_quantity_step = product_permutation.count_unit_measurement_per_quantity_step
@@ -546,7 +553,8 @@ class Product_Permutation_Temp(db.Model, Store_Base):
             id_permutation: {self.id_permutation}
             id_product: {self.id_product}
             description: {self.description}
-            cost_local: {self.cost_local}
+            cost_local_VAT_excl: {self.cost_local_VAT_excl}
+            cost_local_VAT_incl: {self.cost_local_VAT_incl}
             id_currency_cost: {self.id_currency_cost}
             profit_local_min: {self.profit_local_min}
             latency_manufacture: {self.latency_manufacture}

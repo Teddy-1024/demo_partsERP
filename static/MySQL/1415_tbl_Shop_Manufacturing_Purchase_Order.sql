@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order (
     CONSTRAINT FK_Manufacturing_Purchase_Order_id_currency
 		FOREIGN KEY (id_currency) 
         REFERENCES Shop_Currency(id_currency),
-    cost_total_local_VAT_excl FLOAT NOT NULL,
-    cost_total_local_VAT_incl FLOAT NOT NULL,
-    price_total_local_VAT_excl FLOAT NOT NULL,
-    price_total_local_VAT_incl FLOAT NOT NULL,
+    cost_total_local_VAT_excl FLOAT NULL,
+    cost_total_local_VAT_incl FLOAT NULL,
+    price_total_local_VAT_excl FLOAT NULL,
+    price_total_local_VAT_incl FLOAT NULL,
     /*
     latency_delivery INT NOT NULL,
 	quantity_ordered FLOAT NOT NULL,

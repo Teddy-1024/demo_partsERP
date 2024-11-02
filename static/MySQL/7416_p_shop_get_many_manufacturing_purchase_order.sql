@@ -332,7 +332,7 @@ BEGIN
 		) AS name
     FROM tmp_Manufacturing_Purchase_Order t_MPO 
 	INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON MPO.id_order = t_MPO.id_order
-    LEFT JOIN partsltd_prod.Shop_Currency C ON MPO.id_currency_cost = C.id_currency
+    LEFT JOIN partsltd_prod.Shop_Currency C ON MPO.id_currency = C.id_currency
     ;
     
     # Manufacturing Purchase Order Product Link
@@ -380,7 +380,6 @@ END //
 DELIMITER ;;
 
 
-/*
 
 CALL p_shop_get_many_manufacturing_purchase_order (
 	1 # a_id_user
@@ -393,4 +392,5 @@ CALL p_shop_get_many_manufacturing_purchase_order (
 	, 0 # a_debug
 );
 
+/*
 */

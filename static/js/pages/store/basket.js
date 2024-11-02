@@ -21,12 +21,12 @@ export default class PageStoreBasket extends BasePage {
     hookupStoreCardsInfo() {
         
         document.querySelectorAll(idContainerInfoDelivery).addEventListener("click", function(event) {
-            console.log("delivery modal display method");
+            if (_verbose) { console.log("delivery modal display method"); }
             document.querySelectorAll(idOverlayInfoDelivery).css('display', 'block');
         });
         
         document.querySelectorAll(idContainerInfoBilling).addEventListener("click", function(event) {
-            console.log("billing modal display method");
+            if (_verbose) { console.log("billing modal display method"); }
             document.querySelectorAll(idOverlayInfoBilling).css('display', 'block');
         });
     }
@@ -44,7 +44,7 @@ export default class PageStoreBasket extends BasePage {
             elForm.submit(function(event) {
                 elForm = document.querySelectorAll(elForm);
                 event.preventDefault();
-                console.log("delivery submit method");
+                if (_verbose) { console.log("delivery submit method"); }
                 
                 ajaxData = {};
                 ajaxData[keyInfoType] = keyInfoDelivery;
@@ -63,7 +63,7 @@ export default class PageStoreBasket extends BasePage {
         Events.initialiseEventHandler(elForm, flagInitialised, function() {
             elForm.submit(function(event) {
                 event.preventDefault();
-                console.log("billing submit method");
+                if (_verbose) { console.log("billing submit method"); }
                 
                 ajaxData = {};
                 ajaxData[keyInfoType] = keyInfoBilling;
@@ -81,7 +81,7 @@ export default class PageStoreBasket extends BasePage {
 
     loadInfoAddress(response) {
         
-        console.log('ajax:'); console.log(response.data);
+        if (_verbose) { console.log('response:'); console.log(response.data); }
         let infoType = response.data[keyInfoType];
         let infoAddress = response.data[infoType];
         LocalStorage.setLocalStorage(infoType, infoAddress);
@@ -119,11 +119,13 @@ export default class PageStoreBasket extends BasePage {
         elOverlay = document.querySelectorAll(idOverlayInfoDelivery);
         elForm = elOverlay.querySelector('form');
         
-        console.log('converting billing form to json\nform ID: ' + elForm.id);
         ajaxData[flagForm] = convertForm2JSON(elForm); // formData; // form.serialize();
         let keys = [keyNameFull, keyPhoneNumber, keyPostcode, keyAddress1, keyAddress2, keyCity, keyCounty];
-        console.log('ajaxData:');
-        console.log(ajaxData);
+        if (_verbose) { 
+            console.log('converting billing form to json\nform ID: ' + elForm.id);
+            console.log('ajaxData:'); 
+            console.log(ajaxData);
+        }
         ajaxData[flagForm][keyInfoIdentical] = getElementValueCurrent(elForm.querySelector('#' + keyInfoIdentical));
         for (var k in keys) {
             if (idOverlayInfo == idOverlayInfoBilling && ajaxData[flagForm][keyInfoIdentical]) {
@@ -132,8 +134,10 @@ export default class PageStoreBasket extends BasePage {
                 ajaxData[flagForm][keys[k]] = getElementValueCurrent(elForm.querySelector('#' + keys[k]));
             }
         }
-        console.log('ajaxData:');
-        console.log(ajaxData);
+        if (_verbose) { 
+            console.log('ajaxData:');
+            console.log(ajaxData);
+        }
         return ajaxData;
     }
 

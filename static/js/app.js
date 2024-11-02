@@ -48,7 +48,6 @@ class App {
 
     handleGlobalClick(event) {
         // Handle global click events
-        console.log('Global click:', event.target);
     }
 
     start() {

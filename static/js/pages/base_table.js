@@ -134,7 +134,7 @@ export default class TableBasePage extends BasePage {
         let filtersJson = DOM.convertForm2JSON(formFilters);
         this.callFilterTableContent(filtersJson)
             .then(data => {
-                console.log('Table data received:', data);
+                if (_verbose) { console.log('Table data received:', data); }
                 this.callbackLoadTableContent(data);
             })
             .catch(error => console.error('Error:', error));
@@ -156,12 +156,14 @@ export default class TableBasePage extends BasePage {
         this.callSaveTableContent(records, formElement, comment)
             .then(data => {
                 if (data[flagStatus] == flagSuccess) {
-                    console.log('Records saved!');
-                    console.log('Data received:', data);
+                    if (_verbose) { 
+                        console.log('Records saved!');
+                        console.log('Data received:', data);
+                    }
                     this.getAndLoadFilteredTableContent();
                 }
                 else {
-                    console.log("error: ", data[flagMessage]);
+                    if (_verbose) { console.log("error: ", data[flagMessage]); }
                     OverlayError.show(data[flagMessage]);
                 }
             })
@@ -192,12 +194,14 @@ export default class TableBasePage extends BasePage {
         this.callSaveTableContent(records, formElement, comment)
             .then(data => {
                 if (data[flagStatus] == flagSuccess) {
-                    console.log('Records saved!');
-                    console.log('Data received:', data);
+                    if (_verbose) { 
+                        console.log('Records saved!');
+                        console.log('Data received:', data);
+                    }
                     this.callbackLoadTableContent(data);
                 }
                 else {
-                    console.log("error: ", data[flagMessage]);
+                    if (_verbose) { console.log("error: ", data[flagMessage]); }
                     OverlayError.show(data[flagMessage]);
                 }
             })
@@ -207,7 +211,7 @@ export default class TableBasePage extends BasePage {
         Events.initialiseEventHandler(idFormFilters + ' button.' + flagCancel, flagInitialised, function(button) {
             button.addEventListener("click", function(event) {
                 event.stopPropagation();
-                getAndLoadFilteredTableContent();
+                this.getAndLoadFilteredTableContent();
             });
             button.classList.add(flagCollapsed);
         });
@@ -255,7 +259,7 @@ export default class TableBasePage extends BasePage {
     cacheRowBlank() {
         let selectorRowNew = idTableMain + ' tbody tr.' + flagRowNew;
         let rowBlankTemp = document.querySelector(selectorRowNew);
-        console.log("row blank temp: ", rowBlankTemp);
+        if (_verbose) { console.log("row blank temp: ", rowBlankTemp); }
         _rowBlank = rowBlankTemp.cloneNode(true);
         document.querySelectorAll(selectorRowNew).forEach(function(row) {
             row.remove();
@@ -368,10 +372,10 @@ export default class TableBasePage extends BasePage {
         let wasDirtyParentRows = this.getAllIsDirtyRowsInParentTree(element);
         let wasDirtyElement = element.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
-        console.log({isDirtyElement, wasDirtyElement, wasDirtyParentRows});
+        if (_verbose) { console.log({isDirtyElement, wasDirtyElement, wasDirtyParentRows}); }
         if (isDirtyElement != wasDirtyElement) {
             let td = DOM.getCellFromElement(element);
-            DOM.setElementAttributeValueCurrent(td, DOM.getElementValueCurrent(element));
+            DOM.setElementAttributeValueCurrent(td, DOM.getElementAttributeValueCurrent(element));
             this.toggleShowButtonsSaveCancel(isDirtyElement);
             this.cascadeChangedIsDirtyNestedElementCellTable(element, isDirtyElement, wasDirtyParentRows);
         }
@@ -397,7 +401,7 @@ export default class TableBasePage extends BasePage {
         let tr = DOM.getRowFromElement(td);
         let isDirtyRow = isDirtyTd || DOM.hasDirtyChildrenNotDeletedContainer(tr);
         let wasDirtyRow = wasDirtyParentRows.pop();
-        console.log({isDirtyRow, wasDirtyRow});
+        if (_verbose) { console.log({isDirtyRow, wasDirtyRow}); }
         if (isDirtyRow != wasDirtyRow) {
             DOM.handleDirtyElement(tr, isDirtyRow);
             this.toggleShowButtonsSaveCancel(isDirtyRow);
@@ -517,10 +521,9 @@ export default class TableBasePage extends BasePage {
         cellSelector
         , optionList
         , ddlHookup = (cellSelector) => { this.hookupTableCellDdls(cellSelector); }
-        , changeHandler = (event, element) => { this.handleChangeTableCellDdl(event, element); }
+        , changeHandler = (event, element) => { this.handleChangeNestedElementCellTable(event, element); }
     ) {
         this.hookupEventHandler("click", cellSelector, (event, td) => {
-            // if (td.querySelector('select')) return;
             this.handleClickTableCellDdlPreview(
                 event
                 , td
@@ -532,14 +535,14 @@ export default class TableBasePage extends BasePage {
                 ); }
             );
         });
+        ddlHookup(cellSelector + ' select');
     }
-    hookupTableCellDdls(ddlSelector, changeHandler = (event, element) => { this.handleChangeTableCellDdl(event, element); }) {
+    hookupTableCellDdls(ddlSelector, changeHandler = (event, element) => { this.handleChangeNestedElementCellTable(event, element); }) {
         this.hookupEventHandler("change", ddlSelector, (event, element) => { changeHandler(event, element); });
     }
     handleClickTableCellDdlPreview(event, td, optionObjectList, cellSelector, ddlHookup = (cellSelector) => { this.hookupTableCellDdls(cellSelector); }) {
         if (td.querySelector('select')) return;
         // td.removeEventListener("click", ddlHookup);
-        console.log("click table cell ddl preview");
         let tdNew = td.cloneNode(true);
         td.parentNode.replaceChild(tdNew, td);
         let idSelected = DOM.getElementAttributeValueCurrent(tdNew);
@@ -547,7 +550,10 @@ export default class TableBasePage extends BasePage {
         let ddl = document.createElement('select');
         DOM.setElementValuesCurrentAndPrevious(ddl, idSelected);
         let optionJson, option;
-        console.log({optionObjectList, cellSelector});
+        if (_verbose) { 
+            console.log("click table cell ddl preview");
+            console.log({optionObjectList, cellSelector});
+        }
         option = DOM.createOption(null);
         ddl.appendChild(option);
         optionObjectList.forEach((optionObjectJson) => {
@@ -557,8 +563,10 @@ export default class TableBasePage extends BasePage {
         });
         tdNew.appendChild(ddl);
         let ddlSelector = cellSelector + ' select';
+        debugger;
         ddlHookup(ddlSelector);
     }
+    /*
     handleChangeTableCellDdl(event, ddl) {
         let row = DOM.getRowFromElement(ddl);
         let td = DOM.getCellFromElement(ddl);
@@ -585,6 +593,7 @@ export default class TableBasePage extends BasePage {
             }
         }
     }
+    */
     hookupTableCellDDlPreviewsWhenNotCollapsed(cellSelector, optionList, ddlHookup = (event, element) => { this.hookupTableCellDdls(event, element); }) {
         this.hookupEventHandler("click", cellSelector, (event, td) => {
             let div = td.querySelector('div');
@@ -596,7 +605,7 @@ export default class TableBasePage extends BasePage {
         this.hookupChangeHandlerTableCells(ddlSelector, (event, element) => { this.handleChangeProductCategoryDdl(event, element); });
     }
     handleChangeProductCategoryDdl(event, ddlCategory) {
-        this.handleChangeTableCellDdl(event, ddlCategory);
+        this.handleChangeNestedElementCellTable(event, ddlCategory);
         let idProductCategorySelected = DOM.getElementValueCurrent(ddlCategory);
         let row = DOM.getRowFromElement(ddlCategory);
         let tdProduct = row.querySelector('td.' + flagProduct);
@@ -611,7 +620,7 @@ export default class TableBasePage extends BasePage {
             option = DOM.createOption(optionJson);
             ddlProduct.appendChild(option);
         });
-        this.handleChangeTableCellDdl(event, ddlProduct);
+        this.handleChangeNestedElementCellTable(event, ddlProduct);
     }
     hookupFieldsProductPermutationVariation() {
         this.hookupPreviewsProductPermutationVariation();
@@ -625,7 +634,6 @@ export default class TableBasePage extends BasePage {
     handleClickProductPermutationVariationsPreview(event, element) {
         let tblVariations = element.querySelector('table.' + flagProductVariations);
         if (!Validation.isEmpty(tblVariations)) return;
-        console.log("click product permutation variations preview");
         this.toggleColumnCollapsed(flagProductVariations, false);
         let permutationVariations = this.getElementProductVariations(element);
         tblVariations = document.createElement("table");
@@ -650,18 +658,21 @@ export default class TableBasePage extends BasePage {
         thead.appendChild(tr);
         tblVariations.appendChild(thead);
         let tbody = document.createElement("tbody");
-        console.log('variations:', permutationVariations);
         if (!Validation.isEmpty(permutationVariations)) {
             permutationVariations.forEach((permutationVariation, index) => {
                 this.addProductPermutationVariationRow(tbody, permutationVariation);
             });
         }
         tblVariations.appendChild(tbody);
+        if (_verbose) { 
+            console.log("click product permutation variations preview");
+            console.log('variations:', permutationVariations);
+            console.log("tblVariations: ", tblVariations);
+        }
 
         let cellParent = element.closest(idTableMain + ' tbody tr td.' + flagProductVariations);
         cellParent.innerHTML = '';
         cellParent.appendChild(tblVariations);
-        console.log("tblVariations: ", tblVariations);
         
         this.hookupFieldsProductPermutationVariation();
     }
@@ -680,7 +691,7 @@ export default class TableBasePage extends BasePage {
             permutationVariations.forEach((variation) => {
                 parts = variation.split(':');
                 if (parts.length == 2) {
-                    console.log("parts: ", parts);
+                    if (_verbose) { console.log("parts: ", parts); }
                     new_variation_type = productVariationTypes[parts[0].trim()];
                     new_variation = productVariations[parts[1].trim()];
                     objVariations.push({
@@ -689,7 +700,7 @@ export default class TableBasePage extends BasePage {
                     });
                 }
                 else {
-                    console.log("error: invalid variation: ", variation);
+                    if (_verbose) { console.log("error: invalid variation: ", variation); }
                 }
             });
         }
@@ -712,6 +723,7 @@ export default class TableBasePage extends BasePage {
         };
     }
     addProductPermutationVariationRow(tbody, permutationVariation) {
+        if (_verbose) { console.log("permutationVariation: ", permutationVariation); }
         let productVariationType, optionProductVariationTypeJson, optionProductVariationType, productVariation, optionProductVariationJson, optionProductVariation;
         /*
         if (Validation.isEmpty(variations)) {
@@ -734,7 +746,7 @@ export default class TableBasePage extends BasePage {
         if (doFilterProductVariationKeys) {
             productVariationKeys = productVariationKeys.filter(variationKey => !productVariationTypeKeysSelected.has(productVariations[variationKey][attrIdProductVariationType]));
         }
-        console.log("permutationVariation: ", permutationVariation);
+        
         let permutationVariationJson = permutationVariation[flagProductVariation];
         let permutationVariationTypeJson = permutationVariation[flagProductVariationType];
         
@@ -747,7 +759,7 @@ export default class TableBasePage extends BasePage {
         DOM.setElementAttributesValuesCurrentAndPrevious(ddlVariationType, permutationVariationTypeJson[attrIdProductVariationType]);
         
         optionProductVariationType = DOM.createOption(null);
-        console.log("optionProductVariationType: ", optionProductVariationType);
+        if (_verbose) { console.log("optionProductVariationType: ", optionProductVariationType); }
         ddlVariationType.appendChild(optionProductVariationType);
 
         productVariationTypeKeys.forEach((productVariationTypeKey) => {
@@ -759,7 +771,7 @@ export default class TableBasePage extends BasePage {
             productVariationType = productVariationTypes[productVariationTypeKey];
             optionProductVariationTypeJson = BusinessObjects.getOptionJsonFromObjectJson(productVariationType, permutationVariationTypeJson[attrIdProductVariationType]);
             optionProductVariationType = DOM.createOption(optionProductVariationTypeJson);
-            console.log("optionProductVariationType: ", optionProductVariationType);
+            if (_verbose) { console.log("optionProductVariationType: ", optionProductVariationType); }
             ddlVariationType.appendChild(optionProductVariationType);
         });
         
@@ -772,14 +784,14 @@ export default class TableBasePage extends BasePage {
         DOM.setElementAttributesValuesCurrentAndPrevious(ddlVariation, permutationVariationJson[attrIdProductVariation]);
         
         optionProductVariation = DOM.createOption(null);
-        console.log("optionProductVariation: ", optionProductVariation);
+        if (_verbose) { console.log("optionProductVariation: ", optionProductVariation); }
         ddlVariation.appendChild(optionProductVariation);
 
         productVariationKeys.forEach((productVariationKey) => {
             productVariation = productVariations[productVariationKey];
             optionProductVariationJson = BusinessObjects.getOptionJsonFromObjectJson(productVariation, permutationVariationJson[attrIdProductVariation]);
             optionProductVariation = DOM.createOption(optionProductVariationJson);
-            console.log("optionProductVariation: ", optionProductVariation);
+            if (_verbose) { console.log("optionProductVariation: ", optionProductVariation); }
             ddlVariation.appendChild(optionProductVariation);
         });
         

@@ -9,9 +9,10 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
 	id_permutation INT NOT NULL
 	, id_product INT NOT NULL
 	, description VARCHAR(4000) NOT NULL
-	, cost_local FLOAT NOT NULL
+	, cost_local_VAT_excl FLOAT NULL
+    , cost_local_VAT_incl FLOAT NULL
     , id_currency_cost INT NOT NULL
-	, profit_local_min FLOAT NOT NULL
+	, profit_local_min FLOAT NULL
 	, latency_manufacture INT NOT NULL
 	, id_unit_measurement_quantity INT NOT NULL
 	, count_unit_measurement_per_quantity_step FLOAT NOT NULL

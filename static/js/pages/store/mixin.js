@@ -65,7 +65,7 @@ export default class StoreMixinPage {
             });
             dropdownCurrency.addEventListener("change", function() {
                 let selectedCurrency = dropdownCurrency.val();
-                console.log("selected currency: ", selectedCurrency);
+                if (_verbose) { console.log("selected currency: ", selectedCurrency); }
                 let basket = LocalStorage.getLocalStorage(keyBasket);
                 basket[keyIdCurrency] = selectedCurrency;
                 // LocalStorage.setLocalStorage(keyIdCurrency, selectedCurrency);
@@ -109,17 +109,17 @@ export default class StoreMixinPage {
         Events.initialiseEventHandler(dropdownRegion, flagInitialised, function() {
             dropdownRegion = document.querySelectorAll(dropdownRegion);
             dropdownRegion.addEventListener("focus", function() {
-                console.log("dropdown region focused");
+                if (_verbose) { console.log("dropdown region focused"); }
                 handleSelectExpand(dropdownRegion);
             });
             dropdownRegion.addEventListener("blur", function() {
-                console.log("dropdown region blurred");
+                if (_verbose) { console.log("dropdown region blurred"); }
                 handleSelectCollapse(dropdownRegion);
             });
             dropdownRegion.addEventListener("change", function() {
                 handleSelectCollapse(dropdownRegion);
                 let selectedRegion = dropdownRegion.val();
-                console.log("selected region: ", selectedRegion);
+                if (_verbose) { console.log("selected region: ", selectedRegion); }
                 let basket = LocalStorage.getLocalStorage(keyBasket);
                 basket[keyIdRegionDelivery] = selectedRegion;
                 // LocalStorage.setLocalStorage(keyIdRegionDelivery, selectedRegion);
@@ -138,10 +138,13 @@ export default class StoreMixinPage {
             elSelector.addEventListener("change", function(event) {
                 ajaxData = {};
                 ajaxData[flagForm] = convertForm2JSON(elForm);
-                console.log('sending data to include VAT controller: '); console.log(ajaxData);
+                if (_verbose) { 
+                    console.log('sending data to include VAT controller: '); 
+                    console.log(ajaxData); 
+                }
                 ajaxJSONData('set include VAT', mapHashToController(hashStoreSetIsIncludedVAT), ajaxData, function() { window.location.reload() }, false);
             });
-            console.log("form is included VAT initialised")
+            if (_verbose) { console.log("form is included VAT initialised"); }
         });
     }
     hookupLocalStorage() {
@@ -153,7 +156,7 @@ export default class StoreMixinPage {
         // console.log('d:'); console.log(d);
         let basketLocalStorage = LocalStorage.getLocalStorage(keyBasket);
         if (!StoreMixinPage.validateBasket(basketLocalStorage)) {
-            console.log('locally-stored basket not valid');
+            if (_verbose) { console.log('locally-stored basket not valid'); }
             basketLocalStorage = StoreMixinPage.makeNewBasket();
         }
         let basketServer = StoreMixinPage.validateBasket(userBasket) ? userBasket : basketLocalStorage;
@@ -216,7 +219,7 @@ export default class StoreMixinPage {
         this.hookupDeleteBasketItemButtons();
     }
     toggleShowButtonCheckout() {
-        console.log("toggling checkout button");
+        if (_verbose) { console.log("toggling checkout button"); }
         const buttonCheckout = document.querySelectorAll(idButtonCheckout);
         const labelBasketEmpty = document.querySelectorAll(idLabelBasketEmpty);
         if (userBasket['items'].length == 0) {
@@ -228,7 +231,7 @@ export default class StoreMixinPage {
         }
     }
     hookupButtonCheckout() {
-        console.log("hooking up checkout button");
+        if (_verbose) { console.log("hooking up checkout button"); }
         const buttonCheckout = document.querySelectorAll(idButtonCheckout);
         // let lsPage = getPageLocalStorage(hashPageCurrent);
         Events.initialiseEventHandler(buttonCheckout, flagInitialised, function() {
@@ -383,7 +386,7 @@ export default class StoreMixinPage {
     getCurrencySelected() {
         let elementSelectorCurrency = document.querySelectorAll(idSelectorCurrency);
         let selectedCurrency = elementSelectorCurrency.val();
-        console.log("selected currency: ", selectedCurrency);
+        if (_verbose) { console.log("selected currency: ", selectedCurrency); }
         return selectedCurrency;
     }
 
@@ -392,13 +395,15 @@ export default class StoreMixinPage {
         let d; // , lsShared;
         let selectorCardProduct = '.card.subcard';
         Events.initialiseEventHandler(selectorCardProduct, flagInitialised, function(cardProduct) {
-            console.log("initialising product card: ", cardProduct);
+            if (_verbose) { console.log("initialising product card: ", cardProduct); }
             cardProduct.addEventListener("click", function(event) {
                 // d = { keyIdProduct: product.getAttribute(attrIdProduct) }
                 var elemClicked = event.target;
                 if (elemClicked.id != 'submit') { // disable for submit buttons
-                    console.log("product click: " + cardProduct.getAttribute(attrIdProduct));
-                    console.log("permutation click: " + cardProduct.getAttribute(attrIdPermutation));
+                    if (_verbose) { 
+                        console.log("product click: " + cardProduct.getAttribute(attrIdProduct));
+                        console.log("permutation click: " + cardProduct.getAttribute(attrIdPermutation));
+                    }
                     var d = {}
                     d[keyIdProduct] = cardProduct.getAttribute(attrIdProduct)
                     d[keyIdPermutation] = cardProduct.getAttribute(attrIdPermutation)
@@ -406,7 +411,7 @@ export default class StoreMixinPage {
                     goToPage(hashPageStoreProduct, d);
                 }
             });
-            console.log("click method added for product ID: " + cardProduct.getAttribute(attrIdProduct) + ', permutation ID: ', cardProduct.getAttribute(attrIdPermutation));
+            if (_verbose) { console.log("click method added for product ID: " + cardProduct.getAttribute(attrIdProduct) + ', permutation ID: ', cardProduct.getAttribute(attrIdPermutation)); }
         });
     }
 

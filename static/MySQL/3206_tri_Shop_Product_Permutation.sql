@@ -69,9 +69,13 @@ BEGIN
 	SELECT NEW.id_permutation, 'description', OLD.description, NEW.description, NEW.id_change_set
 		WHERE NOT (OLD.description <=> NEW.description)
 	UNION
-	# Changed cost_local
-	SELECT NEW.id_permutation, 'cost_local', CONVERT(OLD.cost_local, CHAR), CONVERT(NEW.cost_local, CHAR), NEW.id_change_set
-		WHERE NOT (OLD.cost_local <=> NEW.cost_local)
+	# Changed cost_local_VAT_excl
+	SELECT NEW.id_permutation, 'cost_local_VAT_excl', CONVERT(OLD.cost_local_VAT_excl, CHAR), CONVERT(NEW.cost_local_VAT_excl, CHAR), NEW.id_change_set
+		WHERE NOT (OLD.cost_local_VAT_excl <=> NEW.cost_local_VAT_excl)
+	UNION
+	# Changed cost_local_VAT_incl
+	SELECT NEW.id_permutation, 'cost_local_VAT_incl', CONVERT(OLD.cost_local_VAT_incl, CHAR), CONVERT(NEW.cost_local_VAT_incl, CHAR), NEW.id_change_set
+		WHERE NOT (OLD.cost_local_VAT_incl <=> NEW.cost_local_VAT_incl)
 	UNION
 	# Changed id_currency_cost
 	SELECT NEW.id_permutation, 'id_currency_cost', CONVERT(OLD.id_currency_cost, CHAR), CONVERT(NEW.id_currency_cost, CHAR), NEW.id_change_set

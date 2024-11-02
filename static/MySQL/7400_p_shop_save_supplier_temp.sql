@@ -42,6 +42,7 @@ BEGIN
 			, active
 			, guid
 		)
+        /* Test 1 - Insert 
 		VALUES (
 			-3
             , 1
@@ -54,8 +55,26 @@ BEGIN
             , 'test url'
 			, 1 -- active
 			, v_guid
-		);
+		)
+        */
+        /* Test 2 - Update */
+        SELECT
+			id_supplier
+			, id_currency
+			, name_company
+			, 'Nat' AS name_contact
+			, 'Butchery' AS department_contact
+			, phone_number
+			, fax
+			, email
+			, website
+			, active
+			, v_guid
+		FROM partsltd_prod.Shop_Supplier S
+        WHERE S.id_supplier = 2
+        ;
 		
+        /*
 		INSERT INTO partsltd_prod.Shop_Supplier_Address_Temp (
 			id_address
             , id_supplier
@@ -68,6 +87,7 @@ BEGIN
             , active
             , GUID
         )
+        / Test 1 - Insert 
         VALUES (
 			-4
 			, -3
@@ -80,7 +100,23 @@ BEGIN
             , 1
             , v_guid
         )
+        /
+        / Test 2 - Update /
+        SELECT
+			id_address
+            , id_supplier
+			, id_region
+			, postcode
+			, address_line_1
+			, address_line_2
+			, city
+			, county
+            , active
+			, v_guid
+		FROM partsltd_prod.Shop_Supplier_Address SA
+        WHERE SA.id_supplier = 2
         ;
+        */
         
 	COMMIT;
     
@@ -118,14 +154,14 @@ BEGIN
 END //
 DELIMITER ;;
 
+/*
 CALL partsltd_prod.p_shop_save_supplier_test ();
 
 DELETE FROM partsltd_prod.Shop_Supplier_Temp;
 DELETE FROM partsltd_prod.Shop_Supplier_Address_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
-/*
 
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier_address`, CONSTRAINT `FK_Shop_Supplier_Address_id_supplier` FOREIGN KEY (`id_supplier`) REFERENCES `shop_supplier` (`id_supplier`) ON UPDATE RESTRICT)
+Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier`, CONSTRAINT `FK_Shop_Supplier_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_sales_and_purchasing_change_set` (`id_change_set`))
 
 */

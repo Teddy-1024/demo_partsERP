@@ -39,7 +39,6 @@ tr {
     min-height: 1px;
     border-bottom: 1px solid var(--c_purple_dark);
     border-top: 1px solid var(--c_purple_dark);
-    padding-bottom: 1vh;
     background-color: transparent;
 }
 

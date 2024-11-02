@@ -30,6 +30,13 @@
                 {{ product.form_delivery_option() }}
             </div>
         {% endif %}
-        <script>console.log('creating basket item for:');console.log('product id: {{ product.id_product }}');console.log('permutation id: {{ product.get_id_permutation() }}');console.log('quantity: {{ basket_item.quantity }}');</script>
+        <script>
+            if (_verbose) { 
+                console.log('creating basket item for:');
+                console.log('product id: {{ product.id_product }}');
+                console.log('permutation id: {{ product.get_id_permutation() }}');
+                console.log('quantity: {{ basket_item.quantity }}');
+            }
+        </script>
     </form>
 </div> 

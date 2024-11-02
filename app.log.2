@@ -1,0 +1,155 @@
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: production
+config_env: production
+Server Error: (MySQLdb.OperationalError) (1054, "Unknown column 'MPO.id_currency_cost' in 'on clause'")
+[SQL: CALL p_shop_get_many_manufacturing_purchase_order(%s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (1, True, True, '', '', None, None, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Request: 127.0.0.1 GET http /store/manufacturing_purchase_orders? Host: 127.0.0.1:5000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-GB,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Dnt: 1
+Connection: keep-alive
+Referer: http://127.0.0.1:5000/store/manufacturing_purchase_orders
+Cookie: session=.eJytVlmzosgS_isTRsw8tTar6InomKsii0dQkP2FgCqQYhNZRJjb__0Wnp7ufpi5S8Q1RKsqi8wvK7_KzD9mQdcmtxo1ETSbqJ69_TEDQekHsECl37S3Opq9tXUXffppuXtt_FiNigDls7dZBPughosCQZhH7a1sCtQm_7hO0gW4FbNPsxjVTVsGBVY4MyIIB7yGoA-6uo5KMPgwioMub2dvZZfnL1EdXdGt_AvBBwDy-9ifnCCw3tf_P5fsigrXLFitWUisA44IA5KIo3gy2PgvxP4jqlGMIjh7i4O8iV4SVIK8gxH0rY3xw-qHn1jcdBU29bPzTVd_c0j50-_5ZXJ89hWfV1PHfnvLohLLaQgYADhI0gwIlxyAkI5JdhUBFkBiSdFhwC3DAJAYYvctDAEAUdN81xANhyQUATqhQxY4MjruDnlYKNN8q6QmpROqKqMeBY46yukNBZJOAElZHod15jluG5YwCUa5V1Mv91LvdhJzJkQsCQY2gY5-U3ZsGlLEQy6JxUJ9VvvHSerASU7KOBEX96wvIg6U1umUpOlpdVK79-ecKk_vbQ7huA0dwPq2_ORFR7sYq4YmkuMm2xM2s2Ri65CJG-UugQ7dbJ3qUqY4lLG_7ynNSXib70Y6We_E-rwlaupUDaUIaSUzem57eq-9OaEfC7sTev0drBP9YUSmaLUWJDh10x_YMNV6OtQyxbz7l8C78QfRua_JwQf0bkkaV4y_YC0aXMUoK1Qi0z15n-RnDjM17zmpMHcXcptlISsTg-AasSmKNk_dOUiIjiu1xN0m6T2f2rEGiHp_JE-qz3Kspjz9HEdGWVeseTbO7xdHj7Z5P6eS-1kNNnuOvdjclWODqlAftanwY9MyiWU9-oK9ibJ1IVJ1b1MLj48GWsto2G8EJj85jOZJ9x7TIHpWqI4aP8AUJDmaoInVckn-WEeYFKslQxCvW_AXLLmYo0yqSG7kUmfBTl7KWeVYOzwv2sqb5qX1iBzP1DOGCdPDw5OupJUJR0VISH04rBdYWRfYah0WQutd8AuFlUFKGLwd2wa2noWiRYQUO4Z2TgQvxWwS2uZkPPckmIBC67As88RnDsV1ByiygmKy8SgyCey-c6l1O1EWiHkKJWv4sJEQUNqOJ7R6YGqWoBAo19ETgD7o6TpeAkVhOI7m6PFqoaQaofAwUw3sLOUyqugOKqUmCg8YddSRx7vEmVbWKn_tD6W8BiIoPJ68QUnvwWCO2sUcdISfQs3wdfj5KuRKhm0VAuE6h_FgHETP1jogsuWEGTrbDOPKPWGdwOkwU7nHWFrF2LRKmpuKAZbTo_JKh9ee9hSIwmpdO2-m6-nZOo31ZseCrDxRbzxHf4Sl2gbYvibC174jpk54-fGeQ3s5KPIisK1MTqvCtZ-jd_k_XHnsj-tMOjEuAt4jR38aGeloVGIETvI0RnxSubC0ssTRbCG_ZNXSLLIpBVWuo6FTuqeVcTMoqTyoqTLhZSbCYf9HhZfJEy9TyoDjTFtosoFtEQG_XampySiFzKq2wpwMK1P4PFHHLXKNfe8VVvHiBpW_cGmIvFliT-upR6vmIQNm65hUZV9yC11MsrtIlWaXSW4L7oSrw7xMX3zKdcYscsGUAOPSnmTtoeBZ1hnmSTmlOnaUvWMabHhSYTrTIx6m8hhD350fmLq8r6E31-_0eBZj2erqHSrXPH8nWaFCg_1Y7QuqZTUhfmpw5w0mOwc-a60EdDZ5fhXpz0cWjdzqfjk_3rnQVWnhcBdcldRipga2fyr3yupd4g3NlBK36EjG6N4FgScG05uf7VTVyKIXom7HuJK2LZ7EOnH8S3xGrbZeVvFduad1bLpDEt6HXZtRYTunC3J_3L_7ZXkMDet4r8eaPK1vfiyfQ1y8pfe9ilFpEaFQZ7G2Cn1XrQ2p7dX5ZguHExqrNg2u0PGXqSbYa6k195LXa6W6vYg7DegujflHioq-SqzO5mWPD9n-cO8iJFDwHsRFNCeCg3rF-asBt2qqjPi3RPCXqr7FKI9--egXPs1eCctvh9eebRTUuOh91D5UxrdX_etwcZ5dxXRo76pi75ILet5PHKVroyXZmyA6HPD9nv0vLcjflH6cUj9yLIUbhyWNE-qfSZfCn9dC02ADSdtWzdvnzzB6zMs-yChiuYziZbJCz3LRNYtX9zGZ-oxtfWsM_jOoEoHs322ettxK8Gqbnjran_sVeIiGuI_M08OZjrpCoO2mRu07wmZxrYNH0Ab1C87H8DNL466DYhiCgyzFcvGKiSkOBAS34pgQLpnfmy_Mivit_lJdf4NfXrp-pTe_UgL-Alj-8A_PP1Q2eBTBRVW-Io6mgG3niZFzwrJnt_D-bl9S62CGslJK49l7Ro41bezC_6ZX6yoYtLgbm4IxowiKmZPEnFobJIdj88bQC5IgvdnXr1__BS2JoCE.ZyEYtg._bov1p8fFpH43ZXX3SGhLOxkpGQ
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Sec-Gpc: 1
+Priority: u=0, i
+
+
+Request data: b''
+Traceback: Traceback (most recent call last):
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 924, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+MySQLdb.OperationalError: (1054, "Unknown column 'MPO.id_currency_cost' in 'on clause'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\manufacturing_purchase_order.py", line 40, in manufacturing_purchase_orders
+    model = Model_View_Store_Manufacturing_Purchase_Order(form_filters)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_manufacturing_purchase_order.py", line 50, in __init__
+    self.manufacturing_purchase_orders, errors = datastore_manufacturing_purchase_order.get_many_manufacturing_purchase_order(parameters_manufacturing_purchase_order)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_store_manufacturing_purchase_order.py", line 51, in get_many_manufacturing_purchase_order
+    result = self.db_procedure_execute('p_shop_get_many_manufacturing_purchase_order', argument_dict)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_base.py", line 96, in db_procedure_execute
+    result = db.session.execute(proc_string, argument_dict_list)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\scoping.py", line 778, in execute
+    return self._proxied.execute(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2245, in _execute_internal
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2353, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 924, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\connections.py", line 261, in query
+    _mysql.connection.query(self, query)
+sqlalchemy.exc.OperationalError: (MySQLdb.OperationalError) (1054, "Unknown column 'MPO.id_currency_cost' in 'on clause'")
+[SQL: CALL p_shop_get_many_manufacturing_purchase_order(%s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (1, True, True, '', '', None, None, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: production
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development

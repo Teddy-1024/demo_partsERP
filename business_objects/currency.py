@@ -69,9 +69,9 @@ class Currency(db.Model, Store_Base):
     @classmethod
     def from_DB_get_many_product_catalogue_product_permutation(cls, query_row):
         currency = cls()
-        currency.id_currency = query_row[5]
-        currency.code = query_row[6]
-        currency.symbol = query_row[7]
+        currency.id_currency = query_row[6]
+        currency.code = query_row[7]
+        currency.symbol = query_row[8]
         return currency
     @classmethod
     def from_DB_get_many_product_price_and_discount_and_delivery_region(cls, query_row):
