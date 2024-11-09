@@ -1,0 +1,21 @@
+
+{% with _is_blank_row = (is_blank_row or variation_type is not defined or variation_type.variations is none or variation_type.variations == [] or is_blank_row is not defined) %}
+    {% if not _is_blank_row %}
+        {# {% set ids_variation = variation_type.get_str_list_ids_variation() %} #}
+        <div class="{{ model.FLAG_PRODUCT_VARIATIONS }}"
+            {#
+            {{ model.ATTR_VALUE_CURRENT }}="{{ ids_variation }}"
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ ids_variation }}"
+            #}
+        >
+            {#
+                {{ variation_type.get_preview_variations() }}
+            #}
+            {% for variation in variation_type.variations %}
+                {{ variation.name }}<br>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="{{ model.FLAG_PRODUCT_VARIATIONS }}"></div>
+    {% endif %}
+{% endwith %}

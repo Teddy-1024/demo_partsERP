@@ -29,7 +29,6 @@ from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
 from business_objects.unit_measurement import Unit_Measurement
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
-# from business_objects.store.product_variation import Product_Variation, Product_Variation_Filters, Product_Variation_Container
 # from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
@@ -189,7 +188,6 @@ class DataStore_Base(BaseModel):
         else:
             expected_columns = set(column.name for column in db.inspect(table_object).columns)
             Helper_App.console_log(f'expected_columns: {expected_columns}')
-
         try:
             for i in range(0, len(records), batch_size):
                 batch = records[i:i+batch_size]

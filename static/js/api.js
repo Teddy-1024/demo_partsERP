@@ -120,6 +120,21 @@ export default class API {
         return await API.request(hashSaveStoreProductPermutation, 'POST', dataRequest);
     }
     
+    // product variations
+    static async getProductVariations() {
+        return await API.request(hashGetStoreProductVariation);
+    }
+    static async getProductVariationsByFilters(filtersJson) {
+        API.goToHash(hashPageStoreProductVariations, filtersJson);
+    }
+    static async saveProductVariations(variationTypes, formFilters, comment) {
+        let dataRequest = {};
+        dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+        dataRequest[flagProductVariationType] = variationTypes;
+        dataRequest[flagComment] = comment;
+        return await API.request(hashSaveStoreProductVariation, 'POST', dataRequest);
+    }
+    
     // stock items
     static async getStockItems() {
         return await API.request(hashGetStoreStockItem);

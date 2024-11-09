@@ -24,4 +24,12 @@ export default class BusinessObjects {
     static getObjectText(objectJson) {
         return objectJson[objectJson[flagNameAttrOptionText]];
     }
+    static getListObjectsFromIdDictAndCsv(idDict, idCsv) {
+        let listObjects = [];
+        let ids = idCsv.split(',');
+        for (let id of ids) {
+            listObjects.push(idDict[id]);
+        }
+        return listObjects;
+    }
 }

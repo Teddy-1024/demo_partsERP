@@ -100,7 +100,7 @@ export default class PageStoreSuppliers extends TableBasePage {
         this.hookupEmailInputs();
         this.hookupWebsiteInputs();
         this.hookupCurrencyFields();
-        this.hookupInputsActiveTable();
+        this.hookupFieldsActive();
     }
     hookupNameCompanyInputs() {
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagNameCompany + ' textarea');

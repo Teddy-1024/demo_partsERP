@@ -51,7 +51,7 @@ BEGIN
         /* Test 1 - Insert */
         (
 			-1 -- id_permutation
-			, 8 -- id_product
+			, 5 -- id_product
             , 'Hair clip' -- description
             , NULL -- cost_local_VAT_excl
             , NULL -- cost_local_VAT_incl
@@ -112,7 +112,6 @@ BEGIN
 END //
 DELIMITER ;;
 
-/*
 CALL partsltd_prod.p_shop_save_product_permutation_test ();
 
 DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
@@ -120,5 +119,7 @@ DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 
+/*
 SELECT * FROM partsltd_prod.Shop_Product
+Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_product_permutation`, CONSTRAINT `FK_Shop_Product_Permutation_id_product` FOREIGN KEY (`id_product`) REFERENCES `shop_product` (`id_product`) ON UPDATE RESTRICT)
 */

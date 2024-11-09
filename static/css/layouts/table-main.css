@@ -1,7 +1,7 @@
 
 #tableMain {
     overflow-x: auto;
-    padding: 1vh 2vh;
+    padding: 1vh;
     max-width: 95vw; /* min(calc(1vh * 80), calc(1vw * 90)); */
     width: fit-content;
     margin: 1vh 2vh;

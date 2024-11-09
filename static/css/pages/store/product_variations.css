@@ -1,0 +1,46 @@
+
+/*
+#formFilters {
+    width: 50vh;
+}
+*/
+
+
+#tableMain:has(thead tr th.product_variations.collapsed) {
+    max-width: 66vh;
+}
+#tableMain {
+    max-width: 97vh;
+}
+
+#tableMain tbody tr td.display_order, #tableMain thead tr th.display_order,
+#tableMain tbody tr td.active, #tableMain thead tr th.active {
+    width: 6vh;
+    min-width: 6vh;
+}
+#tableMain tbody tr td.code, #tableMain thead tr th.code,
+#tableMain tbody tr td.name, #tableMain thead tr th.name,
+#tableMain tbody tr td.name_plural, #tableMain thead tr th.name_plural {
+    width: 12vh;
+    min-width: 12vh;
+}
+
+#tableMain thead tr th.product_variations.collapsed, #tableMain tbody tr td.product_variations.collapsed {
+    width: 8vh;
+    min-width: 8vh;
+}
+#tableMain thead tr th.product_variations, #tableMain tbody tr td.product_variations {
+    width: 41vh;
+    min-width: 41vh;
+}
+
+#tableMain tbody tr td.product_variations table thead tr th.code, #tableMain tbody tr td.product_variations table tbody tr td.code,
+#tableMain tbody tr td.product_variations table thead tr th.name, #tableMain tbody tr td.product_variations table tbody tr td.name {
+    width: 12vh;
+    min-width: 12vh;
+}
+#tableMain tbody tr td.product_variations table thead tr th.display_order, #tableMain tbody tr td.product_variations table tbody tr td.display_order,
+#tableMain tbody tr td.product_variations table thead tr th.active, #tableMain tbody tr td.product_variations table tbody tr td.active {
+    width: 6vh;
+    min-width: 6vh;
+}

@@ -97,7 +97,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         this.hookupCurrencyFields();
         this.hookupCostInputs();
         this.hookupOrderItemsFields();
-        this.hookupInputsActiveTable();
+        this.hookupFieldsActive();
     }
     hookupSupplierFields() {
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagSupplier, Utils.getListFromDict(suppliers));

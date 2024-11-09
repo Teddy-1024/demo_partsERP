@@ -17,3 +17,6 @@ form.filter button.save, form.filter button.button-cancel {
 #formFilters .container-input.filter.active {
     width: 8vh;
 }
+#formFilters .container-input.filter.is_not_empty {
+    width: 12vh;
+}

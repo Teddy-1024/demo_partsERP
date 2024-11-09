@@ -20,8 +20,8 @@ BEGIN
                 ELSE '' END
             )
         FROM Shop_Product_Permutation PP
-        INNER JOIN Shop_Product P ON PP.id_product = P.id_product
-        INNER JOIN Shop_Product_Category PC ON P.id_category = PC.id_category
+        LEFT JOIN Shop_Product P ON PP.id_product = P.id_product
+        LEFT JOIN Shop_Product_Category PC ON P.id_category = PC.id_category
         LEFT JOIN Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
         LEFT JOIN Shop_Variation V ON PPVL.id_variation = V.id_variation
         LEFT JOIN Shop_Variation_Type VT ON V.id_type = VT.id_type

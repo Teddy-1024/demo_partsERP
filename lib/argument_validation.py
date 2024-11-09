@@ -447,13 +447,13 @@ def input_bool(v_input, v_name, method, suppress_errors = False, suppress_consol
     # v_arg_type
     if not val_str(v_arg_type, 'v_arg_type', my_f, 1, -1, suppress_errors, suppress_console_outputs): return None
 # METHODS
-    if not val_bool(v_input, v_name, my_f, True, suppress_console_outputs):
-        if not val_int(v_input, v_name, my_f, 0, 1, True, suppress_console_outputs):
+    if not val_bool(v_input, v_name, my_f, True, True):
+        if not val_int(v_input, v_name, my_f, 0, 1, True, True):
             # if str(type(v_input)) == "<class 'bytes'>":
                 # return bool(v_input)
             v_input = str(v_input)
             error_msg = error_msg_str(v_input, v_name, method, "<class 'bool'>", suppress_errors, suppress_console_outputs, v_arg_type)
-            if not val_str(v_input, v_name, my_f, suppress_errors=True, suppress_console_outputs=suppress_console_outputs):
+            if not val_str(v_input, v_name, my_f, suppress_errors=True, suppress_console_outputs=True):
                 if suppress_errors:
                     if not suppress_console_outputs:
                         print(error_msg)

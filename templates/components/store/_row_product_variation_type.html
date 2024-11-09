@@ -1,0 +1,65 @@
+{% if is_blank_row %}
+    <tr class="{{ model.FLAG_ROW_NEW }} {{ model.FLAG_PRODUCT_VARIATION_TYPE }}" {{ model.ATTR_ID_PRODUCT_VARIATION_TYPE }}>
+        <td class="{{ model.FLAG_DISPLAY_ORDER }}">
+            {% include 'components/common/buttons/_slider_display_order.html' %}
+        </td>
+        <td class="{{ model.FLAG_CODE }}">
+            <textarea class="{{ model.FLAG_CODE }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_NAME }}">
+            <textarea class="{{ model.FLAG_NAME }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_NAME_PLURAL }}">
+            <textarea class="{{ model.FLAG_NAME_PLURAL }}" {{ model.ATTR_VALUE_CURRENT }} {{ model.ATTR_VALUE_PREVIOUS }}></textarea>
+        </td>
+        <td class="{{ model.FLAG_PRODUCT_VARIATIONS}} {{ model.FLAG_COLLAPSED }}">
+            {% include 'components/store/_preview_product_variation_type_variations.html' %}
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            {# 
+                <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}">
+            #}
+            <button type="button" class="{{ model.FLAG_ACTIVE }} {{ model.FLAG_DELETE }}" 
+                {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" 
+                {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}"
+            >x</button>
+        </td>
+    </tr>
+{% else %}
+    <tr class="{{ model.FLAG_PRODUCT_VARIATION_TYPE }}" {{ model.ATTR_ID_PRODUCT_VARIATION_TYPE }}="{{ variation_type.id_type }}">
+        <td class="{{ model.FLAG_DISPLAY_ORDER }}">
+            {% set display_order = variation_type.display_order %}
+            {% include 'components/common/buttons/_slider_display_order.html' %}
+        </td>
+        <td class="{{ model.FLAG_CODE }}">
+            <textarea class="{{ model.FLAG_CODE }}" 
+                {{ model.ATTR_VALUE_CURRENT }}="{{ variation_type.code }}"
+                {{ model.ATTR_VALUE_PREVIOUS }}="{{ variation_type.code }}"
+            >{{ variation_type.code }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_NAME }}">
+            <textarea class="{{ model.FLAG_NAME }}" 
+                {{ model.ATTR_VALUE_CURRENT }}="{{ variation_type.name_singular }}"
+                {{ model.ATTR_VALUE_PREVIOUS }}="{{ variation_type.name_singular }}"
+            >{{ variation_type.name_singular }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_NAME_PLURAL }}">
+            <textarea class="{{ model.FLAG_NAME_PLURAL }}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ variation_type.name_plural }}"
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ variation_type.name_plural }}"
+        >{{ variation_type.name_plural }}</textarea>
+        </td>
+        <td class="{{ model.FLAG_PRODUCT_VARIATIONS}} {{ model.FLAG_COLLAPSED }}">
+            {% include 'components/store/_preview_product_variation_type_variations.html' %}
+        </td>
+        <td class="{{ model.FLAG_ACTIVE }}">
+            {# 
+                <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {% if variation_type.active %}checked{% endif %} {{ model.ATTR_VALUE_CURRENT }}="{{ variation_type.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ variation_type.active | lower }}">
+            #}
+            <button type="button" class="{{ model.FLAG_ACTIVE }} {% if variation_type.active %}{{ model.FLAG_DELETE }}{% endif %}" 
+                {{ model.ATTR_VALUE_CURRENT }}="{{ variation_type.active | lower }}" 
+                {{ model.ATTR_VALUE_PREVIOUS }}="{{ variation_type.active | lower }}"
+            >{% if variation_type.active %}x{% else %}+{% endif %}</button>
+        </td>
+    </tr>
+{% endif %}

@@ -119,8 +119,6 @@ class Product_Permutation(db.Model, Store_Base):
     # variation_tree
 
     def __init__(self):
-        self.variations = []
-        self.variation_index = {}
         self.prices = []
         self.price_index = {}
         self.images = []
@@ -139,6 +137,7 @@ class Product_Permutation(db.Model, Store_Base):
         self.is_unavailable_in_currency_or_region = False
         # self.is_available = False
         self.variation_tree = None
+        # self.variations = []
     @classmethod
     def from_DB_get_many_product_catalogue(cls, query_row):
         _m = f'{cls.__name__}.from_DB_get_many_product_catalogue'
@@ -303,7 +302,7 @@ class Product_Permutation(db.Model, Store_Base):
             self.FLAG_CAN_VIEW: self.can_view,
             self.FLAG_CAN_EDIT: self.can_edit,
             self.FLAG_CAN_ADMIN: self.can_admin,
-            self.FLAG_PRODUCT_VARIATION: [variation.to_json() for variation in self.variations],
+            self.FLAG_PRODUCT_VARIATIONS: [variation_type.to_json() for variation_type in self.variation_tree.get_product_variation_types()],
             self.FLAG_PRODUCT_IMAGE: [image.to_json() for image in self.images],
             self.FLAG_DELIVERY_OPTION: [option.to_json() for option in self.delivery_options],
             self.FLAG_PRODUCT_PRICE: [price.to_json() for price in self.prices],
@@ -341,13 +340,13 @@ class Product_Permutation(db.Model, Store_Base):
             return f'{price.symbol_currency} {locale.format_string("%d", price.value_local_VAT_incl, grouping=True)}'
         else:
             return f'{price.symbol_currency} {locale.format_string("%d", price.value_local_VAT_excl, grouping=True)}'
-    """
     def output_variations(self):
         if not self.has_variations: return ''
         return '\n'.join([f'{variation.name_variation_type}: {variation.name_variation}' for variation in self.variations])
     def output_variations_jsonify(self):
         if not self.has_variations: return ''
         return ','.join([f'{variation.id_type}: {variation.id_variation}' for variation in self.variations])
+    """
     
     def __repr__(self):
         return f'''Product_Permutation
@@ -387,7 +386,7 @@ class Product_Permutation(db.Model, Store_Base):
             can_view: {self.can_view}
             can_edit: {self.can_edit}
             can_admin: {self.can_admin}
-            variations: {self.variations}
+            variation tree: {self.variation_tree}
             images: {self.images}
             delivery_options: {self.delivery_options}
             prices: {self.prices}

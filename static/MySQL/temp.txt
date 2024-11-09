@@ -51,8 +51,10 @@
 1208_tbl_Shop_Product_Permutation_Temp.sql
 1209_tbl_Shop_Variation_Type.sql
 1210_tbl_Shop_Variation_Type_Audit.sql
+1211_tbl_Shop_Variation_Type_Temp.sql
 1212_tbl_Shop_Variation.sql
 1213_tbl_Shop_Variation_Audit.sql
+1214_tbl_Shop_Variation_Temp.sql
 1215_tbl_Shop_Product_Permutation_Variation_Link.sql
 1216_tbl_Shop_Product_Permutation_Variation_Link_Audit.sql
 1218_tbl_Shop_Stock_Item.sql
@@ -189,6 +191,8 @@
 7206_p_shop_save_product_permutation.sql
 7206_p_shop_save_product_permutation_test.sql
 7210_p_shop_get_many_product_variation.sql
+7212_p_shop_save_product_variation.sql
+7212_p_shop_save_product_variation_test.sql
 7219_p_shop_get_many_stock_item.sql
 7220_p_shop_save_stock_item.sql
 7220_p_shop_save_stock_item_test.sql

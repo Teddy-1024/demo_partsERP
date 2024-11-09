@@ -43,6 +43,7 @@ from controllers.store.manufacturing_purchase_order import routes_store_manufact
 from controllers.store.product import routes_store_product
 from controllers.store.product_category import routes_store_product_category
 from controllers.store.product_permutation import routes_store_product_permutation
+from controllers.store.product_variation import routes_store_product_variation
 from controllers.store.stock_item import routes_store_stock_item
 from controllers.store.supplier import routes_store_supplier
 from controllers.store.supplier_purchase_order import routes_store_supplier_purchase_order
@@ -137,6 +138,7 @@ app.register_blueprint(routes_store_manufacturing_purchase_order)
 app.register_blueprint(routes_store_product)
 app.register_blueprint(routes_store_product_category)
 app.register_blueprint(routes_store_product_permutation)
+app.register_blueprint(routes_store_product_variation)
 app.register_blueprint(routes_store_stock_item)
 app.register_blueprint(routes_store_supplier)
 app.register_blueprint(routes_store_supplier_purchase_order)

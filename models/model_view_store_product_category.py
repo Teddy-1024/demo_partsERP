@@ -14,13 +14,12 @@ Data model for store permutations view
 from models.model_view_store import Model_View_Store
 # from datastores.datastore_store_base import DataStore_Store_Base
 from datastores.datastore_store_product_category import DataStore_Store_Product_Category
+from business_objects.store.product import Parameters_Product
 from business_objects.store.product_category import Product_Category_Container # , Filters_Product_Category
 from forms.access_level import Filters_Access_Level
 # from forms.store.product_permutation import Filters_Product_Permutation
 from forms.store.product_category import Filters_Product_Category
 # from routes import bp_home
-from business_objects.store.product import Product, Parameters_Product, Product_Permutation
-from business_objects.store.product_variation import Product_Variation_Container
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 

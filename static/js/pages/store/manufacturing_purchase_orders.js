@@ -92,7 +92,7 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         this.hookupCurrencyFields();
         this.hookupCostAndPriceInputs();
         this.hookupOrderItemsFields();
-        this.hookupInputsActiveTable();
+        this.hookupFieldsActive();
     }
     hookupCostAndPriceInputs() {
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagCostTotalLocalVatExcl + ' input');

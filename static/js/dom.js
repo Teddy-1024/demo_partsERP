@@ -101,8 +101,8 @@ export default class DOM {
         return container.querySelector('.' + flagDirty) != null;
     }
     static hasDirtyChildrenNotDeletedContainer(container) {
-        if (container == null) return false;
-        return container.querySelector('.' + flagDirty + ':not(.' + flagDelete + ')') != null;
+        if (container == null || container.classList.contains(flagDelete)) return false;
+        return container.querySelector('.' + flagDirty + ':not(.' + flagDelete + ', .' + flagDelete + ' *)') != null;
     }
     static getElementValueCurrent(element) {
         let returnVal = '';
@@ -119,6 +119,9 @@ export default class DOM {
             */
             else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
                 returnVal = element.value;
+            }
+            else if (element.tagName === 'BUTTON' && element.classList.contains(flagActive)) {
+                returnVal = element.classList.contains(flagDelete);
             }
             else {
                 returnVal = element.textContent;

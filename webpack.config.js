@@ -83,6 +83,10 @@ module.exports = {
       path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/product_permutations.css')
     ],
+    store_product_variations: [
+      path.resolve(__dirname, 'static/css/sections/store.css'),
+      path.resolve(__dirname, 'static/css/pages/store/product_variations.css')
+    ],
     store_stock_items: [
       path.resolve(__dirname, 'static/css/sections/store.css'),
       path.resolve(__dirname, 'static/css/pages/store/stock_items.css')
@@ -134,6 +138,9 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks: 'all'
-    }
-  }
+    },
+    minimize: false,
+  },
+  mode: 'development',
+  devtool: 'source-map',
 };

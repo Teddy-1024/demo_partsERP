@@ -353,19 +353,19 @@ BEGIN
 END //
 DELIMITER ;;
 
-
 /*
 
 CALL p_shop_get_many_product_variation (
 	1 # 'auth0|6582b95c895d09a70ba10fef', # a_id_user
     , 1 # a_get_all_variation_type
-	, 0 # a_get_inactive_variation_type
+	, 1 # a_get_inactive_variation_type
 	, '' # a_ids_variation_type
     , 1 # a_get_all_variation
-	, 0 # a_get_inactive_variation
+	, 1 # a_get_inactive_variation
 	, '' # a_ids_variation
-    , 1 # a_debug
+    , 0 # a_debug
 );
+
 
 select * from TMP_MSG_ERROR;
 DROP TABLE TMP_MSG_ERROR;

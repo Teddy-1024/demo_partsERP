@@ -105,7 +105,7 @@ export default class PageStoreProducts extends TableBasePage {
         this.hookupTextareasNameTable();
         this.hookupInputsHasVariationsTable();
         this.hookupTdsAccessLevel();
-        this.hookupInputsActiveTable();
+        this.hookupFieldsActive();
     }
     hookupTdsProductCategory() {
         let cellSelector = idTableMain + ' tbody td.' + flagProductCategory;
