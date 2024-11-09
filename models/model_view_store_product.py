@@ -79,7 +79,6 @@ class Model_View_Store_Product(Model_View_Store):
     # product_blank: Product = None
     units_measurement: list = None
     units_measurement_time: list = None
-    # variation_container: Product_Variation_Container = None
     variations: list = None
     variation_types: list = None
     

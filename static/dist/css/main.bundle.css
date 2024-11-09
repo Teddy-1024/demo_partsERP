@@ -654,16 +654,11 @@ tr {
 }
 */
 
-table textarea {
-    width: 95% !important;
-}
-
-table select {
-    width: 100% !important;
-}
-
+table textarea,
+table select,
 table input {
-    width: 90% !important;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 table button {
@@ -671,9 +666,14 @@ table button {
     padding: 0.5vh 1vh;
 }
 
-tr.delete {
+table button.active {
+    background-color: var(--c_purple_pastel);
+}
+
+tr.delete, tr.delete > td {
     background-color: red;
 }
+
 
 
 button.collapsed {
@@ -693,11 +693,14 @@ form.filter button.save, form.filter button.button-cancel {
 #formFilters .container-input.filter.active {
     width: 8vh;
 }
+#formFilters .container-input.filter.is_not_empty {
+    width: 12vh;
+}
 
 
 #tableMain {
     overflow-x: auto;
-    padding: 1vh 2vh;
+    padding: 1vh;
     max-width: 95vw; /* min(calc(1vh * 80), calc(1vw * 90)); */
     width: fit-content;
     margin: 1vh 2vh;
@@ -767,3 +770,5 @@ form.filter button.save, form.filter button.button-cancel {
     --card-border: #dee2e6;
     --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
+
+/*# sourceMappingURL=main.bundle.css.map*/

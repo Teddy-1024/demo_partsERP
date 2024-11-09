@@ -29,68 +29,13 @@ from urllib.parse import quote, urlparse, parse_qs
 
 
 routes_store_product_permutation = Blueprint('routes_store_product_permutation', __name__)
-"""
-
-@routes_store_product_permutation.route('/store/permutations', methods=['GET'])
-def permutation():
-    filters = Parameters_Product.get_default()
-    model = Model_View_Store_Product_Permutation(filters_product=filters)
-    return render_template('pages/store/_product_permutations.html', model = model)
-
-@routes_store_product_permutation.route('/store/permutation_filter', methods=['POST'])
-def permutation_filter():
-    data = Helper_App.get_request_data(request)
-    form_filters = None
-    try:
-        form_filters = get_Form_Filters_Permutation(data)
-        if not form_filters.validate_on_submit():
-            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'})
-        # ToDo: manually validate category, product
-        filters_form = Parameters_Product.from_form(form_filters)
-        model = Model_View_Store_Product_Permutation(filters_product=filters_form)
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.FLAG_DATA: model.category_list.to_permutation_row_list()})
-    except Exception as e:
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
-
-def get_Form_Filters_Permutation(data_request):
-    data_form = data_request[Model_View_Store_Product_Permutation.FLAG_FORM]
-    form_filters = Filters_Product_Permutation(**data_form)
-    form_filters.is_out_of_stock.data = av.input_bool(data_form['is_out_of_stock'], 'is_out_of_stock', 'permutations_post')
-    return form_filters
-
-@routes_store_product_permutation.route('/store/permutation_save', methods=['POST'])
-def permutation_save():
-    data = Helper_App.get_request_data(request)
-    form_filters = None
-    try:
-        form_filters = get_Form_Filters_Permutation(data)
-        if not form_filters.validate_on_submit():
-            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'})
-        
-        permutations = data[Model_View_Store_Product_Permutation.FLAG_PRODUCT_PERMUTATION]
-        if len(permutations) == 0:
-            return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'No permutations.'})
-        objsPermutation = []
-        for permutation in permutations:
-            objsPermutation.append(Product_Permutation.from_json(permutation))
-
-        # ToDo: manually validate category, product
-        filters_form = Parameters_Product.from_form(form_filters)
-        model_save = Model_View_Store_Product_Permutation(filters_product=filters_form)
-        model_save.save_permutations(data.comment, objsPermutation)
-
-        model_return = Model_View_Store_Product_Permutation(filters_product=filters_form)
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, 'Success': True, Model_View_Base.FLAG_DATA: model_return.category_list.to_permutation_row_list()})
-    except Exception as e:
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'})
-"""
-
 
 @routes_store_product_permutation.route(Model_View_Store_Product_Permutation.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS, methods=['GET'])
 def permutations():
     Helper_App.console_log('permutations')
+    data = Helper_App.get_request_data(request)
     try:
-        form_filters = Filters_Product_Permutation.from_json(request.args)
+        form_filters = Filters_Product_Permutation.from_json(data)
     except Exception as e:
         Helper_App.console_log(f'Error: {e}')
         form_filters = Filters_Product_Permutation()
@@ -111,7 +56,7 @@ def filter_permutation():
                 Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_FAILURE, 
                 Model_View_Store_Product_Permutation.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
             })
-        model = Model_View_Store_Product_Permutation(form_filters = form_filters)
+        model = Model_View_Store_Product_Permutation(form_filters_old = form_filters)
         if not model.is_user_logged_in:
             raise Exception('User not logged in')
         return jsonify({
@@ -150,7 +95,7 @@ def save_permutation():
         Helper_App.console_log(f'objsPermutation={objsPermutation}')
         Model_View_Store_Product_Permutation.save_permutations(data.get('comment', 'No comment'), objsPermutation)
 
-        model_return = Model_View_Store_Product_Permutation(form_filters=form_filters)
+        model_return = Model_View_Store_Product_Permutation(form_filters_old=form_filters)
         if not model_return.is_user_logged_in:
             raise Exception('User not logged in')
         Helper_App.console_log('nips')

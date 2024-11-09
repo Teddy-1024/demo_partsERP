@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
 	, latency_manufacture INT NOT NULL
 	, id_unit_measurement_quantity INT NOT NULL
 	, count_unit_measurement_per_quantity_step FLOAT NOT NULL
-	, quantity_min FLOAT NOT NULL
-	, quantity_max FLOAT NOT NULL
+	, quantity_min FLOAT NULL
+	, quantity_max FLOAT NULL
 	, quantity_stock FLOAT NULL
 	, is_subscription BIT NOT NULL
 	, id_unit_measurement_interval_recurrence INT

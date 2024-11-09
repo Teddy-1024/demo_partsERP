@@ -48,16 +48,11 @@ tr {
 }
 */
 
-table textarea {
-    width: 95% !important;
-}
-
-table select {
-    width: 100% !important;
-}
-
+table textarea,
+table select,
 table input {
-    width: 90% !important;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 table button {
@@ -65,6 +60,10 @@ table button {
     padding: 0.5vh 1vh;
 }
 
-tr.delete {
+table button.active {
+    background-color: var(--c_purple_pastel);
+}
+
+tr.delete, tr.delete > td {
     background-color: red;
 }

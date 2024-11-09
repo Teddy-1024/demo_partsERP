@@ -23,7 +23,7 @@ from business_objects.store.product import Product, Parameters_Product, Product_
 from business_objects.store.image import Resolution_Level_Enum
 from business_objects.store.basket import Basket_Item, Basket
 from business_objects.store.product_category import Product_Category
-from business_objects.store.product_variation import Product_Variation_Filters, Product_Variation
+from business_objects.store.product_variation import Product_Variation, Parameters_Product_Variation
 from business_objects.store.stock_item import Stock_Item
 from datastores.datastore_store_base import DataStore_Store_Base
 from datastores.datastore_user import DataStore_User
@@ -148,6 +148,7 @@ class Model_View_Store(Model_View_Base):
     HASH_GET_STORE_PRODUCT: ClassVar[str] = '/store/product_get'
     HASH_GET_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/category_get'
     HASH_GET_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/permutation_get'
+    HASH_GET_STORE_PRODUCT_VARIATION: ClassVar[str] = '/store/product_variation_get'
     HASH_GET_STORE_STOCK_ITEM: ClassVar[str] = '/store/stock_item_get'
     HASH_GET_STORE_SUPPLIER: ClassVar[str] = '/store/supplier_get'
     HASH_GET_STORE_SUPPLIER_PURCHASE_ORDER: ClassVar[str] = '/store/supplier_purchase_order_get'
@@ -157,6 +158,7 @@ class Model_View_Store(Model_View_Base):
     HASH_SAVE_STORE_PRODUCT: ClassVar[str] = '/store/save_product'
     HASH_SAVE_STORE_PRODUCT_CATEGORY: ClassVar[str] = '/store/save_category'
     HASH_SAVE_STORE_PRODUCT_PERMUTATION: ClassVar[str] = '/store/save_permutation'
+    HASH_SAVE_STORE_PRODUCT_VARIATION: ClassVar[str] = '/store/save_product_variation'
     HASH_SAVE_STORE_STOCK_ITEM: ClassVar[str] = '/store/save_stock_item'
     HASH_SAVE_STORE_SUPPLIER: ClassVar[str] = '/store/save_supplier'
     HASH_SAVE_STORE_SUPPLIER_PURCHASE_ORDER: ClassVar[str] = '/store/save_supplier_purchase_order'
@@ -502,6 +504,6 @@ class Model_View_Store(Model_View_Base):
     
     def get_many_product_variation(self, variation_filters = None):
         if variation_filters is None:
-            variation_filters = Product_Variation_Filters.get_default()
+            variation_filters = Parameters_Product_Variation.get_default()
         variation_types, variations, errors = DataStore_Store_Base().get_many_product_variation(variation_filters)
         return variation_types, variations, errors

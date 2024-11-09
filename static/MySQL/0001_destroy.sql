@@ -168,13 +168,19 @@ DROP TABLE IF EXISTS Shop_Product_Variation_Link;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link_Audit;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link;
 
+DROP TABLE IF EXISTS Shop_Variation_Temp;
 DROP TABLE IF EXISTS Shop_Variation_Audit;
 DROP TABLE IF EXISTS Shop_Variation;
 DROP TABLE IF EXISTS Shop_Product_Variation_Type_Link_Audit;
 DROP TABLE IF EXISTS Shop_Product_Variation_Type_Link;
+DROP TABLE IF EXISTS Shop_Product_Variation_Temp;
+DROP TABLE IF EXISTS Shop_Product_Variation;
 
+DROP TABLE IF EXISTS Shop_Variation_Type_Temp;
 DROP TABLE IF EXISTS Shop_Variation_Type_Audit;
 DROP TABLE IF EXISTS Shop_Variation_Type;
+DROP TABLE IF EXISTS Shop_Product_Variation_Type_Temp;
+DROP TABLE IF EXISTS Shop_Product_Variation_Type;
 
 DROP TABLE IF EXISTS Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Audit;
@@ -294,6 +300,8 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_stripe_product_new;
 DROP PROCEDURE IF EXISTS p_shop_save_permutation;
 DROP PROCEDURE IF EXISTS p_shop_save_product_permutation;
 DROP PROCEDURE IF EXISTS p_shop_save_product_permutation_test;
+DROP PROCEDURE IF EXISTS p_shop_save_product_variation;
+DROP PROCEDURE IF EXISTS p_shop_save_product_variation_test;
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
 DROP FUNCTION IF EXISTS fn_shop_get_id_product_permutation_from_variation_csv_list;
 DROP PROCEDURE IF EXISTS p_shop_save_stock_item;

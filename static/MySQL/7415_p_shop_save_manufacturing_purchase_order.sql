@@ -699,7 +699,7 @@ BEGIN
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
 			, CONCAT(
-				'You do not have view permissions for '
+				'You do not have edit permissions for '
 				, GROUP_CONCAT(name SEPARATOR ', ') 
 			)
 		FROM partsltd_prod.Shop_Permission PERM

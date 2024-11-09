@@ -18,8 +18,9 @@ Business object for product variation
 # IMPORTS
 # internal
 import lib.argument_validation as av
+from business_objects.db_base import Get_Many_Parameters_Base
 from business_objects.store.store_base import Store_Base
-from business_objects.store.product_variation_type import Product_Variation_Type
+# from business_objects.store.product_variation_type import Product_Variation_Type
 from extensions import db
 from helpers.helper_app import Helper_App
 # external
@@ -55,7 +56,7 @@ class Product_Variation(db.Model, Store_Base):
         variation.id_product = query_row[11]
         variation.id_permutation = query_row[12]
         variation.id_category = query_row[13]
-        variation.variation_type = Product_Variation_Type.from_DB_get_many_product_catalogue(query_row)
+        # variation.variation_type = Product_Variation_Type.from_DB_get_many_product_catalogue(query_row)
         return variation
 
     @classmethod
@@ -73,13 +74,14 @@ class Product_Variation(db.Model, Store_Base):
     def from_json(cls, json):
         variation = cls()
         variation.id_variation = json[cls.ATTR_ID_PRODUCT_VARIATION]
+        variation.id_type = json[cls.ATTR_ID_PRODUCT_VARIATION_TYPE]
         variation.code = json[cls.FLAG_CODE]
         variation.name = json[cls.FLAG_NAME]
         variation.display_order = json[cls.FLAG_DISPLAY_ORDER]
-        variation.active = json[cls.FLAG_ACTIVE]
-        variation.id_permutation = json[cls.ATTR_ID_PRODUCT_PERMUTATION]
-        variation.id_product = json[cls.ATTR_ID_PRODUCT]
-        variation.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
+        variation.active = 1 if av.input_bool(json[cls.FLAG_ACTIVE], cls.FLAG_ACTIVE, f'{cls.__name__}.from_json') else 0
+        variation.id_permutation = json.get(cls.ATTR_ID_PRODUCT_PERMUTATION, None)
+        variation.id_product = json.get(cls.ATTR_ID_PRODUCT, None)
+        variation.id_category = json.get(cls.ATTR_ID_PRODUCT_CATEGORY, None)
         return variation
 
     def __repr__(self):
@@ -116,7 +118,7 @@ class Product_Variation(db.Model, Store_Base):
             'text': self.name
         }
 
-
+"""
 @dataclass
 class Product_Variation_Filters():
     get_all_variation_type: bool
@@ -140,7 +142,7 @@ class Product_Variation_Filters():
             'a_ids_variation': self.ids_variation,
 
         }
-    """
+    ""
     @staticmethod
     def from_form(form):
         av.val_instance(form, 'form', 'User_Filters.from_form', Filters_Product_Variation)
@@ -164,7 +166,7 @@ class Product_Variation_Filters():
             ids_user = user.id_user,
             ids_user_auth0 = user.id_user_auth0,
         )
-    """
+    ""
     
     @staticmethod
     def get_default():
@@ -178,8 +180,35 @@ class Product_Variation_Filters():
             # get_first_variation = False,
             ids_variation = ''
         )
+"""
+class Parameters_Product_Variation(Get_Many_Parameters_Base):
+    a_get_all_variation_type: bool
+    a_get_inactive_variation_type: bool
+    a_ids_variation_type: str
+    a_get_all_variation: bool
+    a_get_inactive_variation: bool
+    a_ids_variation: str
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    @classmethod
+    def get_default(cls):
+        return cls(
+            a_get_all_variation_type = True,
+            a_get_inactive_variation_type = False,
+            a_ids_variation_type = '',
+            a_get_all_variation = True,
+            a_get_inactive_variation = False,
+            a_ids_variation = ''
+        )
+    @classmethod
+    def from_filters_product_variation(cls, form):
+        parameters = cls.get_default()
+        get_inactive = not form.active.data
+        parameters.a_get_inactive_variation_type = get_inactive
+        parameters.a_get_inactive_variation = get_inactive
+        return parameters
 
-
+"""
 class Product_Variation_Container(BaseModel):
     variation_types: list = []
     variations: list = []
@@ -209,4 +238,43 @@ class Product_Variation_Container(BaseModel):
         for variation_type in self.variation_types:
             list_variation_types.append(variation_type.to_json_option())
         return list_variation_types
-    
+"""
+
+class Product_Variation_Temp(db.Model, Store_Base):
+    __tablename__ = 'Shop_Variation_Temp'
+    __table_args__ = { 'extend_existing': True }
+    id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_variation: int = db.Column(db.Integer) # , primary_key=True)
+    id_type: int = db.Column(db.Integer, nullable=False)
+    code: str = db.Column(db.String(50)) 
+    name: str = db.Column(db.String(255))
+    active: bool = db.Column(db.Boolean)
+    display_order: int = db.Column(db.Integer)
+    guid: str = db.Column(db.String(36))
+
+    def __repr__(self):
+        attrs = '\n'.join(f'{k}={v!r}' for k, v in self.__dict__.items())
+        return f'<{self.__class__.__name__}(\n{attrs}\n)>'
+    def __init__(self):
+        super().__init__()
+        self.id_temp = None
+    @classmethod
+    def from_product_variation(cls, product_variation):
+        row = cls()
+        row.id_variation = product_variation.id_variation
+        row.id_type = product_variation.id_type
+        row.code = product_variation.code
+        row.name = product_variation.name
+        row.active = 1 if av.input_bool(product_variation.active, cls.FLAG_ACTIVE, f'{cls.__name__}.to_json') else 0
+        row.display_order = product_variation.display_order
+        return row
+    def to_json(self):
+        return {
+            'id_variation': self.id_variation,
+            'id_type': self.id_type,
+            'code': self.code,
+            'name': self.name,
+            'active': self.active,
+            'display_order': self.display_order,
+            'guid': self.guid,
+        }

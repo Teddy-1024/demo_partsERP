@@ -174,7 +174,7 @@ export default class TableBasePage extends BasePage {
         let records = [];
         let record;
         document.querySelectorAll(idTableMain + ' > tbody > tr').forEach((row) => {
-            if (dirtyOnly && !row.classList.contains(flagDirty)) return;
+            if (dirtyOnly && !DOM.hasDirtyChildrenContainer(row)) return;
             record = this.getJsonRow(row);
             records.push(record);
         });
@@ -217,28 +217,22 @@ export default class TableBasePage extends BasePage {
         });
     }
     hookupButtonAddRowTable() {
-        this.hookupEventHandler("click", idFormFilters + ' button.' + flagAdd, (event, button) => {
-            event.stopPropagation();
-            let tbody = document.querySelector(idTableMain + ' tbody');
-            let row = _rowBlank.cloneNode(true);
-            row.classList.remove(flagInitialised);
-            row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
-                element.classList.remove(flagInitialised);
-            });
-            let countRows = document.querySelectorAll(idTableMain + ' > tbody > tr').length;
-            row.setAttribute(this.constructor.attrIdRowObject, -1 - countRows);
-            /* Shared nethods
-            let newDisplayOrder = parseInt(tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider).getAttribute(attrValueCurrent)) + 1;
-            let slider = tbody.querySelector('tr:last-child').querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
-            if (slider) {
-                slider.setAttribute(attrValueCurrent, newDisplayOrder);
-                slider.setAttribute(attrValuePrevious, newDisplayOrder);
-            }
-            */
-            this.initialiseRowNew(row);
-            tbody.appendChild(row);
-            this.hookupTableMain();
+        this.hookupEventHandler("click", idFormFilters + ' button.' + flagAdd, (event, button) => { this.handleClickAddRowTable(event, button); });
+    }
+    handleClickAddRowTable(event, button) {
+        event.stopPropagation();
+        _rowBlank.setAttribute(this.constructor.attrIdRowObject, -1 - _rowBlank.getAttribute(this.constructor.attrIdRowObject));
+        let tbody = document.querySelector(idTableMain + ' tbody');
+        let row = _rowBlank.cloneNode(true);
+        row.classList.remove(flagInitialised);
+        row.querySelectorAll('.' + flagInitialised).forEach(function(element) {
+            element.classList.remove(flagInitialised);
         });
+        let countRows = document.querySelectorAll(idTableMain + ' > tbody > tr').length;
+        row.setAttribute(this.constructor.attrIdRowObject, -1 - countRows);
+        this.initialiseRowNew(row);
+        tbody.appendChild(row);
+        this.hookupTableMain();
     }
     initialiseRowNew(row) {
         if (this.constructor === TableBasePage) {
@@ -260,10 +254,12 @@ export default class TableBasePage extends BasePage {
         let selectorRowNew = idTableMain + ' tbody tr.' + flagRowNew;
         let rowBlankTemp = document.querySelector(selectorRowNew);
         if (_verbose) { console.log("row blank temp: ", rowBlankTemp); }
+        let countRows = document.querySelectorAll(idTableMain + ' > tbody > tr').length;
         _rowBlank = rowBlankTemp.cloneNode(true);
         document.querySelectorAll(selectorRowNew).forEach(function(row) {
             row.remove();
         });
+        _rowBlank.setAttribute(this.constructor.attrIdRowObject, -1 - countRows);
     }
     hookupSlidersDisplayOrderTable() {
         let selectorDisplayOrder = idTableMain + ' tbody tr td.' + flagDisplayOrder + ' input.' + flagSlider + '.' + flagDisplayOrder;
@@ -299,12 +295,12 @@ export default class TableBasePage extends BasePage {
     handleChangeElementCellTable(event, element) {
         let row = DOM.getRowFromElement(element);
         let td = DOM.getCellFromElement(element);
-        let wasDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
+        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
         let wasDirtyElement = element.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
         if (isDirtyElement != wasDirtyElement) {
             DOM.handleDirtyElement(td, isDirtyElement);
-            let isNowDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
+            let isNowDirtyRow = DOM.hasDirtyChildrenContainer(row);
             if (isNowDirtyRow != wasDirtyRow) {
                 DOM.handleDirtyElement(row, isNowDirtyRow);
                 let rows = this.getTableRecords(true);
@@ -326,12 +322,12 @@ export default class TableBasePage extends BasePage {
         }
         let row = DOM.getRowFromElement(element);
         let td = DOM.getCellFromElement(element);
-        let wasDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
+        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
         let wasDirtyElement = element.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
         if (isDirtyElement != wasDirtyElement) {
             DOM.handleDirtyElement(td, isDirtyElement);
-            let isNowDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
+            let isNowDirtyRow = DOM.hasDirtyChildrenContainer(row);
             if (isNowDirtyRow != wasDirtyRow) {
                 DOM.handleDirtyElement(row, isNowDirtyRow);
                 let rows = this.getTableRecords(true);
@@ -345,18 +341,18 @@ export default class TableBasePage extends BasePage {
         let rowTable = rowSubtable.closest(idTableMain + ' > tbody > tr');
         let td = DOM.getCellFromElement(element);
         // let tdSubtable = td.closest('td.' + flagFieldSubtable);
-        let wasDirtyRowSubtable = DOM.hasDirtyChildrenNotDeletedContainer(rowSubtable);
-        let wasDirtyRowTable = DOM.hasDirtyChildrenNotDeletedContainer(rowTable);
+        let wasDirtyRowSubtable = DOM.hasDirtyChildrenContainer(rowSubtable);
+        let wasDirtyRowTable = DOM.hasDirtyChildrenContainer(rowTable);
         let wasDirtyElement = element.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
         console.log({isDirtyElement, wasDirtyElement});
         if (isDirtyElement != wasDirtyElement) {
             DOM.handleDirtyElement(td, isDirtyElement);
-            let isNowDirtyRowSubtable = DOM.hasDirtyChildrenNotDeletedContainer(rowSubtable);
+            let isNowDirtyRowSubtable = DOM.hasDirtyChildrenContainer(rowSubtable);
             console.log({isNowDirtyRowSubtable, wasDirtyRowSubtable});
             if (isNowDirtyRowSubtable != wasDirtyRowSubtable) {
                 DOM.handleDirtyElement(rowSubtable, isNowDirtyRowSubtable);
-                let isNowDirtyRowTable = DOM.hasDirtyChildrenNotDeletedContainer(rowTable);
+                let isNowDirtyRowTable = DOM.hasDirtyChildrenContainer(rowTable);
                 console.log({isNowDirtyRowTable, wasDirtyRowTable});
                 if (isNowDirtyRowTable != wasDirtyRowTable) {
                     DOM.handleDirtyElement(rowTable, isNowDirtyRowTable);
@@ -370,13 +366,14 @@ export default class TableBasePage extends BasePage {
     */
     handleChangeNestedElementCellTable(event, element) {
         let wasDirtyParentRows = this.getAllIsDirtyRowsInParentTree(element);
-        let wasDirtyElement = element.classList.contains(flagDirty);
+        let wasDirtyElement = DOM.isElementDirty(element);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
         if (_verbose) { console.log({isDirtyElement, wasDirtyElement, wasDirtyParentRows}); }
         if (isDirtyElement != wasDirtyElement) {
             let td = DOM.getCellFromElement(element);
             DOM.setElementAttributeValueCurrent(td, DOM.getElementAttributeValueCurrent(element));
-            this.toggleShowButtonsSaveCancel(isDirtyElement);
+            DOM.handleDirtyElement(td, isDirtyElement);
+            this.updateAndToggleShowButtonsSaveCancel();
             this.cascadeChangedIsDirtyNestedElementCellTable(element, isDirtyElement, wasDirtyParentRows);
         }
     }
@@ -396,15 +393,15 @@ export default class TableBasePage extends BasePage {
     cascadeChangedIsDirtyNestedElementCellTable(element, isDirtyElement, wasDirtyParentRows) {
         if (Validation.isEmpty(wasDirtyParentRows)) return;
         let td = DOM.getCellFromElement(element);
-        let isDirtyTd = isDirtyElement || DOM.hasDirtyChildrenNotDeletedContainer(tr);
+        let isDirtyTd = isDirtyElement || DOM.hasDirtyChildrenContainer(tr);
         DOM.handleDirtyElement(td, isDirtyTd);
         let tr = DOM.getRowFromElement(td);
-        let isDirtyRow = isDirtyTd || DOM.hasDirtyChildrenNotDeletedContainer(tr);
-        let wasDirtyRow = wasDirtyParentRows.pop();
+        let isDirtyRow = isDirtyTd || DOM.hasDirtyChildrenContainer(tr);
+        let wasDirtyRow = wasDirtyParentRows.shift();
         if (_verbose) { console.log({isDirtyRow, wasDirtyRow}); }
         if (isDirtyRow != wasDirtyRow) {
             DOM.handleDirtyElement(tr, isDirtyRow);
-            this.toggleShowButtonsSaveCancel(isDirtyRow);
+            this.updateAndToggleShowButtonsSaveCancel();
             this.cascadeChangedIsDirtyNestedElementCellTable(tr.parentElement, isDirtyRow, wasDirtyParentRows);
         }
     }
@@ -480,8 +477,18 @@ export default class TableBasePage extends BasePage {
     hookupTextareasDescriptionTable() {
         this.hookupChangeHandlerTableCells(idTableMain + ' tbody tr td.' + flagDescription + ' textarea');
     }
-    hookupInputsActiveTable() {
-        this.hookupChangeHandlerTableCells(idTableMain + ' > tbody > tr > td.' + flagActive + ' input[type="checkbox"]');
+    hookupFieldsActive(flagTable = '', handleClickRowNew = (event, element) => { this.handleClickAddRowTable(event, element); }) {
+        let selectorButton = 'table' + (Validation.isEmpty(flagTable) ? '' : '.' + flagTable) + ' > tbody > tr > td.' + flagActive + ' button';
+        let selectorButtonDelete = selectorButton + '.' + flagDelete;
+        let selectorButtonUndelete = selectorButton + ':not(.' + flagDelete + ')';
+        console.log("hookupFieldsActive: ", selectorButtonDelete, selectorButtonUndelete);
+        this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete);
+        this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
+        this.hookupEventHandler(
+            "click"
+            , 'table' + (Validation.isEmpty(flagTable) ? '' : '.' + flagTable) + ' > thead > tr > th.' + flagActive + ' button'
+            , (event, button) => { handleClickRowNew(event, button); }
+        );
     }
     hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete) {
         this.hookupEventHandler("click", selectorButtonDelete, (event, element) => {
@@ -489,14 +496,18 @@ export default class TableBasePage extends BasePage {
         });
     }
     handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
-        let row = DOM.getRowFromElement(element);
-        row.classList.add(flagDelete);
-
-        let buttonAdd = document.createElement("button");
+        // let row = DOM.getRowFromElement(element);
+        // row.classList.add(flagDelete);
+        let buttonAdd = element.cloneNode(false); // document.createElement("button");
+        buttonAdd.classList.remove(flagInitialised);
+        buttonAdd.classList.remove(flagDelete);
         buttonAdd.classList.add(flagAdd);
         buttonAdd.textContent = '+';
+        // DOM.setElementAttributeValueCurrent(buttonAdd, false);
         element.replaceWith(buttonAdd);
+        this.handleChangeNestedElementCellTable(null, buttonAdd);
         this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
+        this.updateAndToggleShowButtonsSaveCancel();
     }
     hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete) {
         this.hookupEventHandler("click", selectorButtonUndelete, (event, element) => {
@@ -504,14 +515,18 @@ export default class TableBasePage extends BasePage {
         });
     }
     handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
-        let row = DOM.getRowFromElement(element);
-        row.classList.add(flagDelete);
-
-        let buttonAdd = document.createElement("button");
-        buttonAdd.classList.add(flagAdd);
-        buttonAdd.textContent = '+';
-        element.replaceWith(buttonAdd);
+        // let row = DOM.getRowFromElement(element);
+        // row.classList.remove(flagDelete);
+        let buttonDelete = element.cloneNode(false); // document.createElement("button");
+        buttonDelete.classList.remove(flagInitialised);
+        buttonDelete.classList.remove(flagAdd);
+        buttonDelete.classList.add(flagDelete);
+        buttonDelete.textContent = 'x';
+        // DOM.setElementAttributeValueCurrent(buttonDelete, true);
+        element.replaceWith(buttonDelete);
+        this.handleChangeNestedElementCellTable(null, buttonDelete);
         this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete);
+        this.updateAndToggleShowButtonsSaveCancel();
     }
     hookupTdsAccessLevel() {
         let cellSelector = idTableMain + ' tbody td.' + flagAccessLevel;
@@ -571,7 +586,7 @@ export default class TableBasePage extends BasePage {
         let row = DOM.getRowFromElement(ddl);
         let td = DOM.getCellFromElement(ddl);
         console.log("td: ", td);
-        let wasDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
+        let wasDirtyRow = DOM.hasDirtyChildrenContainer(row);
         let wasDirtyElement = ddl.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(ddl);
         console.log("isDirtyElement: ", isDirtyElement);
@@ -580,7 +595,7 @@ export default class TableBasePage extends BasePage {
             DOM.handleDirtyElement(td, isDirtyElement);
             let optionSelected = ddl.options[ddl.selectedIndex];
             DOM.setElementAttributeValueCurrent(td, optionSelected.value);
-            let isNowDirtyRow = DOM.hasDirtyChildrenNotDeletedContainer(row);
+            let isNowDirtyRow = DOM.hasDirtyChildrenContainer(row);
             console.log("isNowDirtyRow: ", isNowDirtyRow);
             console.log("wasDirtyRow: ", wasDirtyRow);
             if (isNowDirtyRow != wasDirtyRow) {
@@ -885,15 +900,23 @@ export default class TableBasePage extends BasePage {
         let columnThHasFlag = columnTh.classList.contains(classnameFlag);
         if (isRequiredFlag == columnThHasFlag) return;
         DOM.toggleElementHasClassnameFlag(columnTh, isRequiredFlag, classnameFlag);
+        /*
         let columnTds = table.querySelectorAll('td.' + columnFlag);
         columnTds.forEach((columnTd) => {
             DOM.toggleElementHasClassnameFlag(columnTd, isRequiredFlag, classnameFlag);
         });
+        */
     }
     toggleColumnHeaderHasClassnameFlag(columnFlag, isRequiredFlag, classnameFlag) {
         let table = TableBasePage.getTableMain();
         let columnTh = table.querySelector('th.' + columnFlag);
         DOM.toggleElementHasClassnameFlag(columnTh, isRequiredFlag, classnameFlag);
+    }
+
+    updateAndToggleShowButtonsSaveCancel() {
+        let records = this.getTableRecords(true);
+        let existsDirtyRecord = records.length > 0;
+        this.toggleShowButtonsSaveCancel(existsDirtyRecord);
     }
 }
 

@@ -24,7 +24,8 @@ from business_objects.store.product import Product, Product_Permutation, Paramet
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from business_objects.store.product_variation import Product_Variation_Type, Product_Variation, Product_Variation_Filters, Product_Variation_Container
+from business_objects.store.product_variation import Product_Variation, Parameters_Product_Variation
+from business_objects.store.product_variation_type import Product_Variation_Type
 from datastores.datastore_base import DataStore_Base
 from extensions import db
 from helpers.helper_app import Helper_App
@@ -255,7 +256,7 @@ class DataStore_Store_Base(DataStore_Base):
     def get_many_product_variation(cls, variation_filters):
         _m = 'DataStore_Store_Base.get_many_product_variation'
         Helper_App.console_log(_m)
-        av.val_instance(variation_filters, 'variation_filters', _m, Product_Variation_Filters)
+        av.val_instance(variation_filters, 'variation_filters', _m, Parameters_Product_Variation)
 
         guid = Helper_DB_MySQL.create_guid()
         # now = datetime.now()
@@ -284,14 +285,14 @@ class DataStore_Store_Base(DataStore_Base):
         # Product_Variation Types
         # variation_container = Product_Variation_Container()
         variation_types = []
-        variation_types_dict = {}
+        index_variation_type = {}
         for row in result_set_vt:
             new_variation_type = Product_Variation_Type.from_DB_get_many_product_variation(row) 
             # variation_container.add_product_variation_type(new_variation_type)
+            index_variation_type[new_variation_type.id_type] = len(variation_types)
             variation_types.append(new_variation_type)
-            variation_types_dict[new_variation_type.id_type] = new_variation_type
 
-        Helper_App.console_log(f'variation_types_dict: {variation_types_dict}')
+        Helper_App.console_log(f'index_variation_type: {index_variation_type}')
 
         # Product_Variations
         cursor.nextset()
@@ -300,8 +301,9 @@ class DataStore_Store_Base(DataStore_Base):
         variations = []
         for row in result_set_v:
             new_variation = Product_Variation.from_DB_get_many_product_variation(row)
-            new_variation.variation_type = variation_types_dict[new_variation.id_type]
+            # new_variation.variation_type = variation_types_dict[new_variation.id_type]
             # variation_container.add_product_variation(new_variation)
+            variation_types[index_variation_type[new_variation.id_type]].variations.append(new_variation)
             variations.append(new_variation)
 
         errors = []

@@ -126,7 +126,7 @@ def filter_product():
                 Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, 
                 Model_View_Store_Product.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
             })
-        model = Model_View_Store_Product(form_filters = form_filters)
+        model = Model_View_Store_Product(form_filters_old = form_filters)
         if not model.is_user_logged_in:
             raise Exception('User not logged in')
         return jsonify({
@@ -165,7 +165,7 @@ def save_product():
         Helper_App.console_log(f'objsProduct={objsProduct}')
         save_errors = Model_View_Store_Product.save_products(data.get('comment', 'No comment'), objsProduct)
 
-        model_return = Model_View_Store_Product(form_filters=form_filters)
+        model_return = Model_View_Store_Product(form_filters_old=form_filters)
         if not model_return.is_user_logged_in:
             raise Exception('User not logged in')
         Helper_App.console_log('nips')

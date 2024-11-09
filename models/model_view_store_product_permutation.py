@@ -17,7 +17,6 @@ from business_objects.store.product_category import Product_Category_Container
 from forms.store.product_permutation import Filters_Product_Permutation
 # from routes import bp_home
 from business_objects.store.product import Product, Parameters_Product, Product_Permutation
-from business_objects.store.product_variation import Product_Variation_Container
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
 
@@ -35,7 +34,6 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
     list_options_product: list = None
     units_measurement: list = None
     units_measurement_time: list = None
-    # variation_container: Product_Variation_Container = None
     variations: list = None
     variation_types: list = None
     

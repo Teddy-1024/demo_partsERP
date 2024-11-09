@@ -1,6 +1,6 @@
 
 {% with _is_blank_row = (is_blank_row or variation_tree is not defined or is_blank_row is not defined) %}
-    {% if not is_blank_row %}
+    {% if not _is_blank_row %}
         {# % set json_str_variation_types = product.get_json_str_types_variation_trees() % #}
         {% set names_variation_type = product.get_variation_types_unique() %}
         {% set json_str_variation_types = jsonify(names_variation_type) %}

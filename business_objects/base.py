@@ -69,6 +69,9 @@ class Base():
     NAME_ATTR_OPTION_TEXT: ClassVar[str] = 'name-attribute-option-text'
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = 'name-attribute-option-value'
     """
+    def __repr__(self):
+        attrs = '\n'.join(f'{k}={v!r}' for k, v in self.__dict__.items())
+        return f'<{self.__class__.__name__}(\n{attrs}\n)>'
     
     @classmethod
     def output_bool(cls, value):

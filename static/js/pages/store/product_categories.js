@@ -102,7 +102,7 @@ export default class PageStoreProductCategories extends TableBasePage {
         this.hookupTextareasNameTable();
         this.hookupTextareasDescriptionTable();
         this.hookupTdsAccessLevel();
-        this.hookupInputsActiveTable();
+        this.hookupFieldsActive();
     }
     
     /*

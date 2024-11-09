@@ -72,7 +72,7 @@ def filter_category():
             })
         # ToDo: manually validate category, product
         # filters_form = Filters_Product_Category.from_form(form_filters)
-        model = Model_View_Store_Product_Category(form_filters = form_filters)
+        model = Model_View_Store_Product_Category(form_filters_old = form_filters)
         if not model.is_user_logged_in:
             raise Exception('User not logged in')
         return jsonify({
@@ -110,7 +110,7 @@ def save_category():
         Helper_App.console_log(f'objsCategory={objsCategory}')
         Model_View_Store_Product_Category.save_categories(data.get('comment', 'No comment'), objsCategory)
 
-        model_return = Model_View_Store_Product_Category(form_filters=form_filters)
+        model_return = Model_View_Store_Product_Category(form_filters_old=form_filters)
         if not model_return.is_user_logged_in:
             raise Exception('User not logged in')
         return jsonify({
