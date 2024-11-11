@@ -63,7 +63,10 @@
                 <th class="{{ model.FLAG_NAME }}">Name</th>
                 <th class="{{ model.FLAG_HAS_VARIATIONS }}">Has Variations?</th>
                 <th class="{{ model.FLAG_ACCESS_LEVEL }}">Access Level Required</th>
-                <th class="{{ model.FLAG_ACTIVE}}">Active</th>
+                <th class="{{ model.FLAG_ACTIVE}}">
+                    {% set block_id = 'button_add' %}
+                    {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+                </th>
             </tr>
         </thead>
         <tbody>

@@ -54,9 +54,8 @@
                 {{ model.ATTR_VALUE_PREVIOUS }} 
             />
         </td>
-        <td class="{{ model.FLAG_ACTIVE }}">
-            <input type="checkbox" class="{{ model.FLAG_ACTIVE }}" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}" />
-        </td>
+        {% set active = true %}
+        {% include 'components/store/_td_active.html' %}
     </tr>
 {% else %}
     <tr class="{{ model.FLAG_STOCK_ITEM }}" {{ model.ATTR_ID_STOCK_ITEM }}="{{ stock_item.id_stock }}">
@@ -142,8 +141,7 @@
                 {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.format_datetime(stock_item.date_consumed) }}" 
             />
         </td>
-        <td class="{{ model.FLAG_ACTIVE }}">
-            <input type="checkbox" {{ "checked" if stock_item.active else "" }} {{ model.ATTR_VALUE_CURRENT }}="{{ stock_item.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ stock_item.active | lower }}" />
-        </td>
+        {% set active = stock_item.active %}
+        {% include 'components/store/_td_active.html' %}
     </tr>
 {% endif %}

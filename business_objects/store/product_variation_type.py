@@ -30,7 +30,7 @@ from operator import attrgetter
 
 class Product_Variation_Type(db.Model, Store_Base):
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT_VARIATION_TYPE
-    NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME_SINGULAR
+    NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME
 
     id_type = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(50))

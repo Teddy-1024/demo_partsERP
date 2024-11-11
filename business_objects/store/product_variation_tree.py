@@ -11,6 +11,7 @@ Business object for product
 """
 
 # internal
+from business_objects.store.product_variation import Product_Variation
 from business_objects.store.product_variation_type import Product_Variation_Type
 from extensions import db
 from helpers.helper_app import Helper_App
@@ -49,9 +50,9 @@ class Product_Variation_Tree():
         node_root = Product_Variation_Tree_Node.from_variation_type_and_node_parent(variation_type_root, None)
         return cls.from_node_root(node_root)
     def is_equal(self, tree):
-        my_type_list = self.get_product_variations()
+        my_type_list = self.get_product_variation_types()
         sz_me = len(my_type_list)
-        other_type_list = tree.get_product_variations()
+        other_type_list = tree.get_product_variation_types()
         sz_other = len(other_type_list)
         is_equal = (sz_me == sz_other)
         if is_equal:
@@ -120,6 +121,7 @@ class Product_Variation_Tree():
             types.append(node.variation_type)
             node = node.nodes_child[0]
             at_leaf_node = node.is_leaf()
+        types.append(node.variation_type)
         return types
     """
     def get_product_variations(self):
@@ -140,7 +142,7 @@ class Product_Variation_Tree():
         preview_str = ''
         for variation_type in variation_types:
             is_first = (preview_str == '')
-            preview_str += f'{variation_type.name}: {variation_type.variations[0].name}'
+            preview_str += f'{variation_type.name_singular}: {variation_type.variations[0].name}'
             if is_first:
                 preview_str += '\n'
         Helper_App.console_log(f'preview_str: {preview_str}')

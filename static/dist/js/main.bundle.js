@@ -2463,7 +2463,6 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonsAddSaveCancel",
     value: function hookupButtonsAddSaveCancel() {
-      this.hookupButtonAddRowTable();
       this.hookupButtonSave();
       this.hookupButtonCancel();
       this.toggleShowButtonsSaveCancel(false);
@@ -2556,14 +2555,6 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       });
     }
   }, {
-    key: "hookupButtonAddRowTable",
-    value: function hookupButtonAddRowTable() {
-      var _this8 = this;
-      this.hookupEventHandler("click", idFormFilters + ' button.' + flagAdd, function (event, button) {
-        _this8.handleClickAddRowTable(event, button);
-      });
-    }
-  }, {
     key: "handleClickAddRowTable",
     value: function handleClickAddRowTable(event, button) {
       event.stopPropagation();
@@ -2591,14 +2582,14 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableMain",
     value: function hookupTableMain() {
-      var _this9 = this;
+      var _this8 = this;
       if (this.constructor === TableBasePage) {
         throw new Error("Must implement hookupTableMain() method.");
       }
       if (true) {
         // _rowBlank == null) {
         Events.initialiseEventHandler(idTableMain, flagInitialised, function (table) {
-          _this9.cacheRowBlank();
+          _this8.cacheRowBlank();
         });
       }
     }
@@ -2643,9 +2634,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupChangeHandlerTableCells",
     value: function hookupChangeHandlerTableCells(inputSelector) {
-      var _this10 = this;
+      var _this9 = this;
       var handler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        _this10.handleChangeNestedElementCellTable(event, element);
+        _this9.handleChangeNestedElementCellTable(event, element);
       };
       Events.initialiseEventHandler(inputSelector, flagInitialised, function (input) {
         input.addEventListener("change", function (event) {
@@ -2789,9 +2780,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupChangeHandlerTableCellsWhenNotCollapsed",
     value: function hookupChangeHandlerTableCellsWhenNotCollapsed(inputSelector) {
-      var _this11 = this;
+      var _this10 = this;
       var handler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        if (!element.classList.contains(flagCollapsed)) _this11.handleChangeNestedElementCellTable(event, element);
+        if (!element.classList.contains(flagCollapsed)) _this10.handleChangeNestedElementCellTable(event, element);
       };
       this.hookupEventHandler("change", inputSelector, handler);
     }
@@ -2871,10 +2862,10 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupFieldsActive",
     value: function hookupFieldsActive() {
-      var _this12 = this;
+      var _this11 = this;
       var flagTable = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       var handleClickRowNew = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        _this12.handleClickAddRowTable(event, element);
+        _this11.handleClickAddRowTable(event, element);
       };
       var selectorButton = 'table' + (Validation.isEmpty(flagTable) ? '' : '.' + flagTable) + ' > tbody > tr > td.' + flagActive + ' button';
       var selectorButtonDelete = selectorButton + '.' + flagDelete;
@@ -2889,16 +2880,19 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonsRowDelete",
     value: function hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete) {
-      var _this13 = this;
+      var _this12 = this;
       this.hookupEventHandler("click", selectorButtonDelete, function (event, element) {
-        _this13.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+        _this12.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete);
       });
     }
   }, {
     key: "handleClickButtonRowDelete",
     value: function handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
-      // let row = DOM.getRowFromElement(element);
+      var row = DOM.getRowFromElement(element);
       // row.classList.add(flagDelete);
+      if (row.classList.contains(flagRowNew) && !DOM.hasDirtyChildrenContainer(row)) {
+        row.parentNode.removeChild(row);
+      }
       var buttonAdd = element.cloneNode(false); // document.createElement("button");
       buttonAdd.classList.remove(flagInitialised);
       buttonAdd.classList.remove(flagDelete);
@@ -2913,9 +2907,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonsRowUndelete",
     value: function hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete) {
-      var _this14 = this;
+      var _this13 = this;
       this.hookupEventHandler("click", selectorButtonUndelete, function (event, element) {
-        _this14.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+        _this13.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete);
       });
     }
   }, {
@@ -2943,15 +2937,15 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDdlPreviews",
     value: function hookupTableCellDdlPreviews(cellSelector, optionList) {
-      var _this15 = this;
+      var _this14 = this;
       var ddlHookup = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (cellSelector) {
-        _this15.hookupTableCellDdls(cellSelector);
+        _this14.hookupTableCellDdls(cellSelector);
       };
       var changeHandler = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function (event, element) {
-        _this15.handleChangeNestedElementCellTable(event, element);
+        _this14.handleChangeNestedElementCellTable(event, element);
       };
       this.hookupEventHandler("click", cellSelector, function (event, td) {
-        _this15.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (cellSelector) {
+        _this14.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (cellSelector) {
           ddlHookup(cellSelector, function (event, element) {
             changeHandler(event, element);
           });
@@ -2962,9 +2956,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDdls",
     value: function hookupTableCellDdls(ddlSelector) {
-      var _this16 = this;
+      var _this15 = this;
       var changeHandler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        _this16.handleChangeNestedElementCellTable(event, element);
+        _this15.handleChangeNestedElementCellTable(event, element);
       };
       this.hookupEventHandler("change", ddlSelector, function (event, element) {
         changeHandler(event, element);
@@ -2973,9 +2967,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "handleClickTableCellDdlPreview",
     value: function handleClickTableCellDdlPreview(event, td, optionObjectList, cellSelector) {
-      var _this17 = this;
+      var _this16 = this;
       var ddlHookup = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function (cellSelector) {
-        _this17.hookupTableCellDdls(cellSelector);
+        _this16.hookupTableCellDdls(cellSelector);
       };
       if (td.querySelector('select')) return;
       // td.removeEventListener("click", ddlHookup);
@@ -3036,14 +3030,14 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDDlPreviewsWhenNotCollapsed",
     value: function hookupTableCellDDlPreviewsWhenNotCollapsed(cellSelector, optionList) {
-      var _this18 = this;
+      var _this17 = this;
       var ddlHookup = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (event, element) {
-        _this18.hookupTableCellDdls(event, element);
+        _this17.hookupTableCellDdls(event, element);
       };
       this.hookupEventHandler("click", cellSelector, function (event, td) {
         var div = td.querySelector('div');
         if (!div || div.classList.contains(flagCollapsed)) return;
-        _this18.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (event, element) {
+        _this17.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (event, element) {
           ddlHookup(event, element);
         });
       });
@@ -3051,9 +3045,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupProductCategoryDdls",
     value: function hookupProductCategoryDdls(ddlSelector) {
-      var _this19 = this;
+      var _this18 = this;
       this.hookupChangeHandlerTableCells(ddlSelector, function (event, element) {
-        _this19.handleChangeProductCategoryDdl(event, element);
+        _this18.handleChangeProductCategoryDdl(event, element);
       });
     }
   }, {
@@ -3087,15 +3081,15 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupPreviewsProductPermutationVariation",
     value: function hookupPreviewsProductPermutationVariation() {
-      var _this20 = this;
+      var _this19 = this;
       this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations, function (event, element) {
-        return _this20.handleClickProductPermutationVariationsPreview(event, element);
+        return _this19.handleClickProductPermutationVariationsPreview(event, element);
       });
     }
   }, {
     key: "handleClickProductPermutationVariationsPreview",
     value: function handleClickProductPermutationVariationsPreview(event, element) {
-      var _this21 = this;
+      var _this20 = this;
       var tblVariations = element.querySelector('table.' + flagProductVariations);
       if (!Validation.isEmpty(tblVariations)) return;
       this.toggleColumnCollapsed(flagProductVariations, false);
@@ -3124,7 +3118,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       var tbody = document.createElement("tbody");
       if (!Validation.isEmpty(permutationVariations)) {
         permutationVariations.forEach(function (permutationVariation, index) {
-          _this21.addProductPermutationVariationRow(tbody, permutationVariation);
+          _this20.addProductPermutationVariationRow(tbody, permutationVariation);
         });
       }
       tblVariations.appendChild(tbody);
@@ -3280,13 +3274,13 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonsProductPermutationVariationAddDelete",
     value: function hookupButtonsProductPermutationVariationAddDelete() {
-      var _this22 = this;
+      var _this21 = this;
       var selectorButton = idTableMain + ' td.' + flagProductVariations + ' tr.' + flagProductVariation + ' button';
       var selectorButtonDelete = selectorButton + '.' + flagDelete;
       var selectorButtonUndelete = selectorButton + '.' + flagAdd;
       this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, function (event, element) {
-        _this22.handleClickButtonRowDelete(event, element);
-        _this22.updateProductPermutationVariations(element);
+        _this21.handleClickButtonRowDelete(event, element);
+        _this21.updateProductPermutationVariations(element);
       });
       this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
       this.hookupButtonsProductPermutationVariationAdd();
@@ -3294,9 +3288,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonsProductPermutationVariationAdd",
     value: function hookupButtonsProductPermutationVariationAdd() {
-      var _this23 = this;
+      var _this22 = this;
       this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations + ' button.' + flagAdd, function (event, element) {
-        _this23.handleClickButtonProductPermutationVariationAdd(event, element);
+        _this22.handleClickButtonProductPermutationVariationAdd(event, element);
       });
     }
   }, {

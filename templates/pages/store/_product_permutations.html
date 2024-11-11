@@ -117,7 +117,10 @@
                 <th class="{{ model.FLAG_CURRENCY_COST }}">Cost Currency</th>
                 <th class="{{ model.FLAG_PROFIT_LOCAL_MIN }}">Profit Local Min</th>
                 <th class="{{ model.FLAG_LATENCY_MANUFACTURE }}">Manufacturing Latency</th>
-                <th class="{{ model.FLAG_ACTIVE }}">Active</th>
+                <th class="{{ model.FLAG_ACTIVE }}">
+                    {% set block_id = 'button_add' %}
+                    {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+                </th>
             </tr>
         </thead>
         <tbody>

@@ -23,9 +23,8 @@
         >
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="1">View</div>
         </td>
-        <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}">
-        </td>
+        {% set active = true %}
+        {% include 'components/store/_td_active.html' %}
     </tr>
 {% else %}
     <tr class="{{ model.FLAG_PRODUCT }}" {{ model.ATTR_ID_PRODUCT }}="{{ product.id_product }}">
@@ -55,8 +54,7 @@
         >
             <div class="{{ model.FLAG_ACCESS_LEVEL}}" {{ model.ATTR_ID_ACCESS_LEVEL }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_CURRENT }}="{{ product.id_access_level_required }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.id_access_level_required }}">{{ product.name_access_level_required }}</div>
         </td>
-        <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {% if product.active %}checked{% endif %} {{ model.ATTR_VALUE_CURRENT }}="{{ product.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ product.active | lower }}">
-        </td>
+        {% set active = product.active %}
+        {% include 'components/store/_td_active.html' %}
     </tr>
 {% endif %}

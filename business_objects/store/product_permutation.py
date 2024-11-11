@@ -302,7 +302,7 @@ class Product_Permutation(db.Model, Store_Base):
             self.FLAG_CAN_VIEW: self.can_view,
             self.FLAG_CAN_EDIT: self.can_edit,
             self.FLAG_CAN_ADMIN: self.can_admin,
-            self.FLAG_PRODUCT_VARIATIONS: [variation_type.to_json() for variation_type in self.variation_tree.get_product_variation_types()],
+            self.FLAG_PRODUCT_VARIATIONS: [] if self.variation_tree is None else [variation_type.to_json() for variation_type in self.variation_tree.get_product_variation_types()],
             self.FLAG_PRODUCT_IMAGE: [image.to_json() for image in self.images],
             self.FLAG_DELIVERY_OPTION: [option.to_json() for option in self.delivery_options],
             self.FLAG_PRODUCT_PRICE: [price.to_json() for price in self.prices],
@@ -395,10 +395,10 @@ class Product_Permutation(db.Model, Store_Base):
             price_GBP_full: {self.price_GBP_full}
             price_GBP_min: {self.price_GBP_min}
         """
-
+    """
     def add_product_variation(self, variation):
         _m = 'Product_Permutation.add_product_variation'
-        """
+        ""
         av.val_instance(variation, 'variation', _m, Product_Variation)
         try:
             self.variation_index[variation.id_variation]
@@ -406,11 +406,18 @@ class Product_Permutation(db.Model, Store_Base):
         except KeyError:
             self.variation_index[variation.id_variation] = len(self.variations)
             self.variations.append(variation)
-        """
+        ""
         if self.variation_tree is None:
             self.variation_tree = Product_Variation_Tree.from_product_variation(variation)
         else:
             self.variation_tree.add_product_variation(variation)
+    """
+    def add_product_variation_type(self, variation_type):
+        _m = 'Product_Permutation.add_product_variation_type'
+        if self.variation_tree is None:
+            self.variation_tree = Product_Variation_Tree.from_product_variation_type(variation_type)
+        else:
+            self.variation_tree.add_product_variation_type(variation_type)
     def add_product_price(self, price):
         _m = 'Product_Permutation.add_product_price'
         av.val_instance(price, 'price', _m, Product_Price)

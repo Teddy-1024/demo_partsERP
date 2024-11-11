@@ -114,13 +114,6 @@ td > input, td > select, td > textarea, .container-input > input, .container-inp
     border-radius: 0.5vh;
 }
 
-#tableMain tbody tr td button {
-    padding: 0;
-    border: 0;
-    margin: 0;
-    text-decoration: none;
-}
-
 #tableMain tbody tr td table thead tr th.id_variation_type, #tableMain tbody tr td table tbody tr td.id_variation_type, #tableMain tbody tr td table thead tr th.id_variation, #tableMain tbody tr td table tbody tr td.id_variation {
     width: 47.5%;
 }
