@@ -54,6 +54,7 @@ class Address(db.Model, Base):
         address = cls()
         address.id_address = query_row[1]
         address.id_region = query_row[2]
+        return address
     @classmethod
     def from_DB_stock_item(cls, query_row):
         address = cls()
@@ -81,7 +82,7 @@ class Address(db.Model, Base):
         return {
             **self.get_shared_json_attributes(self),
             self.ATTR_ID_ADDRESS: self.id_address,
-            self.FLAG_REGION: self.region.to_json(),
+            self.FLAG_REGION: None if self.region is None else self.region.to_json(),
             self.FLAG_POSTCODE: self.postcode,
             self.FLAG_ADDRESS_LINE_1: self.address_line_1,
             self.FLAG_ADDRESS_LINE_2: self.address_line_2,

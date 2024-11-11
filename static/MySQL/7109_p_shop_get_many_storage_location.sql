@@ -12,7 +12,7 @@ BEGIN
 	SET a_get_inactive_storage_location = IFNULL(a_get_inactive_storage_location, 0);
     
 	SELECT 
-		SL.id_storage_location
+		SL.id_location
         , P.id_plant
         , P.id_address
         , A.id_region

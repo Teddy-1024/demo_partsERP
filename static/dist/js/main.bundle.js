@@ -2347,7 +2347,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       if (!isPopState) {
         base_table_superPropGet(TableBasePage, "sharedInitialize", this, 3)([]);
         this.hookupFilters();
-        this.hookupButtonsAddSaveCancel();
+        this.hookupButtonsSaveCancel();
         this.hookupTableMain();
         OverlayConfirm.hookup(function () {
           if (isSinglePageApp) {
@@ -2461,8 +2461,8 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       });
     }
   }, {
-    key: "hookupButtonsAddSaveCancel",
-    value: function hookupButtonsAddSaveCancel() {
+    key: "hookupButtonsSaveCancel",
+    value: function hookupButtonsSaveCancel() {
       this.hookupButtonSave();
       this.hookupButtonCancel();
       this.toggleShowButtonsSaveCancel(false);
@@ -4969,7 +4969,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
       this.hookupSubscriptionFields();
       this.hookupIdStripeProductInputs();
       this.hookupExpirationFields();
-      this.hookupActiveCheckboxes();
+      this.hookupFieldsActive();
     }
   }, {
     key: "hookupFieldsProductCategory",
@@ -5143,11 +5143,6 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
     key: "hookupCountIntervalExpirationUnsealedInputs",
     value: function hookupCountIntervalExpirationUnsealedInputs() {
       this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
-    }
-  }, {
-    key: "hookupActiveCheckboxes",
-    value: function hookupActiveCheckboxes() {
-      this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagActive + ' input');
     }
   }, {
     key: "leave",
@@ -5811,7 +5806,7 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
       this.hookupSealingInputs();
       this.hookupExpirationDateInputs();
       this.hookupConsumationInputs();
-      this.hookupActiveCheckboxes();
+      this.hookupFieldsActive();
     }
   }, {
     key: "hookupProductCategoryFields",
@@ -5826,16 +5821,17 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
     value: function hookupProductFields() {
       this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagProduct, Utils.getListFromDict(products));
     }
-  }, {
-    key: "handleClickProductPermutationVariationsPreview",
-    value: function handleClickProductPermutationVariationsPreview(event, element) {
-      var row = DOM.getRowFromElement(element);
-      var tdProduct = row.querySelector('td.' + flagProduct);
-      var idProduct = DOM.getElementValueCurrent(tdProduct);
-      var product = products[idProduct];
-      if (!product[flagHasVariations]) return;
-      stock_items_superPropGet(PageStoreStockItems, "handleClickProductPermutationVariationsPreview", this, 3)([event, element]);
+
+    /*
+    handleClickProductPermutationVariationsPreview(event, element) {
+        let row = DOM.getRowFromElement(element);
+        let tdProduct = row.querySelector('td.' + flagProduct);
+        let idProduct = DOM.getElementValueCurrent(tdProduct);
+        let product = products[idProduct];
+        if (!product[flagHasVariations]) return;
+        super.handleClickProductPermutationVariationsPreview(event, element);
     }
+    */
   }, {
     key: "handleClickButtonProductPermutationVariationsAdd",
     value: function handleClickButtonProductPermutationVariationsAdd(event, element) {
@@ -5865,7 +5861,7 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
     key: "hookupStorageLocationFields",
     value: function hookupStorageLocationFields() {
       var _this3 = this;
-      this.hookupEventHandler("click", idTableMain + ' td.' + flagStorageLocation, function (event, element) {
+      this.hookupEventHandler("click", idTableMain + ' td.' + flagStorageLocation + ' div', function (event, element) {
         return _this3.handleClickStorageLocationPreview(event, element);
       });
     }
@@ -5877,7 +5873,7 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
       var idPlant = element.getAttribute(attrIdPlant);
       var idStorageLocation = element.getAttribute(attrIdStorageLocation);
       var tblStorageLocation = document.createElement("table");
-      tblStorageLocation.classList.add(flagProductVariations);
+      tblStorageLocation.classList.add(flagStorageLocation);
       var thead = document.createElement("thead");
       var thPlant = document.createElement("th");
       thPlant.textContent = 'Plant';
@@ -5892,8 +5888,9 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
       var plant, optionPlantJson, optionPlant, storageLocation, optionStorageLocationJson, optionStorageLocation;
       var plantKeys = Object.keys(plants);
       var storageLocationKeys = Object.keys(storageLocations);
-      var plantJson = plants[idPlant];
-      var storageLocationJson = storageLocations[idStorageLocation];
+      debugger;
+      var plantJson = idPlant != null ? plants[idPlant] : stock_items_defineProperty({}, attrIdPlant, null);
+      var storageLocationJson = idStorageLocation != null ? storageLocations[idStorageLocation] : stock_items_defineProperty({}, attrIdStorageLocation, null);
       var tdPlant = document.createElement("td");
       tdPlant.classList.add(flagPlant);
       DOM.setElementAttributesValuesCurrentAndPrevious(tdPlant, plantJson[attrIdPlant]);
@@ -5907,7 +5904,10 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
       ddlPlant.appendChild(optionPlant);
       plantKeys.forEach(function (plantKey) {
         plant = plants[plantKey];
-        optionPlantJson = BusinessObjects.getOptionJsonFromObjectJson(objectJson = plant, valueSelected = plantJson[attrIdPlant]);
+        optionPlantJson = BusinessObjects.getOptionJsonFromObjectJson(plant,
+        // objectJson
+        plantJson[attrIdPlant] // valueSelected
+        );
         optionPlant = DOM.createOption(optionPlantJson);
         if (_verbose) {
           console.log("optionPlant: ", optionPlant);
@@ -5925,9 +5925,12 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
         console.log("optionStorageLocation: ", optionStorageLocation);
       }
       ddlStorageLocation.appendChild(optionStorageLocation);
-      StorageLocationKeys.forEach(function (StorageLocationKey) {
-        storageLocation = StorageLocations[StorageLocationKey];
-        optionStorageLocationJson = BusinessObjects.getOptionJsonFromObjectJson(objectJson = storageLocation, valueSelected = storageLocationJson[attrIdStorageLocation]);
+      storageLocationKeys.forEach(function (StorageLocationKey) {
+        storageLocation = storageLocations[StorageLocationKey];
+        optionStorageLocationJson = BusinessObjects.getOptionJsonFromObjectJson(storageLocation,
+        // objectJson
+        storageLocationJson[attrIdStorageLocation] // valueSelected
+        );
         optionStorageLocation = DOM.createOption(optionStorageLocationJson);
         if (_verbose) {
           console.log("optionStorageLocation: ", optionStorageLocation);
@@ -5941,9 +5944,9 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
       trBody.appendChild(tdStorageLocation);
       tbody.appendChild(trBody);
       tblStorageLocation.appendChild(tbody);
-      var parent = element.parentElement;
-      parent.innerHTML = '';
-      parent.appendChild(tblStorageLocation);
+      var tdParent = DOM.getCellFromElement(element);
+      tdParent.innerHTML = '';
+      tdParent.appendChild(tblStorageLocation);
       if (_verbose) {
         console.log("tblStorageLocation: ", tblStorageLocation);
       }
@@ -6035,11 +6038,6 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
     key: "hookupDateConsumedInputs",
     value: function hookupDateConsumedInputs() {
       this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagDateConsumed + ' input');
-    }
-  }, {
-    key: "hookupActiveCheckboxes",
-    value: function hookupActiveCheckboxes() {
-      this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagActive + ' input');
     }
   }, {
     key: "leave",

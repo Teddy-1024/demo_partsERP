@@ -33,6 +33,8 @@ class Model_View_Store_Stock_Item(Model_View_Store):
     filters_stock_item: Filters_Stock_Item
     form_filters: Filters_Stock_Item = None
     list_options_product: list = None
+    plants: list = None
+    storage_locations: list = None
     units_measurement: list = None
     units_measurement_time: list = None
     variations: list = None
@@ -87,6 +89,8 @@ class Model_View_Store_Stock_Item(Model_View_Store):
         self.units_measurement_time = [unit_measurement for unit_measurement in self.units_measurement if unit_measurement.is_unit_of_time]
         self.currencies = self.get_many_currency()
         self.currency_options = [currency.to_json_option() for currency in self.currencies]
+        self.plants = self.get_many_plant(False)
+        self.storage_locations = self.get_many_storage_location(False)
 
     @classmethod
     def save_stock_items(cls, comment, list_stock_items):

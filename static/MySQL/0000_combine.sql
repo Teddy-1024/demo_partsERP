@@ -173,10 +173,14 @@ DROP TABLE IF EXISTS Shop_Variation_Audit;
 DROP TABLE IF EXISTS Shop_Variation;
 DROP TABLE IF EXISTS Shop_Product_Variation_Type_Link_Audit;
 DROP TABLE IF EXISTS Shop_Product_Variation_Type_Link;
+DROP TABLE IF EXISTS Shop_Product_Variation_Temp;
+DROP TABLE IF EXISTS Shop_Product_Variation;
 
 DROP TABLE IF EXISTS Shop_Variation_Type_Temp;
 DROP TABLE IF EXISTS Shop_Variation_Type_Audit;
 DROP TABLE IF EXISTS Shop_Variation_Type;
+DROP TABLE IF EXISTS Shop_Product_Variation_Type_Temp;
+DROP TABLE IF EXISTS Shop_Product_Variation_Type;
 
 DROP TABLE IF EXISTS Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Audit;
@@ -1475,9 +1479,9 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type_Audit (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation_Type_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Variation_Type_Temp (
-	id_temp INT NOT NULL PRIMARY KEY
+	id_temp INT NOT NULL PRIMARY KEY AUTO_INCREMENT
 	, id_type INT NOT NULL
-	, id_type_temp INT NOT NULL
+	-- , id_type_temp INT NOT NULL
 	, code VARCHAR(50)
 	, name VARCHAR(255)
 	, name_plural VARCHAR(256)
@@ -1536,10 +1540,12 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Audit (
 
 # Variations Temp
 
+-- DROP TABLE partsltd_prod.Shop_Variation_Temp;
+
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation_Temp';
 
 CREATE TABLE Shop_Variation_Temp (
-	id_temp INT NOT NULL PRIMARY KEY
+	id_temp INT NOT NULL PRIMARY KEY AUTO_INCREMENT
 	, id_variation INT NOT NULL
 	, id_type INT NOT NULL
 	, code VARCHAR(50)
@@ -11219,10 +11225,10 @@ DELIMITER ;;
 CALL p_shop_get_many_product_variation (
 	1 # 'auth0|6582b95c895d09a70ba10fef', # a_id_user
     , 1 # a_get_all_variation_type
-	, 0 # a_get_inactive_variation_type
+	, 1 # a_get_inactive_variation_type
 	, '' # a_ids_variation_type
     , 1 # a_get_all_variation
-	, 0 # a_get_inactive_variation
+	, 1 # a_get_inactive_variation
 	, '' # a_ids_variation
     , 0 # a_debug
 );
@@ -11613,6 +11619,8 @@ BEGIN
 		;
     END IF;
     
+    -- Duplicate Variation Type Ids
+    -- Duplicate Variation Ids
     -- Duplicate Variation Type Codes
     -- Duplicate Variation Codes
     
@@ -11683,7 +11691,7 @@ BEGIN
 	-- Transaction    
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
 		START TRANSACTION;
-			INSERT INTO Shop_Sales_And_Purchasing_Change_Set (
+			INSERT INTO Shop_Product_Change_Set (
 				comment
 				, updated_last_by
 				, updated_last_on
@@ -11768,6 +11776,7 @@ BEGIN
 				, VT.display_order = t_VT.display_order
 				, VT.created_on = t_VT.created_on
 				, VT.created_by = t_VT.created_by
+                , VT.id_change_set = v_id_change_set
 			;
 			
 			UPDATE partsltd_prod.Shop_Variation V
@@ -11781,6 +11790,7 @@ BEGIN
 				, V.display_order = t_V.display_order
 				, V.created_on = t_V.created_on
 				, V.created_by = t_V.created_by
+                , V.id_change_set = v_id_change_set
 			;
 		
 			DELETE VT_T
@@ -11853,7 +11863,7 @@ BEGIN
 
 		INSERT INTO partsltd_prod.Shop_Variation_Type_Temp (
 			id_type
-            , id_type_temp
+            -- , id_type_temp
             , code
             , name
             , name_plural
@@ -11861,10 +11871,10 @@ BEGIN
             , active
             , GUID
 		)
-        /* Test 1 - Insert */
+        /* Test 1 - Insert 
         VALUES (
 			-1
-            , -1
+            -- , -1
             , 'SIZE'
             , 'Size'
             , 'Sizes'
@@ -11872,11 +11882,19 @@ BEGIN
             , 1
             , v_guid
         )
-        /* Test 2: Alter
-        SELECT 
-		FROM partsltd_prod.Shop_Variation_Type
-        WHERE id_order = 6
         */
+        /* Test 2: Alter */
+        SELECT
+			id_type
+            -- , id_type AS id_type_temp
+            , code
+            , name
+            , name_plural
+            , display_order
+            , active
+            , v_guid AS GUID
+		FROM partsltd_prod.Shop_Variation_Type
+        WHERE id_type = 1
 		;
         
 		INSERT INTO partsltd_prod.Shop_Variation_Temp (
@@ -11888,7 +11906,7 @@ BEGIN
             , active
             , GUID
 		)
-        /* Test 1 - Insert */
+        /* Test 1 - Insert 
         VALUES (
 			-1 -- id_variation
             , -1 -- id_type
@@ -11898,11 +11916,38 @@ BEGIN
             , 1 -- active
             , v_guid -- 
         )
-        /* Test 2: Alter
-        SELECT
-		FROM partsltd_prod.Shop_Variation
-        WHERE id_order = 6
         */
+        /* Test 3 - Insert 
+        VALUES (
+			-1 -- id_variation
+            , 1 -- id_type
+            , 'SILVER' -- code
+            , 'Silver' -- name
+            , 10 -- display_order
+            , 1 -- active
+            , 'NIPS' -- v_guid -- 
+        );
+        */
+        /* Test 2: Alter */
+        SELECT
+			id_variation
+            , id_type
+            , code
+            , name
+            , display_order
+            , active
+            , v_guid AS GUID
+		FROM partsltd_prod.Shop_Variation
+        WHERE id_variation = 2
+        UNION
+        SELECT
+			-1 -- id_variation
+            , 1 -- id_type
+            , 'GREEN' -- code
+            , 'Green' -- name
+            , 3 -- display_order
+            , 1 -- active
+            , v_guid -- 
         ;
         
 	COMMIT;
@@ -11918,7 +11963,7 @@ BEGIN
     ;
     
     CALL partsltd_prod.p_shop_save_product_variation ( 
-		'Test save Variations' -- comment
+		'Test save Variations - add + edit' -- comment
         , v_guid -- guid
         , 1 -- id_user
 		, 1 -- debug
@@ -11964,6 +12009,9 @@ delete
  from shop_variation_type
 where id_type = -1
 ;
+
+Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_variation_type`, CONSTRAINT `FK_Shop_Variation_Type_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`))
+
 */
 
 -- Clear previous proc
@@ -22403,6 +22451,78 @@ INSERT INTO Shop_Storage_Location (
 )
 VALUES 
 	(1, 'K-F-1', 'Kitchen Fridge 1')
+	, (1, 'K-AHL-M-B', 'Kitchen - Above Hob Left Medial - Bottom')
+	, (1, 'K-AHL-M-M', 'Kitchen - Above Hob Left Medial - Middle')
+	, (1, 'K-AHL-M-T', 'Kitchen - Above Hob Left Medial - Top')
+	, (1, 'K-AHL-L-B', 'Kitchen - Above Hob Left Lateral - Bottom')
+	, (1, 'K-AHL-L-M', 'Kitchen - Above Hob Left Lateral - Middle')
+	, (1, 'K-AHL-L-T', 'Kitchen - Above Hob Left Lateral - Top')
+	, (1, 'K-AHR-M-B', 'Kitchen - Above Hob Left Medial - Bottom')
+	, (1, 'K-AHR-M-M', 'Kitchen - Above Hob Left Medial - Middle')
+	, (1, 'K-AHR-M-T', 'Kitchen - Above Hob Left Medial - Top')
+	, (1, 'K-AHL-M-B', 'Kitchen - Above Hob Left Medial - Bottom')
+	, (1, 'K-AHL-M-M', 'Kitchen - Above Hob Left Medial - Middle')
+	, (1, 'K-AHL-M-T', 'Kitchen - Above Hob Left Medial - Top')
+	, (1, 'K-AHL-L-B', 'Kitchen - Above Hob Left Lateral - Bottom')
+	, (1, 'K-AHL-L-M', 'Kitchen - Above Hob Left Lateral - Middle')
+	, (1, 'K-AHL-L-T', 'Kitchen - Above Hob Left Lateral - Top')
+	, (1, 'K-AHL-XL-B', 'Kitchen - Above Hob Left Extra Lateral - Bottom')
+	, (1, 'K-AHL-XL-M', 'Kitchen - Above Hob Left Extra Lateral - Middle')
+	, (1, 'K-AHL-XL-T', 'Kitchen - Above Hob Left Extra Lateral - Top')
+	, (1, 'K-BS-B', 'Kitchen - Below Sink - Bottom')
+	, (1, 'K-BS-T', 'Kitchen - Below Sink - Top')
+	, (1, 'K-LO-B', 'Kitchen - Left of Oven - Bottom')
+	, (1, 'K-LO-T', 'Kitchen - Left of Oven - Top')
+	, (1, 'K-RO-M-B', 'Kitchen - Right of Oven - Medial - Bottom')
+	, (1, 'K-RO-M-M', 'Kitchen - Right of Oven - Medial - Middle')
+	, (1, 'K-RO-M-T', 'Kitchen - Right of Oven - Medial - Top')
+	, (1, 'K-RO-L-B', 'Kitchen - Right of Oven - Lateral - Bottom')
+	, (1, 'K-RO-L-T', 'Kitchen - Right of Oven - Lateral - Top')
+	, (1, 'K-BBB-B', 'Kitchen - Below Breakfast Bar - Bottom')
+	, (1, 'K-BBB-T', 'Kitchen - Below Breakfast Bar - Top')
+	, (1, 'K-BSL-M-B', 'Kitchen - Bekow Sink Left - Medial - Bottom')
+	, (1, 'K-BSL-M-T', 'Kitchen - Bekow Sink Left - Medial - Top')
+	, (1, 'K-BSL-L-B', 'Kitchen - Bekow Sink Left - Lateral - Bottom')
+	, (1, 'K-BSL-L-T', 'Kitchen - Bekow Sink Left - Lateral - Top')
+	, (1, 'K-ASL-M-B', 'Kitchen - Above Sink Left - Medial - Bottom')
+	, (1, 'K-ASL-M-M', 'Kitchen - Above Sink Left - Medial - Middle')
+	, (1, 'K-ASL-M-T', 'Kitchen - Above Sink Left - Medial - Top')
+	, (1, 'K-ASL-L-B', 'Kitchen - Above Sink Left - Lateral - Bottom')
+	, (1, 'K-ASL-L-M', 'Kitchen - Above Sink Left - Lateral - Middle')
+	, (1, 'K-ASL-L-T', 'Kitchen - Above Sink Left - Lateral - Top')
+	, (1, 'K-ASL-XL-B', 'Kitchen - Above Sink Left - Extra Lateral - Bottom')
+	, (1, 'K-ASL-XL-M', 'Kitchen - Above Sink Left - Extra Lateral - Middle')
+	, (1, 'K-ASL-XL-T', 'Kitchen - Above Sink Left - Extra Lateral - Top')
+	, (1, 'K-T-B', 'Kitchen - Tower - Bottom')
+	, (1, 'K-T-LM', 'Kitchen - Tower - Lower Middle')
+	, (1, 'K-T-UM', 'Kitchen - Tower - Upper Middle')
+	, (1, 'K-T-T', 'Kitchen - Tower - Top')
+	, (1, 'K-FJ-MEAT', 'Kitchen - Fridge - Meat Drawer')
+	, (1, 'K-FJ-VEG', 'Kitchen - Fridge - Vegetables Drawer')
+	, (1, 'K-FJ-CHEESE', 'Kitchen - Fridge - Cheese Drawer')
+	, (1, 'K-FJ-S-B', 'Kitchen - Fridge - Shelf - Bottom')
+	, (1, 'K-FJ-S-LM', 'Kitchen - Fridge - Shelf - Lower Middle')
+	, (1, 'K-FJ-S-UM', 'Kitchen - Fridge - Shelf - Upper Middle')
+	, (1, 'K-FJ-S-T', 'Kitchen - Fridge - Shelf - Top')
+	, (1, 'K-FJ-DG-B', 'Kitchen - Door Shelf (Guarded) - Bottom')
+	, (1, 'K-FJ-DG-LM', 'Kitchen - Door Shelf (Guarded) - Lower Middle')
+	, (1, 'K-FJ-DG-UM', 'Kitchen - Door Shelf (Guarded) - Upper Middle')
+	, (1, 'K-FJ-DG-T', 'Kitchen - Door Shelf (Guarded) - Top')
+	, (1, 'K-FJ-DU', 'Kitchen - Door Shelf (Unguarded)')
+	, (1, 'K-FZ-DRAWER-B', 'Kitchen - Freezer - Drawer - Bottom')
+	, (1, 'K-FZ-DRAWER-T', 'Kitchen - Freezer - Drawer - Top')
+	, (1, 'K-FZ-DRAWER-I', 'Kitchen - Freezer - Drawer - Ice')
+	, (1, 'K-FZ-S-B', 'Kitchen - Freezer - Shelf - Bottom')
+	, (1, 'K-FZ-S-M', 'Kitchen - Freezer - Shelf - Middle')
+	, (1, 'K-FZ-S-T', 'Kitchen - Freezer - Shelf - Top')
+	, (1, 'K-FZ-DOOR-XL', 'Kitchen - Freezer - Door - Extra Low')
+	, (1, 'K-FZ-DOOR-L', 'Kitchen - Freezer - Door - Lower')
+	, (1, 'K-FZ-DOOR-LM', 'Kitchen - Freezer - Door - Lower Middle')
+	, (1, 'K-FZ-DOOR-UM', 'Kitchen - Freezer - Door - Upper Middle')
+	, (1, 'K-FZ-DOOR-U', 'Kitchen - Freezer - Door - Upper')
+	, (1, 'K-FZ-DOOR-XU', 'Kitchen - Freezer - Door - Extra Up')
+	, (1, 'K-AFF', 'Kitchen - Above Fridge-Freezer')
+	, (1, 'K-CT', 'Kitchen - Counter Top')
 ;
 
 /*

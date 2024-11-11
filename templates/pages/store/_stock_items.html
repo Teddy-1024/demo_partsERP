@@ -116,10 +116,12 @@
         #}
 
         var currencies = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.currencies) | tojson | safe }};
+        var plants = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.plants) | tojson | safe }};
         var products = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.get_list_products()) | tojson | safe }};
         var productCategories = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.categories) | tojson | safe }};
         var productVariations = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.variations) | tojson | safe }};
         var productVariationTypes = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.variation_types) | tojson | safe }};
+        var storageLocations = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.storage_locations) | tojson | safe }};
         {#
             var unitMeasurements = {{ units_measurement_dict | tojson | safe }};
             var unitMeasurementsTime = {{ units_measurement_time_dict | tojson | safe }};

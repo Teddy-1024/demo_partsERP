@@ -77,16 +77,18 @@ th, td {
 #tableMain thead tr th.product_variations.collapsed, #tableMain tbody tr td.product_variations.collapsed {
     width: 10vh;
     min-width: 10vh;
+    display: table-cell !important;
 }
 #tableMain thead tr th.product_variations, #tableMain tbody tr td.product_variations {
-    width: 20vh;
-    min-width: 20vh;
+    width: 24vh;
+    min-width: 24vh;
 }
-#tableMain tbody tr td.product_variations table thead tr th, #tableMain tbody tr td.product_variations table tbody tr td {
+#tableMain tbody tr td.product_variations table thead tr th.product_variation_type, #tableMain tbody tr td.product_variations table tbody tr td.product_variation_type,
+#tableMain tbody tr td.product_variations table thead tr th.product_variation, #tableMain tbody tr td.product_variations table tbody tr td.product_variation {
     width: 8vh;
     min-width: 8vh;
 }
-#tableMain tbody tr td.product_variations table thead tr th:last-of-type, #tableMain tbody tr td.product_variations table tbody tr td:last-of-type {
+#tableMain tbody tr td.product_variations table thead tr th.add, #tableMain tbody tr td.product_variations table tbody tr td.delete {
     width: 4vh;
     min-width: 4vh;
 }
@@ -100,25 +102,27 @@ th, td {
     min-width: 11vh;
 }
 
-#tableMain thead tr th.cost_local_vat_excl, #tableMain tbody tr td.cost_local_vat_excl,
-#tableMain thead tr th.cost_local_vat_incl, #tableMain tbody tr td.cost_local_vat_incl {
+#tableMain thead tr th.cost_unit_local_vat_excl, #tableMain tbody tr td.cost_unit_local_vat_excl,
+#tableMain thead tr th.cost_unit_local_vat_incl, #tableMain tbody tr td.cost_unit_local_vat_incl {
     width: 9vh;
     min-width: 9vh;
 }
 
-#tableMain thead tr th.storage-location.collapsed, #tableMain tbody tr td.storage-location.collapsed {
+#tableMain thead tr th.storage_location.collapsed, #tableMain tbody tr td.storage_location.collapsed {
     width: 10vh;
     min-width: 10vh;
 }
-#tableMain thead tr th.storage-location, #tableMain tbody tr td.storage-location {
+#tableMain thead tr th.storage_location, #tableMain tbody tr td.storage_location {
     width: 20vh;
     min-width: 20vh;
 }
-#tableMain tbody tr td.storage-location table thead tr th, #tableMain tbody tr td.storage-location table tbody tr td {
+#tableMain tbody tr td.storage_location table thead tr th, 
+#tableMain tbody tr td.storage_location table tbody tr td {
     width: 8vh;
     min-width: 8vh;
 }
-#tableMain tbody tr td.storage-location table thead tr th:last-of-type, #tableMain tbody tr td.storage-location table tbody tr td:last-of-type {
+#tableMain tbody tr td.storage_location table thead tr th:last-of-type,
+#tableMain tbody tr td.storage_location table tbody tr td:last-of-type {
     width: 4vh;
     min-width: 4vh;
 }

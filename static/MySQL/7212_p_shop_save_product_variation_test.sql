@@ -157,6 +157,7 @@ BEGIN
 END //
 DELIMITER ;;
 
+/*
 CALL partsltd_prod.p_shop_save_product_variation_test ();
 
 DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
@@ -164,7 +165,6 @@ DELETE FROM partsltd_prod.Shop_Variation_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-/*
 
 delete from shop_variation_audit
 where id_variation = 3

@@ -211,7 +211,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupSubscriptionFields();
         this.hookupIdStripeProductInputs();
         this.hookupExpirationFields();
-        this.hookupActiveCheckboxes();
+        this.hookupFieldsActive();
     }
     hookupFieldsProductCategory() {
         this.hookupTableCellDdlPreviews(
@@ -337,9 +337,6 @@ export default class PageStoreProductPermutations extends TableBasePage {
     }
     hookupCountIntervalExpirationUnsealedInputs(){
         this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
-    }
-    hookupActiveCheckboxes(){
-        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagActive + ' input');
     }
 
     leave() {
