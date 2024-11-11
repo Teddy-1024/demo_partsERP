@@ -68,7 +68,6 @@ body {
 }
 
 *{
-    /*box-sizing: border-box; */
     margin: 0;
 }
 
@@ -706,6 +705,12 @@ form.filter button.save, form.filter button.button-cancel {
     margin: 1vh 2vh;
     align-items: normal;
     justify-content: normal;
+}
+
+#tableMain select, #tableMain input, #tableMain textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
 #tableMain thead tr th, #tableMain tbody tr td {

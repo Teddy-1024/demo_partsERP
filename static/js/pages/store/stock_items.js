@@ -143,7 +143,7 @@ export default class PageStoreStockItems extends TableBasePage {
         this.hookupSealingInputs();
         this.hookupExpirationDateInputs();
         this.hookupConsumationInputs();
-        this.hookupActiveCheckboxes();
+        this.hookupFieldsActive();
     }
     hookupProductCategoryFields() {
         this.hookupTableCellDdlPreviews(
@@ -156,6 +156,7 @@ export default class PageStoreStockItems extends TableBasePage {
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagProduct, Utils.getListFromDict(products));
     }
 
+    /*
     handleClickProductPermutationVariationsPreview(event, element) {
         let row = DOM.getRowFromElement(element);
         let tdProduct = row.querySelector('td.' + flagProduct);
@@ -164,6 +165,7 @@ export default class PageStoreStockItems extends TableBasePage {
         if (!product[flagHasVariations]) return;
         super.handleClickProductPermutationVariationsPreview(event, element);
     }
+    */
     handleClickButtonProductPermutationVariationsAdd(event, element) {
         let row = DOM.getRowFromElement(element);
         let tbody = row.querySelector('tbody');
@@ -186,7 +188,7 @@ export default class PageStoreStockItems extends TableBasePage {
     hookupStorageLocationFields(){
         this.hookupEventHandler(
             "click", 
-            idTableMain + ' td.' + flagStorageLocation, 
+            idTableMain + ' td.' + flagStorageLocation + ' div', 
             (event, element) => this.handleClickStorageLocationPreview(event, element)
         );
     }
@@ -195,7 +197,7 @@ export default class PageStoreStockItems extends TableBasePage {
         let idPlant = element.getAttribute(attrIdPlant);
         let idStorageLocation = element.getAttribute(attrIdStorageLocation);
         let tblStorageLocation = document.createElement("table");
-        tblStorageLocation.classList.add(flagProductVariations);
+        tblStorageLocation.classList.add(flagStorageLocation);
         let thead = document.createElement("thead");
         let thPlant = document.createElement("th");
         thPlant.textContent = 'Plant';
@@ -212,8 +214,13 @@ export default class PageStoreStockItems extends TableBasePage {
         let plantKeys = Object.keys(plants);
         let storageLocationKeys = Object.keys(storageLocations);
         
-        let plantJson = plants[idPlant];
-        let storageLocationJson = storageLocations[idStorageLocation];
+        debugger;
+        let plantJson = idPlant != null ? plants[idPlant] : {
+            [attrIdPlant]: null,
+        };
+        let storageLocationJson = idStorageLocation != null ? storageLocations[idStorageLocation] : {
+            [attrIdStorageLocation]: null,
+        };
         
         let tdPlant = document.createElement("td");
         tdPlant.classList.add(flagPlant);
@@ -230,8 +237,8 @@ export default class PageStoreStockItems extends TableBasePage {
         plantKeys.forEach((plantKey) => {
             plant = plants[plantKey];
             optionPlantJson = BusinessObjects.getOptionJsonFromObjectJson(
-                objectJson = plant, 
-                valueSelected = plantJson[attrIdPlant]
+                plant, // objectJson
+                plantJson[attrIdPlant] // valueSelected
             );
             optionPlant = DOM.createOption(optionPlantJson);
             if (_verbose) { console.log("optionPlant: ", optionPlant); }
@@ -250,11 +257,11 @@ export default class PageStoreStockItems extends TableBasePage {
         if (_verbose) { console.log("optionStorageLocation: ", optionStorageLocation); }
         ddlStorageLocation.appendChild(optionStorageLocation);
 
-        StorageLocationKeys.forEach((StorageLocationKey) => {
-            storageLocation = StorageLocations[StorageLocationKey];
+        storageLocationKeys.forEach((StorageLocationKey) => {
+            storageLocation = storageLocations[StorageLocationKey];
             optionStorageLocationJson = BusinessObjects.getOptionJsonFromObjectJson(
-                objectJson = storageLocation, 
-                valueSelected = storageLocationJson[attrIdStorageLocation]
+                storageLocation, // objectJson
+                storageLocationJson[attrIdStorageLocation] // valueSelected
             );
             optionStorageLocation = DOM.createOption(optionStorageLocationJson);
             if (_verbose) { console.log("optionStorageLocation: ", optionStorageLocation); }
@@ -269,9 +276,9 @@ export default class PageStoreStockItems extends TableBasePage {
         tbody.appendChild(trBody);
 
         tblStorageLocation.appendChild(tbody);
-        let parent = element.parentElement;
-        parent.innerHTML = '';
-        parent.appendChild(tblStorageLocation);
+        let tdParent = DOM.getCellFromElement(element);
+        tdParent.innerHTML = '';
+        tdParent.appendChild(tblStorageLocation);
         if (_verbose) { console.log("tblStorageLocation: ", tblStorageLocation); }
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagPlant + ' select', (event, element) => { this.handleChangeStoragePlantDdl(event, element); });
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagStorageLocation + ' select', (event, element) => { this.handleChangeStorageLocationDdl(event, element); });
@@ -340,10 +347,6 @@ export default class PageStoreStockItems extends TableBasePage {
     }
     hookupDateConsumedInputs(){
         this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagDateConsumed + ' input');
-    }
-
-    hookupActiveCheckboxes(){
-        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagActive + ' input');
     }
 
     leave() {

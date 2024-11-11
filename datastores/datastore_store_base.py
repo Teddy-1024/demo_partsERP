@@ -20,9 +20,11 @@ from business_objects.store.delivery_option import Delivery_Option
 from business_objects.region import Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
+from business_objects.store.plant import Plant
 from business_objects.store.product import Product, Product_Permutation, Parameters_Product 
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
+from business_objects.store.storage_location import Storage_Location
 from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation, Parameters_Product_Variation
 from business_objects.store.product_variation_type import Product_Variation_Type
@@ -194,13 +196,66 @@ class DataStore_Store_Base(DataStore_Base):
             index_comma = msg_error_availability.find(',')
             ids_permutation.append(msg_error_availability[:index_comma])
         return ids_permutation
+    
     @classmethod
-    def get_many_currency(cls):
+    def get_many_plant(cls, get_inactive = False):
+        _m  = 'DataStore_Store_Base.get_many_plant'
+        _m_db_plant = 'p_shop_get_many_plant'
+
+        argument_dict_list_plant = {
+            'a_get_inactive_plant': 1 if get_inactive else 0
+        }
+
+        Helper_App.console_log(f'executing {_m_db_plant}')
+        result = cls.db_procedure_execute(_m_db_plant, argument_dict_list_plant)
+        cursor = result.cursor
+        Helper_App.console_log('data received')
+
+        # cursor.nextset()
+        result_set_1 = cursor.fetchall()
+        plants = []
+        for row in result_set_1:
+            plant = Plant.from_DB_plant(row)
+            plants.append(plant)
+        Helper_App.console_log(f'plants: {plants}')
+        DataStore_Store_Base.db_cursor_clear(cursor)
+        cursor.close()
+
+        return plants
+    
+    @classmethod
+    def get_many_storage_location(self, get_inactive = False):
+        _m  = 'DataStore_Store_Base.get_many_storage_location'
+        _m_db_storage_location = 'p_shop_get_many_storage_location'
+
+        argument_dict_list_storage_location = {
+            'a_get_inactive_storage_location': 1 if get_inactive else 0
+        }
+
+        Helper_App.console_log(f'executing {_m_db_storage_location}')
+        result = self.db_procedure_execute(_m_db_storage_location, argument_dict_list_storage_location)
+        cursor = result.cursor
+        Helper_App.console_log('data received')
+
+        # cursor.nextset()
+        result_set_1 = cursor.fetchall()
+        storage_locations = []
+        for row in result_set_1:
+            storage_location = Storage_Location.from_DB_storage_location(row)
+            storage_locations.append(storage_location)
+        Helper_App.console_log(f'storage_locations: {storage_locations}')
+        DataStore_Store_Base.db_cursor_clear(cursor)
+        cursor.close()
+
+        return storage_locations
+    
+    @classmethod
+    def get_many_currency(cls, get_inactive = False):
         _m  = 'DataStore_Store_Base.get_many_currency'
         _m_db_currency = 'p_shop_get_many_currency'
 
         argument_dict_list_currency = {
-            'a_get_inactive_currency': 0
+            'a_get_inactive_currency': 1 if get_inactive else 0
         }
 
         Helper_App.console_log(f'executing {_m_db_currency}')
@@ -220,12 +275,12 @@ class DataStore_Store_Base(DataStore_Base):
         return currencies
     
     @classmethod
-    def get_many_region(cls):
+    def get_many_region(cls, get_inactive = False):
         _m  = 'DataStore_Store_Base.get_many_region'
         _m_db_region = 'p_shop_get_many_region'
 
         argument_dict_list_region = {
-            'a_get_inactive_currency': 0
+            'a_get_inactive_region': 1 if get_inactive else 0
         }
 
         Helper_App.console_log(f'executing {_m_db_region}')
@@ -246,10 +301,10 @@ class DataStore_Store_Base(DataStore_Base):
         return regions
     
     @classmethod
-    def get_many_region_and_currency(cls):
+    def get_many_region_and_currency(cls, get_inactive_currency = False, get_inactive_region = False):
         _m  = 'DataStore_Store_Base.get_many_region_and_currency'
-        currencies = cls.get_many_currency()
-        regions = cls.get_many_region()
+        currencies = cls.get_many_currency(get_inactive_currency)
+        regions = cls.get_many_region(get_inactive_region)
         return regions, currencies
     
     @classmethod

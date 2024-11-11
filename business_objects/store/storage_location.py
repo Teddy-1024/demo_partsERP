@@ -43,9 +43,9 @@ class Storage_Location(db.Model, Store_Base):
         location.id_location = query_row[0]
         location.id_plant = query_row[1]
         location.plant = Plant.from_DB_storage_location(query_row)
-        location.code = query_row[2]
-        location.name = query_row[3]
-        location.active = query_row[4]
+        location.code = query_row[4]
+        location.name = query_row[5]
+        location.active = query_row[6]
         return location
     @classmethod
     def from_DB_stock_item(cls, query_row):

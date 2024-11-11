@@ -9,6 +9,12 @@
     justify-content: normal;
 }
 
+#tableMain select, #tableMain input, #tableMain textarea, #tableMain div {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+
 #tableMain thead tr th, #tableMain tbody tr td {
     width: 20vh;
     min-width: 20vh;

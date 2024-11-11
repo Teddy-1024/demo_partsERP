@@ -492,6 +492,12 @@ class Model_View_Store(Model_View_Base):
         # validation conducted by server
         return DataStore_User().get_many_user_order(self.info_user['sub'], ids_order, n_order_max, id_checkout_session)
     
+    def get_many_plant(self, get_inactive = False):
+        plants = DataStore_Store_Base().get_many_plant(get_inactive)
+        return plants
+    def get_many_storage_location(self, get_inactive = False):
+        storage_locations = DataStore_Store_Base().get_many_storage_location(get_inactive)
+        return storage_locations
     def get_many_currency(self):
         currencies = DataStore_Store_Base().get_many_currency()
         return currencies

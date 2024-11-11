@@ -49,7 +49,7 @@ export default class TableBasePage extends BasePage {
         if (!isPopState) {
             super.sharedInitialize();
             this.hookupFilters();
-            this.hookupButtonsAddSaveCancel();
+            this.hookupButtonsSaveCancel();
             this.hookupTableMain();
             OverlayConfirm.hookup(() => {
                 if (isSinglePageApp) {
@@ -139,7 +139,7 @@ export default class TableBasePage extends BasePage {
             })
             .catch(error => console.error('Error:', error));
     }
-    hookupButtonsAddSaveCancel() {
+    hookupButtonsSaveCancel() {
         this.hookupButtonSave();
         this.hookupButtonCancel();
         this.toggleShowButtonsSaveCancel(false);

@@ -76,7 +76,7 @@ class Plant(db.Model, Store_Base):
             self.ATTR_ID_PLANT: self.id_plant,
             self.FLAG_CODE: self.code,
             self.FLAG_NAME: self.name,
-            self.FLAG_ADDRESS: self.address.to_json(),
+            self.FLAG_ADDRESS: None if self.address is None else self.address.to_json(),
             self.ATTR_ID_USER_MANAGER: self.id_user_manager,
             self.FLAG_ACTIVE: 1 if av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json') else 0
         }
