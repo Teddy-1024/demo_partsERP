@@ -27,40 +27,6 @@
                 {% endfor %}
             </div>
         </div>
-        {#
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
-                {% set block_id = 'button_apply_filters' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
-        <!--
-        -->
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
-                {% set block_id = 'button_add' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
-                {% set block_id = 'button_save' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }}">
-                {% set block_id = 'button_cancel' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
-        <!--
-        <div class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
-            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            </div>
-        </div>
-        -->
-        #}
         {% set block_id = 'buttons_table_default' %}
         {% include 'components/common/buttons/_buttons_save_cancel.html' %}
     </form>
@@ -74,7 +40,10 @@
                 <th class="{{ model.FLAG_NAME }}">Name</th>
                 <th class="{{ model.FLAG_DESCRIPTION }}">Description</th>
                 <th class="{{ model.FLAG_ACCESS_LEVEL }}">Access Level Required</th>
-                <th class="{{ model.FLAG_ACTIVE}}">Active</th>
+                <th class="{{ model.FLAG_ACTIVE}}">
+                    {% set block_id = 'button_add' %}
+                    {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+                </th>
             </tr>
         </thead>
         <tbody>

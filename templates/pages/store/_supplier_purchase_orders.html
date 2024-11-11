@@ -46,7 +46,10 @@
                 <th class="{{ model.FLAG_CURRENCY }}">Currency</th>
                 <th class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_EXCL }}">Cost Total VAT Excl.</th>
                 <th class="{{ model.FLAG_COST_TOTAL_LOCAL_VAT_INCL }}">Cost Total VAT Incl.</th>
-                <th class="{{ model.FLAG_ACTIVE}}">Active</th>
+                <th class="{{ model.FLAG_ACTIVE}}">
+                    {% set block_id = 'button_add' %}
+                    {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+                </th>
             </tr>
         </thead>
         <tbody>

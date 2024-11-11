@@ -32,7 +32,10 @@
                 <th class="{{ model.FLAG_EMAIL }}">Email</th>
                 <th class="{{ model.FLAG_WEBSITE }}">Website</th>
                 <th class="{{ model.FLAG_CURRENCY }}">Currency</th>
-                <th class="{{ model.FLAG_ACTIVE}}">Active</th>
+                <th class="{{ model.FLAG_ACTIVE}}">
+                    {% set block_id = 'button_add' %}
+                    {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+                </th>
             </tr>
         </thead>
         <tbody>

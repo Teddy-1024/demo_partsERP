@@ -14,7 +14,8 @@ Business object for product category
 import lib.argument_validation as av
 from business_objects.db_base import SQLAlchemy_ABC, Get_Many_Parameters_Base
 from business_objects.store.product import Product, Product_Permutation, Product_Price
-from business_objects.store.product_variation import Product_Variation
+# from business_objects.store.product_variation import Product_Variation
+from business_objects.store.product_variation_type import Product_Variation_Type
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.discount import Discount
@@ -115,10 +116,17 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         index_product = self.get_index_product_from_id(permutation.id_product)
         # index_product = self.product_index[permutation.id_product]
         self.products[index_product].add_product_permutation(permutation)
+    """
     def add_product_variation(self, variation):
         av.val_instance(variation, 'variation', 'Category.add_product_variation', Product_Variation)
         index_product = self.get_index_product_from_id(variation.id_product)
         self.products[index_product].add_product_variation(variation)
+    """ 
+    def add_product_variation_type(self, variation_type):
+        av.val_instance(variation_type, 'variation_type', 'Category.add_product_variation_type', Product_Variation_Type)
+        variation = variation_type.variations[0]
+        index_product = self.get_index_product_from_id(variation.id_product)
+        self.products[index_product].add_product_variation_type(variation_type)
     def add_product_price(self, price):
         av.val_instance(price, 'price', 'Category.add_product_price', Product_Price)
         index_product = self.get_index_product_from_id(price.id_product)
@@ -352,10 +360,17 @@ class Product_Category_Container(Store_Base):
         av.val_instance(permutation, 'permutation', 'Container_Product_Categories.add_product_permutation', Product_Permutation)
         index_category = self.get_index_category_from_id(permutation.id_category)
         self.categories[index_category].add_product_permutation(permutation)
+    """
     def add_product_variation(self, variation):
         av.val_instance(variation, 'variation', 'Container_Product_Categories.add_product_variation', Product_Variation)
         index_category = self.get_index_category_from_id(variation.id_category)
         self.categories[index_category].add_product_variation(variation)
+    """
+    def add_product_variation_type(self, variation_type):
+        av.val_instance(variation_type, 'variation_type', 'Container_Product_Categories.add_product_variation_type', Product_Variation_Type)
+        variation = variation_type.variations[0]
+        index_category = self.get_index_category_from_id(variation.id_category)
+        self.categories[index_category].add_product_variation_type(variation_type)
     def add_product_price(self, price):
         av.val_instance(price, 'price', 'Container_Product_Categories.add_product_price', Product_Price)
         index_category = self.get_index_category_from_id(price.id_category)

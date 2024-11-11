@@ -22,9 +22,8 @@
                 {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}=""
             ></div>
         </td>
-        <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}">
-        </td>
+        {% set active = true %}
+        {% include 'components/store/_td_active.html' %}
     </tr>
 {% else %}
     <tr class="{{ model.FLAG_SUPPLIER_PURCHASE_ORDER }}" {{ model.ATTR_ID_SUPPLIER_PURCHASE_ORDER }}="{{ order.id_order }}">
@@ -61,8 +60,7 @@
                 {{ model.ATTR_VALUE_PREVIOUS }}="{{ order.cost_total_local_VAT_incl }}"
             ></div>
         </td>
-        <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ order.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ order.active | lower }}">
-        </td>
+        {% set active = order.active %}
+        {% include 'components/store/_td_active.html' %}
     </tr>
 {% endif %}

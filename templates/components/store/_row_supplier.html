@@ -27,9 +27,8 @@
         <td class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="" {{ model.ATTR_VALUE_PREVIOUS }}="">
             {% include 'components/store/_preview_DDL_currency.html' %}
         </td>
-        <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ model.FLAG_BOOL_TRUE }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ model.FLAG_BOOL_TRUE }}">
-        </td>
+        {% set active = true %}
+        {% include 'components/store/_td_active.html' %}
     </tr>
 {% else %}
     <tr class="{{ model.FLAG_SUPPLIER }}" {{ model.ATTR_ID_SUPPLIER }}="{{ supplier.id_supplier }}">
@@ -62,8 +61,7 @@
         <td class="{{ model.FLAG_CURRENCY }}" {{ model.ATTR_VALUE_CURRENT }}="{{ currency.id_currency }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ currency.id_currency }}">
             {% include 'components/store/_preview_DDL_currency.html' %}
         </td>
-        <td class="{{ model.FLAG_ACTIVE }}">
-            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" checked {{ model.ATTR_VALUE_CURRENT }}="{{ supplier.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ supplier.active | lower }}">
-        </td>
+        {% set active = supplier.active %}
+        {% include 'components/store/_td_active.html' %}
     </tr>
 {% endif %}

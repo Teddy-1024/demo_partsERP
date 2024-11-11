@@ -272,11 +272,17 @@ class Product(SQLAlchemy_ABC, Store_Base):
                 return index_permutation
         raise ValueError(f"{av.error_msg_str(id_permutation, 'id_permutation', 'Product.get_index_permutation_from_id', int)}\nPermutation ID not found.")
     """
+    """
     def add_product_variation(self, variation):
         av.val_instance(variation, 'variation', 'Product.add_product_variation', Product_Variation)
         # Helper_App.console_log(f'variation: {variation}')
         index_permutation = self.permutation_index[variation.id_permutation] # self.get_index_permutation_from_id(variation.id_permutation)
         self.permutations[index_permutation].add_product_variation(variation)
+    """
+    def add_product_variation_type(self, variation_type):
+        variation = variation_type.variations[0]
+        index_permutation = self.permutation_index[variation.id_permutation]
+        self.permutations[index_permutation].add_product_variation_type(variation_type)
     def add_product_price(self, price):
         av.val_instance(price, 'price', 'Product.add_product_price', Product_Price)
         index_permutation = self.permutation_index[price.id_permutation] # self.get_index_permutation_from_id(price.id_permutation)

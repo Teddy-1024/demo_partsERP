@@ -5,9 +5,9 @@ Traceback: Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product_variation.py", line 45, in product_variations
-    return render_template('pages/store/_product_variations.html', model = model)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product_permutation.py", line 47, in permutations
+    return render_template('pages/store/_product_permutations.html', model = model)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
     return _render(app, template, context)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -18,31 +18,40 @@ Traceback: Traceback (most recent call last):
     self.environment.handle_exception()
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 939, in handle_exception
     raise rewrite_traceback_stack(source=source)
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_variations.html", line 1, in top-level template code
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_permutations.html", line 1, in top-level template code
     {% extends 'layouts/layout.html' %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\layouts\layout.html", line 353, in top-level template code
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\layouts\layout.html", line 354, in top-level template code
     {% block page_body %}{% endblock %}
     ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_variations.html", line 51, in block 'page_body'
-    {% include 'components/store/_row_product_variation_type.html' %}
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_permutations.html", line 149, in block 'page_body'
+    var products = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list.get_list_products()) | tojson | safe }};
     ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\components\store\_row_product_variation_type.html", line 50, in top-level template code
-    <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {% if product.active %}checked{% endif %} {{ model.ATTR_VALUE_CURRENT }}="{{ variation_type.active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ variation_type.active | lower }}">
-    ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 487, in getattr
-    return getattr(obj, attribute)
-           ^^^^^^^^^^^^^^^^^^^^^^^
-jinja2.exceptions.UndefinedError: 'product' is undefined
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_base.py", line 358, in convert_list_objects_to_dict_json_by_attribute_key_default
+    return Model_View_Base.convert_list_objects_to_dict_json_by_attribute_key(list_objects, getattr(obj_class, obj_class.FLAG_NAME_ATTR_OPTION_VALUE))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_base.py", line 346, in convert_list_objects_to_dict_json_by_attribute_key
+    return {getattr(obj, key): obj.to_json() for obj in list_objects}
+                               ^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product.py", line 347, in to_json
+    self.ATTR_ID_PRODUCT_PERMUTATION: [permutation.to_json() for permutation in self.permutations],
+                                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_permutation.py", line 305, in to_json
+    self.FLAG_PRODUCT_VARIATIONS: [variation_type.to_json() for variation_type in self.variation_tree.get_product_variation_types()],
+                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get_product_variation_types'
 
 config_env: development
-Server Error: 'models.model_view_store_product_variation.Model_View_Store_Product_Variation object' has no attribute 'category_list_filters'
-Request: 127.0.0.1 GET http /store/variations? Host: 127.0.0.1:5000
+config_env: development
+config_env: development
+config_env: development
+Server Error: 'Product_Variation_Tree' object has no attribute 'get_product_variations'
+Request: 127.0.0.1 GET http /store/permutations? Host: 127.0.0.1:5000
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
 Accept-Language: en-GB,en;q=0.5
 Accept-Encoding: gzip, deflate, br, zstd
-Referer: http://127.0.0.1:5000/store/variations
+Referer: http://127.0.0.1:5000/store/permutations
 Dnt: 1
 Connection: keep-alive
 Cookie: session=.eJytVlnzokgS_yoTRsw8tTY3-I_omPUCRUFB5HohCgqkuOUQcba_-xba090PM3tErKFYVZlk_rLy_GMCujYua9SE8NKE9eTjj0kACg_AHBVe05Z1OPlo6y789NNx92J8n4Y5QNnkYxLCHtRwliMIs7AtiyZHbfyP60idBWU--TSJUN20BcixwIkRQjjgMwS9oKvrsAgGD4YR6LJ28lF0WfYi1eEVlcVfEN4AyO9rbzSCwHJf___kWIHy52wgzFlIzAFP-IAkojAaFTbeC7F3D2sUoRBOPiKQNeGLgoog62AIPXNh_ND6thOTm67Cqn42vunqbwYpf9o9PY-GT77i-2rqyGvLNCwwXRB4GvoszUOf8Sma4aM5iCDPBYAGfsBAjgwYBkQjxO6bG0AQhE3zXUI4yLEvBeiI5BTYO3RYyZmfK-N-qSQXSidUdYd6BGz1uUtKBLY6EWwV7jDMU9d2Wr-AMXjuejVxMzdxy6OUMT5iyWBgY2jrpbJiE58i7ruCmM2yYR07BymE20hQltPHzAY9BQ5hOOzkRxAuTpDfXPcBf1k5WqwkR7Pzbmia7hQa3oZpxisnehCEqiwqLNObAzdvJG9nZ-fl9rjyjuyFcKfF5tjXTqG5BwJJ0cUs_eXtcSMYLQMFeZUOmmYe2cUmhsxG7rWkCfa5LW7OMbewDZgF5Wmf7kuFAVAMH1YfXwGFhFt89_VrMqUV0hC0Y5prvM3Ep6FYnWMPLabZahk3tkPvXdJJ85vqhY7DlGtIOf0wn9bLpa4_uav0kM3W8LeOH9JFGCy1WFRvuju9IQSyA9_4oi2ea49doPVD3YBeXhUaH2e6mapphD8VEDtVX9erjXNMTnpJ80fBuSnlNmF4Mr1uzQXTi8fDvCr4mamrZsoB1ScEw7rtnXK7aOMrDoPwUaE6bDyAQ5DkaYKlBZ4hfpwjHBQCxxDEKwv-IkrOl-eOVNGu2RU6G6x23C6tbHOF93lbueO-MO-h7V70lGH8RL672ytppuJBEWNSH-T5DAvrgKXWfi627hm_kJsppMTBXbEtsPTUl0zCp9inb2UEeAlmY9-6jMozdwvjINc6TEtd6ZFBad4FFFlBKV64FBkDq-8cat6OIRtIWQK35vDWERNwu3wekXDHoVkEuUg5th4H6B2eju3GUBKHw_PydNdqriQaoaxhqhrYWMphVMkZVEqNlXXAqE8duWuHONHKXF1fe7nYzQMpyN01WcKt3gfD5amdL4OO8C9XU5wOP6dCpqRYVy4Sji0_ZUOWXEvrAoktRszQXqYYV-aK8xiOl5nseoylVYxNq6zFi7JOOcXYcUqy6NRkR1ijI3KzdaysGdPTtXQay00POVm5kt64tn73C7UFWL8mwRffIVfv_vnHezbtZkGe5cAy011S5Y71eLrn_0PKY3sce5SJcRHwFtr6w0hJW6NiA9jxw3jim8pEzkxjW7PE7JxW3CVPxxJUObaGjsmGVp4LAvvgqa43I15mDDjFCJ7KWmOOa4VQMM6ANtGoA-siwHopqMmFUfIdq1oKczTMVFlnsfpcIsfY9G5u5q_YoLIXLjiQB42a67CQGWDLJyeraJcUKD3TCTNnVZDN-3Mi5gYOfoyrw3GZvOIpc4twuzyqWUUGhTzArfwEKXwopk6PpY5Y0ftSbp4N78ie3YpSRjuNtKF2REzu-ao-S_paR5vBH7RtqnJSdMYu4pfirlxCkzUXIHxKp1ogqelq6kVRcjuTlFzsiUQPs3XkWNJpfbBbfi8AckvkLmE0XlFFmtXpzVEn6bO5BzVdbC3y0TgU0THzm8F14uZeMqIBVHqeeO5GmhtHK6UYQyCHRcI30y6trekuue0HizkfdG5FMEkxZzyRmMY6cuim5S7DihrurFwXSb8ZiL1U-CIuyYfFpRZYjznQvtCtuRNvIunsOewRy3oKnV4fUL9cZXsqOxfafNke79Hl_mgAjFJyoWngXq7tYR-ZnPpQROoiOMF0X516m1tSJojP7F0HvGSO9asJymrsjPhZIPhLVZcRysJf3vPCp8mrYHnt8OJZhqDGTe_d-1ARla_-1-HmPLlKydDeVMVaxWf0uB15Stee5tbCFy_LOL8n_8sI8jetH5fUd41lBIFmxrHiz6LLsNT7oGmwgrhtq-bj82cY3qdFD1KK4Lgw4mIBPYpZ18xe08eo6jPW9W0w-M-gChSk_455ZCmLYKSb10elci6emOq2bhLpRho9JlcoaLtxUPuOsJlda3AHLahfcN7LzywN6YhiGIKHLMXykcBEFB8AgsedxYcc83vzhRGI3-ov1fU3-OUl61d68Ssl4m8Aix_24f1bZINXIZxVxcvjaHRYP92vSu1eP1B99N3-6nGi0ZqFkniVTEaHF2Pn_zezWldB0OJpbHTGhCIoZkqSU4I0iPkHSX1QxIyjGHfy9evXfwErYp4O.ZySbdA.IOzQ4B0k8HNh-01pbYKqF3sN8jI
@@ -63,114 +72,26 @@ Traceback: Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product_variation.py", line 45, in product_variations
-    return render_template('pages/store/_product_variations.html', model = model)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
-    return _render(app, template, context)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
-    rv = template.render(context)
-         ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1304, in render
-    self.environment.handle_exception()
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 939, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_variations.html", line 1, in top-level template code
-    {% extends 'layouts/layout.html' %}
-    ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\layouts\layout.html", line 353, in top-level template code
-    {% block page_body %}{% endblock %}
-    ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_variations.html", line 69, in block 'page_body'
-    var productCategories = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.categories) | tojson | safe }};
-    ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 487, in getattr
-    return getattr(obj, attribute)
-           ^^^^^^^^^^^^^^^^^^^^^^^
-jinja2.exceptions.UndefinedError: 'models.model_view_store_product_variation.Model_View_Store_Product_Variation object' has no attribute 'category_list_filters'
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product_permutation.py", line 43, in permutations
+    model = Model_View_Store_Product_Permutation(form_filters)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product_permutation.py", line 51, in __init__
+    self.category_list, errors = datastore_store.get_many_product(filters_product)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_store_base.py", line 145, in get_many_product
+    category_list.get_all_product_variation_trees()
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 396, in get_all_product_variation_trees
+    category.get_all_product_variation_trees()
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_category.py", line 154, in get_all_product_variation_trees
+    product.get_variation_trees()
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product.py", line 176, in get_variation_trees
+    if self.variation_trees[index_tree].is_equal(variation_tree):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\business_objects\store\product_variation_tree.py", line 52, in is_equal
+    my_type_list = self.get_product_variations()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Product_Variation_Tree' object has no attribute 'get_product_variations'. Did you mean: 'get_product_variation_types'?
 
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
-config_env: development
 config_env: development
 config_env: development
 config_env: development

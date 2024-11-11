@@ -140,7 +140,6 @@ export default class TableBasePage extends BasePage {
             .catch(error => console.error('Error:', error));
     }
     hookupButtonsAddSaveCancel() {
-        this.hookupButtonAddRowTable();
         this.hookupButtonSave();
         this.hookupButtonCancel();
         this.toggleShowButtonsSaveCancel(false);
@@ -215,9 +214,6 @@ export default class TableBasePage extends BasePage {
             });
             button.classList.add(flagCollapsed);
         });
-    }
-    hookupButtonAddRowTable() {
-        this.hookupEventHandler("click", idFormFilters + ' button.' + flagAdd, (event, button) => { this.handleClickAddRowTable(event, button); });
     }
     handleClickAddRowTable(event, button) {
         event.stopPropagation();
@@ -496,8 +492,11 @@ export default class TableBasePage extends BasePage {
         });
     }
     handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
-        // let row = DOM.getRowFromElement(element);
+        let row = DOM.getRowFromElement(element);
         // row.classList.add(flagDelete);
+        if (row.classList.contains(flagRowNew) && !DOM.hasDirtyChildrenContainer(row)) {
+            row.parentNode.removeChild(row);
+        }
         let buttonAdd = element.cloneNode(false); // document.createElement("button");
         buttonAdd.classList.remove(flagInitialised);
         buttonAdd.classList.remove(flagDelete);

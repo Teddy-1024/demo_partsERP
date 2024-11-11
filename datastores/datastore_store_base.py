@@ -119,9 +119,9 @@ class DataStore_Store_Base(DataStore_Base):
         cursor.nextset()
         result_set_4 = cursor.fetchall()
         for row in result_set_4:
-            new_variation = Product_Variation.from_DB_get_many_product_catalogue(row)
+            new_variation_type = Product_Variation_Type.from_DB_get_many_product_catalogue(row)
             try:
-                category_list.add_product_variation(new_variation)
+                category_list.add_product_variation_type(new_variation_type)
             except Exception as e:
                 Helper_App.console_log(f'Error adding variation: {e}')
 

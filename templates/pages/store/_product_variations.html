@@ -23,12 +23,6 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
-                {% set block_id = 'button_apply_filters' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
         {% set block_id = 'buttons_table_default' %}
         {% include 'components/common/buttons/_buttons_save_cancel.html' %}
     </form>
@@ -43,7 +37,8 @@
                 <th class="{{ model.FLAG_NAME_PLURAL }}">Name Plural</th>
                 <th class="{{ model.FLAG_PRODUCT_VARIATIONS }} {{ model.FLAG_COLLAPSED }}">Variations</th>
                 <th class="{{ model.FLAG_ACTIVE}}">
-                    <button type="button" class="{{ model.FLAG_ACTIVE }} {{ model.FLAG_ADD }}">+</button>
+                    {% set block_id = 'button_add' %}
+                    {% include 'components/common/buttons/_buttons_save_cancel.html' %}
                 </th>
             </tr>
         </thead>

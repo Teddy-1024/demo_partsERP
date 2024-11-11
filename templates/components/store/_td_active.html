@@ -1,0 +1,13 @@
+
+
+{% with _active = (active is not defined or active or active is none) %}
+    <td class="{{ model.FLAG_ACTIVE }}">
+        {# 
+            <input class="{{ model.FLAG_ACTIVE }}" type="checkbox" {% if active %}checked{% endif %} {{ model.ATTR_VALUE_CURRENT }}="{{ active | lower }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ active | lower }}">
+        #}
+        <button type="button" class="{{ model.FLAG_ACTIVE }} {% if active %}{{ model.FLAG_DELETE }}{% endif %}" 
+            {{ model.ATTR_VALUE_CURRENT }}="{{ active | lower }}" 
+            {{ model.ATTR_VALUE_PREVIOUS }}="{{ active | lower }}"
+        >{% if active %}x{% else %}+{% endif %}</button>
+    </td>
+{% endwith %}

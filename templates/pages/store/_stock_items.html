@@ -76,7 +76,10 @@
                 <th class="{{ model.FLAG_DATE_EXPIRATION }}">Date Expiration</th>
                 <th class="{{ model.FLAG_IS_CONSUMED }}">Is Consumed</th>
                 <th class="{{ model.FLAG_DATE_CONSUMED }}">Date Consumed</th>
-                <th class="{{ model.FLAG_ACTIVE }}">Active</th>
+                <th class="{{ model.FLAG_ACTIVE }}">
+                    {% set block_id = 'button_add' %}
+                    {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+                </th>
             </tr>
         </thead>
         <tbody>
