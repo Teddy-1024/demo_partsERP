@@ -403,8 +403,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'A valid quantity ordered is required for the following Supplier Purchase Order Item(s): '
 				, GROUP_CONCAT(t_SPOPL.name_error SEPARATOR ', ')
@@ -425,8 +425,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'A valid quantity received is required for the following Supplier Purchase Order Item(s): '
 				, GROUP_CONCAT(t_SPOPL.name_error, ' - ', t_SPOPL.quantity_received SEPARATOR ', ')
@@ -445,8 +445,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'A valid delivery latency is required for the following Supplier Purchase Order Item(s): '
 				, GROUP_CONCAT(t_SPOPL.name_error, ' - ', t_SPOPL.latency_delivery_days SEPARATOR ', ')
@@ -470,8 +470,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT('Duplicate records: ', GROUP_CONCAT(t_SPOPLC.name_error SEPARATOR ', '))
 		FROM (
 			SELECT 
@@ -490,8 +490,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'There are no items in the following Supplier Purchase Order(s): '
 				, GROUP_CONCAT(t_SPO.name_error SEPARATOR ', ')
@@ -513,8 +513,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'There is no order for the following Supplier Purchase Order Item(s): '
 				, GROUP_CONCAT(t_SPOPL.name_error SEPARATOR ', ')

@@ -48,13 +48,6 @@ tr {
 }
 */
 
-table textarea,
-table select,
-table input {
-    width: 100%;
-    box-sizing: border-box;
-}
-
 table button {
     margin: 0.25vh;
     padding: 0.5vh 1vh;
@@ -66,4 +59,8 @@ table button.active {
 
 tr.delete, tr.delete > td {
     background-color: red;
+}
+
+table div {
+    align-content: center;
 }

@@ -58,7 +58,7 @@ BEGIN
         WHERE id_order = 6
         */
 		;
-        
+        /*
 		INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp (
 			id_link
 			, id_order
@@ -73,7 +73,8 @@ BEGIN
 			, cost_total_local_VAT_incl
             , GUID
 		)
-        /* Test 1 - Insert */
+        ;
+        / Test 1 - Insert 
         VALUES (
 			-1
             , -1
@@ -88,6 +89,7 @@ BEGIN
             , 6
             , v_guid
         )
+        */
         /* Test 2 - Update
         SELECT
 			id_link
@@ -105,7 +107,7 @@ BEGIN
 		FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
         WHERE id_order = 6
         */
-        ;
+        
         
 	COMMIT;
     
@@ -151,7 +153,6 @@ DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-/*
 Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier_address`, CONSTRAINT `FK_Shop_Supplier_Address_id_supplier` FOREIGN KEY (`id_supplier`) REFERENCES `shop_supplier` (`id_supplier`) ON UPDATE RESTRICT)
 
 */

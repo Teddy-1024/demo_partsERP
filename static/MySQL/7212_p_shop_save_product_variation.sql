@@ -340,6 +340,7 @@ BEGIN
     -- Duplicate Variation Ids
     -- Duplicate Variation Type Codes
     -- Duplicate Variation Codes
+    -- Variation unit measurement with no count unit measurement
     
     -- Permissions
 	IF a_debug = 1 THEN

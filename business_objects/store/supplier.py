@@ -29,7 +29,7 @@ class Supplier(db.Model, Store_Base):
     FLAG_NAME_CONTACT: ClassVar[str] = 'name_contact'
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_SUPPLIER
     NAME_ATTR_OPTION_TEXT: ClassVar[str] = FLAG_NAME_COMPANY
-    __tablename__ = 'Shop_Supplier_Temp'
+    __tablename__ = 'Shop_Supplier'
     id_supplier = db.Column(db.Integer, primary_key=True)
     # id_address = db.Column(db.Integer)
     id_currency = db.Column(db.Integer)
@@ -153,7 +153,8 @@ class Parameters_Supplier(Get_Many_Parameters_Base):
 class Supplier_Temp(db.Model, Store_Base):
     __tablename__: ClassVar[str] = 'Shop_Supplier_Temp'
     __table_args__ = { 'extend_existing': True }
-    id_supplier: int = db.Column(db.Integer, primary_key=True)
+    id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_supplier: int = db.Column(db.Integer)
     id_currency: int = db.Column(db.Integer)
     # id_address: int = db.Column(db.Integer)
     name_company: str = db.Column(db.String(255))
@@ -165,6 +166,9 @@ class Supplier_Temp(db.Model, Store_Base):
     website: str = db.Column(db.String(255))
     active: bool = db.Column(db.Boolean)
     guid: str = db.Column(db.String(36))
+    def __init__(self):
+        super().__init__()
+        self.id_temp = None
     @classmethod
     def from_supplier(cls, supplier):
         row = cls()

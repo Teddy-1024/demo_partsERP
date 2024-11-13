@@ -22,7 +22,7 @@ export default class BusinessObjects {
     }
     */
     static getObjectText(objectJson) {
-        return objectJson[objectJson[flagNameAttrOptionText]];
+        return objectJson == null ? '' : objectJson[objectJson[flagNameAttrOptionText]];
     }
     static getListObjectsFromIdDictAndCsv(idDict, idCsv) {
         let listObjects = [];

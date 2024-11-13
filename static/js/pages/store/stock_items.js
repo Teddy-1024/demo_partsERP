@@ -107,8 +107,8 @@ export default class PageStoreStockItems extends TableBasePage {
         jsonRow[flagActive] = checkboxActive.getAttribute(attrValueCurrent);
         return jsonRow;
     }
-    initialiseRowNew(row) {
-        super.initialiseRowNew(row);
+    initialiseRowNew(tbody, row) {
+        super.initialiseRowNew(tbody, row);
         let ddlCategoryFilter = document.querySelector(idFormFilters + ' #' + attrIdProductCategory);
         let idProductCategoryFilter = DOM.getElementValueCurrent(ddlCategoryFilter);
         let hasCategoryFilter = !(Validation.isEmpty(idProductCategoryFilter) || idProductCategoryFilter == '0');

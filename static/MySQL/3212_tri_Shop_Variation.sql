@@ -35,6 +35,14 @@ BEGIN
         value_new,
         id_change_set
     )
+    # Changed id_unit_measurement
+	SELECT NEW.id_variation, 'id_unit_measurement', OLD.id_unit_measurement, NEW.id_unit_measurement, NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement <=> NEW.id_unit_measurement
+    UNION
+    # Changed count_unit_measurement
+	SELECT NEW.id_variation, 'count_unit_measurement', OLD.count_unit_measurement, NEW.count_unit_measurement, NEW.id_change_set
+		WHERE NOT OLD.count_unit_measurement <=> NEW.count_unit_measurement
+    UNION
     # Changed code
 	SELECT NEW.id_variation, 'code', OLD.code, NEW.code, NEW.id_change_set
 		WHERE NOT OLD.code <=> NEW.code

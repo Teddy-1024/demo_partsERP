@@ -12,25 +12,18 @@
 }
 
 #email {
-    min-width: 40vw;
+    /* min-width: 40vw; */
     width: 40vw;
 }
-
-/*
-.content > a {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+#name {
+    width: 50vw;
+}
+#message {
+    width: 60vw;
 }
 
-.content > a > img, .content > a > h4 {
-    flex: content;
-    margin: 0px;
+input, textarea {
+    max-width: 65vw;
 }
-*/
-
-
 
 /*# sourceMappingURL=core_contact.bundle.css.map*/

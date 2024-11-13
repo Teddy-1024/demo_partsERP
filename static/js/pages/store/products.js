@@ -87,15 +87,9 @@ export default class PageStoreProducts extends TableBasePage {
         jsonProduct[flagDisplayOrder] = DOM.getElementAttributeValueCurrent(sliderDisplayOrder);
         return jsonProduct;
     }
-    initialiseRowNew(row) {
+    initialiseRowNew(tbody, row) {
         if (row == null) return;
-        let slidersDisplayOrder = document.querySelectorAll('td.' + flagDisplayOrder + ' input.' + flagSlider);
-        let maxDisplayOrder = 0;
-        slidersDisplayOrder.forEach((slider) => {
-            maxDisplayOrder = Math.max(maxDisplayOrder, parseFloat(DOM.getElementValueCurrent(slider)));
-        });
-        let sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
-        DOM.setElementValuesCurrentAndPrevious(sliderDisplayOrder, maxDisplayOrder + 1);
+        this.initialiseSliderDisplayOrderRowNew(tbody, row);
     }
 
     hookupTableMain() {

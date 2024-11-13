@@ -9,6 +9,8 @@ CREATE TABLE Shop_Variation_Temp (
 	id_temp INT NOT NULL PRIMARY KEY AUTO_INCREMENT
 	, id_variation INT NOT NULL
 	, id_type INT NOT NULL
+    , id_unit_measurement INT NULL
+    , count_unit_measurement INT NULL
 	, code VARCHAR(50)
 	, name VARCHAR(255)
 	, active BIT

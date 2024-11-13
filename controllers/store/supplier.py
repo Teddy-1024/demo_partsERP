@@ -62,7 +62,7 @@ def filter_supplier():
                     Model_View_Store_Supplier.FLAG_STATUS: Model_View_Store_Supplier.FLAG_FAILURE, 
                     Model_View_Store_Supplier.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
                 })
-        model = Model_View_Store_Supplier(filters_supplier = form_filters)
+        model = Model_View_Store_Supplier(form_filters_old = form_filters)
         if not model.is_user_logged_in:
             raise Exception('User not logged in.')
         return jsonify({

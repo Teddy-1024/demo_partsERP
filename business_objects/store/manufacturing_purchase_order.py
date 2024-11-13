@@ -98,6 +98,7 @@ class Manufacturing_Purchase_Order(db.Model, Store_Base):
         manufacturing_purchase_order.cost_total_local_VAT_incl = json.get(cls.FLAG_COST_TOTAL_LOCAL_VAT_INCL, None)
         manufacturing_purchase_order.price_total_local_VAT_excl = json.get(cls.FLAG_PRICE_TOTAL_LOCAL_VAT_EXCL, None)
         manufacturing_purchase_order.price_total_local_VAT_incl = json.get(cls.FLAG_PRICE_TOTAL_LOCAL_VAT_INCL, None)
+        manufacturing_purchase_order.items = [Manufacturing_Purchase_Order_Product_Link.from_json(item) for item in json[cls.FLAG_ORDER_ITEMS]]
         manufacturing_purchase_order.active = json[cls.FLAG_ACTIVE]
         manufacturing_purchase_order.created_on = json.get(cls.FLAG_CREATED_ON, None)
         manufacturing_purchase_order.name = json.get(cls.FLAG_NAME, None)
@@ -119,9 +120,12 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
     # __tablename__ = 'Shop_Manufacturing_Purchase_Order_Temp'
     id_link = db.Column(db.Integer, primary_key=True)
     id_order = db.Column(db.Integer)
+    id_category = db.Column(db.Integer)
+    id_product = db.Column(db.Integer)
     id_permutation = db.Column(db.Integer)
     id_unit_quantity = db.Column(db.Integer)
     name_permutation = db.Column(db.String(255))
+    csv_id_pairs_variation = db.Column(db.String)
     quantity_used = db.Column(db.Float)
     quantity_produced = db.Column(db.Float)
     id_unit_latency_manufacture = db.Column(db.Integer)
@@ -142,26 +146,32 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
         link = cls()
         link.id_link = query_row[0]
         link.id_order = query_row[1]
-        link.id_permutation = query_row[2]
-        link.name_permutation = query_row[3]
-        link.id_unit_quantity = query_row[4]
-        link.quantity_used = query_row[5]
-        link.quantity_produced = query_row[6]
-        link.id_unit_latency_manufacture = query_row[7]
-        link.latency_manufacture = query_row[8]
-        link.display_order = query_row[9]
-        link.cost_unit_local_VAT_excl = query_row[10]
-        link.cost_unit_local_VAT_incl = query_row[11]
-        link.price_unit_local_VAT_excl = query_row[12]
-        link.price_unit_local_VAT_incl = query_row[13]
-        link.active = query_row[14]
+        link.id_category = query_row[2]
+        link.id_product = query_row[3]
+        link.id_permutation = query_row[4]
+        link.name_permutation = query_row[5]
+        link.csv_id_pairs_variation = query_row[6]
+        link.id_unit_quantity = query_row[7]
+        link.quantity_used = query_row[8]
+        link.quantity_produced = query_row[9]
+        link.id_unit_latency_manufacture = query_row[10]
+        link.latency_manufacture = query_row[11]
+        link.display_order = query_row[12]
+        link.cost_unit_local_VAT_excl = query_row[13]
+        link.cost_unit_local_VAT_incl = query_row[14]
+        link.price_unit_local_VAT_excl = query_row[15]
+        link.price_unit_local_VAT_incl = query_row[16]
+        link.active = query_row[17]
         return link
     def __repr__(self):
         return f'''
 {self.ATTR_ID_MANUFACTURING_PURCHASE_ORDER_PRODUCT_LINK}: {self.id_link},
 {self.ATTR_ID_MANUFACTURING_PURCHASE_ORDER}: {self.id_order},
+{self.ATTR_ID_PRODUCT_CATEGORY}: {self.id_category},
+{self.ATTR_ID_PRODUCT}: {self.id_product},
 {self.ATTR_ID_PRODUCT_PERMUTATION}: {self.id_permutation},
 {self.FLAG_NAME}: {self.name_permutation},
+{self.FLAG_PRODUCT_VARIATIONS}: {self.csv_id_pairs_variation},
 {self.ATTR_ID_UNIT_MEASUREMENT_QUANTITY}: {self.id_unit_quantity},
 {self.FLAG_QUANTITY_USED}: {self.quantity_used},
 {self.FLAG_QUANTITY_PRODUCED}: {self.quantity_produced},
@@ -179,8 +189,11 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
             **self.get_shared_json_attributes(self),
             self.ATTR_ID_MANUFACTURING_PURCHASE_ORDER_PRODUCT_LINK: self.id_link,
             self.ATTR_ID_MANUFACTURING_PURCHASE_ORDER: self.id_order,
+            self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
+            self.ATTR_ID_PRODUCT: self.id_product,                        
             self.ATTR_ID_PRODUCT_PERMUTATION: self.id_permutation,
             self.FLAG_NAME: self.name_permutation,
+            self.FLAG_PRODUCT_VARIATIONS: self.csv_id_pairs_variation,
             self.ATTR_ID_UNIT_MEASUREMENT_QUANTITY: self.id_unit_quantity,
             self.FLAG_QUANTITY_USED: self.quantity_used,
             self.FLAG_QUANTITY_PRODUCED: self.quantity_produced,
@@ -204,8 +217,11 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
         link = cls()
         link.id_link = json[cls.ATTR_ID_MANUFACTURING_PURCHASE_ORDER_PRODUCT_LINK]
         link.id_order = json[cls.ATTR_ID_MANUFACTURING_PURCHASE_ORDER]
-        link.id_permutation = json[cls.ATTR_ID_PRODUCT_PERMUTATION]
-        link.name_permutation = json[cls.FLAG_NAME]
+        link.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
+        link.id_product = json[cls.ATTR_ID_PRODUCT]
+        link.id_permutation = json.get(cls.ATTR_ID_PRODUCT_PERMUTATION, None)
+        link.name_permutation = json.get(cls.FLAG_NAME, None)
+        link.csv_id_pairs_variation = json[cls.FLAG_PRODUCT_VARIATIONS]
         link.id_unit_quantity = json[cls.ATTR_ID_UNIT_MEASUREMENT_QUANTITY]
         link.quantity_used = json[cls.FLAG_QUANTITY_USED]
         link.quantity_produced = json[cls.FLAG_QUANTITY_PRODUCED]
@@ -247,23 +263,24 @@ class Parameters_Manufacturing_Purchase_Order(Get_Many_Parameters_Base):
 class Manufacturing_Purchase_Order_Temp(db.Model, Store_Base):
     __tablename__: ClassVar[str] = 'Shop_Manufacturing_Purchase_Order_Temp'
     __table_args__ = { 'extend_existing': True }
-    id_order: int = db.Column(db.Integer, primary_key=True)
-    id_manufacturing: int = db.Column(db.Integer)
+    id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_order: int = db.Column(db.Integer)
     id_currency: int = db.Column(db.Integer)
     active: bool = db.Column(db.Boolean)
     guid: str = db.Column(db.String(36))
+    def __init__(self):
+        super().__init__()
+        self.id_temp = None
     @classmethod
     def from_manufacturing_purchase_order(cls, manufacturing_purchase_order):
         row = cls()
         row.id_order = manufacturing_purchase_order.id_order
-        row.id_manufacturing = manufacturing_purchase_order.id_manufacturing
         row.id_currency = manufacturing_purchase_order.id_currency
         row.active = 1 if manufacturing_purchase_order.active else 0
         return row
     def __repr__(self):
         return f'''
 id_order: {self.id_order}
-id_manufacturing: {self.id_manufacturing}
 id_currency: {self.id_currency}
 active: {self.active}
 guid: {self.guid}
@@ -272,9 +289,13 @@ guid: {self.guid}
 class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     __tablename__: ClassVar[str] = 'Shop_Manufacturing_Purchase_Order_Product_Link_Temp'
     __table_args__ = { 'extend_existing': True }
-    id_link: int = db.Column(db.Integer, primary_key=True)
+    id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_link: int = db.Column(db.Integer)
     id_order: int = db.Column(db.Integer)
+    id_category: int = db.Column(db.Integer)
+    id_product: int = db.Column(db.Integer)
     id_permutation: int = db.Column(db.Integer)
+    csv_list_variations: str = db.Column(db.String)
     id_unit_quantity: int = db.Column(db.Integer)
     quantity_used: float = db.Column(db.Float)
     quantity_produced: float = db.Column(db.Float)
@@ -289,12 +310,18 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     """
     active: bool = db.Column(db.Boolean)
     guid: str = db.Column(db.String(36))
+    def __init__(self):
+        super().__init__()
+        self.id_temp = None
     @classmethod
     def from_manufacturing_purchase_order_product_link(cls, manufacturing_purchase_order_product_link):
         row = cls()
         row.id_link = manufacturing_purchase_order_product_link.id_link
         row.id_order = manufacturing_purchase_order_product_link.id_order
+        row.id_category = manufacturing_purchase_order_product_link.id_category
+        row.id_product = manufacturing_purchase_order_product_link.id_product
         row.id_permutation = manufacturing_purchase_order_product_link.id_permutation
+        row.csv_list_variations = manufacturing_purchase_order_product_link.csv_id_pairs_variation
         row.id_unit_quantity = manufacturing_purchase_order_product_link.id_unit_quantity
         row.quantity_used = manufacturing_purchase_order_product_link.quantity_used
         row.quantity_produced = manufacturing_purchase_order_product_link.quantity_produced
@@ -313,7 +340,10 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
         return f'''
 id_link: {self.id_link}
 id_order: {self.id_order}
+id_category: {self.id_category}
+id_product: {self.id_product}
 id_permutation: {self.id_permutation}
+csv_list_variations: {self.csv_list_variations}
 id_unit_quantity: {self.id_unit_quantity}
 quantity_used: {self.quantity_used}
 quantity_produced: {self.quantity_produced}

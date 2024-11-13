@@ -1,3 +1,83 @@
+
+
+/* Overlay modal */
+.overlay {
+    /*
+    display: none;
+    */
+    position: fixed;
+    top: 15vh;
+    right: 0;
+    width: 100px;
+    /* height: 50%; */ 
+    background: var(--c_purple_pastel);
+    justify-content: right;
+    align-items: right;
+    align-self: right;
+    z-index: 999;
+}
+.overlay.expanded {
+    display: block;
+}
+.collapsed {
+    display: none;
+}
+
+/* Hamburger menu overlay */
+#buttonHamburger:hover {
+    text-decoration: none;
+}
+#overlayHamburger {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 80%;
+}
+.hamburger {
+    border: 2px solid var(--c_purple_dark);
+    border-radius: 4px;
+}
+.hamburger:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+.hamburger:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.hamburger > * {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    color: var(--c_purple_dark);
+    font-weight: bold;
+    font-size: 18px;
+    /* height: 18px; */
+}
+.hamburger > :hover {
+    background-color: var(--c_purple_light);
+    color: var(--c_purple_dark);
+}
+.hamburger > * > * {
+    width: 100%;
+    /*
+    margin-top: 4.5px;
+    margin-bottom: 4.5px;
+    */
+}
+.hamburger > .container {
+    padding-top: 4.5px;
+    padding-bottom: 4.5px;
+}
+
+#overlayHamburger .row *:hover {
+    text-decoration: underline;
+}
+
+/* Confirm overlay */
 #overlayConfirm {
     position: absolute;
     left: 25vw;

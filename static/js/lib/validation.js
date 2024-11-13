@@ -151,4 +151,8 @@ export default class Validation {
         img.onerror = function() { callback(false); };
         img.src = url;
     }
+
+    static toFixedOrDefault(value, decimalPlaces, defaultValue = null) {
+        return Validation.isValidNumber(value) ? parseFloat(value).toFixed(decimalPlaces) : defaultValue;
+    }
 }

@@ -7,7 +7,8 @@
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order_Product_Link_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
-	id_link INT NOT NULL PRIMARY KEY,
+    id_temp INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_link INT NOT NULL,
     id_order INT NOT NULL,
     id_product INT NULL,
     id_permutation INT NULL,
