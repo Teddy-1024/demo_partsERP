@@ -1,5 +1,72 @@
 
 
+/* Navigation */
+.topnav {
+    border-bottom-left-radius: 2.5vh;
+    border-bottom-right-radius: 2.5vh;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    flex-direction: row;
+    font-weight: bold;
+    font-size: 1vh;
+    max-height: 15vh;
+    height: 15vh;
+    align-items: flex-start;
+}
+.topnav a, .topnav label, .topnav p, .topnav h1 {
+    float: left;
+    display: flex;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    max-height: 15vh;
+    font-weight: normal;
+    justify-content: center;
+}
+.topnav a:hover {
+    background-color: var(--c_purple_light);
+    color: var(--c_purple_dark);
+}
+
+.topnav > .container {
+    max-width: 50%;
+    height: 100%;
+    align-items: center;
+    align-self: center;
+    /* align-content: center; */
+    /* width: fit-content; */
+    display: flex;
+}
+.topnav select {
+    padding: 1vh;
+    margin: 1vh;
+    border-radius: 1vh;
+    /* background-color: var(--c_purple_light); */
+    color: var(--c_purple_dark);
+    border: 2px solid white;
+    font-weight: bold;
+    text-align: center;
+}
+.topnav select .collapsed {
+    width: 5vw;
+}
+.topnav select .expanded {
+    width: 25vw;
+}
+
+.company-name {
+    font-size: min(28px, calc(1vh * 7));
+    color: white;
+}
+@media screen and (max-width: 450px) {
+    .company-name {
+        font-size: min(24px, calc(1vh * 7));
+    }
+}
+
+/* Page Filters */
 button.collapsed {
     display: block;
     opacity: 0;

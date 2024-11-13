@@ -100,6 +100,7 @@ class Supplier_Purchase_Order(db.Model, Store_Base):
         supplier_purchase_order.id_currency = json[cls.ATTR_ID_CURRENCY]
         supplier_purchase_order.cost_total_local_VAT_excl = json[cls.FLAG_COST_TOTAL_LOCAL_VAT_EXCL]
         supplier_purchase_order.cost_total_local_VAT_incl = json[cls.FLAG_COST_TOTAL_LOCAL_VAT_INCL]
+        supplier_purchase_order.items = [Supplier_Purchase_Order_Product_Link.from_json(item) for item in json[cls.FLAG_ORDER_ITEMS]]
         supplier_purchase_order.active = json[cls.FLAG_ACTIVE]
         supplier_purchase_order.created_on = json.get(cls.FLAG_CREATED_ON, None)
         supplier_purchase_order.created_by = json.get(cls.FLAG_CREATED_BY, None)
@@ -115,6 +116,7 @@ class Supplier_Purchase_Order_Product_Link(db.Model, Store_Base):
     id_category = db.Column(db.Integer)
     id_product = db.Column(db.Integer)
     id_permutation = db.Column(db.Integer)
+    csv_id_pairs_variation = db.Column(db.String)
     id_unit_quantity = db.Column(db.Integer)
     name_permutation = db.Column(db.String(255))
     quantity_ordered = db.Column(db.Float)
@@ -141,16 +143,17 @@ class Supplier_Purchase_Order_Product_Link(db.Model, Store_Base):
         link.id_product = query_row[3]
         link.id_permutation = query_row[4]
         link.name_permutation = query_row[5]
-        link.id_unit_quantity = query_row[6]
-        link.quantity_ordered = query_row[7]
-        link.quantity_received = query_row[8]
-        link.latency_delivery_days = query_row[9]
-        link.display_order = query_row[10]
-        link.cost_total_local_VAT_excl = query_row[11]
-        link.cost_total_local_VAT_incl = query_row[12]
-        link.cost_unit_local_VAT_excl = query_row[13]
-        link.cost_unit_local_VAT_incl = query_row[14]
-        link.active = query_row[15]
+        link.csv_id_pairs_variation = query_row[6]
+        link.id_unit_quantity = query_row[7]
+        link.quantity_ordered = query_row[8]
+        link.quantity_received = query_row[9]
+        link.latency_delivery_days = query_row[10]
+        link.display_order = query_row[11]
+        link.cost_total_local_VAT_excl = query_row[12]
+        link.cost_total_local_VAT_incl = query_row[13]
+        link.cost_unit_local_VAT_excl = query_row[14]
+        link.cost_unit_local_VAT_incl = query_row[15]
+        link.active = query_row[16]
         return link
     def __repr__(self):
         return f'''
@@ -160,6 +163,7 @@ class Supplier_Purchase_Order_Product_Link(db.Model, Store_Base):
 {self.ATTR_ID_PRODUCT}: {self.id_product},
 {self.ATTR_ID_PRODUCT_PERMUTATION}: {self.id_permutation},
 {self.FLAG_NAME}: {self.name_permutation},
+{self.FLAG_PRODUCT_VARIATIONS}: {self.csv_id_pairs_variation},
 {self.ATTR_ID_UNIT_MEASUREMENT_QUANTITY}: {self.id_unit_quantity},
 {self.FLAG_QUANTITY_ORDERED}: {self.quantity_ordered},
 {self.FLAG_QUANTITY_RECEIVED}: {self.quantity_received},
@@ -180,6 +184,7 @@ class Supplier_Purchase_Order_Product_Link(db.Model, Store_Base):
             self.ATTR_ID_PRODUCT: self.id_product,
             self.ATTR_ID_PRODUCT_PERMUTATION: self.id_permutation,
             self.FLAG_NAME: self.name_permutation,
+            self.FLAG_PRODUCT_VARIATIONS: self.csv_id_pairs_variation,
             self.ATTR_ID_UNIT_MEASUREMENT_QUANTITY: self.id_unit_quantity,
             self.FLAG_QUANTITY_ORDERED: self.quantity_ordered,
             self.FLAG_QUANTITY_RECEIVED: self.quantity_received,
@@ -204,8 +209,9 @@ class Supplier_Purchase_Order_Product_Link(db.Model, Store_Base):
         link.id_order = json[cls.ATTR_ID_SUPPLIER_PURCHASE_ORDER]
         link.id_category = json.get(cls.ATTR_ID_PRODUCT_CATEGORY, None)
         link.id_product = json.get(cls.ATTR_ID_PRODUCT, None)
-        link.id_permutation = json[cls.ATTR_ID_PRODUCT_PERMUTATION]
+        link.id_permutation = json.get(cls.ATTR_ID_PRODUCT_PERMUTATION, None)
         link.name_permutation = json.get(cls.FLAG_NAME, None)
+        link.csv_id_pairs_variation = json.get(cls.FLAG_PRODUCT_VARIATIONS, '')
         link.id_unit_quantity = json[cls.ATTR_ID_UNIT_MEASUREMENT_QUANTITY]
         link.quantity_ordered = json[cls.FLAG_QUANTITY_ORDERED]
         link.quantity_received = json[cls.FLAG_QUANTITY_RECEIVED]
@@ -214,7 +220,7 @@ class Supplier_Purchase_Order_Product_Link(db.Model, Store_Base):
         link.cost_total_local_VAT_excl = json[cls.FLAG_COST_TOTAL_LOCAL_VAT_EXCL]
         link.cost_total_local_VAT_incl = json[cls.FLAG_COST_TOTAL_LOCAL_VAT_INCL]
         link.cost_unit_local_VAT_excl = json.get(cls.FLAG_COST_UNIT_LOCAL_VAT_EXCL, None)
-        link.cost_unit_local_VAT_incl = json(cls.FLAG_COST_UNIT_LOCAL_VAT_INCL, None)
+        link.cost_unit_local_VAT_incl = json.get(cls.FLAG_COST_UNIT_LOCAL_VAT_INCL, None)
         link.active = json[cls.FLAG_ACTIVE]
         return link
 
@@ -254,11 +260,15 @@ class Parameters_Supplier_Purchase_Order(Get_Many_Parameters_Base):
 class Supplier_Purchase_Order_Temp(db.Model, Store_Base):
     __tablename__: ClassVar[str] = 'Shop_Supplier_Purchase_Order_Temp'
     __table_args__ = { 'extend_existing': True }
-    id_order: int = db.Column(db.Integer, primary_key=True)
+    id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_order: int = db.Column(db.Integer)
     id_supplier_ordered: int = db.Column(db.Integer)
     id_currency_cost: int = db.Column(db.Integer)
     active: bool = db.Column(db.Boolean)
     guid: str = db.Column(db.String(36))
+    def __init__(self):
+        super().__init__()
+        self.id_temp = None
     @classmethod
     def from_supplier_purchase_order(cls, supplier_purchase_order):
         row = cls()
@@ -279,10 +289,12 @@ guid: {self.guid}
 class Supplier_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     __tablename__: ClassVar[str] = 'Shop_Supplier_Purchase_Order_Product_Link_Temp'
     __table_args__ = { 'extend_existing': True }
-    id_link = db.Column(db.Integer, primary_key=True)
+    id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_link = db.Column(db.Integer)
     id_order = db.Column(db.Integer)
     id_product = db.Column(db.Integer)
     id_permutation = db.Column(db.Integer)
+    csv_list_variations = db.Column(db.String)
     id_unit_quantity = db.Column(db.Integer)
     quantity_ordered = db.Column(db.Float)
     quantity_received = db.Column(db.Float)
@@ -292,6 +304,9 @@ class Supplier_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     cost_total_local_VAT_incl = db.Column(db.Float)
     active = db.Column(db.Boolean)
     guid = db.Column(db.String(36))
+    def __init__(self):
+        super().__init__()
+        self.id_temp = None
     @classmethod
     def from_supplier_purchase_order_product_link(cls, supplier_purchase_order_product_link):
         row = cls()
@@ -299,6 +314,7 @@ class Supplier_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
         row.id_order = supplier_purchase_order_product_link.id_order
         row.id_product = supplier_purchase_order_product_link.id_product
         row.id_permutation = supplier_purchase_order_product_link.id_permutation
+        row.csv_list_variations = supplier_purchase_order_product_link.csv_id_pairs_variation
         row.id_unit_quantity = supplier_purchase_order_product_link.id_unit_quantity
         row.quantity_ordered = supplier_purchase_order_product_link.quantity_ordered
         row.quantity_received = supplier_purchase_order_product_link.quantity_received
@@ -314,6 +330,7 @@ id_link: {self.id_link}
 id_order: {self.id_order}
 id_product: {self.id_product}
 id_permutation: {self.id_permutation}
+csv_list_variations: {self.csv_list_variations}
 id_unit_quantity: {self.id_unit_quantity}
 quantity_ordered: {self.quantity_ordered}
 quantity_received: {self.quantity_received}

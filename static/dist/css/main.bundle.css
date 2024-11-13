@@ -1,60 +1,4 @@
 
-
-/* Base styles *
-@import 'lib/reset.css';
-@import 'lib/typography.css';
-@import 'lib/variables.css';
-@import 'lib/utils.css';
-
-/* Layout styles *
-@import 'layouts/header.css';
-@import 'layouts/footer.css';
-@import 'layouts/table-main.css';
-
-/* Component styles *
-@import 'components/button.css';
-@import 'components/card.css';
-@import 'components/dialog.css';
-@import 'components/form.css';
-@import 'components/modal.css';
-@import 'components/navigation.css';
-@import 'components/overlay.css';
-
-/* Section styles *
-@import 'sections/store.css';
-*/
-
-/* Page-specific styles *
-@import 'pages/page_admin.css';
-@import 'pages/page_contact.css';
-@import 'pages/page_home.css';
-@import 'pages/page_license.css';
-@import 'pages/page_services.css';
-@import 'pages/page_store_home.css';
-@import 'pages/page_store_product_permutations.css';
-@import 'pages/page_store_stock_items.css';
-*/
-
-/* Theme styles *
-@import 'themes/light.css';
-/* Uncomment the line below to enable dark theme */
-/* @import 'themes/dark.css'; */
-
-
-
-/* Custom styles */
-/* Add any custom styles or overrides here */
-
-body {
-    /* Example of using a CSS variable defined in variables.css */
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: var(--font-family-base);
-}
-
-/* You can add more global styles here */
-
-
 :root {
     /* Declare global variables */
     --c_purple: #5B29FF;
@@ -67,19 +11,14 @@ body {
     --c_blue_dark: #003ADB;
 }
 
-*{
-    margin: 0;
-}
-
-script, link {
-    display: none !important;
-}
-
 html {
     height: 100%;
 }
 
 body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--font-family-base);
     font-family: Arial;
     padding: 0;
     margin: 0;
@@ -89,121 +28,13 @@ body {
     max-height: 100%;
 }
 
-/*
-h1, h2, h3, h4, h5, p, a, label {
-    display: flex;
+* {
     margin: 0;
-    padding: 0;
-}
-*/
-
-h1 {
-    font-size: min(24px, calc(1vh * 6));
 }
 
-h2 {
-    font-size: min(20px, calc(1vh * 5));
+script, link {
+    display: none !important;
 }
-
-h3 {
-    font-size: min(16px, calc(1vh * 4));
-    margin-top: 1vh;
-}
-
-h4 {
-    font-size: 13px;
-    margin: 1vh;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-h5 {
-    font-size: 11px;
-    margin: 1vh;
-}
-
-/* Style the top navigation bar */
-.topnav {
-    /* overflow: hidden; */
-    /* background-color: var(--c_purple); */
-    border-bottom-left-radius: 2.5vh;
-    border-bottom-right-radius: 2.5vh;
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1;
-    flex-direction: row;
-    font-weight: bold;
-    font-size: 1vh;
-    max-height: 15vh;
-    height: 15vh;
-    align-items: flex-start;
-}
-
-/* Style the topnav links */
-.topnav a, .topnav label, .topnav p, .topnav h1 {
-    float: left;
-    display: flex;
-    color: white;
-    text-align: center;
-    /* padding: 14px 16px; */
-    text-decoration: none;
-    width: 100%;
-    max-height: 15vh;
-    font-weight: normal;
-    /* font-size: 20px; */
-    justify-content: center;
-}
-/*
-.topnav a {
-    padding: 3vh 2vw;
-}
-*/
-
-/* Change color on hover */
-.topnav a:hover {
-    background-color: var(--c_purple_light);
-    color: var(--c_purple_dark);
-}
-
-.topnav > .container {
-    max-width: 50%;
-    height: 100%;
-    align-items: center;
-    align-self: center;
-    /* align-content: center; */
-    /* width: fit-content; */
-    display: flex;
-}
-
-.topnav select {
-    padding: 1vh;
-    margin: 1vh;
-    border-radius: 1vh;
-    /* background-color: var(--c_purple_light); */
-    color: var(--c_purple_dark);
-    border: 2px solid white;
-    font-weight: bold;
-    text-align: center;
-}
-.topnav select .collapsed {
-    width: 5vw;
-}
-.topnav select .expanded {
-    width: 25vw;
-}
-
-
-.company-name {
-    font-size: min(28px, calc(1vh * 7));
-    color: white;
-}
-@media screen and (max-width: 450px) {
-    .company-name {
-        font-size: min(24px, calc(1vh * 7));
-    }
-}
-
 
 #pageBody {
     height: 69vh !important;
@@ -222,8 +53,7 @@ h5 {
     overflow-y: auto;
     overflow-x: hidden;
     position: absolute;
-    width: 98vw;
-
+    width: 98vw; 
 }
 
 .page-body > * {
@@ -250,9 +80,7 @@ h5 {
     margin-top: 0vh;
     top: 0;
 }
-#pageBody > .card:last-of-type {
-    /* margin-bottom: 1vh; */
-}
+
 /* Create two unequal columns that floats next to each other *
 /* Left column *
 .leftcolumn {   
@@ -280,16 +108,14 @@ h5 {
 }
 */
 
-/* Fake image */
+/* Fake image 
 .fakeimg {
     background-color: var(--c_purple_light);
     width: 100%;
     padding: 20px;
 }
+*/
 
-img, video {
-    border-radius: 3vh;
-}
 
 /* header image */
 img.header-logo {
@@ -306,6 +132,7 @@ img.header-logo {
     border-radius: 0;
 }
 
+/*
 .container-icon-label {
     padding: 0;
     display: flex;
@@ -329,6 +156,7 @@ img.header-logo {
     max-width: 75%;
     justify-self: left;
 }
+*/
 
 /* Add a card effect for articles */
 .card {
@@ -347,10 +175,6 @@ img.header-logo {
     max-width: 80vw;
     padding-left: 2.5vw;
     padding-right: 2.5vw;
-}
-
-.card.subcard {
-    margin-top: 0;
 }
 
 .header.card {
@@ -388,36 +212,6 @@ img.header-logo {
 }
 
 
-/* Clear floats after the columns 
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-*/
-/* Footer */
-.footer {
-    padding: 1vh;
-    padding-left: 1vw;
-    padding-right: 1vw;
-    text-align: center;
-    margin: 0;
-    height: 8vh !important;
-    overflow-y: auto;
-    background-color: var(--c_purple_pastel);
-    border-top-left-radius: 2.5vh;
-    border-top-right-radius: 2.5vh;
-    position: absolute;
-    /* top: 2.5vh; */
-    bottom: 0;
-    width: 98vw;
-}
-
-.footer > h4, h5 {
-    padding: 0;
-    margin: 0;
-}
-
 /*
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other *
 @media screen and (max-width: 800px) {
@@ -436,9 +230,6 @@ img.header-logo {
 }
 */
 
-/* input container 
-    margin-top: 3vh;
-    */
 .container-input {
     padding: 1vh;
     display: flex;
@@ -460,13 +251,34 @@ img.header-logo {
 
 .container-input > input, .container-input > textarea {
     border: 2px solid var(--c_purple);
-    max-width: 66%;
-    min-width: 20%;
     padding: 1vh;
 }
 
 .label-title {
     width: 100%;
+}
+
+
+ul {
+    max-width: 90%;
+    padding: 5px 0 10px 0;
+}
+li {
+    text-align: left;
+    font-size: 18px;
+}
+
+
+:not(input,textarea,select).dirty {
+    background-color: var(--c_purple_dark);
+}
+input.dirty, textarea.dirty, select.dirty {
+    border-color: var(--c_purple_dark);
+}
+
+
+#pageBody > *, button {
+    font-size: min(12px, calc(1vh * 3));
 }
 
 button, .button-submit, input[type="submit"] {
@@ -476,15 +288,11 @@ button, .button-submit, input[type="submit"] {
     border-radius: 2vh;
     padding: 1vh 2vh 1vh 2vh;
     margin: 0.5vh;
-    /*
-    background-color: var(--c_blue_pastel);
-    color: var(--c_blue_dark);
-    border-color: var(--c_blue_dark);
-    */
     background-color: var(--c_purple_pastel);
     color: var(--c_purple_dark);
     border-color: var(--c_purple_dark);
 }
+
 button.navContactUs {
     border: 4px solid var(--c_purple_dark);
     background-color: var(--c_purple_pastel);
@@ -492,12 +300,48 @@ button.navContactUs {
     border-radius: 2vh;
     width: 180px !important;
 }
-button:hover, input[type="submit"]:hover, #overlayHamburger .row *:hover {
+
+button:hover, input[type="submit"]:hover {
     text-decoration: underline;
 }
-#buttonHamburger:hover {
-    text-decoration: none;
+
+
+
+
+
+img, video {
+    border-radius: 3vh;
 }
+
+
+h1 {
+    font-size: min(24px, calc(1vh * 6));
+}
+
+h2 {
+    font-size: min(20px, calc(1vh * 5));
+}
+
+h3 {
+    font-size: min(16px, calc(1vh * 4));
+    margin-top: 1vh;
+}
+
+h4 {
+    font-size: 13px;
+    margin: 1vh;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h5 {
+    font-size: 11px;
+    margin: 1vh;
+}
+
+
+
 
 
 /* Overlay modal */
@@ -523,6 +367,10 @@ button:hover, input[type="submit"]:hover, #overlayHamburger .row *:hover {
     display: none;
 }
 
+/* Hamburger menu overlay */
+#buttonHamburger:hover {
+    text-decoration: none;
+}
 #overlayHamburger {
     overflow-x: hidden;
     overflow-y: auto;
@@ -569,34 +417,11 @@ button:hover, input[type="submit"]:hover, #overlayHamburger .row *:hover {
     padding-bottom: 4.5px;
 }
 
-ul {
-    max-width: 90%;
-    padding: 5px 0 10px 0;
-}
-li {
-    text-align: left;
-    font-size: 18px;
+#overlayHamburger .row *:hover {
+    text-decoration: underline;
 }
 
-
-:not(input,textarea,select).dirty {
-    background-color: var(--c_purple_dark);
-}
-input.dirty, textarea.dirty, select.dirty {
-    border-color: var(--c_purple_dark);
-}
-
-
-/* Tables */
-#pageBody > *, button {
-    font-size: min(12px, calc(1vh * 3));
-}
-
-
-
-
-
-
+/* Confirm overlay */
 #overlayConfirm {
     position: absolute;
     left: 25vw;
@@ -653,13 +478,6 @@ tr {
 }
 */
 
-table textarea,
-table select,
-table input {
-    width: 100%;
-    box-sizing: border-box;
-}
-
 table button {
     margin: 0.25vh;
     padding: 0.5vh 1vh;
@@ -673,8 +491,78 @@ tr.delete, tr.delete > td {
     background-color: red;
 }
 
+table div {
+    align-content: center;
+}
 
 
+/* Navigation */
+.topnav {
+    border-bottom-left-radius: 2.5vh;
+    border-bottom-right-radius: 2.5vh;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    flex-direction: row;
+    font-weight: bold;
+    font-size: 1vh;
+    max-height: 15vh;
+    height: 15vh;
+    align-items: flex-start;
+}
+.topnav a, .topnav label, .topnav p, .topnav h1 {
+    float: left;
+    display: flex;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    max-height: 15vh;
+    font-weight: normal;
+    justify-content: center;
+}
+.topnav a:hover {
+    background-color: var(--c_purple_light);
+    color: var(--c_purple_dark);
+}
+
+.topnav > .container {
+    max-width: 50%;
+    height: 100%;
+    align-items: center;
+    align-self: center;
+    /* align-content: center; */
+    /* width: fit-content; */
+    display: flex;
+}
+.topnav select {
+    padding: 1vh;
+    margin: 1vh;
+    border-radius: 1vh;
+    /* background-color: var(--c_purple_light); */
+    color: var(--c_purple_dark);
+    border: 2px solid white;
+    font-weight: bold;
+    text-align: center;
+}
+.topnav select .collapsed {
+    width: 5vw;
+}
+.topnav select .expanded {
+    width: 25vw;
+}
+
+.company-name {
+    font-size: min(28px, calc(1vh * 7));
+    color: white;
+}
+@media screen and (max-width: 450px) {
+    .company-name {
+        font-size: min(24px, calc(1vh * 7));
+    }
+}
+
+/* Page Filters */
 button.collapsed {
     display: block;
     opacity: 0;
@@ -696,6 +584,28 @@ form.filter button.save, form.filter button.button-cancel {
     width: 12vh;
 }
 
+/* Footer */
+.footer {
+    padding: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    text-align: center;
+    margin: 0;
+    height: 8vh !important;
+    overflow-y: auto;
+    background-color: var(--c_purple_pastel);
+    border-top-left-radius: 2.5vh;
+    border-top-right-radius: 2.5vh;
+    position: absolute;
+    /* top: 2.5vh; */
+    bottom: 0;
+    width: 98vw;
+}
+
+.footer > h4, h5 {
+    padding: 0;
+    margin: 0;
+}
 
 #tableMain {
     overflow-x: auto;
@@ -707,7 +617,11 @@ form.filter button.save, form.filter button.button-cancel {
     justify-content: normal;
 }
 
-#tableMain select, #tableMain input, #tableMain textarea {
+#tableMain * {
+    padding: 0.25vh 0.5vh;
+}
+
+#tableMain select, #tableMain input:not([type="checkbox"]), #tableMain textarea, #tableMain div {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -718,6 +632,13 @@ form.filter button.save, form.filter button.button-cancel {
     min-width: 20vh;
     padding: 0 0.5vh;
 }
+#tableMain tbody tr td {
+    height: 5vh;
+    padding-top: 0.5vh;
+}
+#tableMain tbody tr:not(:last-of-type) td {
+    padding-bottom: 0.5vh;
+}
 #tableMain thead tr th.active, #tableMain tbody tr td.active {
     width: 6vh;
     min-width: 6vh;
@@ -726,6 +647,7 @@ form.filter button.save, form.filter button.button-cancel {
     width: 5vh;
     min-width: 5vh;
 }
+
 
 
 

@@ -85,8 +85,8 @@ export default class PageStoreSuppliers extends TableBasePage {
         });
         return supplierAddresses;
     }
-    initialiseRowNew(row) {
-        super.initialiseRowNew(row);
+    initialiseRowNew(tbody, row) {
+        super.initialiseRowNew(tbody, row);
     }
 
     hookupTableMain() {

@@ -12,6 +12,8 @@ import OverlayConfirm from "../components/common/temporary/overlay_confirm.js";
 import OverlayError from "../components/common/temporary/overlay_error.js";
 
 export default class TableBasePage extends BasePage {
+    // static hash
+    // static attrIdRowObject
     // callFilterTableContent
     // callSaveTableContent
 
@@ -169,7 +171,6 @@ export default class TableBasePage extends BasePage {
             .catch(error => console.error('Error:', error));
     }
     getTableRecords(dirtyOnly = false) {
-        // let table = TableBasePage.getTableMain();
         let records = [];
         let record;
         document.querySelectorAll(idTableMain + ' > tbody > tr').forEach((row) => {
@@ -226,11 +227,11 @@ export default class TableBasePage extends BasePage {
         });
         let countRows = document.querySelectorAll(idTableMain + ' > tbody > tr').length;
         row.setAttribute(this.constructor.attrIdRowObject, -1 - countRows);
-        this.initialiseRowNew(row);
+        this.initialiseRowNew(tbody, row);
         tbody.appendChild(row);
         this.hookupTableMain();
     }
-    initialiseRowNew(row) {
+    initialiseRowNew(tbody, row) {
         if (this.constructor === TableBasePage) {
             throw new Error("Subclass of TableBasePage must implement method initialiseRowNew().");
         }
@@ -256,6 +257,17 @@ export default class TableBasePage extends BasePage {
             row.remove();
         });
         _rowBlank.setAttribute(this.constructor.attrIdRowObject, -1 - countRows);
+    }
+    initialiseSliderDisplayOrderRowNew(tbody, row) {
+        // let tdSelector = ':scope > tr > td.' + flagDisplayOrder;
+        // let tbody = document.querySelector('table' + (Validation.isEmpty(flagTable) ? '' : '.' + flagTable) + ' > tbody');
+        let slidersDisplayOrder = tbody.querySelectorAll(':scope > tr > td.' + flagDisplayOrder + ' input.' + flagSlider);
+        let maxDisplayOrder = 0;
+        slidersDisplayOrder.forEach((slider) => {
+            maxDisplayOrder = Math.max(maxDisplayOrder, parseFloat(DOM.getElementValueCurrent(slider)));
+        });
+        let sliderDisplayOrder = row.querySelector('td.' + flagDisplayOrder + ' .' + flagSlider);
+        DOM.setElementValuesCurrentAndPrevious(sliderDisplayOrder, maxDisplayOrder + 1);
     }
     hookupSlidersDisplayOrderTable() {
         let selectorDisplayOrder = idTableMain + ' tbody tr td.' + flagDisplayOrder + ' input.' + flagSlider + '.' + flagDisplayOrder;
@@ -362,7 +374,7 @@ export default class TableBasePage extends BasePage {
     */
     handleChangeNestedElementCellTable(event, element) {
         let wasDirtyParentRows = this.getAllIsDirtyRowsInParentTree(element);
-        let wasDirtyElement = DOM.isElementDirty(element);
+        let wasDirtyElement = element.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
         if (_verbose) { console.log({isDirtyElement, wasDirtyElement, wasDirtyParentRows}); }
         if (isDirtyElement != wasDirtyElement) {
@@ -577,7 +589,6 @@ export default class TableBasePage extends BasePage {
         });
         tdNew.appendChild(ddl);
         let ddlSelector = cellSelector + ' select';
-        debugger;
         ddlHookup(ddlSelector);
     }
     /*
@@ -638,8 +649,8 @@ export default class TableBasePage extends BasePage {
     }
     hookupFieldsProductPermutationVariation() {
         this.hookupPreviewsProductPermutationVariation();
-        this.hookupDdlsProductPermutationVariation();
         this.hookupDdlsProductPermutationVariationType();
+        this.hookupDdlsProductPermutationVariation();
         this.hookupButtonsProductPermutationVariationAddDelete(); 
     }
     hookupPreviewsProductPermutationVariation() {
@@ -826,11 +837,38 @@ export default class TableBasePage extends BasePage {
         tr.appendChild(tdDelete);
         tbody.appendChild(tr);
     }
-    hookupDdlsProductPermutationVariation() {
-        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation);
-    }
     hookupDdlsProductPermutationVariationType() {
-        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariationType);
+        this.hookupTableCellDdls(
+            idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariationType + ' select'
+            , (event, ddlVariationType) => { 
+                this.handleChangeDdlProductVariationOrVariationType(event, ddlVariationType);
+                let idVariationTypeSelected = DOM.getElementValueCurrent(ddlVariationType);
+                let row = DOM.getRowFromElement(ddlVariationType);
+                let tdVariation = row.querySelector('td.' + flagProductVariation);
+                tdVariation.dispatchEvent(new Event('click'));
+                let ddlVariation = row.querySelector('td.' + flagProductVariation + ' select');
+                ddlVariation.innerHTML = '';
+                ddlVariation.appendChild(DOM.createOption(null));
+                let optionJson, option;
+                let variationType = productVariationTypes[idVariationTypeSelected];
+                if (variationType == null) variationType = {
+                    [flagProductVariations]: [],
+                };
+                variationType[flagProductVariations].forEach((variation) => {
+                    optionJson = BusinessObjects.getOptionJsonFromObjectJson(variation);
+                    option = DOM.createOption(optionJson);
+                    ddlVariation.appendChild(option);
+                });
+                this.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
+            }
+        );
+    }
+    handleChangeDdlProductVariationOrVariationType(event, element) {
+        this.updateProductPermutationVariations(element);
+        this.handleChangeNestedElementCellTable(event, element);
+    }
+    hookupDdlsProductPermutationVariation() {
+        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation, (event, ddlVariation) => { this.handleChangeDdlProductVariationOrVariationType(event, ddlVariation); });
     }
     hookupButtonsProductPermutationVariationAddDelete() {
         let selectorButton = idTableMain + ' td.' + flagProductVariations + ' tr.' + flagProductVariation + ' button';
@@ -860,19 +898,20 @@ export default class TableBasePage extends BasePage {
     updateProductPermutationVariations(element) {
         let variationsCell = element.closest('td.' + flagProductVariations);
         let variationPairsString = this.getProductPermutationVariationsText(variationsCell);
-        variationsCell.setAttribute(attrValueCurrent, variationPairsString);
+        DOM.setElementAttributeValueCurrent(variationsCell, variationPairsString);
         DOM.isElementDirty(variationsCell);
     }
     getProductPermutationVariationsText(variationsTd) {
-        let rows = variationsTd.querySelectorAll('tr');
+        let rows = variationsTd.querySelectorAll(':scope tbody tr');
         let variationPairsString = '';
         let ddlVariationType, ddlVariation, idVariationType, idVariation;
         rows.forEach((row, index) => {
-            ddlVariationType = row.querySelector('td select.' + flagProductVariationType);
-            ddlVariation = row.querySelector('td select.' + flagProductVariation);
-            idVariationType = ddlVariationType.getAttribute(attrValueCurrent);
-            idVariation = ddlVariation.getAttribute(attrValueCurrent);
-            variationPairsString += idVariationType + ':' + idVariation + ',';
+            ddlVariationType = row.querySelector(':scope td select.' + flagProductVariationType);
+            ddlVariation = row.querySelector(':scope td select.' + flagProductVariation);
+            idVariationType = DOM.getElementValueCurrent(ddlVariationType);
+            idVariation = DOM.getElementValueCurrent(ddlVariation);
+            if (variationPairsString != '') variationPairsString += ',';
+            variationPairsString += idVariationType + ':' + idVariation;
         });
         return variationPairsString;
     }
@@ -936,7 +975,7 @@ export class PageStoreProductCategories extends TableBasePage {
     hookupFilters() {}
     loadRowTable(rowJson) {}
     getJsonRow(row) {}
-    initialiseRowNew(row) {}
+    initialiseRowNew(tbody, row) {}
     hookupTableMain() {}
     isDirtyRow(row) {}
     leave() {}

@@ -83,8 +83,8 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
 
         return jsonRow;
     }
-    initialiseRowNew(row) {
-        super.initialiseRowNew(row);
+    initialiseRowNew(tbody, row) {
+        super.initialiseRowNew(tbody, row);
     }
 
     hookupTableMain() {

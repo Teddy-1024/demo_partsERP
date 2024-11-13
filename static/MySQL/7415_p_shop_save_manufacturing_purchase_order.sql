@@ -97,7 +97,6 @@ BEGIN
 		, id_order INT NOT NULL
         , id_product INT NULL
         , id_permutation INT NULL
-		, id_currency INT NOT NULL
 		, id_unit_quantity INT NOT NULL
 		, quantity_used FLOAT NOT NULL
 		, quantity_produced FLOAT NULL
@@ -171,6 +170,7 @@ BEGIN
 		, price_unit_local_VAT_incl
 		, has_order
 		, is_new
+        , name_error
 	)
 	SELECT 
 		IFNULL(MPOPL_T.id_link, 0) AS id_link

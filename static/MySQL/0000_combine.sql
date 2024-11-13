@@ -1119,13 +1119,14 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Audit (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Unit_Measurement_Conversion';
 
 CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion (
-    id_conversion INT NOT NULL PRIMARY KEY,
+    id_conversion INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     id_unit_derived INT NOT NULL,
     id_unit_base INT NOT NULL,
-    power_unit_base FLOAT NOT NULL,
     multiplier_unit_base FLOAT NOT NULL,
     increment_unit_base FLOAT NOT NULL,
+    apply_multiplier_before_increment BIT NOT NULL DEFAULT 1,
     active BIT NOT NULL DEFAULT 1,
+    display_order INT NOT NULL,
     created_on DATETIME,
     created_by INT,
     id_change_set INT,
@@ -1498,22 +1499,27 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type_Temp (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation';
 
 CREATE TABLE Shop_Variation (
-	id_variation INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-	id_type INT NOT NULL,
-	CONSTRAINT FK_Shop_Variation_id_type
+	id_variation INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+	, id_type INT NOT NULL
+	, CONSTRAINT FK_Shop_Variation_id_type
 		FOREIGN KEY (id_type) 
-		REFERENCES Shop_Variation_Type(id_type)
-		ON UPDATE RESTRICT,
-	code VARCHAR(50),
-	name VARCHAR(255),
-	active BIT NOT NULL DEFAULT 1,
-	display_order INT NOT NULL,
-	created_on DATETIME,
-	created_by INT,
-	id_change_set INT,
-	CONSTRAINT FK_Shop_Variation_id_change_set
+		REFERENCES partsltd_prod.Shop_Variation_Type(id_type)
+		ON UPDATE RESTRICT
+    , id_unit_measurement INT NULL
+	, CONSTRAINT FK_Shop_Unit_Measurement_id_unit_measurement
+		FOREIGN KEY (id_unit_measurement) 
+		REFERENCES partsltd_prod.Shop_Unit_Measurement(id_unit_measurement)
+    , count_unit_measurement INT NULL
+	, code VARCHAR(50)
+	, name VARCHAR(255)
+	, active BIT NOT NULL DEFAULT 1
+	, display_order INT NOT NULL
+	, created_on DATETIME
+	, created_by INT
+	, id_change_set INT
+	, CONSTRAINT FK_Shop_Variation_id_change_set
 		FOREIGN KEY (id_change_set) 
-		REFERENCES Shop_Product_Change_Set(id_change_set)
+		REFERENCES partsltd_prod.Shop_Product_Change_Set(id_change_set)
 );
 
 # Variation Audits
@@ -1548,6 +1554,8 @@ CREATE TABLE Shop_Variation_Temp (
 	id_temp INT NOT NULL PRIMARY KEY AUTO_INCREMENT
 	, id_variation INT NOT NULL
 	, id_type INT NOT NULL
+    , id_unit_measurement INT NULL
+    , count_unit_measurement INT NULL
 	, code VARCHAR(50)
 	, name VARCHAR(255)
 	, active BIT
@@ -2542,6 +2550,7 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Audit (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Supplier_Temp (
+    id_temp INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_supplier INT NOT NULL,
     name_company VARCHAR(255) NOT NULL,
     name_contact VARCHAR(255) NULL,
@@ -2692,7 +2701,8 @@ DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Temp;
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Purchase_Order_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Temp (
-	id_order INT NOT NULL
+    id_temp INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+	, id_order INT NOT NULL
     , id_supplier_ordered INT NOT NULL
     , id_currency_cost INT NOT NULL
     , active BIT NULL
@@ -2770,7 +2780,8 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link_Audit (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Purchase_Order_Product_Link_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link_Temp (
-	id_link INT NOT NULL PRIMARY KEY
+    id_temp INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+	, id_link INT NOT NULL
     , id_order INT NOT NULL
     , id_product INT NULL
     , id_permutation INT NULL
@@ -2855,7 +2866,8 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Audit (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Temp (
-	id_order INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_temp INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_order INT NOT NULL,
     /*
 	cost_total_local FLOAT NOT NULL,
     */
@@ -2952,7 +2964,8 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Audit 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order_Product_Link_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
-	id_link INT NOT NULL PRIMARY KEY,
+    id_temp INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	id_link INT NOT NULL,
     id_order INT NOT NULL,
     id_product INT NULL,
     id_permutation INT NULL,
@@ -4347,6 +4360,14 @@ BEGIN
         value_new,
         id_change_set
     )
+    # Changed id_unit_measurement
+	SELECT NEW.id_variation, 'id_unit_measurement', OLD.id_unit_measurement, NEW.id_unit_measurement, NEW.id_change_set
+		WHERE NOT OLD.id_unit_measurement <=> NEW.id_unit_measurement
+    UNION
+    # Changed count_unit_measurement
+	SELECT NEW.id_variation, 'count_unit_measurement', OLD.count_unit_measurement, NEW.count_unit_measurement, NEW.id_change_set
+		WHERE NOT OLD.count_unit_measurement <=> NEW.count_unit_measurement
+    UNION
     # Changed code
 	SELECT NEW.id_variation, 'code', OLD.code, NEW.code, NEW.id_change_set
 		WHERE NOT OLD.code <=> NEW.code
@@ -5756,10 +5777,6 @@ BEGIN
 	SELECT NEW.id_conversion, 'id_unit_base', OLD.id_unit_base, NEW.id_unit_base, NEW.id_change_set
 		WHERE NOT OLD.id_unit_base <=> NEW.id_unit_base
     UNION
-	# Changed power_unit_base
-	SELECT NEW.id_conversion, 'power_unit_base', OLD.power_unit_base, NEW.power_unit_base, NEW.id_change_set
-		WHERE NOT OLD.power_unit_base <=> NEW.power_unit_base
-    UNION
 	# Changed multiplier_unit_base
 	SELECT NEW.id_conversion, 'multiplier_unit_base', OLD.multiplier_unit_base, NEW.multiplier_unit_base, NEW.id_change_set
 		WHERE NOT OLD.multiplier_unit_base <=> NEW.multiplier_unit_base
@@ -5767,6 +5784,10 @@ BEGIN
 	# Changed increment_unit_base
 	SELECT NEW.id_conversion, 'active', OLD.increment_unit_base, NEW.increment_unit_base, NEW.id_change_set
 		WHERE NOT OLD.increment_unit_base <=> NEW.increment_unit_base
+    UNION
+	# Changed apply_multiplier_before_increment
+	SELECT NEW.id_conversion, 'apply_multiplier_before_increment', OLD.apply_multiplier_before_increment, NEW.apply_multiplier_before_increment, NEW.id_change_set
+		WHERE NOT OLD.apply_multiplier_before_increment <=> NEW.apply_multiplier_before_increment
     UNION
 	# Changed active
 	SELECT NEW.id_conversion, 'active', OLD.active, NEW.active, NEW.id_change_set
@@ -7690,7 +7711,7 @@ BEGIN
 	SET a_get_inactive_storage_location = IFNULL(a_get_inactive_storage_location, 0);
     
 	SELECT 
-		SL.id_storage_location
+		SL.id_location
         , P.id_plant
         , P.id_address
         , A.id_region
@@ -11623,6 +11644,7 @@ BEGIN
     -- Duplicate Variation Ids
     -- Duplicate Variation Type Codes
     -- Duplicate Variation Codes
+    -- Variation unit measurement with no count unit measurement
     
     -- Permissions
 	IF a_debug = 1 THEN
@@ -22567,21 +22589,60 @@ INSERT INTO Shop_Unit_Measurement (
 	name_singular, name_plural, symbol, is_base_unit, is_unit_of_distance, is_unit_of_mass, is_unit_of_time, is_unit_of_volume
 )
 VALUES
-	('metre', 'metres', 'm', 1, 1, 0, 0, 0),
-    ('kilogram', 'kilograms', 'kg', 1, 0, 1, 0, 0),
-    ('item', 'items', 'x', 0, 0, 0, 0, 0),
-	('hour', 'hours', 'h', 1, 0, 0, 1, 0)
+	('metre', 'metres', 'm', 1, 1, 0, 0, 0)
+	, ('millimetre', 'millimetres', 'mm', 0, 1, 0, 0, 0)
+    , ('kilogram', 'kilograms', 'kg', 1, 0, 1, 0, 0)
+	, ('gram', 'grams', 'g', 0, 0, 1, 0, 0)
+	, ('litre', 'litres', 'L', 0, 0, 0, 0, 1)
+	, ('millilitre', 'millilitres', 'mL', 0, 0, 0, 0, 1)
+    , ('item', 'items', 'x', 0, 0, 0, 0, 0)
+	, ('hour', 'hours', 'h', 1, 0, 0, 1, 0)
+	, ('day', 'days', 'd', 0, 0, 0, 1, 0)
 ;
 
-/*
 # Unit of Measurement Conversion
 INSERT INTO Shop_Unit_Measurement_Conversion (
-	id_unit_derived, id_unit_base, power_unit_base, multiplier_unit_base, increment_unit_base
+	id_unit_derived
+	, id_unit_base
+	, display_order
+	, multiplier_unit_base
+	, increment_unit_base
+	, apply_multiplier_before_increment
 )
-VALUES
-	
+VALUES 
+	(
+		2 -- id_unit_derived
+		, 1 -- id_unit_base
+		, 1 -- display_order
+		, 0.001 -- multiplier_unit_base
+		, 0 -- increment_unit_base
+		, apply_multiplier_before_increment
+	)
+	, (
+		4 -- id_unit_derived
+		, 3 -- id_unit_base
+		, 1 -- display_order
+		, 0.001 -- multiplier_unit_base
+		, 0 -- increment_unit_base
+		, apply_multiplier_before_increment
+	)
+	, (
+		6 -- id_unit_derived
+		, 5 -- id_unit_base
+		, 1 -- display_order
+		, 0.001 -- multiplier_unit_base
+		, 0 -- increment_unit_base
+		, apply_multiplier_before_increment
+	)
+	, (
+		9 -- id_unit_derived
+		, 8 -- id_unit_base
+		, 1 -- display_order
+		, 24 -- multiplier_unit_base
+		, 0 -- increment_unit_base
+		, apply_multiplier_before_increment
+	)
 ;
-*/
 
 
 # Categories
@@ -22841,15 +22902,138 @@ INSERT INTO Shop_Variation_Type (
 )
 VALUES 
 	(1, 'COLOUR', 'Colour', 'Colours')
+	, (2, 'SIZE', 'Size', 'Sizes')
 ;
 
 # Variations
 INSERT INTO Shop_Variation (
-	display_order, id_type, code, name
+	display_order, id_type, code, name, id_unit_measurement, count_unit_measurement
 )
 VALUES 
-	(1, 1, 'RED', 'Red'),
-	(2, 1, 'BLUE', 'Blue')
+	(1, 1, 'RED', 'Red', NULL, NULL)
+	, (2, 1, 'BLUE', 'Blue', NULL, NULL)
+	, (1, 2, '400ml', '400 millilitres', 6, 400)
+	, (2, 2, '400g', '400 grams', 4, 400)
+	, (3, 2, '410g', '410 grams', 4, 410)
+	, (4, 2, '8g', '8 grams', 4, 8)
+	, (5, 2, '13g', '13 grams', 4, 13)
+	, (6, 2, '27g', '27 grams', 4, 27)
+	, (7, 2, '104g', '104 grams', 4, 104)
+	, (8, 2, '200g', '200 grams', 4, 200)
+	, (9, 2, '92g', '92 grams', 4, 92)
+	, (10, 2, '100g', '100 grams', 4, 100)
+	, (11, 2, '500g', '500 grams', 4, 500)
+	, (12, 2, '250g', '250 grams', 4, 250)
+	, (13, 2, '750g', '750 grams', 4, 750)
+	, (14, 2, '145g', '145 grams', 4, 145)
+	, (15, 2, '340g', '340 grams', 4, 340)
+	, (16, 2, '132g', '132 grams', 4, 132)
+	, (17, 2, '170g', '170 grams', 4, 170)
+	, (18, 2, '700g', '700 grams', 4, 700)
+	, (19, 2, '150g', '150 grams', 4, 150)
+	, (20, 2, '1kg', '1 kilogram', 3, 1)
+	, (21, 2, '2kg', '2 kilograms', 3, 2)
+	, (22, 2, '800ml', '800 millilitres', 6, 800)
+	, (23, 2, '570g', '570 grams', 4, 570)
+	, (24, 2, '300g', '300 grams', 4, 300)
+	, (25, 2, '350g', '350 grams', 4, 350)
+	, (26, 2, '30g', '30 grams', 4, 30)
+	, (27, 2, '1L', '1 litre', 5, 1)
+	, (28, 2, '1.2L', '1.2 litres', 5, 1.2)
+	, (29, 2, '1.8L', '1.8 litres', 5, 1.8)
+	, (30, 2, 'bag of 20', 'bag of 20', 7, 20)
+	, (31, 2, '180ml', '180 millilitres', 6, 180)
+	, (32, 2, '70g', '70 grams', 4, 70)
+	, (33, 2, '60ml', '60 millilitres', 6, 60)
+	, (34, 2, '325g', '325 grams', 4, 325)
+	, (35, 2, 'pack of 50', 'pack of 50', 7, 50)
+	, (36, 2, 'box of 24 (each 5.9g)', 'box of 24 (each 5.9 grams)', 7, 24)
+	, (37, 2, '397g', '397 grams', 4, 397)
+	, (38, 2, '720g', '720 grams', 4, 720)
+	, (39, 2, '454g', '454 grams', 4, 454)
+	, (40, 2, 'pack of 4 (each 37g)', 'pack of 4 (each 37 grams)', 7, 4)
+	, (41, 2, '450g', '450 grams', 4, 450)
+	, (42, 2, '24.6.g', '24.6 grams', 4, 24.6)
+	, (43, 2, '230g', '230 grams', 4, 230)
+	, (44, 2, '37.3g', '37.3 grams', 4, 37.3)
+	, (45, 2, '38.3g', '38.3 grams', 4, 38.3)
+	, (46, 2, '123g', '123 grams', 4, 123)
+	, (47, 2, '266g', '266 grams', 4, 266)
+	, (48, 2, '157g', '157 grams', 4, 157)
+	, (49, 2, '285g', '285 grams', 4, 285)
+	, (50, 2, '700ml', '700 millilitres', 6, 700)
+	, (51, 2, '5L', '5 litres', 5, 5)
+	, (52, 2, '216g', '216 grams', 4, 216)
+	, (53, 2, '320g', '320 grams', 4, 320)
+	, (54, 2, '2L', '2 litres', 5, 2)
+	, (55, 2, '200ml', '200 millilitres', 6, 200)
+	, (56, 2, '250ml', '250 millilitres', 6, 250)
+	, (57, 2, '1 punnet', '1 punnet', 7, 1)
+	, (58, 2, '420g', '420 grams', 4, 420)
+	, (59, 2, '230g', '230 grams', 4, 230)
+	, (60, 2, '465g', '465 grams', 4, 465)
+	, (61, 2, '500ml', '500 millilitres', 6, 500)
+	, (62, 2, '250ml', '250 millilitres', 6, 250)
+	, (63, 2, '238ml', '238 millilitres', 6, 238)
+	, (64, 2, '140ml', '140 millilitres', 6, 140)
+	, (65, 2, '195g', '195 grams', 4, 195)
+	, (66, 2, '1pt', '1 pint', 5, 1)
+	, (67, 2, '570ml', '570 millilitres', 6, 570)
+	, (68, 2, '360g', '360 grams', 4, 360)
+	, (69, 2, '90g', '90 grams', 4, 90)
+	, (70, 2, '800ml', '800 millilitres', 6, 800)
+	, (71, 2, '197g', '197 grams', 4, 197)
+;
+
+INSERT INTO partsltd_prod.Shop_Product_Change_Set (
+	comment
+)
+VALUES ( 'Update Variation Display Orders' )
+;
+WITH RANKED AS (
+    SELECT 
+        V.id_variation,
+        RANK() OVER (ORDER BY 
+			CONCAT(
+				CASE WHEN V.count_unit_measurement = FLOOR(V.count_unit_measurement) THEN
+					LPAD(CAST(V.count_unit_measurement AS CHAR), 25, '0')
+				ELSE
+					CONCAT(
+						LPAD(
+							CAST(FLOOR(V.count_unit_measurement) AS CHAR)
+							, 25
+							, '0'
+						)
+						, SUBSTRING(
+							CAST(V.count_unit_measurement AS CHAR)
+							FROM LOCATE('.', CAST(V.count_unit_measurement AS CHAR))
+						)
+					)
+				END
+                , ' '
+                , IFNULL(IFNULL(UM.symbol, UM.name_singular), '(No Unit of Measurement)')
+			)
+		) as new_order
+    FROM partsltd_prod.Shop_Variation V
+    INNER JOIN partsltd_prod.Shop_Unit_Measurement UM 
+		ON V.id_unit_measurement = UM.id_unit_measurement
+        AND UM.active = 1
+    WHERE 
+		V.id_type = 2
+)
+UPDATE partsltd_prod.Shop_Variation V
+INNER JOIN RANKED ON V.id_variation = RANKED.id_variation
+JOIN (
+	SELECT CS.id_change_set
+    FROM partsltd_prod.Shop_Product_Change_Set CS
+    ORDER BY CS.id_change_set DESC
+    LIMIT 1
+) CS
+SET 
+	V.display_order = RANKED.new_order
+    , V.id_change_set = CS.id_change_set
+WHERE 
+	V.id_type = 2
 ;
 
 # Product Permutation Variation Links

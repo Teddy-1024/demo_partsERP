@@ -341,6 +341,7 @@ BEGIN
 		, MPOPL.id_order
 		, MPOPL.id_permutation
         , fn_shop_get_product_permutation_name(MPOPL.id_permutation) AS name_permutation
+        , fn_shop_get_product_permutation_variations_csv(MPOPL.id_permutation) AS csv_id_pairs_variation
 		, MPOPL.id_unit_quantity
 		, MPOPL.quantity_used
 		, MPOPL.quantity_produced
@@ -380,6 +381,7 @@ END //
 DELIMITER ;;
 
 
+/*
 
 CALL p_shop_get_many_manufacturing_purchase_order (
 	1 # a_id_user
@@ -392,5 +394,11 @@ CALL p_shop_get_many_manufacturing_purchase_order (
 	, 0 # a_debug
 );
 
-/*
+
+select *
+from partsltd_prod.shop_manufacturing_purchase_order
+;
+select *
+from partsltd_prod.shop_manufacturing_purchase_order_product_link
+;
 */

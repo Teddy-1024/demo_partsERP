@@ -10,7 +10,7 @@ import StoreTableMixinPage from "./mixin_table.js";
 
 export default class PageStoreProductVariations extends TableBasePage {
     static hash = hashPageStoreProductVariations;
-    static attrIdRowObject = attrIdProductVariation;
+    static attrIdRowObject = attrIdProductVariationType;
     callFilterTableContent = API.getProductVariationsByFilters;
     callSaveTableContent = API.saveProductVariations;
 
@@ -82,8 +82,9 @@ export default class PageStoreProductVariations extends TableBasePage {
 
         return jsonRow;
     }
-    initialiseRowNew(row) {
-        super.initialiseRowNew(row);
+    initialiseRowNew(tbody, row) {
+        super.initialiseRowNew(tbody, row);
+        this.initialiseSliderDisplayOrderRowNew(tbody, row);
     }
 
     hookupTableMain() {
@@ -106,20 +107,20 @@ export default class PageStoreProductVariations extends TableBasePage {
         this.hookupFieldsProductVariationActive();
     }
     hookupProductVariationsPreviews() {
-        this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations, (event, td) => {
+        this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations + ' div', (event, element) => {
+            let td = DOM.getCellFromElement(element);
             if (!td.classList.contains(flagCollapsed)) return;
-            this.handleClickProductVariationsPreview(event, td);
+            this.handleClickProductVariationsPreview(event, element);
         });
     }
     handleClickProductVariationsPreview(event, element) {
         if (_verbose) { console.log("click order items preview"); }
-        this.toggleColumnHeaderCollapsed(flagProductVariations, false);
-        element.classList.remove(flagCollapsed);
-
         let row = DOM.getRowFromElement(element);
         let idProductVariationType = row.getAttribute(attrIdProductVariationType);
-        if (idProductVariationType == null || idProductVariationType < 1) return;
         let productVariationType = productVariationTypes[idProductVariationType];
+        if (productVariationType == null) productVariationType = {
+            [flagProductVariations]: [],
+        };
         let tblProductVariations = document.createElement("table");
         tblProductVariations.classList.add(flagProductVariations);
         let thead = document.createElement("thead");
@@ -159,8 +160,10 @@ export default class PageStoreProductVariations extends TableBasePage {
         let cell = DOM.getCellFromElement(element);
         let cellNew = cell.cloneNode(false);
         cellNew.appendChild(tblProductVariations);
+        cellNew.classList.remove(flagCollapsed);
         row.replaceChild(cellNew, cell);
         if (_verbose) { console.log("tblProductVariations: ", tblProductVariations); }
+        this.toggleColumnHeaderCollapsed(flagProductVariations, false);
         this.hookupFieldsProductVariation();
     }
     addRowProductVariation(tbody, productVariation) {

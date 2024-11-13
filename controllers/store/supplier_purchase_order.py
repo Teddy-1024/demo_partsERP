@@ -62,12 +62,12 @@ def filter_supplier_purchase_order():
                     Model_View_Store_Supplier_Purchase_Order.FLAG_STATUS: Model_View_Store_Supplier_Purchase_Order.FLAG_FAILURE, 
                     Model_View_Store_Supplier_Purchase_Order.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
                 })
-        model = Model_View_Store_Supplier_Purchase_Order(filters_supplier_purchase_order = form_filters)
+        model = Model_View_Store_Supplier_Purchase_Order(form_filters_old = form_filters)
         if not model.is_user_logged_in:
             raise Exception('User not logged in.')
         return jsonify({
             Model_View_Store_Supplier_Purchase_Order.FLAG_STATUS: Model_View_Store_Supplier_Purchase_Order.FLAG_SUCCESS, 
-            Model_View_Store_Supplier_Purchase_Order.FLAG_DATA: model.category_list.to_json()
+            Model_View_Store_Supplier_Purchase_Order.FLAG_DATA: model.convert_list_objects_to_dict_json_by_attribute_key_default(model.supplier_purchase_orders)
         })
     except Exception as e:
         return jsonify({

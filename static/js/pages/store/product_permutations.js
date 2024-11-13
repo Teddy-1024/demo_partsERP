@@ -176,7 +176,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         jsonRow[flagActive] = checkboxActive.getAttribute(attrValueCurrent);
         return jsonRow;
     }
-    initialiseRowNew(row) {
+    initialiseRowNew(tbody, row) {
         let ddlCategoryFilter = document.querySelector(idFormFilters + ' #' + attrIdProductCategory);
         let idProductCategoryFilter = DOM.getElementValueCurrent(ddlCategoryFilter);
         let hasCategoryFilter = !(Validation.isEmpty(idProductCategoryFilter) || idProductCategoryFilter == '0');

@@ -33,6 +33,8 @@ class Filters_Supplier_Purchase_Order(Form_Base):
         _m = f'{cls.__name__}.from_json'
         form =  cls()
         form.active.data = av.input_bool(json[Store_Base.FLAG_ACTIVE], 'active', _m)
-        form.date_from.data = json[Store_Base.FLAG_DATE_FROM]
-        form.date_to.data = json[Store_Base.FLAG_DATE_TO]
+        if json[Store_Base.FLAG_DATE_FROM] != '':
+            form.date_from.data = json[Store_Base.FLAG_DATE_FROM]
+        if json[Store_Base.FLAG_DATE_TO] != '':
+            form.date_to.data = json[Store_Base.FLAG_DATE_TO]
         return form

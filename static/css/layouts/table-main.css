@@ -9,7 +9,11 @@
     justify-content: normal;
 }
 
-#tableMain select, #tableMain input, #tableMain textarea, #tableMain div {
+#tableMain * {
+    padding: 0.25vh 0.5vh;
+}
+
+#tableMain select, #tableMain input:not([type="checkbox"]), #tableMain textarea, #tableMain div {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -19,6 +23,13 @@
     width: 20vh;
     min-width: 20vh;
     padding: 0 0.5vh;
+}
+#tableMain tbody tr td {
+    height: 5vh;
+    padding-top: 0.5vh;
+}
+#tableMain tbody tr:not(:last-of-type) td {
+    padding-bottom: 0.5vh;
 }
 #tableMain thead tr th.active, #tableMain tbody tr td.active {
     width: 6vh;

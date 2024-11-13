@@ -11,6 +11,8 @@ module.exports = {
       path.resolve(__dirname, 'static/css/components/card.css'),
       path.resolve(__dirname, 'static/css/components/dialog.css'),
       path.resolve(__dirname, 'static/css/components/form.css'),
+      path.resolve(__dirname, 'static/css/components/image.css'),
+      path.resolve(__dirname, 'static/css/components/label.css'),
       path.resolve(__dirname, 'static/css/components/modal.css'),
       path.resolve(__dirname, 'static/css/components/navigation.css'),
       path.resolve(__dirname, 'static/css/components/overlay.css'),

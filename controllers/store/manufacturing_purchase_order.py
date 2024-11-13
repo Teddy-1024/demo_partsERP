@@ -62,12 +62,12 @@ def filter_manufacturing_purchase_order():
                     Model_View_Store_Manufacturing_Purchase_Order.FLAG_STATUS: Model_View_Store_Manufacturing_Purchase_Order.FLAG_FAILURE, 
                     Model_View_Store_Manufacturing_Purchase_Order.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
                 })
-        model = Model_View_Store_Manufacturing_Purchase_Order(filters_manufacturing_purchase_order = form_filters)
+        model = Model_View_Store_Manufacturing_Purchase_Order(form_filters_old = form_filters)
         if not model.is_user_logged_in:
             raise Exception('User not logged in.')
         return jsonify({
             Model_View_Store_Manufacturing_Purchase_Order.FLAG_STATUS: Model_View_Store_Manufacturing_Purchase_Order.FLAG_SUCCESS, 
-            Model_View_Store_Manufacturing_Purchase_Order.FLAG_DATA: model.category_list.to_json()
+            Model_View_Store_Manufacturing_Purchase_Order.FLAG_DATA: model.convert_list_objects_to_json(model.manufacturing_purchase_orders)
         })
     except Exception as e:
         return jsonify({
@@ -99,12 +99,12 @@ def save_manufacturing_purchase_order():
                 Model_View_Store_Manufacturing_Purchase_Order.FLAG_STATUS: Model_View_Store_Manufacturing_Purchase_Order.FLAG_FAILURE, 
                 Model_View_Store_Manufacturing_Purchase_Order.FLAG_MESSAGE: f'Save errors: {save_errors}'
             })
-        model_return = Model_View_Store_Manufacturing_Purchase_Order(filters_manufacturing_purchase_order_old = form_filters)
+        model_return = Model_View_Store_Manufacturing_Purchase_Order(form_filters_old = form_filters)
         if not model_return.is_user_logged_in:
             raise Exception('User not logged in.')
         return jsonify({
             Model_View_Store_Manufacturing_Purchase_Order.FLAG_STATUS: Model_View_Store_Manufacturing_Purchase_Order.FLAG_SUCCESS, 
-            Model_View_Store_Manufacturing_Purchase_Order.FLAG_DATA: model_return.category_list.to_json()
+            Model_View_Store_Manufacturing_Purchase_Order.FLAG_DATA: model_return.convert_list_objects_to_json(model_return.manufacturing_purchase_orders)
         })
     except Exception as e:
         return jsonify({

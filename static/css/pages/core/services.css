@@ -5,7 +5,8 @@
 }
 
 #pageBody .card h1,
-#pageBody .card h2 {
+#pageBody .card h2,
+#pageBody .card p {
     width: 100%;
 }
 
@@ -26,21 +27,3 @@ table td {
 table th {
     font-size: min(16px, calc(1vh * 4));
 }
-
-/*
-tr th::after {
-    content: "";
-    position: absolute;
-    top: 65px;
-    left: 4%;
-    width: 92%;
-    border-bottom: 2px solid var(--c_purple_dark);
-}
-*/
-
-/*
-img {
-    max-height: 5vh;
-    max-width: 10vw;
-}
-*/

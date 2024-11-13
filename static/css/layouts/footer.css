@@ -1,0 +1,23 @@
+
+/* Footer */
+.footer {
+    padding: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    text-align: center;
+    margin: 0;
+    height: 8vh !important;
+    overflow-y: auto;
+    background-color: var(--c_purple_pastel);
+    border-top-left-radius: 2.5vh;
+    border-top-right-radius: 2.5vh;
+    position: absolute;
+    /* top: 2.5vh; */
+    bottom: 0;
+    width: 98vw;
+}
+
+.footer > h4, h5 {
+    padding: 0;
+    margin: 0;
+}

@@ -441,6 +441,7 @@ BEGIN
         , P.id_product
 		, SPOPL.id_permutation
         , fn_shop_get_product_permutation_name(SPOPL.id_permutation) AS name_permutation
+        , fn_shop_get_product_permutation_variations_csv(SPOPL.id_permutation) AS csv_id_pairs_variation
 		-- , SPOPL.id_currency_cost
 		, SPOPL.id_unit_quantity
 		, SPOPL.quantity_ordered

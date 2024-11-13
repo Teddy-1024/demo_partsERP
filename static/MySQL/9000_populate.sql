@@ -225,21 +225,60 @@ INSERT INTO Shop_Unit_Measurement (
 	name_singular, name_plural, symbol, is_base_unit, is_unit_of_distance, is_unit_of_mass, is_unit_of_time, is_unit_of_volume
 )
 VALUES
-	('metre', 'metres', 'm', 1, 1, 0, 0, 0),
-    ('kilogram', 'kilograms', 'kg', 1, 0, 1, 0, 0),
-    ('item', 'items', 'x', 0, 0, 0, 0, 0),
-	('hour', 'hours', 'h', 1, 0, 0, 1, 0)
+	('metre', 'metres', 'm', 1, 1, 0, 0, 0)
+	, ('millimetre', 'millimetres', 'mm', 0, 1, 0, 0, 0)
+    , ('kilogram', 'kilograms', 'kg', 1, 0, 1, 0, 0)
+	, ('gram', 'grams', 'g', 0, 0, 1, 0, 0)
+	, ('litre', 'litres', 'L', 0, 0, 0, 0, 1)
+	, ('millilitre', 'millilitres', 'mL', 0, 0, 0, 0, 1)
+    , ('item', 'items', 'x', 0, 0, 0, 0, 0)
+	, ('hour', 'hours', 'h', 1, 0, 0, 1, 0)
+	, ('day', 'days', 'd', 0, 0, 0, 1, 0)
 ;
 
-/*
 # Unit of Measurement Conversion
 INSERT INTO Shop_Unit_Measurement_Conversion (
-	id_unit_derived, id_unit_base, power_unit_base, multiplier_unit_base, increment_unit_base
+	id_unit_derived
+	, id_unit_base
+	, display_order
+	, multiplier_unit_base
+	, increment_unit_base
+	, apply_multiplier_before_increment
 )
-VALUES
-	
+VALUES 
+	(
+		2 -- id_unit_derived
+		, 1 -- id_unit_base
+		, 1 -- display_order
+		, 0.001 -- multiplier_unit_base
+		, 0 -- increment_unit_base
+		, apply_multiplier_before_increment
+	)
+	, (
+		4 -- id_unit_derived
+		, 3 -- id_unit_base
+		, 1 -- display_order
+		, 0.001 -- multiplier_unit_base
+		, 0 -- increment_unit_base
+		, apply_multiplier_before_increment
+	)
+	, (
+		6 -- id_unit_derived
+		, 5 -- id_unit_base
+		, 1 -- display_order
+		, 0.001 -- multiplier_unit_base
+		, 0 -- increment_unit_base
+		, apply_multiplier_before_increment
+	)
+	, (
+		9 -- id_unit_derived
+		, 8 -- id_unit_base
+		, 1 -- display_order
+		, 24 -- multiplier_unit_base
+		, 0 -- increment_unit_base
+		, apply_multiplier_before_increment
+	)
 ;
-*/
 
 
 # Categories
@@ -499,15 +538,138 @@ INSERT INTO Shop_Variation_Type (
 )
 VALUES 
 	(1, 'COLOUR', 'Colour', 'Colours')
+	, (2, 'SIZE', 'Size', 'Sizes')
 ;
 
 # Variations
 INSERT INTO Shop_Variation (
-	display_order, id_type, code, name
+	display_order, id_type, code, name, id_unit_measurement, count_unit_measurement
 )
 VALUES 
-	(1, 1, 'RED', 'Red'),
-	(2, 1, 'BLUE', 'Blue')
+	(1, 1, 'RED', 'Red', NULL, NULL)
+	, (2, 1, 'BLUE', 'Blue', NULL, NULL)
+	, (1, 2, '400ml', '400 millilitres', 6, 400)
+	, (2, 2, '400g', '400 grams', 4, 400)
+	, (3, 2, '410g', '410 grams', 4, 410)
+	, (4, 2, '8g', '8 grams', 4, 8)
+	, (5, 2, '13g', '13 grams', 4, 13)
+	, (6, 2, '27g', '27 grams', 4, 27)
+	, (7, 2, '104g', '104 grams', 4, 104)
+	, (8, 2, '200g', '200 grams', 4, 200)
+	, (9, 2, '92g', '92 grams', 4, 92)
+	, (10, 2, '100g', '100 grams', 4, 100)
+	, (11, 2, '500g', '500 grams', 4, 500)
+	, (12, 2, '250g', '250 grams', 4, 250)
+	, (13, 2, '750g', '750 grams', 4, 750)
+	, (14, 2, '145g', '145 grams', 4, 145)
+	, (15, 2, '340g', '340 grams', 4, 340)
+	, (16, 2, '132g', '132 grams', 4, 132)
+	, (17, 2, '170g', '170 grams', 4, 170)
+	, (18, 2, '700g', '700 grams', 4, 700)
+	, (19, 2, '150g', '150 grams', 4, 150)
+	, (20, 2, '1kg', '1 kilogram', 3, 1)
+	, (21, 2, '2kg', '2 kilograms', 3, 2)
+	, (22, 2, '800ml', '800 millilitres', 6, 800)
+	, (23, 2, '570g', '570 grams', 4, 570)
+	, (24, 2, '300g', '300 grams', 4, 300)
+	, (25, 2, '350g', '350 grams', 4, 350)
+	, (26, 2, '30g', '30 grams', 4, 30)
+	, (27, 2, '1L', '1 litre', 5, 1)
+	, (28, 2, '1.2L', '1.2 litres', 5, 1.2)
+	, (29, 2, '1.8L', '1.8 litres', 5, 1.8)
+	, (30, 2, 'bag of 20', 'bag of 20', 7, 20)
+	, (31, 2, '180ml', '180 millilitres', 6, 180)
+	, (32, 2, '70g', '70 grams', 4, 70)
+	, (33, 2, '60ml', '60 millilitres', 6, 60)
+	, (34, 2, '325g', '325 grams', 4, 325)
+	, (35, 2, 'pack of 50', 'pack of 50', 7, 50)
+	, (36, 2, 'box of 24 (each 5.9g)', 'box of 24 (each 5.9 grams)', 7, 24)
+	, (37, 2, '397g', '397 grams', 4, 397)
+	, (38, 2, '720g', '720 grams', 4, 720)
+	, (39, 2, '454g', '454 grams', 4, 454)
+	, (40, 2, 'pack of 4 (each 37g)', 'pack of 4 (each 37 grams)', 7, 4)
+	, (41, 2, '450g', '450 grams', 4, 450)
+	, (42, 2, '24.6.g', '24.6 grams', 4, 24.6)
+	, (43, 2, '230g', '230 grams', 4, 230)
+	, (44, 2, '37.3g', '37.3 grams', 4, 37.3)
+	, (45, 2, '38.3g', '38.3 grams', 4, 38.3)
+	, (46, 2, '123g', '123 grams', 4, 123)
+	, (47, 2, '266g', '266 grams', 4, 266)
+	, (48, 2, '157g', '157 grams', 4, 157)
+	, (49, 2, '285g', '285 grams', 4, 285)
+	, (50, 2, '700ml', '700 millilitres', 6, 700)
+	, (51, 2, '5L', '5 litres', 5, 5)
+	, (52, 2, '216g', '216 grams', 4, 216)
+	, (53, 2, '320g', '320 grams', 4, 320)
+	, (54, 2, '2L', '2 litres', 5, 2)
+	, (55, 2, '200ml', '200 millilitres', 6, 200)
+	, (56, 2, '250ml', '250 millilitres', 6, 250)
+	, (57, 2, '1 punnet', '1 punnet', 7, 1)
+	, (58, 2, '420g', '420 grams', 4, 420)
+	, (59, 2, '230g', '230 grams', 4, 230)
+	, (60, 2, '465g', '465 grams', 4, 465)
+	, (61, 2, '500ml', '500 millilitres', 6, 500)
+	, (62, 2, '250ml', '250 millilitres', 6, 250)
+	, (63, 2, '238ml', '238 millilitres', 6, 238)
+	, (64, 2, '140ml', '140 millilitres', 6, 140)
+	, (65, 2, '195g', '195 grams', 4, 195)
+	, (66, 2, '1pt', '1 pint', 5, 1)
+	, (67, 2, '570ml', '570 millilitres', 6, 570)
+	, (68, 2, '360g', '360 grams', 4, 360)
+	, (69, 2, '90g', '90 grams', 4, 90)
+	, (70, 2, '800ml', '800 millilitres', 6, 800)
+	, (71, 2, '197g', '197 grams', 4, 197)
+;
+
+INSERT INTO partsltd_prod.Shop_Product_Change_Set (
+	comment
+)
+VALUES ( 'Update Variation Display Orders' )
+;
+WITH RANKED AS (
+    SELECT 
+        V.id_variation,
+        RANK() OVER (ORDER BY 
+			CONCAT(
+				CASE WHEN V.count_unit_measurement = FLOOR(V.count_unit_measurement) THEN
+					LPAD(CAST(V.count_unit_measurement AS CHAR), 25, '0')
+				ELSE
+					CONCAT(
+						LPAD(
+							CAST(FLOOR(V.count_unit_measurement) AS CHAR)
+							, 25
+							, '0'
+						)
+						, SUBSTRING(
+							CAST(V.count_unit_measurement AS CHAR)
+							FROM LOCATE('.', CAST(V.count_unit_measurement AS CHAR))
+						)
+					)
+				END
+                , ' '
+                , IFNULL(IFNULL(UM.symbol, UM.name_singular), '(No Unit of Measurement)')
+			)
+		) as new_order
+    FROM partsltd_prod.Shop_Variation V
+    INNER JOIN partsltd_prod.Shop_Unit_Measurement UM 
+		ON V.id_unit_measurement = UM.id_unit_measurement
+        AND UM.active = 1
+    WHERE 
+		V.id_type = 2
+)
+UPDATE partsltd_prod.Shop_Variation V
+INNER JOIN RANKED ON V.id_variation = RANKED.id_variation
+JOIN (
+	SELECT CS.id_change_set
+    FROM partsltd_prod.Shop_Product_Change_Set CS
+    ORDER BY CS.id_change_set DESC
+    LIMIT 1
+) CS
+SET 
+	V.display_order = RANKED.new_order
+    , V.id_change_set = CS.id_change_set
+WHERE 
+	V.id_type = 2
 ;
 
 # Product Permutation Variation Links

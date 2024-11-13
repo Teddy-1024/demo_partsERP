@@ -31,4 +31,16 @@ export default class ProductPermutation {
         });
         return preview;
     }
+
+    static getProductVariationsIdCsvFromVariationTypeList(variationTypeList) {
+        let csvVariations = '';
+        if (Validation.isEmpty(variationTypeList)) return csvVariations;
+        variationTypeList.forEach((variationType) => {
+            if (csvVariations.length > 0) {
+                csvVariations += ',';
+            }
+            csvVariations += variationType[attrIdProductVariationType] + ':' + variationType[flagProductVariations][0][attrIdProductVariation];
+        });
+        return csvVariations;
+    }
 }
