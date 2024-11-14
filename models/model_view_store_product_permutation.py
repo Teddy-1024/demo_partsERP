@@ -29,8 +29,9 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
     category_list_filters: Product_Category_Container = None
     currencies: list = None
     currency_options: list = None
-    filters_product: Parameters_Product = None
-    form_filters: Filters_Product_Permutation
+    # filters_product: Parameters_Product = None
+    form_filters: Filters_Product_Permutation = None
+    form_filters_old: Filters_Product_Permutation
     list_options_product: list = None
     units_measurement: list = None
     units_measurement_time: list = None
@@ -41,10 +42,11 @@ class Model_View_Store_Product_Permutation(Model_View_Store):
     def title(self):
         return 'Product Permutations'
     
-    def __init__(self, form_filters, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS):
+    def __init__(self, form_filters_old, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS):
         _m = 'Model_View_Store_Permutation.__init__'
         Helper_App.console_log(f'{_m}\nstarting...')
-        super().__init__(hash_page_current=hash_page_current, form_filters=form_filters)
+        super().__init__(hash_page_current=hash_page_current, form_filters_old=form_filters_old)
+        self.form_filters = form_filters_old
         # self.form_filters = Filters_Product_Permutation()
         filters_product = Parameters_Product.from_form_filters_product_permutation(self.form_filters)
         datastore_store = DataStore_Store_Product_Permutation()

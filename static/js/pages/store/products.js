@@ -9,7 +9,6 @@ import Utils from "../../lib/utils.js";
 export default class PageStoreProducts extends TableBasePage {
     static hash = hashPageStoreProducts;
     static attrIdRowObject = attrIdProduct;
-    callFilterTableContent = API.getProductsByFilters;
     callSaveTableContent = API.saveProducts;
 
     constructor(router) {

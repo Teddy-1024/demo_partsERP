@@ -668,66 +668,73 @@ var api_API = /*#__PURE__*/function () {
     }() // store
     // product categories
   }, {
-    key: "getCategories",
+    key: "saveCategories",
     value: function () {
-      var _getCategories = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var _saveCategories = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(categories, formFilters, comment) {
+        var dataRequest;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.next = 2;
-              return API.request(hashGetStoreProductCategory);
-            case 2:
+              dataRequest = {};
+              dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+              dataRequest[flagProductCategory] = categories;
+              dataRequest[flagComment] = comment;
+              _context3.next = 6;
+              return API.request(hashSaveStoreProductCategory, 'POST', dataRequest);
+            case 6:
               return _context3.abrupt("return", _context3.sent);
-            case 3:
+            case 7:
             case "end":
               return _context3.stop();
           }
         }, _callee3);
       }));
-      function getCategories() {
-        return _getCategories.apply(this, arguments);
+      function saveCategories(_x2, _x3, _x4) {
+        return _saveCategories.apply(this, arguments);
       }
-      return getCategories;
-    }()
+      return saveCategories;
+    }() // products
   }, {
-    key: "getCategoriesByFilters",
+    key: "saveProducts",
     value: function () {
-      var _getCategoriesByFilters = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(filtersJson) {
+      var _saveProducts = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(products, formFilters, comment) {
+        var dataRequest;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) switch (_context4.prev = _context4.next) {
             case 0:
-              /*
-              let dataRequest = {};
-              dataRequest[flagForm] = filtersJson;
-              return await API.request(hashGetStoreProductCategory, 'POST', dataRequest);
-              */
-              // return await API.request(hashPageStoreProductCategories, 'GET', filtersJson);
-              API.goToHash(hashPageStoreProductCategories, filtersJson);
-            case 1:
+              dataRequest = {};
+              dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+              dataRequest[flagProduct] = products;
+              dataRequest[flagComment] = comment;
+              _context4.next = 6;
+              return API.request(hashSaveStoreProduct, 'POST', dataRequest);
+            case 6:
+              return _context4.abrupt("return", _context4.sent);
+            case 7:
             case "end":
               return _context4.stop();
           }
         }, _callee4);
       }));
-      function getCategoriesByFilters(_x2) {
-        return _getCategoriesByFilters.apply(this, arguments);
+      function saveProducts(_x5, _x6, _x7) {
+        return _saveProducts.apply(this, arguments);
       }
-      return getCategoriesByFilters;
-    }()
+      return saveProducts;
+    }() // product permutations
   }, {
-    key: "saveCategories",
+    key: "saveProductPermutations",
     value: function () {
-      var _saveCategories = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(categories, formFilters, comment) {
+      var _saveProductPermutations = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(permutations, formFilters, comment) {
         var dataRequest;
         return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) switch (_context5.prev = _context5.next) {
             case 0:
               dataRequest = {};
               dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
-              dataRequest[flagProductCategory] = categories;
+              dataRequest[flagProductPermutation] = permutations;
               dataRequest[flagComment] = comment;
               _context5.next = 6;
-              return API.request(hashSaveStoreProductCategory, 'POST', dataRequest);
+              return API.request(hashSaveStoreProductPermutation, 'POST', dataRequest);
             case 6:
               return _context5.abrupt("return", _context5.sent);
             case 7:
@@ -736,66 +743,79 @@ var api_API = /*#__PURE__*/function () {
           }
         }, _callee5);
       }));
-      function saveCategories(_x3, _x4, _x5) {
-        return _saveCategories.apply(this, arguments);
+      function saveProductPermutations(_x8, _x9, _x10) {
+        return _saveProductPermutations.apply(this, arguments);
       }
-      return saveCategories;
-    }() // products
+      return saveProductPermutations;
+    }() // product variations
   }, {
-    key: "getProducts",
+    key: "saveProductVariations",
     value: function () {
-      var _getProducts = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var _saveProductVariations = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(variationTypes, formFilters, comment) {
+        var dataRequest;
         return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) switch (_context6.prev = _context6.next) {
             case 0:
-              _context6.next = 2;
-              return API.request(hashGetStoreProduct);
-            case 2:
+              dataRequest = {};
+              dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+              dataRequest[flagProductVariationType] = variationTypes;
+              dataRequest[flagComment] = comment;
+              _context6.next = 6;
+              return API.request(hashSaveStoreProductVariation, 'POST', dataRequest);
+            case 6:
               return _context6.abrupt("return", _context6.sent);
-            case 3:
+            case 7:
             case "end":
               return _context6.stop();
           }
         }, _callee6);
       }));
-      function getProducts() {
-        return _getProducts.apply(this, arguments);
+      function saveProductVariations(_x11, _x12, _x13) {
+        return _saveProductVariations.apply(this, arguments);
       }
-      return getProducts;
-    }()
+      return saveProductVariations;
+    }() // stock items
   }, {
-    key: "getProductsByFilters",
+    key: "saveStockItems",
     value: function () {
-      var _getProductsByFilters = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(filtersJson) {
+      var _saveStockItems = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(stockItems, formFilters, comment) {
+        var dataRequest;
         return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) switch (_context7.prev = _context7.next) {
             case 0:
-              API.goToHash(hashPageStoreProducts, filtersJson);
-            case 1:
+              dataRequest = {};
+              dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
+              dataRequest[flagStockItem] = stockItems;
+              dataRequest[flagComment] = comment;
+              _context7.next = 6;
+              return API.request(hashSaveStoreStockItem, 'POST', dataRequest);
+            case 6:
+              return _context7.abrupt("return", _context7.sent);
+            case 7:
             case "end":
               return _context7.stop();
           }
         }, _callee7);
       }));
-      function getProductsByFilters(_x6) {
-        return _getProductsByFilters.apply(this, arguments);
+      function saveStockItems(_x14, _x15, _x16) {
+        return _saveStockItems.apply(this, arguments);
       }
-      return getProductsByFilters;
-    }()
+      return saveStockItems;
+    }() // suppliers
   }, {
-    key: "saveProducts",
+    key: "saveSuppliers",
     value: function () {
-      var _saveProducts = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(products, formFilters, comment) {
+      var _saveSuppliers = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(suppliers, formFilters, comment) {
         var dataRequest;
         return _regeneratorRuntime().wrap(function _callee8$(_context8) {
           while (1) switch (_context8.prev = _context8.next) {
             case 0:
               dataRequest = {};
               dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
-              dataRequest[flagProduct] = products;
+              dataRequest[flagSupplier] = suppliers;
               dataRequest[flagComment] = comment;
               _context8.next = 6;
-              return API.request(hashSaveStoreProduct, 'POST', dataRequest);
+              return API.request(hashSaveStoreSupplier, 'POST', dataRequest);
             case 6:
               return _context8.abrupt("return", _context8.sent);
             case 7:
@@ -804,415 +824,61 @@ var api_API = /*#__PURE__*/function () {
           }
         }, _callee8);
       }));
-      function saveProducts(_x7, _x8, _x9) {
-        return _saveProducts.apply(this, arguments);
-      }
-      return saveProducts;
-    }() // product permutations
-  }, {
-    key: "getProductPermutations",
-    value: function () {
-      var _getProductPermutations = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
-        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-          while (1) switch (_context9.prev = _context9.next) {
-            case 0:
-              _context9.next = 2;
-              return API.request(hashGetStoreProductPermutation);
-            case 2:
-              return _context9.abrupt("return", _context9.sent);
-            case 3:
-            case "end":
-              return _context9.stop();
-          }
-        }, _callee9);
-      }));
-      function getProductPermutations() {
-        return _getProductPermutations.apply(this, arguments);
-      }
-      return getProductPermutations;
-    }()
-  }, {
-    key: "getProductPermutationsByFilters",
-    value: function () {
-      var _getProductPermutationsByFilters = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(filtersJson) {
-        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
-          while (1) switch (_context10.prev = _context10.next) {
-            case 0:
-              API.goToHash(hashPageStoreProductPermutations, filtersJson);
-            case 1:
-            case "end":
-              return _context10.stop();
-          }
-        }, _callee10);
-      }));
-      function getProductPermutationsByFilters(_x10) {
-        return _getProductPermutationsByFilters.apply(this, arguments);
-      }
-      return getProductPermutationsByFilters;
-    }()
-  }, {
-    key: "saveProductPermutations",
-    value: function () {
-      var _saveProductPermutations = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(permutations, formFilters, comment) {
-        var dataRequest;
-        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-          while (1) switch (_context11.prev = _context11.next) {
-            case 0:
-              dataRequest = {};
-              dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
-              dataRequest[flagProductPermutation] = permutations;
-              dataRequest[flagComment] = comment;
-              _context11.next = 6;
-              return API.request(hashSaveStoreProductPermutation, 'POST', dataRequest);
-            case 6:
-              return _context11.abrupt("return", _context11.sent);
-            case 7:
-            case "end":
-              return _context11.stop();
-          }
-        }, _callee11);
-      }));
-      function saveProductPermutations(_x11, _x12, _x13) {
-        return _saveProductPermutations.apply(this, arguments);
-      }
-      return saveProductPermutations;
-    }() // product variations
-  }, {
-    key: "getProductVariations",
-    value: function () {
-      var _getProductVariations = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
-        return _regeneratorRuntime().wrap(function _callee12$(_context12) {
-          while (1) switch (_context12.prev = _context12.next) {
-            case 0:
-              _context12.next = 2;
-              return API.request(hashGetStoreProductVariation);
-            case 2:
-              return _context12.abrupt("return", _context12.sent);
-            case 3:
-            case "end":
-              return _context12.stop();
-          }
-        }, _callee12);
-      }));
-      function getProductVariations() {
-        return _getProductVariations.apply(this, arguments);
-      }
-      return getProductVariations;
-    }()
-  }, {
-    key: "getProductVariationsByFilters",
-    value: function () {
-      var _getProductVariationsByFilters = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee13(filtersJson) {
-        return _regeneratorRuntime().wrap(function _callee13$(_context13) {
-          while (1) switch (_context13.prev = _context13.next) {
-            case 0:
-              API.goToHash(hashPageStoreProductVariations, filtersJson);
-            case 1:
-            case "end":
-              return _context13.stop();
-          }
-        }, _callee13);
-      }));
-      function getProductVariationsByFilters(_x14) {
-        return _getProductVariationsByFilters.apply(this, arguments);
-      }
-      return getProductVariationsByFilters;
-    }()
-  }, {
-    key: "saveProductVariations",
-    value: function () {
-      var _saveProductVariations = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee14(variationTypes, formFilters, comment) {
-        var dataRequest;
-        return _regeneratorRuntime().wrap(function _callee14$(_context14) {
-          while (1) switch (_context14.prev = _context14.next) {
-            case 0:
-              dataRequest = {};
-              dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
-              dataRequest[flagProductVariationType] = variationTypes;
-              dataRequest[flagComment] = comment;
-              _context14.next = 6;
-              return API.request(hashSaveStoreProductVariation, 'POST', dataRequest);
-            case 6:
-              return _context14.abrupt("return", _context14.sent);
-            case 7:
-            case "end":
-              return _context14.stop();
-          }
-        }, _callee14);
-      }));
-      function saveProductVariations(_x15, _x16, _x17) {
-        return _saveProductVariations.apply(this, arguments);
-      }
-      return saveProductVariations;
-    }() // stock items
-  }, {
-    key: "getStockItems",
-    value: function () {
-      var _getStockItems = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee15() {
-        return _regeneratorRuntime().wrap(function _callee15$(_context15) {
-          while (1) switch (_context15.prev = _context15.next) {
-            case 0:
-              _context15.next = 2;
-              return API.request(hashGetStoreStockItem);
-            case 2:
-              return _context15.abrupt("return", _context15.sent);
-            case 3:
-            case "end":
-              return _context15.stop();
-          }
-        }, _callee15);
-      }));
-      function getStockItems() {
-        return _getStockItems.apply(this, arguments);
-      }
-      return getStockItems;
-    }()
-  }, {
-    key: "getStockItemsByFilters",
-    value: function () {
-      var _getStockItemsByFilters = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee16(filtersJson) {
-        return _regeneratorRuntime().wrap(function _callee16$(_context16) {
-          while (1) switch (_context16.prev = _context16.next) {
-            case 0:
-              API.goToHash(hashPageStoreStockItems, filtersJson);
-            case 1:
-            case "end":
-              return _context16.stop();
-          }
-        }, _callee16);
-      }));
-      function getStockItemsByFilters(_x18) {
-        return _getStockItemsByFilters.apply(this, arguments);
-      }
-      return getStockItemsByFilters;
-    }()
-  }, {
-    key: "saveStockItems",
-    value: function () {
-      var _saveStockItems = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee17(stockItems, formFilters, comment) {
-        var dataRequest;
-        return _regeneratorRuntime().wrap(function _callee17$(_context17) {
-          while (1) switch (_context17.prev = _context17.next) {
-            case 0:
-              dataRequest = {};
-              dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
-              dataRequest[flagStockItem] = stockItems;
-              dataRequest[flagComment] = comment;
-              _context17.next = 6;
-              return API.request(hashSaveStoreStockItem, 'POST', dataRequest);
-            case 6:
-              return _context17.abrupt("return", _context17.sent);
-            case 7:
-            case "end":
-              return _context17.stop();
-          }
-        }, _callee17);
-      }));
-      function saveStockItems(_x19, _x20, _x21) {
-        return _saveStockItems.apply(this, arguments);
-      }
-      return saveStockItems;
-    }() // suppliers
-  }, {
-    key: "getSuppliers",
-    value: function () {
-      var _getSuppliers = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee18() {
-        return _regeneratorRuntime().wrap(function _callee18$(_context18) {
-          while (1) switch (_context18.prev = _context18.next) {
-            case 0:
-              _context18.next = 2;
-              return API.request(hashGetStoreSupplier);
-            case 2:
-              return _context18.abrupt("return", _context18.sent);
-            case 3:
-            case "end":
-              return _context18.stop();
-          }
-        }, _callee18);
-      }));
-      function getSuppliers() {
-        return _getSuppliers.apply(this, arguments);
-      }
-      return getSuppliers;
-    }()
-  }, {
-    key: "getSuppliersByFilters",
-    value: function () {
-      var _getSuppliersByFilters = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee19(filtersJson) {
-        return _regeneratorRuntime().wrap(function _callee19$(_context19) {
-          while (1) switch (_context19.prev = _context19.next) {
-            case 0:
-              API.goToHash(hashPageStoreSuppliers, filtersJson);
-            case 1:
-            case "end":
-              return _context19.stop();
-          }
-        }, _callee19);
-      }));
-      function getSuppliersByFilters(_x22) {
-        return _getSuppliersByFilters.apply(this, arguments);
-      }
-      return getSuppliersByFilters;
-    }()
-  }, {
-    key: "saveSuppliers",
-    value: function () {
-      var _saveSuppliers = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee20(suppliers, formFilters, comment) {
-        var dataRequest;
-        return _regeneratorRuntime().wrap(function _callee20$(_context20) {
-          while (1) switch (_context20.prev = _context20.next) {
-            case 0:
-              dataRequest = {};
-              dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
-              dataRequest[flagSupplier] = suppliers;
-              dataRequest[flagComment] = comment;
-              _context20.next = 6;
-              return API.request(hashSaveStoreSupplier, 'POST', dataRequest);
-            case 6:
-              return _context20.abrupt("return", _context20.sent);
-            case 7:
-            case "end":
-              return _context20.stop();
-          }
-        }, _callee20);
-      }));
-      function saveSuppliers(_x23, _x24, _x25) {
+      function saveSuppliers(_x17, _x18, _x19) {
         return _saveSuppliers.apply(this, arguments);
       }
       return saveSuppliers;
     }() // supplier purchase orders
   }, {
-    key: "getSupplierPurchaseOrders",
-    value: function () {
-      var _getSupplierPurchaseOrders = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee21() {
-        return _regeneratorRuntime().wrap(function _callee21$(_context21) {
-          while (1) switch (_context21.prev = _context21.next) {
-            case 0:
-              _context21.next = 2;
-              return API.request(hashGetStoreSupplierPurchaseOrder);
-            case 2:
-              return _context21.abrupt("return", _context21.sent);
-            case 3:
-            case "end":
-              return _context21.stop();
-          }
-        }, _callee21);
-      }));
-      function getSupplierPurchaseOrders() {
-        return _getSupplierPurchaseOrders.apply(this, arguments);
-      }
-      return getSupplierPurchaseOrders;
-    }()
-  }, {
-    key: "getSupplierPurchaseOrdersByFilters",
-    value: function () {
-      var _getSupplierPurchaseOrdersByFilters = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee22(filtersJson) {
-        return _regeneratorRuntime().wrap(function _callee22$(_context22) {
-          while (1) switch (_context22.prev = _context22.next) {
-            case 0:
-              API.goToHash(hashPageStoreSupplierPurchaseOrders, filtersJson);
-            case 1:
-            case "end":
-              return _context22.stop();
-          }
-        }, _callee22);
-      }));
-      function getSupplierPurchaseOrdersByFilters(_x26) {
-        return _getSupplierPurchaseOrdersByFilters.apply(this, arguments);
-      }
-      return getSupplierPurchaseOrdersByFilters;
-    }()
-  }, {
     key: "saveSupplierPurchaseOrders",
     value: function () {
-      var _saveSupplierPurchaseOrders = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee23(supplierPurchaseOrders, formFilters, comment) {
+      var _saveSupplierPurchaseOrders = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(supplierPurchaseOrders, formFilters, comment) {
         var dataRequest;
-        return _regeneratorRuntime().wrap(function _callee23$(_context23) {
-          while (1) switch (_context23.prev = _context23.next) {
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+          while (1) switch (_context9.prev = _context9.next) {
             case 0:
               dataRequest = {};
               dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
               dataRequest[flagSupplierPurchaseOrder] = supplierPurchaseOrders;
               dataRequest[flagComment] = comment;
-              _context23.next = 6;
+              _context9.next = 6;
               return API.request(hashSaveStoreSupplierPurchaseOrder, 'POST', dataRequest);
             case 6:
-              return _context23.abrupt("return", _context23.sent);
+              return _context9.abrupt("return", _context9.sent);
             case 7:
             case "end":
-              return _context23.stop();
+              return _context9.stop();
           }
-        }, _callee23);
+        }, _callee9);
       }));
-      function saveSupplierPurchaseOrders(_x27, _x28, _x29) {
+      function saveSupplierPurchaseOrders(_x20, _x21, _x22) {
         return _saveSupplierPurchaseOrders.apply(this, arguments);
       }
       return saveSupplierPurchaseOrders;
     }() // manufacturing purchase orders
   }, {
-    key: "getManufacturingPurchaseOrders",
-    value: function () {
-      var _getManufacturingPurchaseOrders = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee24() {
-        return _regeneratorRuntime().wrap(function _callee24$(_context24) {
-          while (1) switch (_context24.prev = _context24.next) {
-            case 0:
-              _context24.next = 2;
-              return API.request(hashGetStoreManufacturingPurchaseOrder);
-            case 2:
-              return _context24.abrupt("return", _context24.sent);
-            case 3:
-            case "end":
-              return _context24.stop();
-          }
-        }, _callee24);
-      }));
-      function getManufacturingPurchaseOrders() {
-        return _getManufacturingPurchaseOrders.apply(this, arguments);
-      }
-      return getManufacturingPurchaseOrders;
-    }()
-  }, {
-    key: "getManufacturingPurchaseOrdersByFilters",
-    value: function () {
-      var _getManufacturingPurchaseOrdersByFilters = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee25(filtersJson) {
-        return _regeneratorRuntime().wrap(function _callee25$(_context25) {
-          while (1) switch (_context25.prev = _context25.next) {
-            case 0:
-              API.goToHash(hashPageStoreManufacturingPurchaseOrders, filtersJson);
-            case 1:
-            case "end":
-              return _context25.stop();
-          }
-        }, _callee25);
-      }));
-      function getManufacturingPurchaseOrdersByFilters(_x30) {
-        return _getManufacturingPurchaseOrdersByFilters.apply(this, arguments);
-      }
-      return getManufacturingPurchaseOrdersByFilters;
-    }()
-  }, {
     key: "saveManufacturingPurchaseOrders",
     value: function () {
-      var _saveManufacturingPurchaseOrders = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee26(manufacturingPurchaseOrders, formFilters, comment) {
+      var _saveManufacturingPurchaseOrders = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(manufacturingPurchaseOrders, formFilters, comment) {
         var dataRequest;
-        return _regeneratorRuntime().wrap(function _callee26$(_context26) {
-          while (1) switch (_context26.prev = _context26.next) {
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+          while (1) switch (_context10.prev = _context10.next) {
             case 0:
               dataRequest = {};
               dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
               dataRequest[flagManufacturingPurchaseOrder] = manufacturingPurchaseOrders;
               dataRequest[flagComment] = comment;
-              _context26.next = 6;
+              _context10.next = 6;
               return API.request(hashSaveStoreManufacturingPurchaseOrder, 'POST', dataRequest);
             case 6:
-              return _context26.abrupt("return", _context26.sent);
+              return _context10.abrupt("return", _context10.sent);
             case 7:
             case "end":
-              return _context26.stop();
+              return _context10.stop();
           }
-        }, _callee26);
+        }, _callee10);
       }));
-      function saveManufacturingPurchaseOrders(_x31, _x32, _x33) {
+      function saveManufacturingPurchaseOrders(_x23, _x24, _x25) {
         return _saveManufacturingPurchaseOrders.apply(this, arguments);
       }
       return saveManufacturingPurchaseOrders;
@@ -2375,29 +2041,12 @@ function base_table_setPrototypeOf(t, e) { return base_table_setPrototypeOf = Ob
 var TableBasePage = /*#__PURE__*/function (_BasePage) {
   // static hash
   // static attrIdRowObject
-  // callFilterTableContent
   // callSaveTableContent
 
   function TableBasePage(router) {
     var _this;
     base_table_classCallCheck(this, TableBasePage);
     _this = base_table_callSuper(this, TableBasePage, [router]);
-    /*
-    if (!this.constructor.callFilterTableContent) {
-        throw new Error(`Class ${this.constructor.name} must have a static callFilterTableContent method attribute that takes a single argument - the filters as json.`);
-    }
-    if (!this.constructor.callSaveTableContent) {
-        throw new Error(`Class ${this.constructor.name} must have a static callSaveTableContent method attribute that takes 3 arguments - a list of records, the filters as json, and a comment for saving.`);
-    }
-    this.initialize();
-    // this.hookupFilters();
-    this.loadRowTable(null);
-    this.getJsonRow(null);
-    // this.hookupTableMain();
-    this.getTableRecords();
-    this.leave();
-    */
-    // this.cursorXInitial = null;
     _this.cursorYInitial = null;
     _this.rowInitial = null;
     _this.placeholder = null;
@@ -2437,7 +2086,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
         var formFilters = this.getFormFilters();
         var filtersDefault = DOM.convertForm2JSON(formFilters);
         if (!validation_Validation.areEqualDicts(filters, filtersDefault)) {
-          this.callFilterTableContent(filters);
+          this.callFilterTableContent();
         }
       }
     }
@@ -2484,10 +2133,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "getAndLoadFilteredTableContent",
     value: function getAndLoadFilteredTableContent() {
-      var formFilters = this.getFormFilters();
-      var filtersJson = DOM.convertForm2JSON(formFilters);
-      this.leave();
-      this.callFilterTableContent(filtersJson)["catch"](function (error) {
+      this.callFilterTableContent()["catch"](function (error) {
         return console.error('Error:', error);
       });
     }
@@ -2495,6 +2141,14 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
     key: "getFormFilters",
     value: function getFormFilters() {
       return document.querySelector(idFormFilters);
+    }
+  }, {
+    key: "callFilterTableContent",
+    value: function callFilterTableContent() {
+      var formFilters = this.getFormFilters();
+      var filtersJson = DOM.convertForm2JSON(formFilters);
+      this.leave();
+      api_API.goToHash(this.constructor.hash, filtersJson);
     }
   }, {
     key: "callbackLoadTableContent",
@@ -2524,9 +2178,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
     key: "getAndLoadFilteredTableContentSinglePageApp",
     value: function getAndLoadFilteredTableContentSinglePageApp() {
       var _this4 = this;
-      var formFilters = this.getFormFilters();
-      var filtersJson = DOM.convertForm2JSON(formFilters);
-      this.callFilterTableContent(filtersJson).then(function (data) {
+      this.callFilterTableContent().then(function (data) {
         if (_verbose) {
           console.log('Table data received:', data);
         }
@@ -3531,7 +3183,6 @@ import DOM from "../dom.js";
 export class PageStoreProductCategories extends TableBasePage {
     static hash = hashPageStoreProductCategories;
     static attrIdRowObject = attrIdProductCategory;
-    callFilterTableContent = API.getCategoriesByFilters;
     callSaveTableContent = API.saveCategories;
 
     constructor() {}
@@ -4154,7 +3805,6 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
     var _this;
     manufacturing_purchase_orders_classCallCheck(this, PageStoreManufacturingPurchaseOrders);
     _this = manufacturing_purchase_orders_callSuper(this, PageStoreManufacturingPurchaseOrders, [router]);
-    manufacturing_purchase_orders_defineProperty(_this, "callFilterTableContent", api_API.getManufacturingPurchaseOrdersByFilters);
     manufacturing_purchase_orders_defineProperty(_this, "callSaveTableContent", api_API.saveManufacturingPurchaseOrders);
     _this.storeMixin = new StoreTableMixinPage(_this);
     return _this;
@@ -4215,7 +3865,6 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       var inputQuantityProduced = tr.querySelector('td.' + flagQuantityProduced + ' input');
       var tdUnitMeasurementLatencyManufacture = tr.querySelector('td.' + flagUnitMeasurementLatencyManufacture);
       var inputLatencyManufacture = tr.querySelector('td.' + flagLatencyManufacture + ' input');
-      debugger;
       var buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdManufacturingPurchaseOrder] = tr.getAttribute(attrIdManufacturingPurchaseOrder);
@@ -4289,7 +3938,6 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       }
       this.toggleColumnHeaderCollapsed(flagOrderItems, false);
       element.classList.remove(flagCollapsed);
-      debugger;
       var row = DOM.getRowFromElement(element);
       var idManufacturingPurchaseOrder = row.getAttribute(attrIdManufacturingPurchaseOrder);
       var manufacturingPurchaseOrder = idManufacturingPurchaseOrder > 0 ? manufacturingPurchaseOrders[idManufacturingPurchaseOrder] : manufacturing_purchase_orders_defineProperty({}, flagOrderItems, []);
@@ -4388,7 +4036,6 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       if (_verbose) {
         console.log("addRowManufacturingPurchaseOrderItem: ", orderItem);
       }
-      debugger;
       var tdDisplayOrder = document.createElement("td");
       tdDisplayOrder.classList.add(flagDisplayOrder);
       var inputDisplayOrder = document.createElement("input");
@@ -4703,7 +4350,6 @@ var PageStoreProductCategories = /*#__PURE__*/function (_TableBasePage) {
     var _this;
     product_categories_classCallCheck(this, PageStoreProductCategories);
     _this = product_categories_callSuper(this, PageStoreProductCategories, [router]);
-    product_categories_defineProperty(_this, "callFilterTableContent", api_API.getCategoriesByFilters);
     product_categories_defineProperty(_this, "callSaveTableContent", api_API.saveCategories);
     _this.storeMixin = new StoreTableMixinPage(_this);
     return _this;
@@ -4869,7 +4515,6 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
     var _this;
     product_permutations_classCallCheck(this, PageStoreProductPermutations);
     _this = product_permutations_callSuper(this, PageStoreProductPermutations, [router]);
-    product_permutations_defineProperty(_this, "callFilterTableContent", api_API.getProductPermutationsByFilters);
     product_permutations_defineProperty(_this, "callSaveTableContent", api_API.saveProductPermutations);
     _this.storeMixin = new StoreTableMixinPage(_this);
     return _this;
@@ -5305,7 +4950,6 @@ var PageStoreProducts = /*#__PURE__*/function (_TableBasePage) {
     var _this;
     products_classCallCheck(this, PageStoreProducts);
     _this = products_callSuper(this, PageStoreProducts, [router]);
-    products_defineProperty(_this, "callFilterTableContent", api_API.getProductsByFilters);
     products_defineProperty(_this, "callSaveTableContent", api_API.saveProducts);
     _this.storeMixin = new StoreTableMixinPage(_this);
     return _this;
@@ -5483,7 +5127,6 @@ var PageStoreProductVariations = /*#__PURE__*/function (_TableBasePage) {
     var _this;
     product_variations_classCallCheck(this, PageStoreProductVariations);
     _this = product_variations_callSuper(this, PageStoreProductVariations, [router]);
-    product_variations_defineProperty(_this, "callFilterTableContent", api_API.getProductVariationsByFilters);
     product_variations_defineProperty(_this, "callSaveTableContent", api_API.saveProductVariations);
     _this.storeMixin = new StoreTableMixinPage(_this);
     return _this;
@@ -5763,7 +5406,6 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
     var _this;
     stock_items_classCallCheck(this, PageStoreStockItems);
     _this = stock_items_callSuper(this, PageStoreStockItems, [router]);
-    stock_items_defineProperty(_this, "callFilterTableContent", api_API.getStockItemsByFilters);
     stock_items_defineProperty(_this, "callSaveTableContent", api_API.saveStockItems);
     _this.storeMixin = new StoreTableMixinPage(_this);
     return _this;
@@ -6191,7 +5833,6 @@ var PageStoreSuppliers = /*#__PURE__*/function (_TableBasePage) {
     var _this;
     suppliers_classCallCheck(this, PageStoreSuppliers);
     _this = suppliers_callSuper(this, PageStoreSuppliers, [router]);
-    suppliers_defineProperty(_this, "callFilterTableContent", api_API.getSuppliersByFilters);
     suppliers_defineProperty(_this, "callSaveTableContent", api_API.saveSuppliers);
     _this.storeMixin = new StoreTableMixinPage(_this);
     return _this;
@@ -6624,7 +6265,6 @@ var PageStoreSupplierPurchaseOrders = /*#__PURE__*/function (_TableBasePage) {
     var _this;
     supplier_purchase_orders_classCallCheck(this, PageStoreSupplierPurchaseOrders);
     _this = supplier_purchase_orders_callSuper(this, PageStoreSupplierPurchaseOrders, [router]);
-    supplier_purchase_orders_defineProperty(_this, "callFilterTableContent", api_API.getSupplierPurchaseOrdersByFilters);
     supplier_purchase_orders_defineProperty(_this, "callSaveTableContent", api_API.saveSupplierPurchaseOrders);
     _this.storeMixin = new StoreTableMixinPage(_this);
     return _this;

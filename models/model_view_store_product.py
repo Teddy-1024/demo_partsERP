@@ -10,11 +10,6 @@ Description:
 Data model for store product view
 """
 
-# IMPORTS
-# VARIABLE INSTANTIATION
-# METHODS
-
-# IMPORTS
 # internal
 from business_objects.store.product import Product, Parameters_Product
 from business_objects.store.product_category import Product_Category_Container
@@ -28,53 +23,14 @@ import lib.argument_validation as av
 # external
 from typing import ClassVar
 
-"""
 class Model_View_Store_Product(Model_View_Store):
-    # categories: list # (str)
-    # category_products: dict { category_enum_id: List[Product] }
-
-    # Attributes
-    @property
-    def title(self):
-        return 'Store Product'
-
-    def __init__(self, id_permutation, id_currency, id_region_delivery, is_included_VAT, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCTS):
-        # Constructor
-        _m = 'Model_View_Store_Product.__init__'
-        Helper_App.console_log(f'{_m}\nstarting...')
-        super().__init__(hash_page_current=hash_page_current, id_currency=id_currency, id_region_delivery=id_region_delivery, is_included_VAT=is_included_VAT)
-        Helper_App.console_log('supered')
-        
-        category_list = DataStore_Store_Base().get_many_product(Parameters_Product(
-            self.info_user['sub'], 
-            True, '', False,
-            True, '', False, False,
-            False, str(id_permutation), False,
-            True, '', False, False,
-            False, str(id_region_delivery), False,
-            False, str(id_currency), False,
-            True, '', False
-        )) # product_ids=str(id_product), permutation_ids=str(id_permutation))
-        Helper_App.console_log('connection to db successful')
-        # self.categories = categories
-        # self.category_index = category_index
-        ""
-        if (category_list.get_category_count() > 0):
-            self.product = category_list.get_permutation_first()
-        else:
-            self.product = None
-        Helper_App.console_log('selected permutation selected')
-        ""
-"""
-
-
-class Model_View_Store_Product(Model_View_Store):
+    access_levels: list = None
     category_list: Product_Category_Container = None
     category_list_filters: Product_Category_Container = None
     currencies: list = None
     currency_options: list = None
-    filters_product: Parameters_Product = None
-    form_filters: Filters_Product
+    form_filters: Filters_Product = None
+    form_filters_old: Filters_Product
     list_options_product: list = None
     # product_blank: Product = None
     units_measurement: list = None
@@ -86,10 +42,11 @@ class Model_View_Store_Product(Model_View_Store):
     def title(self):
         return 'Products'
     
-    def __init__(self, form_filters, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCTS):
+    def __init__(self, form_filters_old, hash_page_current=Model_View_Store.HASH_PAGE_STORE_PRODUCTS):
         _m = 'Model_View_Store_Product.__init__'
         Helper_App.console_log(f'{_m}\nstarting...')
-        super().__init__(hash_page_current=hash_page_current, form_filters=form_filters)
+        super().__init__(hash_page_current=hash_page_current, form_filters_old=form_filters_old)
+        self.form_filters = form_filters_old
         self.access_levels = self.get_many_access_level(Filters_Access_Level())
         parameters_product = Parameters_Product.from_form_filters_product(self.form_filters)
         datastore_store = DataStore_Store_Product()
