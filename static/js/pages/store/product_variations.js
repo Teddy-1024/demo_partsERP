@@ -11,7 +11,6 @@ import StoreTableMixinPage from "./mixin_table.js";
 export default class PageStoreProductVariations extends TableBasePage {
     static hash = hashPageStoreProductVariations;
     static attrIdRowObject = attrIdProductVariationType;
-    callFilterTableContent = API.getProductVariationsByFilters;
     callSaveTableContent = API.saveProductVariations;
 
     constructor(router) {

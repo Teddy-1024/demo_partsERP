@@ -14,27 +14,10 @@ import OverlayError from "../components/common/temporary/overlay_error.js";
 export default class TableBasePage extends BasePage {
     // static hash
     // static attrIdRowObject
-    // callFilterTableContent
     // callSaveTableContent
 
     constructor(router) {
         super(router);
-        /*
-        if (!this.constructor.callFilterTableContent) {
-            throw new Error(`Class ${this.constructor.name} must have a static callFilterTableContent method attribute that takes a single argument - the filters as json.`);
-        }
-        if (!this.constructor.callSaveTableContent) {
-            throw new Error(`Class ${this.constructor.name} must have a static callSaveTableContent method attribute that takes 3 arguments - a list of records, the filters as json, and a comment for saving.`);
-        }
-        this.initialize();
-        // this.hookupFilters();
-        this.loadRowTable(null);
-        this.getJsonRow(null);
-        // this.hookupTableMain();
-        this.getTableRecords();
-        this.leave();
-        */
-        // this.cursorXInitial = null;
         this.cursorYInitial = null;
         this.rowInitial = null;
         this.placeholder = null;
@@ -67,7 +50,7 @@ export default class TableBasePage extends BasePage {
             let formFilters = this.getFormFilters();
             let filtersDefault = DOM.convertForm2JSON(formFilters);
             if (!Validation.areEqualDicts(filters, filtersDefault)) {
-                this.callFilterTableContent(filters);
+                this.callFilterTableContent();
             }
         }
     }
@@ -105,14 +88,17 @@ export default class TableBasePage extends BasePage {
         });
     }
     getAndLoadFilteredTableContent() {
-        let formFilters = this.getFormFilters();
-        let filtersJson = DOM.convertForm2JSON(formFilters);
-        this.leave();
-        this.callFilterTableContent(filtersJson)
+        this.callFilterTableContent()
             .catch(error => console.error('Error:', error));
     }
     getFormFilters() {
         return document.querySelector(idFormFilters);
+    }
+    callFilterTableContent() {
+        let formFilters = this.getFormFilters();
+        let filtersJson = DOM.convertForm2JSON(formFilters);
+        this.leave();
+        API.goToHash(this.constructor.hash, filtersJson);
     }
     callbackLoadTableContent(response) {
         let table = TableBasePage.getTableMain();
@@ -132,9 +118,7 @@ export default class TableBasePage extends BasePage {
         throw new Error("Subclass of TableBasePage must implement method loadRowTable().");
     }
     getAndLoadFilteredTableContentSinglePageApp() {
-        let formFilters = this.getFormFilters();
-        let filtersJson = DOM.convertForm2JSON(formFilters);
-        this.callFilterTableContent(filtersJson)
+        this.callFilterTableContent()
             .then(data => {
                 if (_verbose) { console.log('Table data received:', data); }
                 this.callbackLoadTableContent(data);
@@ -979,7 +963,6 @@ import DOM from "../dom.js";
 export class PageStoreProductCategories extends TableBasePage {
     static hash = hashPageStoreProductCategories;
     static attrIdRowObject = attrIdProductCategory;
-    callFilterTableContent = API.getCategoriesByFilters;
     callSaveTableContent = API.saveCategories;
 
     constructor() {}

@@ -70,18 +70,6 @@ export default class API {
 
     // store
     // product categories
-    static async getCategories() {
-        return await API.request(hashGetStoreProductCategory);
-    }
-    static async getCategoriesByFilters(filtersJson) {
-        /*
-        let dataRequest = {};
-        dataRequest[flagForm] = filtersJson;
-        return await API.request(hashGetStoreProductCategory, 'POST', dataRequest);
-        */
-        // return await API.request(hashPageStoreProductCategories, 'GET', filtersJson);
-        API.goToHash(hashPageStoreProductCategories, filtersJson);
-    }
     static async saveCategories(categories, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
@@ -91,12 +79,6 @@ export default class API {
     }
     
     // products
-    static async getProducts() {
-        return await API.request(hashGetStoreProduct);
-    }
-    static async getProductsByFilters(filtersJson) {
-        API.goToHash(hashPageStoreProducts, filtersJson);
-    }
     static async saveProducts(products, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
@@ -106,12 +88,6 @@ export default class API {
     }
     
     // product permutations
-    static async getProductPermutations() {
-        return await API.request(hashGetStoreProductPermutation);
-    }
-    static async getProductPermutationsByFilters(filtersJson) {
-        API.goToHash(hashPageStoreProductPermutations, filtersJson);
-    }
     static async saveProductPermutations(permutations, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
@@ -121,12 +97,6 @@ export default class API {
     }
     
     // product variations
-    static async getProductVariations() {
-        return await API.request(hashGetStoreProductVariation);
-    }
-    static async getProductVariationsByFilters(filtersJson) {
-        API.goToHash(hashPageStoreProductVariations, filtersJson);
-    }
     static async saveProductVariations(variationTypes, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
@@ -136,12 +106,6 @@ export default class API {
     }
     
     // stock items
-    static async getStockItems() {
-        return await API.request(hashGetStoreStockItem);
-    }
-    static async getStockItemsByFilters(filtersJson) {
-        API.goToHash(hashPageStoreStockItems, filtersJson);
-    }
     static async saveStockItems(stockItems, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
@@ -151,12 +115,6 @@ export default class API {
     }
     
     // suppliers
-    static async getSuppliers() {
-        return await API.request(hashGetStoreSupplier);
-    }
-    static async getSuppliersByFilters(filtersJson) {
-        API.goToHash(hashPageStoreSuppliers, filtersJson);
-    }
     static async saveSuppliers(suppliers, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
@@ -166,12 +124,6 @@ export default class API {
     }
     
     // supplier purchase orders
-    static async getSupplierPurchaseOrders() {
-        return await API.request(hashGetStoreSupplierPurchaseOrder);
-    }
-    static async getSupplierPurchaseOrdersByFilters(filtersJson) {
-        API.goToHash(hashPageStoreSupplierPurchaseOrders, filtersJson);
-    }
     static async saveSupplierPurchaseOrders(supplierPurchaseOrders, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);
@@ -181,12 +133,6 @@ export default class API {
     }
     
     // manufacturing purchase orders
-    static async getManufacturingPurchaseOrders() {
-        return await API.request(hashGetStoreManufacturingPurchaseOrder);
-    }
-    static async getManufacturingPurchaseOrdersByFilters(filtersJson) {
-        API.goToHash(hashPageStoreManufacturingPurchaseOrders, filtersJson);
-    }
     static async saveManufacturingPurchaseOrders(manufacturingPurchaseOrders, formFilters, comment) {
         let dataRequest = {};
         dataRequest[flagFormFilters] = DOM.convertForm2JSON(formFilters);

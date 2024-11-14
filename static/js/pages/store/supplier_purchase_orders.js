@@ -12,7 +12,6 @@ import StoreTableMixinPage from "./mixin_table.js";
 export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
     static hash = hashPageStoreSupplierPurchaseOrders;
     static attrIdRowObject = attrIdSupplierPurchaseOrder;
-    callFilterTableContent = API.getSupplierPurchaseOrdersByFilters;
     callSaveTableContent = API.saveSupplierPurchaseOrders;
 
     constructor(router) {

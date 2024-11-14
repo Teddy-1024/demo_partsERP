@@ -11,7 +11,6 @@ import StoreTableMixinPage from "./mixin_table.js";
 export default class PageStoreStockItems extends TableBasePage {
     static hash = hashPageStoreStockItems;
     static attrIdRowObject = attrIdStockItem;
-    callFilterTableContent = API.getStockItemsByFilters;
     callSaveTableContent = API.saveStockItems;
 
     constructor(router) {

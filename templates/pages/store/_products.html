@@ -36,22 +36,8 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }}">
-                {% set block_id = 'button_apply_filters' %}
-                {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-            </div>
-        </div>
-        <!--
-        -->
         {% set block_id = 'buttons_table_default' %}
         {% include 'components/common/buttons/_buttons_save_cancel.html' %}
-        <!--
-        <div class="{{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
-            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
-            </div>
-        </div>
-        -->
     </form>
 
 
