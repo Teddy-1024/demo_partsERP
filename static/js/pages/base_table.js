@@ -919,6 +919,18 @@ export default class TableBasePage extends BasePage {
     hookupCurrencyFields() {
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagCurrency, Utils.getListFromDict(currencies));
     }
+
+    createTdActive(isActive) {
+        let tdActive = document.createElement("td");
+        tdActive.classList.add(flagActive);
+        let buttonActive = document.createElement("button");
+        buttonActive.classList.add(flagActive);
+        buttonActive.classList.add(isActive ? flagDelete : flagAdd);
+        buttonActive.textContent = isActive ? 'x' : '+';
+        DOM.setElementAttributesValuesCurrentAndPrevious(buttonActive, isActive);
+        tdActive.appendChild(buttonActive);
+        return tdActive;
+    }
     
     leave() {
         if (this.constructor === TableBasePage) {

@@ -2211,6 +2211,73 @@ var BusinessObjects = /*#__PURE__*/function () {
   }]);
 }();
 
+;// CONCATENATED MODULE: ./static/js/lib/business_objects/store/product_permutation.js
+function product_permutation_typeof(o) { "@babel/helpers - typeof"; return product_permutation_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, product_permutation_typeof(o); }
+function product_permutation_classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function product_permutation_defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, product_permutation_toPropertyKey(o.key), o); } }
+function product_permutation_createClass(e, r, t) { return r && product_permutation_defineProperties(e.prototype, r), t && product_permutation_defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function product_permutation_toPropertyKey(t) { var i = product_permutation_toPrimitive(t, "string"); return "symbol" == product_permutation_typeof(i) ? i : i + ""; }
+function product_permutation_toPrimitive(t, r) { if ("object" != product_permutation_typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != product_permutation_typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var ProductPermutation = /*#__PURE__*/function () {
+  function ProductPermutation() {
+    product_permutation_classCallCheck(this, ProductPermutation);
+  }
+  return product_permutation_createClass(ProductPermutation, null, [{
+    key: "getProductVariationsFromIdCsv",
+    value: function getProductVariationsFromIdCsv(csvVariations) {
+      var productVariations = [];
+      if (!csvVariations) return productVariations;
+      var variationPairs = csvVariations.split(',');
+      if (variationPairs.length == 0) return productVariations;
+      var parts;
+      variationPairs.forEach(function (variationPair) {
+        parts = variationPair.split(':');
+        if (parts.length == 2) {
+          var productVariationType = productVariationTypes[parts[0]];
+          productVariationType[flagProductVariations].some(function (productVariation) {
+            if (productVariation[attrIdProductVariation] == parts[1]) {
+              productVariations.push([productVariationType, productVariation]);
+              return true;
+            }
+            return false;
+          });
+        }
+      });
+      return productVariations;
+    }
+  }, {
+    key: "getProductVariationsPreviewFromIdCsv",
+    value: function getProductVariationsPreviewFromIdCsv(csvVariations) {
+      var variationPairs = ProductPermutation.getProductVariationsFromIdCsv(csvVariations);
+      var preview = '';
+      if (variationPairs.length == 0) return preview;
+      var variationType, variation;
+      variationPairs.forEach(function (variationPair) {
+        if (preview.length > 0) {
+          preview += '\n';
+        }
+        variationType = variationPair[0];
+        variation = variationPair[1];
+        preview += variationType[flagName] + ': ' + variation[flagName];
+      });
+      return preview;
+    }
+  }, {
+    key: "getProductVariationsIdCsvFromVariationTypeList",
+    value: function getProductVariationsIdCsvFromVariationTypeList(variationTypeList) {
+      var csvVariations = '';
+      if (Validation.isEmpty(variationTypeList)) return csvVariations;
+      variationTypeList.forEach(function (variationType) {
+        if (csvVariations.length > 0) {
+          csvVariations += ',';
+        }
+        csvVariations += variationType[attrIdProductVariationType] + ':' + variationType[flagProductVariations][0][attrIdProductVariation];
+      });
+      return csvVariations;
+    }
+  }]);
+}();
+
 ;// CONCATENATED MODULE: ./static/js/lib/utils.js
 function utils_typeof(o) { "@babel/helpers - typeof"; return utils_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, utils_typeof(o); }
 function utils_classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
@@ -3379,6 +3446,19 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagCurrency, Utils.getListFromDict(currencies));
     }
   }, {
+    key: "createTdActive",
+    value: function createTdActive(isActive) {
+      var tdActive = document.createElement("td");
+      tdActive.classList.add(flagActive);
+      var buttonActive = document.createElement("button");
+      buttonActive.classList.add(flagActive);
+      buttonActive.classList.add(isActive ? flagDelete : flagAdd);
+      buttonActive.textContent = isActive ? 'x' : '+';
+      DOM.setElementAttributesValuesCurrentAndPrevious(buttonActive, isActive);
+      tdActive.appendChild(buttonActive);
+      return tdActive;
+    }
+  }, {
     key: "leave",
     value: function leave() {
       if (this.constructor === TableBasePage) {
@@ -4068,6 +4148,7 @@ function manufacturing_purchase_orders_toPrimitive(t, r) { if ("object" != manuf
 
 
 
+
 var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage) {
   function PageStoreManufacturingPurchaseOrders(router) {
     var _this;
@@ -4104,7 +4185,7 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       var inputPriceTotalLocalVatExcl = row.querySelector('td.' + flagPriceTotalLocalVatExcl + ' input');
       var inputPriceTotalLocalVatIncl = row.querySelector('td.' + flagPriceTotalLocalVatIncl + ' input');
       var trsPurchaseOrderItem = row.querySelectorAll('tr.' + flagOrderItems);
-      var checkboxActive = row.querySelector('td.' + flagActive + ' textarea');
+      var buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdManufacturingPurchaseOrder] = row.getAttribute(attrIdManufacturingPurchaseOrder);
       jsonRow[attrIdCurrency] = DOM.getElementAttributeValueCurrent(tdCurrency);
@@ -4119,7 +4200,7 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
         });
       }
       jsonRow[flagOrderItems] = orderItems;
-      jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+      jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
       return jsonRow;
     }
   }, {
@@ -4132,8 +4213,10 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       var tdUnitQuantity = tr.querySelector('td.' + flagUnitMeasurementQuantity);
       var inputQuantityUsed = tr.querySelector('td.' + flagQuantityUsed + ' input');
       var inputQuantityProduced = tr.querySelector('td.' + flagQuantityProduced + ' input');
+      var tdUnitMeasurementLatencyManufacture = tr.querySelector('td.' + flagUnitMeasurementLatencyManufacture);
       var inputLatencyManufacture = tr.querySelector('td.' + flagLatencyManufacture + ' input');
-      var checkboxActive = tr.querySelector('td.' + flagActive + ' input');
+      debugger;
+      var buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdManufacturingPurchaseOrder] = tr.getAttribute(attrIdManufacturingPurchaseOrder);
       jsonRow[attrIdManufacturingPurchaseOrderProductLink] = tr.getAttribute(attrIdManufacturingPurchaseOrderProductLink);
@@ -4144,8 +4227,9 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       jsonRow[attrIdUnitMeasurementQuantity] = DOM.getElementAttributeValueCurrent(tdUnitQuantity);
       jsonRow[flagQuantityUsed] = DOM.getElementAttributeValueCurrent(inputQuantityUsed);
       jsonRow[flagQuantityProduced] = DOM.getElementAttributeValueCurrent(inputQuantityProduced);
+      jsonRow[attrIdUnitMeasurementLatencyManufacture] = DOM.getElementAttributeValueCurrent(tdUnitMeasurementLatencyManufacture);
       jsonRow[flagLatencyManufacture] = DOM.getElementAttributeValueCurrent(inputLatencyManufacture);
-      jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+      jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
       return jsonRow;
     }
   }, {
@@ -4205,9 +4289,10 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       }
       this.toggleColumnHeaderCollapsed(flagOrderItems, false);
       element.classList.remove(flagCollapsed);
+      debugger;
       var row = DOM.getRowFromElement(element);
       var idManufacturingPurchaseOrder = row.getAttribute(attrIdManufacturingPurchaseOrder);
-      var manufacturingPurchaseOrderProductLinksList = idManufacturingPurchaseOrder > 0 ? manufacturingPurchaseOrderProductLinks[idManufacturingPurchaseOrder] : [];
+      var manufacturingPurchaseOrder = idManufacturingPurchaseOrder > 0 ? manufacturingPurchaseOrders[idManufacturingPurchaseOrder] : manufacturing_purchase_orders_defineProperty({}, flagOrderItems, []);
       var tblOrderItems = document.createElement("table");
       tblOrderItems.classList.add(flagOrderItems);
       var thead = document.createElement("thead");
@@ -4283,7 +4368,7 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       thead.appendChild(tr);
       tblOrderItems.appendChild(thead);
       var tbody = document.createElement("tbody");
-      manufacturingPurchaseOrderProductLinksList.forEach(function (orderItem, index) {
+      manufacturingPurchaseOrder[flagOrderItems].forEach(function (orderItem, index) {
         _this4.addRowManufacturingPurchaseOrderItem(tbody, orderItem);
       });
       tblOrderItems.appendChild(tbody);
@@ -4303,6 +4388,7 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       if (_verbose) {
         console.log("addRowManufacturingPurchaseOrderItem: ", orderItem);
       }
+      debugger;
       var tdDisplayOrder = document.createElement("td");
       tdDisplayOrder.classList.add(flagDisplayOrder);
       var inputDisplayOrder = document.createElement("input");
@@ -4317,7 +4403,8 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       var divCategory = document.createElement("div");
       divCategory.classList.add(flagProductCategory);
       // DOM.setElementAttributesValuesCurrentAndPrevious(divCategory, orderItem[attrIdProductCategory]);
-      divCategory.textContent = orderItem[flagProductCategory];
+      var productCategory = productCategories[orderItem[attrIdProductCategory]];
+      divCategory.textContent = BusinessObjects.getObjectText(productCategory);
       tdCategory.appendChild(divCategory);
       var tdProduct = document.createElement("td");
       tdProduct.classList.add(flagProduct);
@@ -4325,7 +4412,8 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       var divProduct = document.createElement("div");
       divProduct.classList.add(flagProduct);
       // DOM.setElementAttributesValuesCurrentAndPrevious(divProduct, orderItem[attrIdProduct]);
-      divProduct.textContent = orderItem[flagProduct];
+      var product = products[orderItem[attrIdProduct]];
+      divProduct.textContent = BusinessObjects.getObjectText(product);
       tdProduct.appendChild(divProduct);
       var tdVariations = document.createElement("td");
       tdVariations.classList.add(flagProductVariations);
@@ -4334,7 +4422,8 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       var divVariations = document.createElement("div");
       divVariations.classList.add(flagProductVariations);
       // DOM.setElementAttributesValuesCurrentAndPrevious(divVariations, orderItem[attrIdProductVariation]);
-      divVariations.textContent = orderItem[flagProductVariations];
+      var variationsText = ProductPermutation.getProductVariationsPreviewFromIdCsv(orderItem[flagProductVariations]);
+      divVariations.textContent = variationsText;
       tdVariations.appendChild(divVariations);
       var tdUnitQuantity = document.createElement("td");
       tdUnitQuantity.classList.add(flagUnitMeasurementQuantity);
@@ -4342,20 +4431,22 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       var divUnitQuantity = document.createElement("div");
       divUnitQuantity.classList.add(flagUnitMeasurementQuantity);
       // DOM.setElementValuesCurrentAndPrevious(divUnitQuantity, orderItem[flagUnitMeasurementQuantity]);
+      var unitQuantity = unitMeasurements[orderItem[attrIdUnitMeasurementQuantity]];
+      divUnitQuantity.textContent = BusinessObjects.getObjectText(unitQuantity);
       tdUnitQuantity.appendChild(divUnitQuantity);
       var tdQuantityUsed = document.createElement("td");
       tdQuantityUsed.classList.add(flagQuantityUsed);
       var inputQuantityUsed = document.createElement("input");
       inputQuantityUsed.classList.add(flagQuantityUsed);
       inputQuantityUsed.type = 'number';
-      DOM.setElementAttributesValuesCurrentAndPrevious(inputQuantityUsed, orderItem[flagQuantityUsed]);
+      DOM.setElementValuesCurrentAndPrevious(inputQuantityUsed, orderItem[flagQuantityUsed]);
       tdQuantityUsed.appendChild(inputQuantityUsed);
       var tdQuantityProduced = document.createElement("td");
       tdQuantityProduced.classList.add(flagQuantityProduced);
       var inputQuantityProduced = document.createElement("input");
       inputQuantityProduced.classList.add(flagQuantityProduced);
       inputQuantityProduced.type = 'number';
-      DOM.setElementAttributesValuesCurrentAndPrevious(inputQuantityProduced, orderItem[flagQuantityProduced]);
+      DOM.setElementValuesCurrentAndPrevious(inputQuantityProduced, orderItem[flagQuantityProduced]);
       tdQuantityProduced.appendChild(inputQuantityProduced);
 
       /*
@@ -4395,6 +4486,8 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       var divUnitMeasurementLatencyManufacture = document.createElement("div");
       divUnitMeasurementLatencyManufacture.classList.add(flagUnitMeasurementLatencyManufacture);
       // DOM.setElementValuesCurrentAndPrevious(divUnitMeasurementLatencyManufacture, orderItem[flagUnitMeasurementLatencyManufacture]);
+      var unitMeasurementLatencyManufacture = unitMeasurementsTime[orderItem[attrIdUnitMeasurementLatencyManufacture]];
+      divUnitMeasurementLatencyManufacture.textContent = BusinessObjects.getObjectText(unitMeasurementLatencyManufacture);
       tdUnitMeasurementLatencyManufacture.appendChild(divUnitMeasurementLatencyManufacture);
       var tdLatencyManufacture = document.createElement("td");
       tdLatencyManufacture.classList.add(flagLatencyManufacture);
@@ -4402,21 +4495,9 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       inputLatencyManufacture.classList.add(flagLatencyManufacture);
       inputLatencyManufacture.type = 'number';
       inputLatencyManufacture.step = 1;
-      DOM.setElementAttributesValuesCurrentAndPrevious(inputLatencyManufacture, orderItem[flagLatencyManufacture]);
+      DOM.setElementValuesCurrentAndPrevious(inputLatencyManufacture, orderItem[flagLatencyManufacture]);
       tdLatencyManufacture.appendChild(inputLatencyManufacture);
-      var tdActive = document.createElement("td");
-      tdActive.classList.add(flagActive);
-      var checkboxActive = document.createElement("input");
-      checkboxActive.classList.add(flagActive);
-      checkboxActive.type = 'checkbox';
-      DOM.setElementValuesCurrentAndPrevious(checkboxActive, orderItem[flagActive]);
-      tdActive.appendChild(checkboxActive);
-      var tdDelete = document.createElement("td");
-      tdDelete.classList.add(flagDelete);
-      var buttonDelete = document.createElement("button");
-      buttonDelete.classList.add(flagDelete);
-      buttonDelete.textContent = 'x';
-      tdDelete.appendChild(buttonDelete);
+      var tdActive = this.createTdActive(orderItem[flagActive]);
       var tr = document.createElement("tr");
       tr.classList.add(flagOrderItems);
       tr.setAttribute(attrIdManufacturingPurchaseOrder, orderItem[attrIdManufacturingPurchaseOrder]);
@@ -4437,7 +4518,6 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       tr.appendChild(tdUnitMeasurementLatencyManufacture);
       tr.appendChild(tdLatencyManufacture);
       tr.appendChild(tdActive);
-      tr.appendChild(tdDelete);
       tbody.appendChild(tr);
     }
   }, {
@@ -4692,7 +4772,7 @@ var PageStoreProductCategories = /*#__PURE__*/function (_TableBasePage) {
       var textareaName = row.querySelector('td.' + flagName + ' textarea');
       var textareaDescription = row.querySelector('td.' + flagDescription + ' textarea');
       var tdAccessLevel = row.querySelector('td.' + flagAccessLevel);
-      var inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+      var buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
       var jsonCategory = {};
       jsonCategory[attrIdProductCategory] = row.getAttribute(attrIdProductCategory);
       jsonCategory[flagCode] = DOM.getElementAttributeValueCurrent(textareaCode);
@@ -4700,7 +4780,7 @@ var PageStoreProductCategories = /*#__PURE__*/function (_TableBasePage) {
       jsonCategory[flagDescription] = DOM.getElementAttributeValueCurrent(textareaDescription);
       // jsonCategory[flagAccessLevelRequired] = tdAccessLevel.getAttribute(flagAccessLevelRequired);
       jsonCategory[attrIdAccessLevel] = DOM.getElementAttributeValueCurrent(tdAccessLevel);
-      jsonCategory[flagActive] = DOM.getElementAttributeValueCurrent(inputActive);
+      jsonCategory[flagActive] = buttonActive.classList.contains(flagDelete);
       jsonCategory[flagDisplayOrder] = DOM.getElementAttributeValueCurrent(sliderDisplayOrder);
       return jsonCategory;
     }
@@ -4938,7 +5018,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
       var checkboxDoesExpireFasterOnceUnsealed = row.querySelector('td.' + flagDoesExpireFasterOnceUnsealed + ' input');
       var inputCountIntervalExpirationUnsealed = row.querySelector('td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
       var tdUnitMeasurementIntervalExpirationUnsealed = row.querySelector('td.' + flagUnitMeasurementIntervalExpirationUnsealed);
-      var checkboxActive = row.querySelector('td.' + flagActive + ' input');
+      var buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdProductPermutation] = row.getAttribute(attrIdProductPermutation);
       jsonRow[attrIdProductCategory] = tdProductCategory.getAttribute(attrValueCurrent);
@@ -4963,7 +5043,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
       jsonRow[flagDoesExpireFasterOnceUnsealed] = checkboxDoesExpireFasterOnceUnsealed.getAttribute(attrValueCurrent);
       jsonRow[flagCountUnitMeasurementIntervalExpirationUnsealed] = inputCountIntervalExpirationUnsealed.getAttribute(attrValueCurrent);
       jsonRow[flagUnitMeasurementIntervalExpirationUnsealed] = tdUnitMeasurementIntervalExpirationUnsealed.getAttribute(attrValueCurrent);
-      jsonRow[flagActive] = checkboxActive.getAttribute(attrValueCurrent);
+      jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
       return jsonRow;
     }
   }, {
@@ -5292,7 +5372,7 @@ var PageStoreProducts = /*#__PURE__*/function (_TableBasePage) {
       // let tdProductVariations = row.querySelector('td.' + flagProductVariations);
       var inputHasVariations = row.querySelector('td.' + flagHasVariations + ' input[type="checkbox"]');
       var tdAccessLevel = row.querySelector('td.' + flagAccessLevel);
-      var inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+      var buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
       var jsonProduct = {};
       jsonProduct[attrIdProduct] = row.getAttribute(attrIdProduct);
       jsonProduct[attrIdProductCategory] = DOM.getElementAttributeValueCurrent(tdProductCategory);
@@ -5302,7 +5382,7 @@ var PageStoreProducts = /*#__PURE__*/function (_TableBasePage) {
       jsonProduct[flagHasVariations] = DOM.getElementAttributeValueCurrent(inputHasVariations);
       // jsonProduct[flagAccessLevelRequired] = tdAccessLevel.getAttribute(flagAccessLevelRequired);
       jsonProduct[attrIdAccessLevel] = DOM.getElementAttributeValueCurrent(tdAccessLevel);
-      jsonProduct[flagActive] = DOM.getElementAttributeValueCurrent(inputActive);
+      jsonProduct[flagActive] = buttonActive.classList.contains(flagDelete);
       jsonProduct[flagDisplayOrder] = DOM.getElementAttributeValueCurrent(sliderDisplayOrder);
       return jsonProduct;
     }
@@ -5434,7 +5514,7 @@ var PageStoreProductVariations = /*#__PURE__*/function (_TableBasePage) {
       var textareaName = row.querySelector('td.' + flagName + ' textarea');
       var textareaNamePlural = row.querySelector('td.' + flagNamePlural + ' textarea');
       var tdProductVariations = row.querySelector('td.' + flagProductVariations);
-      var buttonActive = row.querySelector('td.' + flagActive + ' button');
+      var buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdProductVariationType] = row.getAttribute(attrIdProductVariationType);
       if (validation_Validation.isEmpty(jsonRow[attrIdProductVariationType])) jsonRow[attrIdProductVariationType] = -1;
@@ -5464,7 +5544,7 @@ var PageStoreProductVariations = /*#__PURE__*/function (_TableBasePage) {
       var textareaCode = tr.querySelector('td.' + flagCode + ' textarea');
       var textareaName = tr.querySelector('td.' + flagName + ' textarea');
       // let checkboxActive = tr.querySelector('td.' + flagActive + ' input');
-      var buttonActive = tr.querySelector('td.' + flagActive + ' button');
+      var buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdProductVariation] = tr.getAttribute(attrIdProductVariation);
       if (validation_Validation.isEmpty(jsonRow[attrIdProductVariation])) jsonRow[attrIdProductVariation] = -1 - indexRow;
@@ -5596,14 +5676,7 @@ var PageStoreProductVariations = /*#__PURE__*/function (_TableBasePage) {
       textareaName.classList.add(flagName);
       DOM.setElementValuesCurrentAndPrevious(textareaName, productVariation[flagName]);
       tdName.appendChild(textareaName);
-      var tdActive = document.createElement("td");
-      tdActive.classList.add(flagActive);
-      var buttonActive = document.createElement("button");
-      buttonActive.classList.add(flagActive);
-      buttonActive.classList.add(productVariation[flagActive] ? flagDelete : flagAdd);
-      buttonActive.textContent = productVariation[flagActive] ? 'x' : '+';
-      DOM.setElementAttributesValuesCurrentAndPrevious(buttonActive, productVariation[flagActive]);
-      tdActive.appendChild(buttonActive);
+      var tdActive = this.createTdActive(productVariation[flagActive]);
       var tr = document.createElement("tr");
       tr.classList.add(flagProductVariation);
       tr.setAttribute(attrIdProductVariationType, productVariation[attrIdProductVariationType]);
@@ -5776,7 +5849,7 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
       var inputDateExpiration = row.querySelector('td.' + flagDateExpiration + ' input');
       var inputIsConsumed = row.querySelector('td.' + flagIsConsumed + ' input');
       var inputDateConsumed = row.querySelector('td.' + flagDateConsumed + ' input');
-      var checkboxActive = row.querySelector('td.' + flagActive + ' input');
+      var buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdStockItem] = row.getAttribute(attrIdStockItem);
       jsonRow[attrIdProductPermutation] = tdProductVariations.getAttribute(attrIdProductPermutation);
@@ -5795,7 +5868,7 @@ var PageStoreStockItems = /*#__PURE__*/function (_TableBasePage) {
       jsonRow[flagDateExpiration] = DOM.getElementAttributeValueCurrent(inputDateExpiration);
       jsonRow[flagIsConsumed] = DOM.getElementAttributeValueCurrent(inputIsConsumed);
       jsonRow[flagDateConsumed] = DOM.getElementAttributeValueCurrent(inputDateConsumed);
-      jsonRow[flagActive] = checkboxActive.getAttribute(attrValueCurrent);
+      jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
       return jsonRow;
     }
   }, {
@@ -6151,7 +6224,7 @@ var PageStoreSuppliers = /*#__PURE__*/function (_TableBasePage) {
       var textareaEmail = row.querySelector('td.' + flagEmail + ' textarea');
       var textareaWebsite = row.querySelector('td.' + flagWebsite + ' textarea');
       var tdCurrency = row.querySelector('td.' + flagCurrency);
-      var checkboxActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+      var buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdSupplier] = row.getAttribute(attrIdSupplier);
       jsonRow[flagNameCompany] = DOM.getElementAttributeValueCurrent(textareaNameCompany);
@@ -6164,7 +6237,7 @@ var PageStoreSuppliers = /*#__PURE__*/function (_TableBasePage) {
       jsonRow[flagEmail] = DOM.getElementAttributeValueCurrent(textareaEmail);
       jsonRow[flagWebsite] = DOM.getElementAttributeValueCurrent(textareaWebsite);
       jsonRow[attrIdCurrency] = DOM.getElementAttributeValueCurrent(tdCurrency);
-      jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+      jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
       return jsonRow;
     }
   }, {
@@ -6366,19 +6439,7 @@ var PageStoreSuppliers = /*#__PURE__*/function (_TableBasePage) {
       });
       DOM.setElementValuesCurrentAndPrevious(ddlRegion, region[attrIdRegion]);
       tdRegion.appendChild(ddlRegion);
-      var tdActive = document.createElement("td");
-      tdActive.classList.add(flagActive);
-      var checkboxActive = document.createElement("input");
-      checkboxActive.classList.add(flagActive);
-      checkboxActive.type = 'checkbox';
-      DOM.setElementValuesCurrentAndPrevious(checkboxActive, supplierAddress[flagActive]);
-      tdActive.appendChild(checkboxActive);
-      var tdDelete = document.createElement("td");
-      tdDelete.classList.add(flagDelete);
-      var buttonDelete = document.createElement("button");
-      buttonDelete.classList.add(flagDelete);
-      buttonDelete.textContent = 'x';
-      tdDelete.appendChild(buttonDelete);
+      var tdActive = this.createTdActive(supplierAddress[flagActive]);
       var tr = document.createElement("tr");
       tr.setAttribute(attrIdSupplierAddress, supplierAddress[attrIdSupplierAddress]);
       tr.setAttribute(attrIdSupplier, supplierAddress[attrIdSupplier]);
@@ -6389,7 +6450,6 @@ var PageStoreSuppliers = /*#__PURE__*/function (_TableBasePage) {
       tr.appendChild(tdCounty);
       tr.appendChild(tdRegion);
       tr.appendChild(tdActive);
-      tr.appendChild(tdDelete);
       tbody.appendChild(tr);
     }
   }, {
@@ -6532,67 +6592,6 @@ var PageStoreSuppliers = /*#__PURE__*/function (_TableBasePage) {
 suppliers_defineProperty(PageStoreSuppliers, "hash", hashPageStoreSuppliers);
 suppliers_defineProperty(PageStoreSuppliers, "attrIdRowObject", attrIdSupplier);
 
-;// CONCATENATED MODULE: ./static/js/lib/business_objects/store/product_permutation.js
-function product_permutation_typeof(o) { "@babel/helpers - typeof"; return product_permutation_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, product_permutation_typeof(o); }
-function product_permutation_classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function product_permutation_defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, product_permutation_toPropertyKey(o.key), o); } }
-function product_permutation_createClass(e, r, t) { return r && product_permutation_defineProperties(e.prototype, r), t && product_permutation_defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function product_permutation_toPropertyKey(t) { var i = product_permutation_toPrimitive(t, "string"); return "symbol" == product_permutation_typeof(i) ? i : i + ""; }
-function product_permutation_toPrimitive(t, r) { if ("object" != product_permutation_typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != product_permutation_typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var ProductPermutation = /*#__PURE__*/function () {
-  function ProductPermutation() {
-    product_permutation_classCallCheck(this, ProductPermutation);
-  }
-  return product_permutation_createClass(ProductPermutation, null, [{
-    key: "getProductVariationsFromIdCsv",
-    value: function getProductVariationsFromIdCsv(csvVariations) {
-      var productVariations = [];
-      if (!csvVariations) return productVariations;
-      var variationPairs = csvVariations.split(',');
-      if (variationPairs.length == 0) return productVariations;
-      var parts;
-      variationPairs.forEach(function (variationPair) {
-        parts = variationPair.split(':');
-        if (parts.length == 2) {
-          var productVariationType = productVariationTypes[parts[0]];
-          var productVariation = productVariations[parts[1]];
-          if (productVariationType && productVariation) {
-            productVariations.push([productVariationType, productVariation]);
-          }
-        }
-      });
-      return productVariations;
-    }
-  }, {
-    key: "getProductVariationsPreviewFromIdCsv",
-    value: function getProductVariationsPreviewFromIdCsv(csvVariations) {
-      var variations = ProductPermutation.getProductVariationsFromIdCsv(csvVariations);
-      var preview = '';
-      if (variations.length == 0) return preview;
-      variations.forEach(function (variation) {
-        if (preview.length > 0) {
-          preview += '\n';
-        }
-        preview += variation[0] + ': ' + variation[1] + ', ';
-      });
-      return preview;
-    }
-  }, {
-    key: "getProductVariationsIdCsvFromVariationTypeList",
-    value: function getProductVariationsIdCsvFromVariationTypeList(variationTypeList) {
-      var csvVariations = '';
-      if (Validation.isEmpty(variationTypeList)) return csvVariations;
-      variationTypeList.forEach(function (variationType) {
-        if (csvVariations.length > 0) {
-          csvVariations += ',';
-        }
-        csvVariations += variationType[attrIdProductVariationType] + ':' + variationType[flagProductVariations][0][attrIdProductVariation];
-      });
-      return csvVariations;
-    }
-  }]);
-}();
-
 ;// CONCATENATED MODULE: ./static/js/pages/store/supplier_purchase_orders.js
 function supplier_purchase_orders_typeof(o) { "@babel/helpers - typeof"; return supplier_purchase_orders_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, supplier_purchase_orders_typeof(o); }
 function supplier_purchase_orders_classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
@@ -6655,7 +6654,7 @@ var PageStoreSupplierPurchaseOrders = /*#__PURE__*/function (_TableBasePage) {
       var inputCostTotalLocalVatExcl = row.querySelector('td.' + flagCostTotalLocalVatExcl + ' input');
       var inputCostTotalLocalVatIncl = row.querySelector('td.' + flagCostTotalLocalVatIncl + ' input');
       var trsPurchaseOrderItem = row.querySelectorAll('tr.' + flagOrderItems);
-      var checkboxActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+      var buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdSupplierPurchaseOrder] = row.getAttribute(attrIdSupplierPurchaseOrder);
       jsonRow[attrIdSupplier] = DOM.getElementAttributeValueCurrent(tdSupplier);
@@ -6670,7 +6669,7 @@ var PageStoreSupplierPurchaseOrders = /*#__PURE__*/function (_TableBasePage) {
         });
       }
       jsonRow[flagOrderItems] = orderItems;
-      jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+      jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
       return jsonRow;
     }
   }, {
@@ -6686,7 +6685,7 @@ var PageStoreSupplierPurchaseOrders = /*#__PURE__*/function (_TableBasePage) {
       var inputCostTotalLocalVatExcl = tr.querySelector('td.' + flagCostTotalLocalVatExcl + ' input');
       var inputCostTotalLocalVatIncl = tr.querySelector('td.' + flagCostTotalLocalVatIncl + ' input');
       var inputLatencyDeliveryDays = tr.querySelector('td.' + flagLatencyDeliveryDays + ' input');
-      var checkboxActive = tr.querySelector('td.' + flagActive + ' input');
+      var buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
       var jsonRow = {};
       jsonRow[attrIdSupplierPurchaseOrder] = tr.getAttribute(attrIdSupplierPurchaseOrder);
       jsonRow[attrIdSupplierPurchaseOrderProductLink] = tr.getAttribute(attrIdSupplierPurchaseOrderProductLink);
@@ -6700,7 +6699,7 @@ var PageStoreSupplierPurchaseOrders = /*#__PURE__*/function (_TableBasePage) {
       jsonRow[flagCostTotalLocalVatExcl] = DOM.getElementAttributeValueCurrent(inputCostTotalLocalVatExcl);
       jsonRow[flagCostTotalLocalVatIncl] = DOM.getElementAttributeValueCurrent(inputCostTotalLocalVatIncl);
       jsonRow[flagLatencyDeliveryDays] = DOM.getElementAttributeValueCurrent(inputLatencyDeliveryDays);
-      jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+      jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
       return jsonRow;
     }
   }, {
@@ -6961,19 +6960,7 @@ var PageStoreSupplierPurchaseOrders = /*#__PURE__*/function (_TableBasePage) {
       inputLatencyDeliveryDays.step = 1;
       DOM.setElementValuesCurrentAndPrevious(inputLatencyDeliveryDays, orderItem[flagLatencyDeliveryDays]);
       tdLatencyDeliveryDays.appendChild(inputLatencyDeliveryDays);
-      var tdActive = document.createElement("td");
-      tdActive.classList.add(flagActive);
-      var checkboxActive = document.createElement("input");
-      checkboxActive.classList.add(flagActive);
-      checkboxActive.type = 'checkbox';
-      DOM.setElementValuesCurrentAndPrevious(checkboxActive, orderItem[flagActive]);
-      tdActive.appendChild(checkboxActive);
-      var tdDelete = document.createElement("td");
-      tdDelete.classList.add(flagDelete);
-      var buttonDelete = document.createElement("button");
-      buttonDelete.classList.add(flagDelete);
-      buttonDelete.textContent = 'x';
-      tdDelete.appendChild(buttonDelete);
+      var tdActive = this.createTdActive(orderItem[flagActive]);
       var tr = document.createElement("tr");
       tr.classList.add(flagOrderItems);
       tr.setAttribute(attrIdSupplierPurchaseOrder, orderItem[attrIdSupplierPurchaseOrder]);
@@ -6991,7 +6978,6 @@ var PageStoreSupplierPurchaseOrders = /*#__PURE__*/function (_TableBasePage) {
       tr.appendChild(tdCostUnitLocalVatIncl);
       tr.appendChild(tdLatencyDeliveryDays);
       tr.appendChild(tdActive);
-      tr.appendChild(tdDelete);
       tbody.appendChild(tr);
     }
   }, {

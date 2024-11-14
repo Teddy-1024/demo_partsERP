@@ -71,7 +71,7 @@ export default class PageStoreProductCategories extends TableBasePage {
         let textareaName = row.querySelector('td.' + flagName + ' textarea');
         let textareaDescription = row.querySelector('td.' + flagDescription + ' textarea');
         let tdAccessLevel = row.querySelector('td.' + flagAccessLevel);
-        let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+        let buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonCategory = {};
         jsonCategory[attrIdProductCategory] = row.getAttribute(attrIdProductCategory);
@@ -80,7 +80,7 @@ export default class PageStoreProductCategories extends TableBasePage {
         jsonCategory[flagDescription] = DOM.getElementAttributeValueCurrent(textareaDescription);
         // jsonCategory[flagAccessLevelRequired] = tdAccessLevel.getAttribute(flagAccessLevelRequired);
         jsonCategory[attrIdAccessLevel] = DOM.getElementAttributeValueCurrent(tdAccessLevel);
-        jsonCategory[flagActive] = DOM.getElementAttributeValueCurrent(inputActive);
+        jsonCategory[flagActive] = buttonActive.classList.contains(flagDelete);
         jsonCategory[flagDisplayOrder] = DOM.getElementAttributeValueCurrent(sliderDisplayOrder);
         return jsonCategory;
     }

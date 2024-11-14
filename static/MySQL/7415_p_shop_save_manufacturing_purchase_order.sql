@@ -114,7 +114,7 @@ BEGIN
 		, price_total_local_VAT_incl FLOAT NULL
 		, has_order BIT NULL
 		, is_new BIT NOT NULL
-		, name_error VARCHAR(1000) NOT NULL
+		, name_error VARCHAR(1000) NULL
     );
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
@@ -170,7 +170,6 @@ BEGIN
 		, price_unit_local_VAT_incl
 		, has_order
 		, is_new
-        , name_error
 	)
 	SELECT 
 		IFNULL(MPOPL_T.id_link, 0) AS id_link

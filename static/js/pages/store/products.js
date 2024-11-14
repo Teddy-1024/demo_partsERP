@@ -72,7 +72,7 @@ export default class PageStoreProducts extends TableBasePage {
         // let tdProductVariations = row.querySelector('td.' + flagProductVariations);
         let inputHasVariations = row.querySelector('td.' + flagHasVariations + ' input[type="checkbox"]');
         let tdAccessLevel = row.querySelector('td.' + flagAccessLevel);
-        let inputActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+        let buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonProduct = {};
         jsonProduct[attrIdProduct] = row.getAttribute(attrIdProduct);
@@ -83,7 +83,7 @@ export default class PageStoreProducts extends TableBasePage {
         jsonProduct[flagHasVariations] = DOM.getElementAttributeValueCurrent(inputHasVariations);
         // jsonProduct[flagAccessLevelRequired] = tdAccessLevel.getAttribute(flagAccessLevelRequired);
         jsonProduct[attrIdAccessLevel] = DOM.getElementAttributeValueCurrent(tdAccessLevel);
-        jsonProduct[flagActive] = DOM.getElementAttributeValueCurrent(inputActive);
+        jsonProduct[flagActive] = buttonActive.classList.contains(flagDelete);
         jsonProduct[flagDisplayOrder] = DOM.getElementAttributeValueCurrent(sliderDisplayOrder);
         return jsonProduct;
     }

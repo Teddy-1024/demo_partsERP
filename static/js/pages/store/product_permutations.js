@@ -147,7 +147,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         let checkboxDoesExpireFasterOnceUnsealed = row.querySelector('td.' + flagDoesExpireFasterOnceUnsealed + ' input');
         let inputCountIntervalExpirationUnsealed = row.querySelector('td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
         let tdUnitMeasurementIntervalExpirationUnsealed = row.querySelector('td.' + flagUnitMeasurementIntervalExpirationUnsealed);
-        let checkboxActive = row.querySelector('td.' + flagActive + ' input');
+        let buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdProductPermutation] = row.getAttribute(attrIdProductPermutation);
@@ -173,7 +173,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         jsonRow[flagDoesExpireFasterOnceUnsealed] = checkboxDoesExpireFasterOnceUnsealed.getAttribute(attrValueCurrent);
         jsonRow[flagCountUnitMeasurementIntervalExpirationUnsealed] = inputCountIntervalExpirationUnsealed.getAttribute(attrValueCurrent);
         jsonRow[flagUnitMeasurementIntervalExpirationUnsealed] = tdUnitMeasurementIntervalExpirationUnsealed.getAttribute(attrValueCurrent);
-        jsonRow[flagActive] = checkboxActive.getAttribute(attrValueCurrent);
+        jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
         return jsonRow;
     }
     initialiseRowNew(tbody, row) {

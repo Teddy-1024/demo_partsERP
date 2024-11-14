@@ -11,23 +11,29 @@ export default class ProductPermutation {
             parts = variationPair.split(':');
             if (parts.length == 2) {
                 let productVariationType = productVariationTypes[parts[0]];
-                let productVariation = productVariations[parts[1]];
-                if (productVariationType && productVariation) {
-                    productVariations.push([productVariationType, productVariation]);
-                }
+                productVariationType[flagProductVariations].some((productVariation) => {
+                    if (productVariation[attrIdProductVariation] == parts[1]) {
+                        productVariations.push([productVariationType, productVariation]);
+                        return true;
+                    }
+                    return false;
+                });
             }
         });
         return productVariations;
     }
     static getProductVariationsPreviewFromIdCsv(csvVariations) {
-        let variations = ProductPermutation.getProductVariationsFromIdCsv(csvVariations);
+        let variationPairs = ProductPermutation.getProductVariationsFromIdCsv(csvVariations);
         let preview = '';
-        if (variations.length == 0) return preview;
-        variations.forEach((variation) => {
+        if (variationPairs.length == 0) return preview;
+        let variationType, variation;
+        variationPairs.forEach((variationPair) => {
             if (preview.length > 0) {
                 preview += '\n';
             }
-            preview += variation[0] + ': ' + variation[1] + ', ';
+            variationType = variationPair[0];
+            variation = variationPair[1];
+            preview += variationType[flagName] + ': ' + variation[flagName];
         });
         return preview;
     }

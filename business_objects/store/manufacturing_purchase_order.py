@@ -228,8 +228,8 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
         link.id_unit_latency_manufacture = json[cls.ATTR_ID_UNIT_MEASUREMENT_LATENCY_MANUFACTURE]
         link.latency_manufacture = json[cls.FLAG_LATENCY_MANUFACTURE]
         link.display_order = json[cls.FLAG_DISPLAY_ORDER]
-        link.cost_unit_local_VAT_excl = json[cls.FLAG_COST_UNIT_LOCAL_VAT_EXCL]
-        link.cost_unit_local_VAT_incl = json[cls.FLAG_COST_UNIT_LOCAL_VAT_INCL]
+        link.cost_unit_local_VAT_excl = json.get(cls.FLAG_COST_UNIT_LOCAL_VAT_EXCL, None)
+        link.cost_unit_local_VAT_incl = json.get(cls.FLAG_COST_UNIT_LOCAL_VAT_INCL, None)
         link.active = json[cls.FLAG_ACTIVE]
         return link
 
@@ -292,7 +292,7 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_link: int = db.Column(db.Integer)
     id_order: int = db.Column(db.Integer)
-    id_category: int = db.Column(db.Integer)
+    # id_category: int = db.Column(db.Integer)
     id_product: int = db.Column(db.Integer)
     id_permutation: int = db.Column(db.Integer)
     csv_list_variations: str = db.Column(db.String)
@@ -318,7 +318,7 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
         row = cls()
         row.id_link = manufacturing_purchase_order_product_link.id_link
         row.id_order = manufacturing_purchase_order_product_link.id_order
-        row.id_category = manufacturing_purchase_order_product_link.id_category
+        # row.id_category = manufacturing_purchase_order_product_link.id_category
         row.id_product = manufacturing_purchase_order_product_link.id_product
         row.id_permutation = manufacturing_purchase_order_product_link.id_permutation
         row.csv_list_variations = manufacturing_purchase_order_product_link.csv_id_pairs_variation
@@ -340,7 +340,6 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
         return f'''
 id_link: {self.id_link}
 id_order: {self.id_order}
-id_category: {self.id_category}
 id_product: {self.id_product}
 id_permutation: {self.id_permutation}
 csv_list_variations: {self.csv_list_variations}

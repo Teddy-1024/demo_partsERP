@@ -3,6 +3,7 @@ import API from "../../api.js";
 import BusinessObjects from "../../lib/business_objects/business_objects.js";
 import DOM from "../../dom.js";
 import Events from "../../lib/events.js";
+import ProductPermutation from "../../lib/business_objects/store/product_permutation.js";
 import TableBasePage from "../base_table.js";
 import Utils from "../../lib/utils.js";
 import Validation from "../../lib/validation.js";
@@ -38,7 +39,7 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let inputPriceTotalLocalVatExcl = row.querySelector('td.' + flagPriceTotalLocalVatExcl + ' input');
         let inputPriceTotalLocalVatIncl = row.querySelector('td.' + flagPriceTotalLocalVatIncl + ' input');
         let trsPurchaseOrderItem = row.querySelectorAll('tr.' + flagOrderItems);
-        let checkboxActive = row.querySelector('td.' + flagActive + ' textarea');
+        let buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdManufacturingPurchaseOrder] = row.getAttribute(attrIdManufacturingPurchaseOrder);
@@ -54,7 +55,7 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
             });
         }
         jsonRow[flagOrderItems] = orderItems;
-        jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+        jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
         return jsonRow;
     }
     getJsonRowOrderItem(tr) {
@@ -65,8 +66,9 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let tdUnitQuantity = tr.querySelector('td.' + flagUnitMeasurementQuantity);
         let inputQuantityUsed = tr.querySelector('td.' + flagQuantityUsed + ' input');
         let inputQuantityProduced = tr.querySelector('td.' + flagQuantityProduced + ' input');
+        let tdUnitMeasurementLatencyManufacture = tr.querySelector('td.' + flagUnitMeasurementLatencyManufacture);
         let inputLatencyManufacture = tr.querySelector('td.' + flagLatencyManufacture + ' input');
-        let checkboxActive = tr.querySelector('td.' + flagActive + ' input');
+        let buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdManufacturingPurchaseOrder] = tr.getAttribute(attrIdManufacturingPurchaseOrder);
@@ -78,8 +80,9 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         jsonRow[attrIdUnitMeasurementQuantity] = DOM.getElementAttributeValueCurrent(tdUnitQuantity);
         jsonRow[flagQuantityUsed] = DOM.getElementAttributeValueCurrent(inputQuantityUsed);
         jsonRow[flagQuantityProduced] = DOM.getElementAttributeValueCurrent(inputQuantityProduced);
+        jsonRow[attrIdUnitMeasurementLatencyManufacture] = DOM.getElementAttributeValueCurrent(tdUnitMeasurementLatencyManufacture);
         jsonRow[flagLatencyManufacture] = DOM.getElementAttributeValueCurrent(inputLatencyManufacture);
-        jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+        jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
 
         return jsonRow;
     }
@@ -125,10 +128,11 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         if (_verbose) { console.log("click order items preview"); }
         this.toggleColumnHeaderCollapsed(flagOrderItems, false);
         element.classList.remove(flagCollapsed);
-
         let row = DOM.getRowFromElement(element);
         let idManufacturingPurchaseOrder = row.getAttribute(attrIdManufacturingPurchaseOrder);
-        let manufacturingPurchaseOrderProductLinksList = idManufacturingPurchaseOrder > 0 ? manufacturingPurchaseOrderProductLinks[idManufacturingPurchaseOrder] : [];
+        let manufacturingPurchaseOrder = idManufacturingPurchaseOrder > 0 ? manufacturingPurchaseOrders[idManufacturingPurchaseOrder] : {
+            [flagOrderItems]: [],
+        };
         let tblOrderItems = document.createElement("table");
         tblOrderItems.classList.add(flagOrderItems);
         let thead = document.createElement("thead");
@@ -207,7 +211,7 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         tblOrderItems.appendChild(thead);
 
         let tbody = document.createElement("tbody");
-        manufacturingPurchaseOrderProductLinksList.forEach((orderItem, index) => {
+        manufacturingPurchaseOrder[flagOrderItems].forEach((orderItem, index) => {
             this.addRowManufacturingPurchaseOrderItem(tbody, orderItem);
         });
         tblOrderItems.appendChild(tbody);
@@ -221,7 +225,6 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
     }
     addRowManufacturingPurchaseOrderItem(tbody, orderItem) { //  productVariationTypeOptions, productVariationOptions, productCategoryOptions, productOptions, unitMeasurementOptions, 
         if (_verbose) { console.log("addRowManufacturingPurchaseOrderItem: ", orderItem); }
-
         let tdDisplayOrder = document.createElement("td");
         tdDisplayOrder.classList.add(flagDisplayOrder);
         let inputDisplayOrder = document.createElement("input");
@@ -237,7 +240,8 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let divCategory = document.createElement("div");
         divCategory.classList.add(flagProductCategory);
         // DOM.setElementAttributesValuesCurrentAndPrevious(divCategory, orderItem[attrIdProductCategory]);
-        divCategory.textContent = orderItem[flagProductCategory];
+        let productCategory = productCategories[orderItem[attrIdProductCategory]];
+        divCategory.textContent = BusinessObjects.getObjectText(productCategory);
         tdCategory.appendChild(divCategory);
 
         let tdProduct = document.createElement("td");
@@ -246,7 +250,8 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let divProduct = document.createElement("div");
         divProduct.classList.add(flagProduct);
         // DOM.setElementAttributesValuesCurrentAndPrevious(divProduct, orderItem[attrIdProduct]);
-        divProduct.textContent = orderItem[flagProduct];
+        let product = products[orderItem[attrIdProduct]];
+        divProduct.textContent = BusinessObjects.getObjectText(product);
         tdProduct.appendChild(divProduct);
 
         let tdVariations = document.createElement("td");
@@ -256,7 +261,8 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let divVariations = document.createElement("div");
         divVariations.classList.add(flagProductVariations);
         // DOM.setElementAttributesValuesCurrentAndPrevious(divVariations, orderItem[attrIdProductVariation]);
-        divVariations.textContent = orderItem[flagProductVariations];
+        let variationsText = ProductPermutation.getProductVariationsPreviewFromIdCsv(orderItem[flagProductVariations]);
+        divVariations.textContent = variationsText;
         tdVariations.appendChild(divVariations);
 
         let tdUnitQuantity = document.createElement("td");
@@ -265,6 +271,8 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let divUnitQuantity = document.createElement("div");
         divUnitQuantity.classList.add(flagUnitMeasurementQuantity);
         // DOM.setElementValuesCurrentAndPrevious(divUnitQuantity, orderItem[flagUnitMeasurementQuantity]);
+        let unitQuantity = unitMeasurements[orderItem[attrIdUnitMeasurementQuantity]];
+        divUnitQuantity.textContent = BusinessObjects.getObjectText(unitQuantity);
         tdUnitQuantity.appendChild(divUnitQuantity);
 
         let tdQuantityUsed = document.createElement("td");
@@ -272,7 +280,7 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let inputQuantityUsed = document.createElement("input");
         inputQuantityUsed.classList.add(flagQuantityUsed);
         inputQuantityUsed.type = 'number';
-        DOM.setElementAttributesValuesCurrentAndPrevious(inputQuantityUsed, orderItem[flagQuantityUsed]);
+        DOM.setElementValuesCurrentAndPrevious(inputQuantityUsed, orderItem[flagQuantityUsed]);
         tdQuantityUsed.appendChild(inputQuantityUsed);
 
         let tdQuantityProduced = document.createElement("td");
@@ -280,7 +288,7 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let inputQuantityProduced = document.createElement("input");
         inputQuantityProduced.classList.add(flagQuantityProduced);
         inputQuantityProduced.type = 'number';
-        DOM.setElementAttributesValuesCurrentAndPrevious(inputQuantityProduced, orderItem[flagQuantityProduced]);
+        DOM.setElementValuesCurrentAndPrevious(inputQuantityProduced, orderItem[flagQuantityProduced]);
         tdQuantityProduced.appendChild(inputQuantityProduced);
 
         /*
@@ -323,6 +331,8 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         let divUnitMeasurementLatencyManufacture = document.createElement("div");
         divUnitMeasurementLatencyManufacture.classList.add(flagUnitMeasurementLatencyManufacture);
         // DOM.setElementValuesCurrentAndPrevious(divUnitMeasurementLatencyManufacture, orderItem[flagUnitMeasurementLatencyManufacture]);
+        let unitMeasurementLatencyManufacture = unitMeasurementsTime[orderItem[attrIdUnitMeasurementLatencyManufacture]];
+        divUnitMeasurementLatencyManufacture.textContent = BusinessObjects.getObjectText(unitMeasurementLatencyManufacture);
         tdUnitMeasurementLatencyManufacture.appendChild(divUnitMeasurementLatencyManufacture);
         
         let tdLatencyManufacture = document.createElement("td");
@@ -331,23 +341,10 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         inputLatencyManufacture.classList.add(flagLatencyManufacture);
         inputLatencyManufacture.type = 'number';
         inputLatencyManufacture.step = 1;
-        DOM.setElementAttributesValuesCurrentAndPrevious(inputLatencyManufacture, orderItem[flagLatencyManufacture]);
+        DOM.setElementValuesCurrentAndPrevious(inputLatencyManufacture, orderItem[flagLatencyManufacture]);
         tdLatencyManufacture.appendChild(inputLatencyManufacture);
 
-        let tdActive = document.createElement("td");
-        tdActive.classList.add(flagActive);
-        let checkboxActive = document.createElement("input");
-        checkboxActive.classList.add(flagActive);
-        checkboxActive.type = 'checkbox';
-        DOM.setElementValuesCurrentAndPrevious(checkboxActive, orderItem[flagActive]);
-        tdActive.appendChild(checkboxActive);
-
-        let tdDelete = document.createElement("td");
-        tdDelete.classList.add(flagDelete);
-        let buttonDelete = document.createElement("button");
-        buttonDelete.classList.add(flagDelete);
-        buttonDelete.textContent = 'x';
-        tdDelete.appendChild(buttonDelete);
+        let tdActive = this.createTdActive(orderItem[flagActive]);
 
         let tr = document.createElement("tr");
         tr.classList.add(flagOrderItems);
@@ -369,7 +366,6 @@ export default class PageStoreManufacturingPurchaseOrders extends TableBasePage 
         tr.appendChild(tdUnitMeasurementLatencyManufacture);
         tr.appendChild(tdLatencyManufacture);
         tr.appendChild(tdActive);
-        tr.appendChild(tdDelete);
         tbody.appendChild(tr);
     }
     hookupFieldsOrderItemDisplayOrder() {

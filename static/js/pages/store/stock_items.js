@@ -84,7 +84,7 @@ export default class PageStoreStockItems extends TableBasePage {
         let inputDateExpiration = row.querySelector('td.' + flagDateExpiration + ' input');
         let inputIsConsumed = row.querySelector('td.' + flagIsConsumed + ' input');
         let inputDateConsumed = row.querySelector('td.' + flagDateConsumed + ' input');
-        let checkboxActive = row.querySelector('td.' + flagActive + ' input');
+        let buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdStockItem] = row.getAttribute(attrIdStockItem);
@@ -104,7 +104,7 @@ export default class PageStoreStockItems extends TableBasePage {
         jsonRow[flagDateExpiration] = DOM.getElementAttributeValueCurrent(inputDateExpiration);
         jsonRow[flagIsConsumed] = DOM.getElementAttributeValueCurrent(inputIsConsumed);
         jsonRow[flagDateConsumed] = DOM.getElementAttributeValueCurrent(inputDateConsumed);
-        jsonRow[flagActive] = checkboxActive.getAttribute(attrValueCurrent);
+        jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
         return jsonRow;
     }
     initialiseRowNew(tbody, row) {
