@@ -38,7 +38,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         let inputCostTotalLocalVatExcl = row.querySelector('td.' + flagCostTotalLocalVatExcl + ' input');
         let inputCostTotalLocalVatIncl = row.querySelector('td.' + flagCostTotalLocalVatIncl + ' input');
         let trsPurchaseOrderItem = row.querySelectorAll('tr.' + flagOrderItems);
-        let checkboxActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+        let buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdSupplierPurchaseOrder] = row.getAttribute(attrIdSupplierPurchaseOrder);
@@ -54,7 +54,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
             });
         }
         jsonRow[flagOrderItems] = orderItems;
-        jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+        jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
         return jsonRow;
     }
     getJsonRowOrderItem(tr) {
@@ -68,7 +68,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         let inputCostTotalLocalVatExcl = tr.querySelector('td.' + flagCostTotalLocalVatExcl + ' input');
         let inputCostTotalLocalVatIncl = tr.querySelector('td.' + flagCostTotalLocalVatIncl + ' input');
         let inputLatencyDeliveryDays = tr.querySelector('td.' + flagLatencyDeliveryDays + ' input');
-        let checkboxActive = tr.querySelector('td.' + flagActive + ' input');
+        let buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdSupplierPurchaseOrder] = tr.getAttribute(attrIdSupplierPurchaseOrder);
@@ -83,7 +83,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         jsonRow[flagCostTotalLocalVatExcl] = DOM.getElementAttributeValueCurrent(inputCostTotalLocalVatExcl);
         jsonRow[flagCostTotalLocalVatIncl] = DOM.getElementAttributeValueCurrent(inputCostTotalLocalVatIncl);
         jsonRow[flagLatencyDeliveryDays] = DOM.getElementAttributeValueCurrent(inputLatencyDeliveryDays);
-        jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+        jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
 
         return jsonRow;
     }
@@ -340,20 +340,7 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         DOM.setElementValuesCurrentAndPrevious(inputLatencyDeliveryDays, orderItem[flagLatencyDeliveryDays]);
         tdLatencyDeliveryDays.appendChild(inputLatencyDeliveryDays);
 
-        let tdActive = document.createElement("td");
-        tdActive.classList.add(flagActive);
-        let checkboxActive = document.createElement("input");
-        checkboxActive.classList.add(flagActive);
-        checkboxActive.type = 'checkbox';
-        DOM.setElementValuesCurrentAndPrevious(checkboxActive, orderItem[flagActive]);
-        tdActive.appendChild(checkboxActive);
-
-        let tdDelete = document.createElement("td");
-        tdDelete.classList.add(flagDelete);
-        let buttonDelete = document.createElement("button");
-        buttonDelete.classList.add(flagDelete);
-        buttonDelete.textContent = 'x';
-        tdDelete.appendChild(buttonDelete);
+        let tdActive = this.createTdActive(orderItem[flagActive]);
 
         let tr = document.createElement("tr");
         tr.classList.add(flagOrderItems);
@@ -372,7 +359,6 @@ export default class PageStoreSupplierPurchaseOrders extends TableBasePage {
         tr.appendChild(tdCostUnitLocalVatIncl);
         tr.appendChild(tdLatencyDeliveryDays);
         tr.appendChild(tdActive);
-        tr.appendChild(tdDelete);
         tbody.appendChild(tr);
     }
     hookupFieldsOrderItemDisplayOrder() {

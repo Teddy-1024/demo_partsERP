@@ -58,7 +58,7 @@
         </thead>
         <tbody>
             {% set is_blank_row = False %}
-            {% for manufacturing_purchase_order in model.manufacturing_purchase_orders %}
+            {% for order in model.manufacturing_purchase_orders %}
                 {% include 'components/store/_row_manufacturing_purchase_order.html' %}
             {% endfor %}
 
@@ -76,7 +76,7 @@
         var currencies = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.currencies) | tojson | safe }};
         var flagQuantityProduced = "{{ model.FLAG_QUANTITY_PRODUCED }}";
         var flagQuantityUsed = "{{ model.FLAG_QUANTITY_USED }}";
-        var manufacturing_purchase_orders = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.manufacturing_purchase_orders) | tojson | safe }};
+        var manufacturingPurchaseOrders = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.manufacturing_purchase_orders) | tojson | safe }};
         var products = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.get_list_products()) | tojson | safe }};
         var productCategories = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.category_list_filters.categories) | tojson | safe }};
         var productVariations = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.variations) | tojson | safe }};

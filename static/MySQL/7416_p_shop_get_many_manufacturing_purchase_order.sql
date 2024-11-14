@@ -282,13 +282,13 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_manufacturing LIMIT 1))
+			, CONCAT('You do not have view permissions for ', IFNULL((SELECT IFNULL(name, '(No Permission Name)') FROM partsltd_prod.Shop_Permission WHERE id_permission LIKE CONCAT('%', v_ids_permission_manufacturing_purchase_order, '%') LIMIT 1), '(No Permissions Found)'))
 		)
 		;
 	END IF;
     
 	IF EXISTS ( SELECT * FROM tmp_Msg_Error LIMIT 1 ) THEN
-		DELETE FROM tmp_Manufacturing_Purchase_Order_Product_Link;
+		-- DELETE FROM tmp_Manufacturing_Purchase_Order_Product_Link;
 		DELETE FROM tmp_Manufacturing_Purchase_Order;
 	END IF;
 	
@@ -339,6 +339,8 @@ BEGIN
     SELECT
 		MPOPL.id_link
 		, MPOPL.id_order
+        , P.id_category
+        , P.id_product
 		, MPOPL.id_permutation
         , fn_shop_get_product_permutation_name(MPOPL.id_permutation) AS name_permutation
         , fn_shop_get_product_permutation_variations_csv(MPOPL.id_permutation) AS csv_id_pairs_variation
@@ -354,7 +356,9 @@ BEGIN
         , MPOPL.price_unit_local_VAT_incl
         , MPOPL.active
     FROM tmp_Manufacturing_Purchase_Order t_MPO
-    INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPO.id_order = MPOPL.id_order
+	INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPO.id_order = MPOPL.id_order
+    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
     ;
     
     # Errors
@@ -384,9 +388,9 @@ DELIMITER ;;
 /*
 
 CALL p_shop_get_many_manufacturing_purchase_order (
-	1 # a_id_user
+	0 # a_id_user
 	, 1 # a_get_all_order
-	, 0 # a_get_inactive_order
+	, 1 # a_get_inactive_order
     , '' # a_ids_order
     , '' # a_ids_permutation
     , NULL # a_date_from

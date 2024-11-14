@@ -38,7 +38,7 @@ export default class PageStoreProductVariations extends TableBasePage {
         let textareaName = row.querySelector('td.' + flagName + ' textarea');
         let textareaNamePlural = row.querySelector('td.' + flagNamePlural + ' textarea');
         let tdProductVariations = row.querySelector('td.' + flagProductVariations);
-        let buttonActive = row.querySelector('td.' + flagActive + ' button');
+        let buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdProductVariationType] = row.getAttribute(attrIdProductVariationType);
@@ -69,7 +69,7 @@ export default class PageStoreProductVariations extends TableBasePage {
         let textareaCode = tr.querySelector('td.' + flagCode + ' textarea');
         let textareaName = tr.querySelector('td.' + flagName + ' textarea');
         // let checkboxActive = tr.querySelector('td.' + flagActive + ' input');
-        let buttonActive = tr.querySelector('td.' + flagActive + ' button');
+        let buttonActive = tr.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdProductVariation] = tr.getAttribute(attrIdProductVariation);
@@ -192,14 +192,7 @@ export default class PageStoreProductVariations extends TableBasePage {
         DOM.setElementValuesCurrentAndPrevious(textareaName, productVariation[flagName]);
         tdName.appendChild(textareaName);
 
-        let tdActive = document.createElement("td");
-        tdActive.classList.add(flagActive);
-        let buttonActive = document.createElement("button");
-        buttonActive.classList.add(flagActive);
-        buttonActive.classList.add(productVariation[flagActive] ? flagDelete : flagAdd);
-        buttonActive.textContent = productVariation[flagActive] ? 'x' : '+';
-        DOM.setElementAttributesValuesCurrentAndPrevious(buttonActive, productVariation[flagActive]);
-        tdActive.appendChild(buttonActive);
+        let tdActive = this.createTdActive(productVariation[flagActive]);
         
         let tr = document.createElement("tr");
         tr.classList.add(flagProductVariation);

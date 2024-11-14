@@ -41,7 +41,7 @@ export default class PageStoreSuppliers extends TableBasePage {
         let textareaEmail = row.querySelector('td.' + flagEmail + ' textarea');
         let textareaWebsite = row.querySelector('td.' + flagWebsite + ' textarea');
         let tdCurrency = row.querySelector('td.' + flagCurrency);
-        let checkboxActive = row.querySelector('td.' + flagActive + ' input[type="checkbox"]');
+        let buttonActive = row.querySelector(':scope > td.' + flagActive + ' button');
 
         let jsonRow = {};
         jsonRow[attrIdSupplier] = row.getAttribute(attrIdSupplier);
@@ -55,7 +55,7 @@ export default class PageStoreSuppliers extends TableBasePage {
         jsonRow[flagEmail] = DOM.getElementAttributeValueCurrent(textareaEmail);
         jsonRow[flagWebsite] = DOM.getElementAttributeValueCurrent(textareaWebsite);
         jsonRow[attrIdCurrency] = DOM.getElementAttributeValueCurrent(tdCurrency);
-        jsonRow[flagActive] = DOM.getElementAttributeValueCurrent(checkboxActive);
+        jsonRow[flagActive] = buttonActive.classList.contains(flagDelete);
         return jsonRow;
     }
     getSupplierAddressesFromRow(row) {
@@ -250,20 +250,7 @@ export default class PageStoreSuppliers extends TableBasePage {
         DOM.setElementValuesCurrentAndPrevious(ddlRegion, region[attrIdRegion]);
         tdRegion.appendChild(ddlRegion);
 
-        let tdActive = document.createElement("td");
-        tdActive.classList.add(flagActive);
-        let checkboxActive = document.createElement("input");
-        checkboxActive.classList.add(flagActive);
-        checkboxActive.type = 'checkbox';
-        DOM.setElementValuesCurrentAndPrevious(checkboxActive, supplierAddress[flagActive]);
-        tdActive.appendChild(checkboxActive);
-
-        let tdDelete = document.createElement("td");
-        tdDelete.classList.add(flagDelete);
-        let buttonDelete = document.createElement("button");
-        buttonDelete.classList.add(flagDelete);
-        buttonDelete.textContent = 'x';
-        tdDelete.appendChild(buttonDelete);
+        let tdActive = this.createTdActive(supplierAddress[flagActive]);
 
         let tr = document.createElement("tr");
         tr.setAttribute(attrIdSupplierAddress, supplierAddress[attrIdSupplierAddress]);
@@ -275,7 +262,6 @@ export default class PageStoreSuppliers extends TableBasePage {
         tr.appendChild(tdCounty);
         tr.appendChild(tdRegion);
         tr.appendChild(tdActive);
-        tr.appendChild(tdDelete);
         tbody.appendChild(tr);
     }
     hookupAddressPostcodeInputs() {

@@ -100,6 +100,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_NAME_ATTR_OPTION_TEXT: ClassVar[str] = Base.FLAG_NAME_ATTR_OPTION_TEXT
     FLAG_NAME_ATTR_OPTION_VALUE: ClassVar[str] = Base.FLAG_NAME_ATTR_OPTION_VALUE
     FLAG_NAME_PLURAL: ClassVar[str] = Base.FLAG_NAME_PLURAL
+    # FLAG_NAME_SINGULAR: ClassVar[str] = Base.FLAG_NAME_SINGULAR
     FLAG_NAV_ADMIN_HOME: ClassVar[str] = 'navAdminHome'
     FLAG_NAV_ADMIN_STORE_STRIPE_PRICES: ClassVar[str] = 'navAdminStoreStripePrices'
     FLAG_NAV_ADMIN_STORE_STRIPE_PRODUCTS: ClassVar[str] = 'navAdminStoreStripeProducts'
