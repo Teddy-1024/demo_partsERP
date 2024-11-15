@@ -4560,6 +4560,8 @@ CREATE TRIGGER before_update_Shop_Product_Permutation
 BEFORE UPDATE ON Shop_Product_Permutation
 FOR EACH ROW
 BEGIN
+	DECLARE v_msg VARCHAR(4000);
+
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'New change Set ID must be provided.';
@@ -4577,8 +4579,10 @@ BEGIN
 		NEW.id_unit_measurement_interval_expiration_unsealed IS NULL
 		OR NEW.id_unit_measurement_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
+        SET v_msg := CONCAT('Unsealed expiration interval ID must be a unit of time. Invalid value: ', CAST(NEW.id_unit_measurement_interval_expiration_unsealed AS CHAR));
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Unsealed expiration interval ID must be a unit of time.';
+        SET MESSAGE_TEXT = v_msg
+        ;
     END IF;
     
     INSERT INTO Shop_Product_Permutation_Audit (
@@ -11103,10 +11107,8 @@ BEGIN
     WHERE PP_T.guid = a_guid
     ;
     
-    select 'nips';
-    
     SELECT
-			partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
+		partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
 			t_PP.id_permutation -- a_id_permutation
 			, t_PP.csv_id_pairs_variation -- a_variation_csv
 			, a_guid -- a_guid
@@ -11114,8 +11116,6 @@ BEGIN
     FROM tmp_Permutation t_PP
     WHERE NOT ISNULL(t_PP.csv_id_pairs_variation)
     ;
-    
-    SELECT 'CHIPS';
     
     INSERT INTO tmp_Permutation_Variation_Link (
 		id_link
@@ -11130,14 +11130,22 @@ BEGIN
         , PPVL_T.id_permutation
         , PPVL_T.id_variation
         , PPVL_T.display_order
-        , ISNULL(PPVL_T.id_link) AS active
+        , NOT ISNULL(PPVL_T.id_link) AS active
         , IFNULL(PPVL_T.id_link, 0) < 1 AS is_new
     FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp PPVL_T
-    RIGHT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PPVL_T.id_link = PPVL.id_variation
-    INNER JOIN tmp_Permutation t_PP ON PPVL_T.id_permutation = t_PP.id_permutation
+    LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PPVL_T.id_link = PPVL.id_variation
+    LEFT JOIN tmp_Permutation t_PP ON PPVL_T.id_permutation = t_PP.id_permutation
+    WHERE PPVL_T.GUID = a_guid
     ;
     
-    select 'lips';
+    IF a_debug = 1 THEN
+		SELECT *
+		FROM tmp_Permutation
+		;
+		SELECT *
+		FROM tmp_Permutation_Variation_Link
+		;
+    END IF;
     
     -- Validation
     -- Missing mandatory fields
@@ -11201,8 +11209,6 @@ BEGIN
 		WHERE NOT ISNULL(t_P.profit_local_min) AND t_P.profit_local_min < 0
 		;
     END IF;
-    
-    SELECT 'NIPS';
     
     -- 	latency_manufacture
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.latency_manufacture) LIMIT 1) THEN
@@ -11385,6 +11391,13 @@ BEGIN
 			ISNULL(t_P.can_edit)
 		;
 	END IF;
+        
+        IF a_debug = 1 THEN
+			SELECT *
+            FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+			WHERE GUID = a_guid
+            ;
+        END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
@@ -11396,7 +11409,8 @@ BEGIN
 			SET v_id_change_set := LAST_INSERT_ID();
 			
 			INSERT INTO Shop_Product_Permutation (
-				id_product
+				id_permutation_temp
+				, id_product
 				, description
 				, cost_local_VAT_excl
 				, cost_local_VAT_incl
@@ -11418,9 +11432,11 @@ BEGIN
 				, active
 				, created_by
 				, created_on
+                , id_change_set
 			)
 			SELECT
-				t_P.id_product AS id_product
+				t_P.id_permutation
+				, t_P.id_product AS id_product
 				, t_P.description AS description
 				, t_P.cost_local_VAT_excl AS cost_local_VAT_excl
 				, t_P.cost_local_VAT_incl AS cost_local_VAT_incl
@@ -11442,6 +11458,7 @@ BEGIN
 				, t_P.active AS active
 				, a_id_user AS created_by
 				, v_time_start AS created_on
+                , v_id_change_set AS id_change_set
 			FROM tmp_Permutation t_P
 			WHERE 
 				is_new = 1
@@ -11475,7 +11492,9 @@ BEGIN
 			;
             
             UPDATE tmp_Permutation t_PP
-            INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation_temp
+            INNER JOIN partsltd_prod.Shop_Product_Permutation PP 
+				ON t_PP.id_permutation_temp = PP.id_permutation_temp
+                AND PP.id_change_set = v_id_change_set
             SET
 				t_PP.id_permutation = PP.id_permutation
 			;
@@ -11519,7 +11538,8 @@ BEGIN
 		DELETE FROM Shop_Product_Permutation_Temp
 		WHERE GUID = a_guid
         ;
-		DELETE FROM Shop_Product_Permutation_Variation_Link_Temp
+        
+		DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
 		WHERE GUID = a_guid
         ;
 	
@@ -11625,6 +11645,8 @@ DELETE FROM Shop_Product_Permutation_Temp
 WHERE id_permutation = 1;
 
 
+select * from shop_unit_measurement;
+
 */
 
 
@@ -11648,6 +11670,9 @@ BEGIN
 
 	SELECT *
 	FROM partsltd_prod.Shop_Product_Permutation
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
 	;
 	SELECT *
 	FROM partsltd_prod.Shop_Product_Permutation_Temp
@@ -11723,8 +11748,8 @@ BEGIN
         /* Test 3 - Insert with Variations */
         (
 			-1 -- id_permutation
-			, 8 -- id_product
-            , '1:1' -- csv_id_pairs_variation
+			, 1 -- id_product
+            , '1:3' -- csv_id_pairs_variation
             , 'Test with variations' -- description
             , NULL -- cost_local_VAT_excl
             , NULL -- cost_local_VAT_incl
@@ -11740,9 +11765,9 @@ BEGIN
             , NULL -- id_unit_measurement_interval_recurrence
             , NULL -- count_interval_recurrence
             , NULL -- id_stripe_product
-            , FALSE -- does_expire_faster_once_unsealed
-            , NULL -- id_unit_measurement_interval_expiration_unsealed
-            , NULL -- count_interval_expiration_unsealed
+            , TRUE -- does_expire_faster_once_unsealed
+            , 8 -- id_unit_measurement_interval_expiration_unsealed
+            , 2 -- count_interval_expiration_unsealed
 			, 1 -- active
 			, v_guid
 		)
@@ -11766,6 +11791,9 @@ BEGIN
 	FROM partsltd_prod.Shop_Product_Permutation
 	;
 	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
+	;
+	SELECT *
 	FROM partsltd_prod.Shop_Product_Permutation_Temp
 	;
     
@@ -11781,8 +11809,19 @@ DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 
-SELECT * FROM partsltd_prod.Shop_Product
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_product_permutation`, CONSTRAINT `FK_Shop_Product_Permutation_id_product` FOREIGN KEY (`id_product`) REFERENCES `shop_product` (`id_product`) ON UPDATE RESTRICT)
+DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
+WHERE id_link >= 3
+;
+DELETE FROM partsltd_prod.Shop_Product_Permutation
+WHERE id_permutation >= 7
+;
+
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Variation
+	;
 */
 
 -- File: 7210_p_shop_get_many_product_variation.sql
@@ -19019,7 +19058,9 @@ BEGIN
             
 			
 			UPDATE tmp_Supplier_Purchase_Order t_SPO
-			INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_SPO.id_order_temp = SPO.id_order_temp
+			INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO 
+				ON t_SPO.id_order_temp = SPO.id_order_temp
+                AND SPO.id_change_set = v_id_change_set
 			SET 
 				t_SPO.id_order = SPO.id_order
 			WHERE t_SPO.is_new = 1
@@ -20684,7 +20725,9 @@ BEGIN
 			;
 			
 			UPDATE tmp_Manufacturing_Purchase_Order t_MPO
-			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order_temp = MPO.id_order_temp
+			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO 
+				ON t_MPO.id_order_temp = MPO.id_order_temp
+				AND MPO.id_change_set = v_id_change_set
 			SET 
 				t_MPO.id_order = MPO.id_order
 			WHERE t_MPO.is_new = 1
@@ -23985,7 +24028,7 @@ INSERT INTO partsltd_prod.Shop_Product_Change_Set (
 )
 VALUES ( 'Update Variation Display Orders' )
 ;
-WITH RANKED AS (
+WITH RECURSIVE RANKED AS (
     SELECT 
         V.id_variation,
         RANK() OVER (ORDER BY 
@@ -24023,7 +24066,7 @@ JOIN (
     FROM partsltd_prod.Shop_Product_Change_Set CS
     ORDER BY CS.id_change_set DESC
     LIMIT 1
-) CS
+) AS CS
 SET 
 	V.display_order = RANKED.new_order
     , V.id_change_set = CS.id_change_set
