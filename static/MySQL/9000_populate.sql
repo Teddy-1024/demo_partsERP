@@ -873,12 +873,42 @@ INSERT INTO Shop_User (
 	, firstname
     , surname
 	, email
-	# email_verified
 	, is_super_user
+    , active
+    , created_by
+    , created_on
 )
 VALUES 
-	('auth0|6582b95c895d09a70ba10fef', 'Teddy', 'Middleton-Smith', 'edward.middletonsmith@gmail.com', 1),
-	('parts_guest', 'Guest', '', '', 0)
+	(
+		'auth0|6582b95c895d09a70ba10fef' -- id_user_auth0
+		, 'Teddy' -- firstname
+        , 'Middleton-Smith' -- surname
+        , 'edward.middletonsmith@gmail.com' -- email
+        , 1 -- is_super_user
+		, 1 -- active
+		, 1 -- created_by
+		, current_timestamp() -- created_on
+	),
+	(
+		'parts_guest' -- id_user_auth0
+        , 'Guest' -- firstname
+        , '' -- surname
+        , '' -- email
+        , 0 -- is_super_user
+		, 1 -- active
+		, 1 -- created_by
+		, current_timestamp() -- created_on
+	),
+    (
+	'auth0|672659014296b7f94a9bab45' -- id_user_auth0
+    , 'Tierney' -- firstname
+    , 'Gullen' -- surname
+    , 'tierneybailey13@gmail.com' -- email
+    , 1 -- is_super_user
+    , 1 -- active
+    , 1 -- created_by
+    , current_timestamp() -- created_on
+)
 ;
 
 # User Role link

@@ -39,4 +39,5 @@ class Helper_App(BaseModel):
         if current_app.app_config.is_development:
             print(message)
         elif current_app.app_config.is_production:
-            current_app.logger.info(message)
+            pass
+        current_app.logger.info(message)
