@@ -33,7 +33,7 @@
         }
     </script>
     <meta name="yandex-verification" content="4693a824cfda082a" />
-    <meta id="{{ model.ID_CSRF_TOKEN }}" name="{{ model.NAME_CSRF_TOKEN }}" content="{{ csrf_token() }}" />
+    <meta id="{{ model.ID_CSRF_TOKEN }}" name="{{ model.FLAG_CSRF_TOKEN }}" content="{{ csrf_token() }}" />
 
     <!-- Scripts 
     <script src="{{ url_for('static', filename='js/lib/common.js') }}"></script>
@@ -98,6 +98,7 @@
         var flagContainer = "{{ model.FLAG_CONTAINER }}";
         var flagContainerInput = "{{ model.FLAG_CONTAINER_INPUT }}";
         var flagCounty = "{{ model.FLAG_COUNTY }}";
+        var flagCsrfToken = "{{ model.FLAG_CSRF_TOKEN }}";
         var flagCurrency = "{{ model.FLAG_CURRENCY }}";
         var flagDelete = "{{ model.FLAG_DELETE }}";
         var flagDescription = "{{ model.FLAG_DESCRIPTION }}";
@@ -233,7 +234,6 @@
         var idTableMain = "#{{ model.ID_TABLE_MAIN }}";
         var idTextareaConfirm = "#{{ model.ID_TEXTAREA_CONFIRM }}";
         var isUserLoggedIn = "{{ model.output_bool(model.IS_USER_LOGGED_IN) }}";
-        var nameCSRFToken = "{{ model.NAME_CSRF_TOKEN }}";
         var _pathHost = "{{ model.get_url_host() }}";
         var _rowBlank = null;
         var titlePageCurrent = "{{ model.title }}";

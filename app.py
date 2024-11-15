@@ -96,10 +96,12 @@ def internal_server_error(error):
     app.logger.error('Traceback: %s', traceback.format_exc())
     return "Internal Server Error", 500
 
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
 
-
-"""
 csrf = CSRFProtect()
+"""
 cors = CORS()
 db = SQLAlchemy()
 mail = Mail()

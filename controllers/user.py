@@ -21,52 +21,92 @@ import lib.argument_validation as av
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session, Blueprint, current_app
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import generate_csrf
+from werkzeug.exceptions import BadRequest
 from extensions import oauth # db, 
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.base_client import OAuthError
 from urllib.parse import quote, urlparse, parse_qs
+from functools import wraps
 
 db = SQLAlchemy()
 
 routes_user = Blueprint('routes_user', __name__)
 
 # User authentication
-@routes_user.route("/login", methods=['POST'])
+@routes_user.route("/login", methods=['POST', 'OPTIONS'])
 def login():
+    Helper_App.console_log('login')
+    Helper_App.console_log(f'method={request.method}')
+    """
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        response = current_app.make_default_options_response()
+        response.headers['Access-Control-Allow-Headers'] = f'Content-Type, {Model_View_Base.FLAG_CSRF_TOKEN}'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        return response
+    """
     try:
         data = request.json
+        try:
+            data = request.get_json()
+        except:
+            data = {}
     except:
         data = {}
     Helper_App.console_log(f'data={data}')
-    # callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}{data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
-    
-    # encoded_path = quote(data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME))
-    uri_redirect = url_for('routes_user.login_callback', _external=True) # , subpath=encoded_path
-    
-    # uri_redirect = f'{current_app.URL_HOST}/login_callback?subpath={data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
-    Helper_App.console_log(f'redirect uri: {uri_redirect}')
     hash_callback = data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)
     Helper_App.console_log(f'hash_callback: {hash_callback}')
 
-    red = oauth.auth0.authorize_redirect(
-        redirect_uri = uri_redirect,
-        state = quote(hash_callback)
-    )
-    Helper_App.console_log(f'redirect: {red}')
-    headers = red.headers['Location']
-    Helper_App.console_log(f'headers: {headers}')
-    parsed_url = urlparse(headers)
-    query_params = parse_qs(parsed_url.query)
-    Helper_App.console_log(f"""
-    OAuth Authorize Redirect URL:
+    """
+    # Verify CSRF token manually
+    Helper_App.console_log(f'request headers={request.headers}')
+    token = request.headers.get(Model_View_Base.FLAG_CSRF_TOKEN)
+    Helper_App.console_log(f'token={token}')
+    Helper_App.console_log(f'session={session}')
+    Helper_App.console_log(f'session token={session.get('csrf_token')}')
+    if not token or token != session.get('csrf_token'):
+        token = data.get(Model_View_Base.FLAG_CSRF_TOKEN, None)
+        Helper_App.console_log(f'token={token}')
+        if not token or token != session.get('csrf_token'):
+            raise BadRequest('Invalid or missing CSRF token')
+    """
+    # OAuth login
+    try:
+        # callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}{data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
+        
+        # encoded_path = quote(data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME))
+        uri_redirect = url_for('routes_user.login_callback', _external=True) # , subpath=encoded_path
+        
+        # uri_redirect = f'{current_app.URL_HOST}/login_callback?subpath={data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
+        Helper_App.console_log(f'redirect uri: {uri_redirect}')
+
+        Helper_App.console_log(f'Before red')
+
+        red = oauth.auth0.authorize_redirect(
+            redirect_uri = uri_redirect,
+            state = quote(hash_callback)
+        )
+        Helper_App.console_log(f'redirect: {red}')
+        headers = red.headers['Location']
+        Helper_App.console_log(f'headers: {headers}')
+        parsed_url = urlparse(headers)
+        query_params = parse_qs(parsed_url.query)
+        Helper_App.console_log(f"""
+        OAuth Authorize Redirect URL:
+        
+        Base URL: {parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}
+        {parsed_url}
+        
+        Query Parameters: {query_params}
+        """)
+        return jsonify({'Success': True, Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, f'{Model_View_Base.FLAG_CALLBACK}': headers})
+
+        return jsonify({'status': 'success', 'redirect': callback})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 400
     
-    Base URL: {parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}
-    {parsed_url}
-    
-    Query Parameters: {query_params}
-    """)
-    return jsonify({'Success': True, Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_SUCCESS, f'{Model_View_Base.FLAG_CALLBACK}': headers})
 
 @routes_user.route("/login_callback") # <path:subpath>/<code>
 def login_callback():

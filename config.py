@@ -32,6 +32,15 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Auth0
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    # SESSION_COOKIE_SAMESITE = 'Lax'
+    # PERMANENT_SESSION_LIFETIME = 3600
+    WTF_CSRF_ENABLED = True
+    # WTF_CSRF_CHECK_DEFAULT = False  # We'll check it manually for API routes
+    # WTF_CSRF_HEADERS = ['X-CSRFToken']  # Accept CSRF token from this header
+    WTF_CSRF_TIME_LIMIT = None
+    WTF_CSRF_SSL_STRICT = False  # Allows testing without HTTPS
     ID_AUTH0_CLIENT = os.getenv('ID_AUTH0_CLIENT')
     ID_AUTH0_CLIENT_SECRET = os.getenv('ID_AUTH0_CLIENT_SECRET')
     DOMAIN_AUTH0 = os.getenv('DOMAIN_AUTH0')
@@ -71,9 +80,10 @@ class Config:
 
 class DevelopmentConfig(Config):
     is_development = True
+    # Add development-specific configuration variables
     DEBUG = True
     MAIL_DEBUG = True
-    # Add development-specific configuration variables
+    SESSION_COOKIE_SECURE = False
 
 class ProductionConfig(Config):
     is_production = True
@@ -82,8 +92,9 @@ class ProductionConfig(Config):
 
 # Set the configuration class based on the environment
 # You can change 'development' to 'production' when deploying
-config_env = os.getenv('FLASK_ENV', "production")
+config_env = os.getenv('FLASK_ENV', "development")
 with open('app.log', 'a') as f:
+    print(f'config_env: {config_env}')
     f.write(f'config_env: {config_env}\n')
     # current_app.logger.error(f'config_env: {config_env}') # logger not yet initialised
 if config_env == 'development':

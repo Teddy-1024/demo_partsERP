@@ -71,6 +71,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_CONTAINER_ICON_AND_LABEL: ClassVar[str] = 'container-icon-label'
     FLAG_CONTAINER_INPUT: ClassVar[str] = FLAG_CONTAINER + '-input'
     FLAG_COUNTY: ClassVar[str] = Base.FLAG_COUNTY
+    FLAG_CSRF_TOKEN: ClassVar[str] = 'X-CSRFToken'
     FLAG_CURRENCY: ClassVar[str] = 'currency'
     FLAG_DATA: ClassVar[str] = 'data'
     FLAG_DATE_FROM: ClassVar[str] = Base.FLAG_DATE_FROM
