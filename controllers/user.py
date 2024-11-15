@@ -53,43 +53,43 @@ def handle_db_disconnect(f):
 # User authentication
 @routes_user.route("/login", methods=['POST', 'OPTIONS'])
 def login():
-    Helper_App.console_log('login')
-    Helper_App.console_log(f'method={request.method}')
-    """
-    if request.method == 'OPTIONS':
-        # Handle preflight request
-        response = current_app.make_default_options_response()
-        response.headers['Access-Control-Allow-Headers'] = f'Content-Type, {Model_View_Base.FLAG_CSRF_TOKEN}'
-        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-        return response
-    """
     try:
-        data = request.json
+        Helper_App.console_log('login')
+        Helper_App.console_log(f'method={request.method}')
+        """
+        if request.method == 'OPTIONS':
+            # Handle preflight request
+            response = current_app.make_default_options_response()
+            response.headers['Access-Control-Allow-Headers'] = f'Content-Type, {Model_View_Base.FLAG_CSRF_TOKEN}'
+            response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+            return response
+        """
         try:
-            data = request.get_json()
+            data = request.json
+            try:
+                data = request.get_json()
+            except:
+                data = {}
         except:
             data = {}
-    except:
-        data = {}
-    Helper_App.console_log(f'data={data}')
-    hash_callback = data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)
-    Helper_App.console_log(f'hash_callback: {hash_callback}')
+        Helper_App.console_log(f'data={data}')
+        hash_callback = data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)
+        Helper_App.console_log(f'hash_callback: {hash_callback}')
 
-    """
-    # Verify CSRF token manually
-    Helper_App.console_log(f'request headers={request.headers}')
-    token = request.headers.get(Model_View_Base.FLAG_CSRF_TOKEN)
-    Helper_App.console_log(f'token={token}')
-    Helper_App.console_log(f'session={session}')
-    Helper_App.console_log(f'session token={session.get('csrf_token')}')
-    if not token or token != session.get('csrf_token'):
-        token = data.get(Model_View_Base.FLAG_CSRF_TOKEN, None)
+        """
+        # Verify CSRF token manually
+        Helper_App.console_log(f'request headers={request.headers}')
+        token = request.headers.get(Model_View_Base.FLAG_CSRF_TOKEN)
         Helper_App.console_log(f'token={token}')
+        Helper_App.console_log(f'session={session}')
+        Helper_App.console_log(f'session token={session.get('csrf_token')}')
         if not token or token != session.get('csrf_token'):
-            raise BadRequest('Invalid or missing CSRF token')
-    """
-    # OAuth login
-    try:
+            token = data.get(Model_View_Base.FLAG_CSRF_TOKEN, None)
+            Helper_App.console_log(f'token={token}')
+            if not token or token != session.get('csrf_token'):
+                raise BadRequest('Invalid or missing CSRF token')
+        """
+        # OAuth login
         # callback_login = F'{Model_View_Base.HASH_CALLBACK_LOGIN}{data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME)}'
         
         # encoded_path = quote(data.get(Model_View_Base.FLAG_CALLBACK, Model_View_Base.HASH_PAGE_HOME))
