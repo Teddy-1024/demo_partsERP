@@ -4,21 +4,25 @@ import DOM from './dom.js';
 export default class API {
     
     static getCsrfToken() {
-        // return document.querySelectorAll('meta[name=' + nameCSRFToken + ']').getAttribute('content');
         return document.querySelector(idCSRFToken).getAttribute('content');
     }
     
     static async request(hashEndpoint, method = 'GET', data = null, params = null) {
         const url = API.getUrlFromHash(hashEndpoint, params);
+        const csrfToken = API.getCsrfToken();
         const options = {
             method,
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': API.getCsrfToken()
+                [flagCsrfToken]: csrfToken,
             }
         };
 
         if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+            data = { 
+                ...data, 
+                [flagCsrfToken]: csrfToken,
+            };
             options.body = JSON.stringify(data);
         }
 
