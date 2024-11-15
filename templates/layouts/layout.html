@@ -273,64 +273,66 @@
         <a class="{{ model.FLAG_NAV_CONTACT }}">Contact</a>
     </div>
 
-    {% if model.is_page_store and model.user.can_admin_store %}
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a class="{{ model.FLAG_NAV_STORE_PRODUCT_PERMUTATIONS }}">Product Permutations</a>
-        </div>
-        {% if model.user.can_admin_store %}
+    {#
+        {% if model.is_page_store and model.user.can_admin_store %}
             <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-                <a class="{{ model.FLAG_NAV_STORE_STOCK_ITEMS }}">Stock Items</a>
+                <a class="{{ model.FLAG_NAV_STORE_PRODUCT_PERMUTATIONS }}">Product Permutations</a>
             </div>
-        {% endif %}
-        <!--
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <!-- <a href="{ url_ for('create_price_dummy') }">Create template price</a> --
-            <form id="{{ model.ID_FORM_IS_INCLUDED_VAT }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_is_included_VAT') } }" method="POST">
-                { { model.form_is_included_VAT.hidden_tag() }}
-                <div class="container-input">
-                    { { model.form_is_included_VAT.is_included.label }}
-                    { { model.form_is_included_VAT.is_included( checked = model.is_included_VAT ) }}
-                    { % for error in model.form_is_included_VAT.is_included.errors %}
-                        <p class="error">{{ error }}</p>
-                    { % endfor %}
+            {% if model.user.can_admin_store %}
+                <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                    <a class="{{ model.FLAG_NAV_STORE_STOCK_ITEMS }}">Stock Items</a>
                 </div>
-            </form>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <form id="{{ model.ID_FORM_DELIVERY_REGION }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_delivery_region') } }" method="POST">
-                { { model.form_delivery_region.hidden_tag() }}
-                <div class="container-input">
-                    { { model.form_delivery_region.id_region_delivery.label }}
-                    { { model.form_delivery_region.id_region_delivery() }}
-                    { % for error in model.form_delivery_region.id_region_delivery.errors %}
-                        <p class="error">{{ error }}</p>
-                    { % endfor %}
-                </div>
-            </form>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <form id="{{ model.ID_FORM_CURRENCY }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_currency') } }" method="POST">
-                { { model.form_currency.hidden_tag() }}
-                <div class="container-input">
-                    { { model.form_currency.id_currency.label }}
-                    { { model.form_currency.id_currency() }}
-                    { % for error in model.form_currency.id_currency.errors %}
-                        <p class="error">{{ error }}</p>
-                    { % endfor %}
-                </div>
-            </form>
-        </div>
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a href="{ { url_for('routes_user.logout') if model.is_user_logged_in else url_for('routes_user.login') }}" style="float:right">{{ 'Logout' if model.is_user_logged_in else 'Login' }}</a>
-        </div>
-        -->
-    {% else %}
-        {% if model.user.can_admin_store %}
+            {% endif %}
+            <!--
             <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-                <a class="{{ model.FLAG_NAV_STORE_HOME }}">Shop</a>
+                <!-- <a href="{ url_ for('create_price_dummy') }">Create template price</a> --
+                <form id="{{ model.ID_FORM_IS_INCLUDED_VAT }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_is_included_VAT') } }" method="POST">
+                    { { model.form_is_included_VAT.hidden_tag() }}
+                    <div class="container-input">
+                        { { model.form_is_included_VAT.is_included.label }}
+                        { { model.form_is_included_VAT.is_included( checked = model.is_included_VAT ) }}
+                        { % for error in model.form_is_included_VAT.is_included.errors %}
+                            <p class="error">{{ error }}</p>
+                        { % endfor %}
+                    </div>
+                </form>
             </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <form id="{{ model.ID_FORM_DELIVERY_REGION }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_delivery_region') } }" method="POST">
+                    { { model.form_delivery_region.hidden_tag() }}
+                    <div class="container-input">
+                        { { model.form_delivery_region.id_region_delivery.label }}
+                        { { model.form_delivery_region.id_region_delivery() }}
+                        { % for error in model.form_delivery_region.id_region_delivery.errors %}
+                            <p class="error">{{ error }}</p>
+                        { % endfor %}
+                    </div>
+                </form>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <form id="{{ model.ID_FORM_CURRENCY }}" class="{{ model.FLAG_CONTAINER }}" action="{ { url_ for('set_currency') } }" method="POST">
+                    { { model.form_currency.hidden_tag() }}
+                    <div class="container-input">
+                        { { model.form_currency.id_currency.label }}
+                        { { model.form_currency.id_currency() }}
+                        { % for error in model.form_currency.id_currency.errors %}
+                            <p class="error">{{ error }}</p>
+                        { % endfor %}
+                    </div>
+                </form>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <a href="{ { url_for('routes_user.logout') if model.is_user_logged_in else url_for('routes_user.login') }}" style="float:right">{{ 'Logout' if model.is_user_logged_in else 'Login' }}</a>
+            </div>
+            -->
+        {% else %}
+            {% if model.user.can_admin_store %}
+                <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                    <a class="{{ model.FLAG_NAV_STORE_HOME }}">Shop</a>
+                </div>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    #}
     {% if model.user.can_admin_store %}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
             <a class="{{ model.FLAG_NAV_ADMIN_HOME }}">Admin</a>

@@ -67,11 +67,14 @@ BEGIN
     
     CALL p_validate_guid ( a_guid );
     
-    DROP TABLE IF EXISTS tmp_Permutation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation_Variation_Link;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     
     CREATE TEMPORARY TABLE tmp_Permutation (
 		id_permutation INT NOT NULL
+        , id_permutation_temp INT NOT NULL
 		, id_product INT NOT NULL
+        , csv_id_pairs_variation VARCHAR(4000) NULL
 		, description VARCHAR(4000) NOT NULL
 		, cost_local_VAT_excl FLOAT NULL
 		, cost_local_VAT_incl FLOAT NULL
@@ -97,6 +100,15 @@ BEGIN
         , name_error VARCHAR(255) NOT NULL
         , is_new BIT NOT NULL
     );
+    
+    CREATE TEMPORARY TABLE tmp_Permutation_Variation_Link (
+		id_link INT NOT NULL
+        , id_permutation INT NOT NULL
+        , id_variation INT NOT NULL
+        , active BIT NOT NULL
+        , display_order INT NOT NULL
+        , is_new BIT NOT NULL
+    );
         
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
@@ -109,7 +121,9 @@ BEGIN
     -- Get data from Temp table
     INSERT INTO tmp_Permutation (
 		id_permutation
+		, id_permutation_temp
 		, id_product
+        , csv_id_pairs_variation
 		, description
 		, cost_local_VAT_excl
 		, cost_local_VAT_incl
@@ -134,7 +148,9 @@ BEGIN
 	)
     SELECT 
 		PP_T.id_permutation
+		, PP_T.id_permutation
 		, IFNULL(PP_T.id_product, PP.id_product) AS id_product
+        , PP_T.csv_id_pairs_variation
         , IFNULL(PP_T.description, PP.description) AS description
 		, IFNULL(PP_T.cost_local_VAT_excl, PP.cost_local_VAT_excl) AS cost_local_VAT_excl
 		, IFNULL(PP_T.cost_local_VAT_incl, PP.cost_local_VAT_incl) AS cost_local_VAT_incl
@@ -160,6 +176,46 @@ BEGIN
     LEFT JOIN Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
     WHERE PP_T.guid = a_guid
     ;
+    
+    SELECT
+		partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
+			t_PP.id_permutation -- a_id_permutation
+			, t_PP.csv_id_pairs_variation -- a_variation_csv
+			, a_guid -- a_guid
+		)
+    FROM tmp_Permutation t_PP
+    WHERE NOT ISNULL(t_PP.csv_id_pairs_variation)
+    ;
+    
+    INSERT INTO tmp_Permutation_Variation_Link (
+		id_link
+        , id_permutation
+        , id_variation
+        , display_order
+        , active
+        , is_new
+	)
+    SELECT
+		PPVL_T.id_link
+        , PPVL_T.id_permutation
+        , PPVL_T.id_variation
+        , PPVL_T.display_order
+        , NOT ISNULL(PPVL_T.id_link) AS active
+        , IFNULL(PPVL_T.id_link, 0) < 1 AS is_new
+    FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp PPVL_T
+    LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PPVL_T.id_link = PPVL.id_variation
+    LEFT JOIN tmp_Permutation t_PP ON PPVL_T.id_permutation = t_PP.id_permutation
+    WHERE PPVL_T.GUID = a_guid
+    ;
+    
+    IF a_debug = 1 THEN
+		SELECT *
+		FROM tmp_Permutation
+		;
+		SELECT *
+		FROM tmp_Permutation_Variation_Link
+		;
+    END IF;
     
     -- Validation
     -- Missing mandatory fields
@@ -223,8 +279,6 @@ BEGIN
 		WHERE NOT ISNULL(t_P.profit_local_min) AND t_P.profit_local_min < 0
 		;
     END IF;
-    
-    SELECT 'NIPS';
     
     -- 	latency_manufacture
     IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.latency_manufacture) LIMIT 1) THEN
@@ -376,6 +430,17 @@ BEGIN
 		, t_P.can_admin = UE_T.can_admin
 	;
 	
+    IF a_debug = 1 THEN
+		SELECT *
+        FROM partsltd_prod.Shop_Calc_User_Temp
+        WHERE GUID = a_guid
+        ;
+        SELECT *
+        FROM tmp_Permutation t_PP
+        LEFT JOIN Shop_Product P ON t_PP.id_product = P.id_product
+        ;
+    END IF;
+    
 	CALL p_shop_clear_calc_user(
 		a_guid
         , 0 -- a_debug
@@ -392,19 +457,83 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following product permutation(s) do not have product edit permission: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
-		WHERE ISNULL(t_P.can_edit)
+		WHERE 
+			ISNULL(t_P.can_edit)
 		;
 	END IF;
+        
+        IF a_debug = 1 THEN
+			SELECT *
+            FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+			WHERE GUID = a_guid
+            ;
+        END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
 		
-		IF NOT ISNULL(v_ids_product_permission) THEN
 			INSERT INTO Shop_Product_Change_Set ( comment )
 			VALUES ( a_comment )
 			;
 			
 			SET v_id_change_set := LAST_INSERT_ID();
+			
+			INSERT INTO Shop_Product_Permutation (
+				id_permutation_temp
+				, id_product
+				, description
+				, cost_local_VAT_excl
+				, cost_local_VAT_incl
+				, id_currency_cost
+				, profit_local_min
+				, latency_manufacture
+				, id_unit_measurement_quantity
+				, count_unit_measurement_per_quantity_step
+				, quantity_min
+				, quantity_max
+				, quantity_stock
+				, is_subscription
+				, id_unit_measurement_interval_recurrence
+				, count_interval_recurrence
+				, id_stripe_product
+				, does_expire_faster_once_unsealed
+				, id_unit_measurement_interval_expiration_unsealed
+				, count_interval_expiration_unsealed
+				, active
+				, created_by
+				, created_on
+                , id_change_set
+			)
+			SELECT
+				t_P.id_permutation
+				, t_P.id_product AS id_product
+				, t_P.description AS description
+				, t_P.cost_local_VAT_excl AS cost_local_VAT_excl
+				, t_P.cost_local_VAT_incl AS cost_local_VAT_incl
+				, t_P.id_currency_cost AS id_currency_cost
+				, t_P.profit_local_min AS profit_local_min
+				, t_P.latency_manufacture AS latency_manufacture
+				, t_P.id_unit_measurement_quantity AS id_unit_measurement_quantity
+				, t_P.count_unit_measurement_per_quantity_step AS count_unit_measurement_per_quantity_step
+				, t_P.quantity_min AS quantity_min
+				, t_P.quantity_max AS quantity_max
+				, t_P.quantity_stock AS quantity_stock
+				, t_P.is_subscription AS is_subscription
+				, t_P.id_unit_measurement_interval_recurrence AS id_unit_measurement_interval_recurrence
+				, t_P.count_interval_recurrence AS count_interval_recurrence
+				, t_P.id_stripe_product AS id_stripe_product
+				, t_P.does_expire_faster_once_unsealed AS does_expire_faster_once_unsealed
+				, t_P.id_unit_measurement_interval_expiration_unsealed AS id_unit_measurement_interval_expiration_unsealed
+				, t_P.count_interval_expiration_unsealed AS count_interval_expiration_unsealed
+				, t_P.active AS active
+				, a_id_user AS created_by
+				, v_time_start AS created_on
+                , v_id_change_set AS id_change_set
+			FROM tmp_Permutation t_P
+			WHERE 
+				is_new = 1
+				AND active = 1
+			;
 			
 			UPDATE Shop_Product_Permutation PP
 			INNER JOIN tmp_Permutation t_P ON PP.id_permutation = t_P.id_permutation
@@ -431,66 +560,60 @@ BEGIN
 				, PP.active = t_P.active
 				, PP.id_change_set = v_id_change_set
 			;
+            
+            UPDATE tmp_Permutation t_PP
+            INNER JOIN partsltd_prod.Shop_Product_Permutation PP 
+				ON t_PP.id_permutation_temp = PP.id_permutation_temp
+                AND PP.id_change_set = v_id_change_set
+            SET
+				t_PP.id_permutation = PP.id_permutation
+			;
+            UPDATE tmp_Permutation_Variation_Link t_PPVL
+            INNER JOIN tmp_Permutation t_PP ON t_PPVL.id_permutation = t_PP.id_permutation_temp
+            SET
+				t_PPVL.id_permutation = t_PP.id_permutation
+			;
+            
+            INSERT INTO partsltd_prod.Shop_Product_Permutation_Variation_Link (
+				id_permutation
+                , id_variation
+                , display_order
+                , active
+			)
+            SELECT 
+				t_PPVL.id_permutation
+                , t_PPVL.id_variation
+                , t_PPVL.display_order
+                , t_PPVL.active
+			FROM tmp_Permutation_Variation_Link t_PPVL
+            WHERE 
+				t_PPVL.is_new = 1
+                AND t_PPVL.active = 1
+            ;
+            
+            UPDATE partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL
+            INNER JOIN tmp_Permutation_Variation_Link t_PPVL 
+				ON PPVL.id_link = t_PPVL.id_link
+                AND t_PPVL.is_new = 1
+            SET
+				PPVL.id_permutation = t_PPVL.id_permutation
+                , PPVL.id_variation = t_PPVL.id_variation
+                , PPVL.display_order = t_PPVL.display_order
+                , PPVL.active = t_PPVL.active
+                , PPVL.id_change_set = v_id_change_set
+            ;
 		END IF;
 		
-		INSERT INTO Shop_Product_Permutation (
-			id_product
-			, description
-			, cost_local_VAT_excl
-            , cost_local_VAT_incl
-			, id_currency_cost
-			, profit_local_min
-			, latency_manufacture
-			, id_unit_measurement_quantity
-			, count_unit_measurement_per_quantity_step
-			, quantity_min
-			, quantity_max
-			, quantity_stock
-			, is_subscription
-			, id_unit_measurement_interval_recurrence
-			, count_interval_recurrence
-			, id_stripe_product
-			, does_expire_faster_once_unsealed
-			, id_unit_measurement_interval_expiration_unsealed
-			, count_interval_expiration_unsealed
-            , active
-			, created_by
-			, created_on
-		)
-		SELECT
-			t_P.id_product AS id_product
-			, t_P.description AS description
-			, t_P.cost_local_VAT_excl AS cost_local_VAT_excl
-			, t_P.cost_local_VAT_incl AS cost_local_VAT_incl
-			, t_P.id_currency_cost AS id_currency_cost
-			, t_P.profit_local_min AS profit_local_min
-			, t_P.latency_manufacture AS latency_manufacture
-			, t_P.id_unit_measurement_quantity AS id_unit_measurement_quantity
-			, t_P.count_unit_measurement_per_quantity_step AS count_unit_measurement_per_quantity_step
-			, t_P.quantity_min AS quantity_min
-			, t_P.quantity_max AS quantity_max
-			, t_P.quantity_stock AS quantity_stock
-			, t_P.is_subscription AS is_subscription
-			, t_P.id_unit_measurement_interval_recurrence AS id_unit_measurement_interval_recurrence
-			, t_P.count_interval_recurrence AS count_interval_recurrence
-			, t_P.id_stripe_product AS id_stripe_product
-			, t_P.does_expire_faster_once_unsealed AS does_expire_faster_once_unsealed
-			, t_P.id_unit_measurement_interval_expiration_unsealed AS id_unit_measurement_interval_expiration_unsealed
-			, t_P.count_interval_expiration_unsealed AS count_interval_expiration_unsealed
-			, t_P.active AS active
-			, a_id_user AS created_by
-			, v_time_start AS created_on
-		FROM tmp_Permutation t_P
-		WHERE 
-			is_new = 1
-			AND active = 1
-		;
     
 		DELETE FROM Shop_Product_Permutation_Temp
-		WHERE GUID = a_guid;
-		
-		COMMIT;
-    END IF;
+		WHERE GUID = a_guid
+        ;
+        
+		DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+		WHERE GUID = a_guid
+        ;
+	
+	COMMIT;
     
     # Errors
     SELECT *
@@ -499,9 +622,11 @@ BEGIN
 	;
     
 	IF a_debug = 1 THEN
-		SELECT * from tmp_Permutation;
+		SELECT * FROM tmp_Permutation;
+        SELECT * FROM tmp_Permutation_Variation_Link;
 	END IF;
 
+    DROP TEMPORARY TABLE tmp_Permutation_Variation_Link;
     DROP TEMPORARY TABLE tmp_Permutation;
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
@@ -589,6 +714,8 @@ select * FROM Shop_Product_Permutation;
 DELETE FROM Shop_Product_Permutation_Temp
 WHERE id_permutation = 1;
 
+
+select * from shop_unit_measurement;
 
 */
 

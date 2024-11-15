@@ -683,7 +683,9 @@ BEGIN
             
 			
 			UPDATE tmp_Supplier_Purchase_Order t_SPO
-			INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_SPO.id_order_temp = SPO.id_order_temp
+			INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO 
+				ON t_SPO.id_order_temp = SPO.id_order_temp
+                AND SPO.id_change_set = v_id_change_set
 			SET 
 				t_SPO.id_order = SPO.id_order
 			WHERE t_SPO.is_new = 1

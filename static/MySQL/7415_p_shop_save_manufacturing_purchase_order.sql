@@ -581,13 +581,14 @@ BEGIN
 	END IF;
     
     -- Duplicates
+    /*
 	IF EXISTS (
 		SELECT 
-			id_permutation
-			, name_error
+			t_MPOPL.id_permutation
+			, t_MPOPL.name_error
 			, COUNT(*)
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL 
-		GROUP BY id_permutation 
+		GROUP BY t_MPOPL.id_permutation, t_MPOPL.name_error
 		HAVING COUNT(*) > 1
 	) THEN
 		INSERT INTO tmp_Msg_Error ( 
@@ -599,15 +600,16 @@ BEGIN
 			CONCAT('Duplicate records: ', GROUP_CONCAT(t_MPOPLC.name_error SEPARATOR ', '))
 		FROM (
 			SELECT 
-				id_permutation
-				, name_error
-				, COUNT(*) 
+				t_MPOPL.id_permutation
+				, t_MPOPL.name_error
+				, COUNT(*)
 			FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL 
-			GROUP BY id_permutation 
+			GROUP BY t_MPOPL.id_permutation, t_MPOPL.name_error
 			HAVING COUNT(*) > 1
 		) t_MPOPLC
 		;
 	END IF;
+    */
 	-- Empty Manufacturing Purchase Order
 	IF EXISTS ( SELECT * FROM tmp_Manufacturing_Purchase_Order t_MPO LEFT JOIN tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL ON t_MPO.id_order = t_MPOPL.id_order WHERE ISNULL(t_MPOPL.id_order) ) THEN
 		INSERT INTO tmp_Msg_Error ( 
@@ -829,7 +831,9 @@ BEGIN
 			;
 			
 			UPDATE tmp_Manufacturing_Purchase_Order t_MPO
-			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order_temp = MPO.id_order_temp
+			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO 
+				ON t_MPO.id_order_temp = MPO.id_order_temp
+				AND MPO.id_change_set = v_id_change_set
 			SET 
 				t_MPO.id_order = MPO.id_order
 			WHERE t_MPO.is_new = 1

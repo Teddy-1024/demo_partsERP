@@ -146,4 +146,5 @@ DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 select * from partsltd_prod.Shop_User;
+Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'partsltd_prod.t_MPOPL.name_error' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
 */

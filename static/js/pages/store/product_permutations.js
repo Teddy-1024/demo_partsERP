@@ -129,8 +129,8 @@ export default class PageStoreProductPermutations extends TableBasePage {
         let tdProduct = row.querySelector('td.' + flagProduct);
         let tdProductVariations = row.querySelector('td.' + flagProductVariations);
         let inputDescription = row.querySelector('td.' + flagDescription + ' textarea');
-        let inputCostLocalVatExcl = row.querySelector('td.' + flagCostUnitLocalVatExcl + ' input');
-        let inputCostLocalVatIncl = row.querySelector('td.' + flagCostUnitLocalVatIncl + ' input');
+        // let inputCostLocalVatExcl = row.querySelector('td.' + flagCostUnitLocalVatExcl + ' input');
+        // let inputCostLocalVatIncl = row.querySelector('td.' + flagCostUnitLocalVatIncl + ' input');
         let tdCurrencyCost = row.querySelector('td.' + flagCurrencyCost);
         let inputProfitLocalMin = row.querySelector('td.' + flagProfitLocalMin + ' input');
         let inputLatencyManufactureDays = row.querySelector('td.' + flagLatencyManufacture + ' input');
@@ -155,8 +155,8 @@ export default class PageStoreProductPermutations extends TableBasePage {
         jsonRow[flagProductVariations] = tdProductVariations.getAttribute(attrValueCurrent);
         jsonRow[flagHasVariations] = jsonRow[flagProductVariations] != '';
         jsonRow[flagDescription] = inputDescription.getAttribute(attrValueCurrent);
-        jsonRow[flagCostUnitLocalVatExcl] = inputCostLocalVatExcl.getAttribute(attrValueCurrent);
-        jsonRow[flagCostUnitLocalVatIncl] = inputCostLocalVatIncl.getAttribute(attrValueCurrent);
+        // jsonRow[flagCostUnitLocalVatExcl] = inputCostLocalVatExcl.getAttribute(attrValueCurrent);
+        // jsonRow[flagCostUnitLocalVatIncl] = inputCostLocalVatIncl.getAttribute(attrValueCurrent);
         jsonRow[flagCurrencyCost] = tdCurrencyCost.getAttribute(attrValueCurrent);
         jsonRow[flagProfitLocalMin] = inputProfitLocalMin.getAttribute(attrValueCurrent);
         jsonRow[flagLatencyManufacture] = inputLatencyManufactureDays.getAttribute(attrValueCurrent);
@@ -176,6 +176,14 @@ export default class PageStoreProductPermutations extends TableBasePage {
         return jsonRow;
     }
     initialiseRowNew(tbody, row) {
+        this.initialiseRowNewDdlsProductCategoryAndProduct(row);
+
+        let checkboxIsSubscription = row.querySelector('td.' + flagIsSubscription + ' input');
+        let checkboxDoesExpireFasterOnceUnsealed = row.querySelector('td.' + flagDoesExpireFasterOnceUnsealed + ' input');
+        this.handleChangeCheckboxDoesExpireFasterOnceUnsealed(null, checkboxDoesExpireFasterOnceUnsealed);
+        this.handleChangeCheckboxIsSubscription(null, checkboxIsSubscription);
+    }
+    initialiseRowNewDdlsProductCategoryAndProduct(row) {
         let ddlCategoryFilter = document.querySelector(idFormFilters + ' #' + attrIdProductCategory);
         let idProductCategoryFilter = DOM.getElementValueCurrent(ddlCategoryFilter);
         let hasCategoryFilter = !(Validation.isEmpty(idProductCategoryFilter) || idProductCategoryFilter == '0');
@@ -283,21 +291,24 @@ export default class PageStoreProductPermutations extends TableBasePage {
     }
     hookupIsSubscriptionFields(){
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagIsSubscription + ' input', (event, element) => {
-            this.handleChangeNestedElementCellTable(event, element);
-            let isSubscription = DOM.getElementValueCurrent(element);
-            let row = DOM.getRowFromElement(element);
-            let inputCountIntervalRecurrence = row.querySelector('td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
-            let divOrDdlIntervalRecurrence = row.querySelector('td.' + flagUnitMeasurementIntervalRecurrence + ' .' + flagUnitMeasurementIntervalRecurrence);
-            if (isSubscription) {
-                inputCountIntervalRecurrence.classList.remove(flagCollapsed);
-                divOrDdlIntervalRecurrence.classList.remove(flagCollapsed);
-                let tdUnitMeasurementIntervalRecurrence = divOrDdlIntervalRecurrence.closest('td');
-                tdUnitMeasurementIntervalRecurrence.dispatchEvent(new Event('click'));
-            } else {
-                inputCountIntervalRecurrence.classList.add(flagCollapsed);
-                divOrDdlIntervalRecurrence.classList.add(flagCollapsed);
-            }
+            this.handleChangeCheckboxIsSubscription(event, element);
         });
+    }
+    handleChangeCheckboxIsSubscription(event, element) {
+        this.handleChangeNestedElementCellTable(event, element);
+        let isSubscription = DOM.getElementValueCurrent(element);
+        let row = DOM.getRowFromElement(element);
+        let inputCountIntervalRecurrence = row.querySelector('td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
+        let divOrDdlIntervalRecurrence = row.querySelector('td.' + flagUnitMeasurementIntervalRecurrence + ' .' + flagUnitMeasurementIntervalRecurrence);
+        if (isSubscription) {
+            inputCountIntervalRecurrence.classList.remove(flagCollapsed);
+            divOrDdlIntervalRecurrence.classList.remove(flagCollapsed);
+            let tdUnitMeasurementIntervalRecurrence = divOrDdlIntervalRecurrence.closest('td');
+            tdUnitMeasurementIntervalRecurrence.dispatchEvent(new Event('click'));
+        } else {
+            inputCountIntervalRecurrence.classList.add(flagCollapsed);
+            divOrDdlIntervalRecurrence.classList.add(flagCollapsed);
+        }
     }
     hookupIntervalRecurrenceFields(){
         this.hookupTableCellDDlPreviewsWhenNotCollapsed(idTableMain + ' td.' + flagUnitMeasurementIntervalRecurrence, Utils.getListFromDict(unitMeasurementsTime));
@@ -314,22 +325,25 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupCountIntervalExpirationUnsealedInputs();
     }
     hookupDoesExpireFasterOnceUnsealedCheckboxes(){
-        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagDoesExpireFasterOnceUnsealed + ' input', (event, element) => {
-            this.handleChangeNestedElementCellTable(event, element);
-            let doesExpireFasterOnceUnsealed = DOM.getElementValueCurrent(element);
-            let row = DOM.getRowFromElement(element);
-            let inputCountIntervalExpirationUnsealed = row.querySelector('td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
-            let divOrDdlIntervalExpirationUnsealed = row.querySelector('td.' + flagUnitMeasurementIntervalExpirationUnsealed + ' .' + flagUnitMeasurementIntervalExpirationUnsealed);
-            if (doesExpireFasterOnceUnsealed) {
-                inputCountIntervalExpirationUnsealed.classList.remove(flagCollapsed);
-                divOrDdlIntervalExpirationUnsealed.classList.remove(flagCollapsed);
-                let tdUnitMeasurementIntervalExpirationUnsealed = divOrDdlIntervalExpirationUnsealed.closest('td');
-                tdUnitMeasurementIntervalExpirationUnsealed.dispatchEvent(new Event('click'));
-            } else {
-                inputCountIntervalExpirationUnsealed.classList.add(flagCollapsed);
-                divOrDdlIntervalExpirationUnsealed.classList.add(flagCollapsed);
-            }
+        this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagDoesExpireFasterOnceUnsealed + ' input', (event, element) => { 
+            this.handleChangeCheckboxDoesExpireFasterOnceUnsealed(event, element);
         });
+    }
+    handleChangeCheckboxDoesExpireFasterOnceUnsealed(event, element) {
+        this.handleChangeNestedElementCellTable(event, element);
+        let doesExpireFasterOnceUnsealed = DOM.getElementValueCurrent(element);
+        let row = DOM.getRowFromElement(element);
+        let inputCountIntervalExpirationUnsealed = row.querySelector('td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
+        let divOrDdlIntervalExpirationUnsealed = row.querySelector('td.' + flagUnitMeasurementIntervalExpirationUnsealed + ' .' + flagUnitMeasurementIntervalExpirationUnsealed);
+        if (doesExpireFasterOnceUnsealed) {
+            inputCountIntervalExpirationUnsealed.classList.remove(flagCollapsed);
+            divOrDdlIntervalExpirationUnsealed.classList.remove(flagCollapsed);
+            let tdUnitMeasurementIntervalExpirationUnsealed = divOrDdlIntervalExpirationUnsealed.closest('td');
+            tdUnitMeasurementIntervalExpirationUnsealed.dispatchEvent(new Event('click'));
+        } else {
+            inputCountIntervalExpirationUnsealed.classList.add(flagCollapsed);
+            divOrDdlIntervalExpirationUnsealed.classList.add(flagCollapsed);
+        }
     }
     hookupIntervalExpirationUnsealedFields(){
         this.hookupTableCellDDlPreviewsWhenNotCollapsed(idTableMain + ' td.' + flagUnitMeasurementIntervalExpirationUnsealed, Utils.getListFromDict(unitMeasurementsTime));

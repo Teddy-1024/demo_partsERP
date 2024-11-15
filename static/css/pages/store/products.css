@@ -15,11 +15,10 @@
     width: 8vh;
 }
 
-/*
+
 #tableMain {
-    max-width: min(calc(1vh * 79), calc(1vw * 90));
+    max-width: min(calc(1vh * 65), calc(1vw * 90));
 }
-*/
 
 #tableMain tbody tr td.display_order, #tableMain thead tr th.display_order {
     width: 5vh;

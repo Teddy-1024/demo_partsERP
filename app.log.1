@@ -1,98 +1,68 @@
 Traceback: Traceback (most recent call last):
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
-    self.dialect.do_execute(
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 924, in do_execute
-    cursor.execute(statement, parameters)
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
-    res = self._query(mogrified_query)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
-    db.query(q)
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\connections.py", line 261, in query
-    _mysql.connection.query(self, query)
-MySQLdb.OperationalError: (1054, "Unknown column 'v_id_permission_manufacturing' in 'where clause'")
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
     rv = self.dispatch_request()
          ^^^^^^^^^^^^^^^^^^^^^^^
   File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\manufacturing_purchase_order.py", line 40, in manufacturing_purchase_orders
-    model = Model_View_Store_Manufacturing_Purchase_Order(form_filters)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_manufacturing_purchase_order.py", line 50, in __init__
-    self.manufacturing_purchase_orders, errors = datastore_manufacturing_purchase_order.get_many_manufacturing_purchase_order(parameters_manufacturing_purchase_order)
-                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_store_manufacturing_purchase_order.py", line 51, in get_many_manufacturing_purchase_order
-    result = self.db_procedure_execute('p_shop_get_many_manufacturing_purchase_order', argument_dict)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\datastores\datastore_base.py", line 95, in db_procedure_execute
-    result = db.session.execute(proc_string, argument_dict_list)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\scoping.py", line 778, in execute
-    return self._proxied.execute(
-           ^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
-    return self._execute_internal(
-           ^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2245, in _execute_internal
-    result = conn.execute(
-             ^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1418, in execute
-    return meth(
-           ^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 515, in _execute_on_connection
-    return connection._execute_clauseelement(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1640, in _execute_clauseelement
-    ret = self._execute_context(
-          ^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
-    return self._exec_single_context(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
-    self._handle_dbapi_exception(
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2353, in _handle_dbapi_exception
-    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
-    self.dialect.do_execute(
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 924, in do_execute
-    cursor.execute(statement, parameters)
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
-    res = self._query(mogrified_query)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
-    db.query(q)
-  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\MySQLdb\connections.py", line 261, in query
-    _mysql.connection.query(self, query)
-sqlalchemy.exc.OperationalError: (MySQLdb.OperationalError) (1054, "Unknown column 'v_id_permission_manufacturing' in 'where clause'")
-[SQL: CALL p_shop_get_many_manufacturing_purchase_order(%s, %s, %s, %s, %s, %s, %s, %s)]
-[parameters: (0, True, True, '', '', None, None, 0)]
-(Background on this error at: https://sqlalche.me/e/20/e3q8)
-
-config_env: production
-config_env: production
-config_env: production
-config_env: production
-config_env: production
-config_env: development
-config_env: development
-Server Error: 1 validation error for Model_View_Store_Product_Category
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product_category.py", line 56, in categories
+    model = Model_View_Store_Product_Category(form_filters)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store_product_category.py", line 46, in __init__
+    super().__init__(hash_page_current=hash_page_current, form_filters_old=form_filters_old) # filters_category=filters_category)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_store.py", line 232, in __init__
+    super().__init__(hash_page_current=hash_page_current, **kwargs)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\models\model_view_base.py", line 262, in __init__
+    BaseModel.__init__(self, hash_page_current=hash_page_current, **kwargs)
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\pydantic\main.py", line 193, in __init__
+    self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Model_View_Store_Product_Category
 form_filters
   Field required [type=missing, input_value={'hash_page_current': '/s...pty=False, active=True)}, input_type=dict]
     For further information visit https://errors.pydantic.dev/2.8/v/missing
-Request: 127.0.0.1 GET http /store/categories? Host: 127.0.0.1:5000
+
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+config_env: development
+Server Error: list object has no element 0
+Request: 127.0.0.1 GET http /store/permutations?id_category=&id_product=&is_out_of_stock=false&quantity_min=&quantity_max= Host: 127.0.0.1:5000
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 Accept-Language: en-GB,en;q=0.5
 Accept-Encoding: gzip, deflate, br, zstd
+Referer: http://127.0.0.1:5000/store/permutations
 Dnt: 1
 Connection: keep-alive
-Referer: http://127.0.0.1:5000/store/categories
 Cookie: session=.eJytVtmuo0gS_ZWWpe6ntovdcKXSjDcw2GCbHV4sIBOzg1kNPfXvk_hWd_VDzyaNZExmRhDnRGZkRPy28Lo2Kuu4gcBoYL34-G0ReMXdA3lc3Ju2rOHio607-Ouflru34ucqzL04W3wsIBi8GqzyGIAMtmXR5HEb_f0xS1dBmS9-XYRx3bSFlyODCx0CMKK1GNyDrq5hEYx3AEOvy9rFR9Fl2VtUw0dcFn8h-CSA_zG-z05gyO77_Q-GZgmfowOWowHGeWvM93AshOEM2NzfjO89rOMwhmDxEXpZA9-SuAiyDkBwNzf6D9RPP5G46SoE9Wfnm67-7pD8u99LbXZ88Q3tV1OH97ZMYYHkHAkgZABYhxgGOQwyGEOGuB_iBLEOfRKHGOkTJPQRxe77MXhBAJvmDwtwlCJfCOJLLKWeLcbnnZT5uTzPt3JiECqmKGI8xJ6tTGJSxt5RxYKjzJxHLnVtp_ULEHmTOCiJm7mJW16EjPJjGg9GOgK2Wso7OvEJrBcLbLW6iUk2Euo6LDXq0qyj1TVjFW4k61ZVlVpa5mvCyXbDpDzymuW2e-i47ZGEpHDjRHc3WaxVT9YxIa5w3Mk1TqX9wXc7mx4HLhx8Q6rK_u44uJIEl_P6TCeitDk9_fHwZLT71VwK-tnahtmrXV71UDWXm3GIBTnYBcKraNIrhh8mvHhururUAOLC2kWvbF5Dz-V8tma5Xto7EX9eDu6Bpuond7Lud04cz2JGdPU9lLh92A5PrSCO2gR7iYnau33zHjYeWoGD19ugv7O82WTV3iyLWO2Rq5S8vOVxryxrSfM2uYl8XPtBrarkmc6ZLHMCVhYxEI0J8uFVtpubQone0Cj86YJ1CaHjWNKEjZOqxfpwyjcEzh-koTeeq21zEkbtXqhn_GAS1WvfP0L4QGEAX1Vcw-buoRDE1yTOrDGWwH6sxygoWIbCsPct-Iso0YxJxJVYbMRCpYOdyIhpZZs7NM_byp3nhdlD2zXUlKL8ROrd4wM3U_4s8xGujhK3QsY6z1JqP-dbV0Mf5GYKCH50d3TrWWrqCybmE_TkWxnmvQ3TkW8ZM3jmHkEU5LcOyVJXeGVA4LqAwCsgRBuXwCPPGjqH4No5ZAMhS8DRHD8xIgwct9MlZnsUmkWQ84Rjq1EQf4anY7sREPjxPBmTu1dyOblh8h6kio6cJRxKEZxRIZRI3geUMqmxu3ewKylzyv4xSIXIBUKQu3u8BEd1CEZjumnGqMboyZUUXYc_X4VMThFWzmOOLU2SLgmudesCgS5mzsDepohX5vJcBObNTMQBcWll_YAe1UBvRtlvGFl_dJd9SlrzQeRm61hZM19P11JJZDc953jlCmrj2mrvF0rrIfybAN5651zpfe3HdzbpZkGe5Z5lpmJS5Y71mlzt_3DlkT-OPdtEvDDwhLb60lPcvhGR7tnRS5_QTmU8Y6aRfbP4TEsrxsjTOQVVjn2LL8mBlKcDftmjs9DTmS81B5ysB5OsO6O8v70uiGdAmvGMgbAwb79llcSg5FykFUumLrqZyvssUqZt7OiHwc3N_B0bRPbm5U_RybcjwyZArwvSDh6U0800Ws1S8dtkEJ4QuYoAJE93Zl4disvkHU-Fospon12BfpmHSrkclcrlgavzyjCnukf25IrMnfirbXoF5mZUGOX0FehnfGlh5335wg6u5jbeIPOSREVdewvuvrK8X4xLbyyJrjxZfUCF62UymvKZO2q167L2dHXChML8wn4R1fIGTuvjtHTLV8JIhr0BjrJN3YErqpMBG7avByBPPQ-PGZMfgLvnzjlIz9qV6-s2pCe473zeHjLSk5-0aoRFLRNbO7zZxXVoeEnjDcffOQ912Fy14zCCyjR0domBWwAAt2zynvYEGTNkcmDkgGf8lr1chdPJ1LbQxvu41bL9QV13yZRjvo2zu4x6DuwZXiHHV-JlxDvPIBNafty8Q7pzbHLzDM4nvSEFOe_Kboux-0TzAXHs-43GCkzsDih_NUFZzZUR_Rcx-KmqyzDO4E-f_cKvi3fCurfjW2cLvRoVvc_aFxdh-a5_HSrOi4eQjO1Tka1dpMWv52VNqLfJPFobD0oSut-L_6UF-RelH6XU7zmWwCicQwn196RLs9TnQtMggKhtq-bjyxcA-2UxeCmBMQwMmYiNX8Wqa1bv7mOG-oKwvjcG_5lUEQfpv1OeVcoimOXNDa8BKJ66JLNNDCznrFVIXMVB282N2h8Mm9Wj9nqv9eo3nc_hF5oEZEhQFLYGNEGvQ5YKiXXgYWt2TfmAof7WfKVY7Jf6a_X4BXx92_qZ3PxM8OgXgOKHf2j-abJBIwhWVTFXLMRoPm9Wyl_6_VGe_e1rJ22MpQi6Hc1EkUM9xJiZFTv_v-nVugp4LerG5sNYEBhBLXF8iVM6jn9Q2AfOrlhu7S6-ffv2T-GRoaE.ZzXhpA.6IaVZ-sABN4LB476tj7c1hUx5F8
 Upgrade-Insecure-Requests: 1
 Sec-Fetch-Dest: document
@@ -104,3 +74,48 @@ Priority: u=0, i
 
 
 Request data: b''
+Traceback: Traceback (most recent call last):
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product_permutation.py", line 47, in permutations
+    return render_template('pages/store/_product_permutations.html', model = model)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1304, in render
+    self.environment.handle_exception()
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 939, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_permutations.html", line 1, in top-level template code
+    {% extends 'layouts/layout.html' %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\layouts\layout.html", line 357, in top-level template code
+    {% block page_body %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_permutations.html", line 108, in block 'page_body'
+    {% include 'components/store/_row_product_permutation.html' %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\components\store\_row_product_permutation.html", line 8, in top-level template code
+    {% include 'components/store/_preview_DDL_product.html' %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\components\store\_preview_DDL_product.html", line 11, in top-level template code
+    {% for product in model.category_list_filters.categories[0].products %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 487, in getattr
+    return getattr(obj, attribute)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: list object has no element 0
+
+config_env: development
+Server Error: (MySQLdb.IntegrityError) (1364, "Field 'csv_id_pairs_variation' doesn't have a default value")
+[SQL: CALL p_shop_get_many_product(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (1, True, False, '', True, False, '', True, False, '', False, False, '', False, 0)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)

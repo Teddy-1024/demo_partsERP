@@ -67,6 +67,28 @@
 }
 
 /* Page Filters */
+#formFilters * {
+    font-size: 12px;
+}
+
+#formFilters .container {
+    max-width: fit-content;
+}
+#formFilters .container-input {
+    padding: 0 0.5vh;
+}
+
+#formFilters .container-input input {
+    max-width: 5vh;
+}
+
+#formFilters .container-input.filter.active {
+    width: 8vh;
+}
+#formFilters .container-input.filter.is_not_empty {
+    width: 12vh;
+}
+
 button.collapsed {
     display: block;
     opacity: 0;
@@ -79,11 +101,4 @@ form.filter button.save, form.filter button.button-cancel {
 form.filter button.save, form.filter button.button-cancel {
     margin-top: 0;
     margin-bottom: 0;
-}
-
-#formFilters .container-input.filter.active {
-    width: 8vh;
-}
-#formFilters .container-input.filter.is_not_empty {
-    width: 12vh;
 }

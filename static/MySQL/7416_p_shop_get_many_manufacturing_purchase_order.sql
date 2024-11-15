@@ -282,7 +282,7 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', IFNULL((SELECT IFNULL(name, '(No Permission Name)') FROM partsltd_prod.Shop_Permission WHERE id_permission LIKE CONCAT('%', v_ids_permission_manufacturing_purchase_order, '%') LIMIT 1), '(No Permissions Found)'))
+			, CONCAT('You do not have view permissions for ', IFNULL((SELECT IFNULL(name, '(No Permission Name)') FROM partsltd_prod.Shop_Permission WHERE FIND_IN_SET(id_permission, v_ids_permission_manufacturing_purchase_order) > 0 LIMIT 1), '(No Permissions Found)'))
 		)
 		;
 	END IF;
