@@ -636,7 +636,7 @@ INSERT INTO partsltd_prod.Shop_Product_Change_Set (
 )
 VALUES ( 'Update Variation Display Orders' )
 ;
-WITH RANKED AS (
+WITH RECURSIVE RANKED AS (
     SELECT 
         V.id_variation,
         RANK() OVER (ORDER BY 
@@ -674,7 +674,7 @@ JOIN (
     FROM partsltd_prod.Shop_Product_Change_Set CS
     ORDER BY CS.id_change_set DESC
     LIMIT 1
-) CS
+) AS CS
 SET 
 	V.display_order = RANKED.new_order
     , V.id_change_set = CS.id_change_set
