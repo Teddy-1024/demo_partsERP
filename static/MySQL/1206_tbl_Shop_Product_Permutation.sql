@@ -7,6 +7,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 
 CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
 	id_permutation INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_permutation_temp INT NOT NULL,
 	id_product INT NOT NULL,
 	CONSTRAINT FK_Shop_Product_Permutation_id_product
 		FOREIGN KEY (id_product)

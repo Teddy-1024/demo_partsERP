@@ -615,7 +615,7 @@ export default class TableBasePage extends BasePage {
     }
     handleChangeProductCategoryDdl(event, ddlCategory) {
         this.handleChangeNestedElementCellTable(event, ddlCategory);
-        let idProductCategorySelected = DOM.getElementValueCurrent(ddlCategory);
+        let idProductCategorySelected = DOM.getElementAttributeValueCurrent(ddlCategory);
         let row = DOM.getRowFromElement(ddlCategory);
         let tdProduct = row.querySelector('td.' + flagProduct);
         tdProduct.dispatchEvent(new Event('click'));

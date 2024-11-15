@@ -1,49 +1,44 @@
 
-DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_variations_csv;
+DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_name;
 
 DELIMITER //
 
-CREATE FUNCTION fn_shop_get_product_permutation_variations_csv(id_product_permutation INT)
+CREATE FUNCTION fn_shop_get_product_permutation_name(id_product_permutation INT)
 RETURNS VARCHAR(4000)
 DETERMINISTIC
 BEGIN
-    DECLARE csv VARCHAR(4000);
+    DECLARE name VARCHAR(4000);
     
-    SET csv := (
+    SET name := (
         SELECT 
-			CASE WHEN P.has_variations = 0 THEN
-				''
-            ELSE
-				GROUP_CONCAT(
-					CONCAT(
-						PV.id_type
-						, ':'
-						, PV.id_variation
-					)
-					SEPARATOR ','
-				)
-			END 
-		FROM partsltd_prod.Shop_Product_Permutation PP
-		LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
-		LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
-		LEFT JOIN partsltd_prod.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
-		LEFT JOIN partsltd_prod.Shop_Variation_Type PVT ON PV.id_type = PVT.id_type
+            CONCAT(
+				IFNULL(PC.name, '(No Category)')
+                , ' - '
+                , IFNULL(P.name, '(No Product)')
+                , CASE WHEN P.has_variations = 1 THEN
+                    CONCAT(' - ', GROUP_CONCAT(CONCAT(VT.name, ': ', V.name) SEPARATOR ', '))
+                ELSE '' END
+            )
+        FROM Shop_Product_Permutation PP
+        LEFT JOIN Shop_Product P ON PP.id_product = P.id_product
+        LEFT JOIN Shop_Product_Category PC ON P.id_category = PC.id_category
+        LEFT JOIN Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+        LEFT JOIN Shop_Variation V ON PPVL.id_variation = V.id_variation
+        LEFT JOIN Shop_Variation_Type VT ON V.id_type = VT.id_type
         WHERE PP.id_permutation = id_product_permutation
-        GROUP BY P.id_product, P.has_variations, PVT.display_order, PVT.name, PV.display_order, PV.name
+        GROUP BY PC.id_category, PC.name, P.id_product, P.name, P.has_variations, VT.display_order, VT.name, V.display_order, V.name
         LIMIT 1
     );
     
-    RETURN csv;
+    RETURN name;
 END //
 
 DELIMITER ;
+
+/*
 SELECT 
-	fn_shop_get_product_permutation_variations_csv(
+	fn_shop_get_product_permutation_name(
 		3 -- id_product_permutation
 	)
-    , fn_shop_get_product_permutation_variations_csv(
-		1 -- id_product_permutation
-	)
 ;
-/*
 */

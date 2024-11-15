@@ -103,15 +103,17 @@ var flagUnitMeasurementIntervalExpirationUnsealed = "{{ model.FLAG_UNIT_MEASUREM
 var flagUnitMeasurementIntervalRecurrence = "{{ model.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE }}";
 var flagUnitMeasurementLatencyManufacture = "{{ model.FLAG_UNIT_MEASUREMENT_LATENCY_MANUFACTURE }}";
 var flagUnitMeasurementQuantity = "{{ model.FLAG_UNIT_MEASUREMENT_QUANTITY }}";
-var hashGetStoreCustomerSalesOrder = "{{ model.HASH_GET_STORE_CUSTOMER_SALES_ORDER }}";
-var hashGetStoreManufacturingPurchaseOrder = "{{ model.HASH_GET_STORE_MANUFACTURING_PURCHASE_ORDER }}";
-var hashGetStoreProduct = "{{ model.HASH_GET_STORE_PRODUCT }}";
-var hashGetStoreProductCategory = "{{ model.HASH_GET_STORE_PRODUCT_CATEGORY }}";
-var hashGetStoreProductPermutation = "{{ model.HASH_GET_STORE_PRODUCT_PERMUTATION }}";
-var hashGetStoreProductVariation = "{{ model.HASH_GET_STORE_PRODUCT_VARIATION }}";
-var hashGetStoreStockItem = "{{ model.HASH_GET_STORE_STOCK_ITEM }}";
-var hashGetStoreSupplier = "{{ model.HASH_GET_STORE_SUPPLIER }}";
-var hashGetStoreSupplierPurchaseOrder = "{{ model.HASH_GET_STORE_SUPPLIER_PURCHASE_ORDER }}";
+{#
+    var hashGetStoreCustomerSalesOrder = "{{ model.HASH_GET_STORE_CUSTOMER_SALES_ORDER }}";
+    var hashGetStoreManufacturingPurchaseOrder = "{{ model.HASH_GET_STORE_MANUFACTURING_PURCHASE_ORDER }}";
+    var hashGetStoreProduct = "{{ model.HASH_GET_STORE_PRODUCT }}";
+    var hashGetStoreProductCategory = "{{ model.HASH_GET_STORE_PRODUCT_CATEGORY }}";
+    var hashGetStoreProductPermutation = "{{ model.HASH_GET_STORE_PRODUCT_PERMUTATION }}";
+    var hashGetStoreProductVariation = "{{ model.HASH_GET_STORE_PRODUCT_VARIATION }}";
+    var hashGetStoreStockItem = "{{ model.HASH_GET_STORE_STOCK_ITEM }}";
+    var hashGetStoreSupplier = "{{ model.HASH_GET_STORE_SUPPLIER }}";
+    var hashGetStoreSupplierPurchaseOrder = "{{ model.HASH_GET_STORE_SUPPLIER_PURCHASE_ORDER }}";
+#}
 var hashSaveStoreCustomerSalesOrder = "{{ model.HASH_SAVE_STORE_CUSTOMER_SALES_ORDER }}";
 var hashSaveStoreManufacturingPurchaseOrder = "{{ model.HASH_SAVE_STORE_MANUFACTURING_PURCHASE_ORDER }}";
 var hashSaveStoreProduct = "{{ model.HASH_SAVE_STORE_PRODUCT }}";

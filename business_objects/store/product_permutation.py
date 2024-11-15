@@ -67,6 +67,7 @@ class Product_Permutation(db.Model, Store_Base):
     id_permutation = db.Column(db.Integer, primary_key=True)
     id_product = db.Column(db.Integer)
     id_category = db.Column(db.Integer)
+    csv_id_pairs_variation = db.Column(db.String(4000))
     # name = db.Column(db.String(255))
     description = db.Column(db.String(4000))
     # price_GBP_full = db.Column(db.Float)
@@ -222,7 +223,7 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.id_product = json[cls.ATTR_ID_PRODUCT]
         permutation.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
         permutation.description = json[cls.FLAG_DESCRIPTION]
-        permutation.cost_local_VAT_excl = json[cls.FLAG_COST_UNIT_LOCAL_VAT_EXCL]
+        permutation.cost_local_VAT_excl = json.get(cls.FLAG_COST_UNIT_LOCAL_VAT_EXCL, None)
         permutation.cost_local_VAT_incl = json.get(cls.FLAG_COST_UNIT_LOCAL_VAT_INCL, None)
         permutation.currency_cost = Currency.from_json(json, '_cost')
         permutation.profit_local_min = json[cls.FLAG_PROFIT_LOCAL_MIN]
@@ -254,7 +255,8 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.has_variations = json[cls.FLAG_HAS_VARIATIONS]
         permutation.active = 1 if av.input_bool(json[cls.FLAG_ACTIVE], cls.FLAG_ACTIVE, _m) else 0
         if permutation.has_variations:
-            permutation.variation_tree = Product_Variation_Tree.from_json_str(json[cls.FLAG_PRODUCT_VARIATIONS])
+            permutation.csv_id_pairs_variation = json[cls.FLAG_PRODUCT_VARIATIONS]
+            permutation.variation_tree = Product_Variation_Tree.from_json_str(permutation.csv_id_pairs_variation)
             """
             for jsonProductVariation in json[cls.FLAG_PRODUCT_VARIATIONS]:
                 variation = Product_Variation.from_json(jsonProductVariation)
@@ -383,6 +385,7 @@ class Product_Permutation(db.Model, Store_Base):
             name_plural_unit_measurement_interval_expiration_unsealed: {self.name_plural_unit_measurement_interval_expiration_unsealed}
             count_interval_expiration_unsealed: {self.count_interval_expiration_unsealed}
             has_variations: {self.has_variations}
+            csv_id_pairs_variation: {self.csv_id_pairs_variation}
             can_view: {self.can_view}
             can_edit: {self.can_edit}
             can_admin: {self.can_admin}
@@ -505,8 +508,10 @@ class Permutation_Product_Variation_Link(db.Model):
 class Product_Permutation_Temp(db.Model, Store_Base):
     __tablename__: ClassVar[str] = 'Shop_Product_Permutation_Temp'
     __table_args__ = { 'extend_existing': True }
-    id_permutation: int = db.Column(db.Integer, primary_key=True)
+    id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_permutation: int = db.Column(db.Integer)
     id_product: int = db.Column(db.Integer)
+    csv_id_pairs_variation: str = db.Column(db.String(4000))
     description: str = db.Column(db.String(4000))
     cost_local_VAT_excl: float = db.Column(db.Float)
     cost_local_VAT_incl: float = db.Column(db.Float)
@@ -527,13 +532,16 @@ class Product_Permutation_Temp(db.Model, Store_Base):
     count_interval_expiration_unsealed: int = db.Column(db.Integer)
     active: bool = db.Column(db.Boolean)
     guid: str = db.Column(db.String(36))
-
+    def __init__(self):
+        super().__init__()
+        self.id_temp = None
     @classmethod
     def from_product_permutation(cls, product_permutation):
         Helper_App.console_log(f'Product_Permutation_Temp.from_product_permutation: {product_permutation}\ntype(cost local): {str(type(product_permutation.cost_local_VAT_excl))}')
         row = cls()
         row.id_permutation = product_permutation.id_permutation
         row.id_product = product_permutation.id_product
+        row.csv_id_pairs_variation = product_permutation.csv_id_pairs_variation
         row.description = product_permutation.description
         row.cost_local_VAT_excl = product_permutation.cost_local_VAT_excl if product_permutation.cost_local_VAT_excl != 'None' else None
         row.cost_local_VAT_incl = product_permutation.cost_local_VAT_incl if product_permutation.cost_local_VAT_incl != 'None' else None
@@ -558,6 +566,7 @@ class Product_Permutation_Temp(db.Model, Store_Base):
         return f'''
             id_permutation: {self.id_permutation}
             id_product: {self.id_product}
+            csv_id_pairs_variation: {self.csv_id_pairs_variation}
             description: {self.description}
             cost_local_VAT_excl: {self.cost_local_VAT_excl}
             cost_local_VAT_incl: {self.cost_local_VAT_incl}

@@ -101,5 +101,6 @@ class DataStore_Store_Product_Permutation(DataStore_Store_Base):
             'a_id_user': user.id_user,
             'a_debug': 0,
         }
-        cls.db_procedure_execute('p_shop_save_product_permutation', argument_dict_list)
+        results = cls.db_procedure_execute('p_shop_save_product_permutation', argument_dict_list)
+        DataStore_Store_Base.db_cursor_clear(results.cursor)
         Helper_App.console_log('saved product permutations')

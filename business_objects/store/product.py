@@ -858,7 +858,8 @@ class Parameters_Product(Get_Many_Parameters_Base):
 class Product_Temp(db.Model, Store_Base):
     __tablename__ = 'Shop_Product_Temp'
     __table_args__ = { 'extend_existing': True }
-    id_product: int = db.Column(db.Integer, primary_key=True)
+    id_temp: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_product: int = db.Column(db.Integer)
     id_category: int = db.Column(db.Integer)
     name: str = db.Column(db.String(255))
     has_variations: bool = db.Column(db.Boolean)
@@ -868,7 +869,8 @@ class Product_Temp(db.Model, Store_Base):
     guid: str = db.Column(db.BINARY(36))
     # created_on: datetime = db.Column(db.DateTime)
     # created_by: int = db.Column(db.Integer)
-
+    def __init__(self):
+        self.id_temp = None
     @classmethod
     def from_product(cls, product):
         row = cls()

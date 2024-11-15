@@ -2792,7 +2792,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
     key: "handleChangeProductCategoryDdl",
     value: function handleChangeProductCategoryDdl(event, ddlCategory) {
       this.handleChangeNestedElementCellTable(event, ddlCategory);
-      var idProductCategorySelected = DOM.getElementValueCurrent(ddlCategory);
+      var idProductCategorySelected = DOM.getElementAttributeValueCurrent(ddlCategory);
       var row = DOM.getRowFromElement(ddlCategory);
       var tdProduct = row.querySelector('td.' + flagProduct);
       tdProduct.dispatchEvent(new Event('click'));
@@ -4646,8 +4646,8 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
       var tdProduct = row.querySelector('td.' + flagProduct);
       var tdProductVariations = row.querySelector('td.' + flagProductVariations);
       var inputDescription = row.querySelector('td.' + flagDescription + ' textarea');
-      var inputCostLocalVatExcl = row.querySelector('td.' + flagCostUnitLocalVatExcl + ' input');
-      var inputCostLocalVatIncl = row.querySelector('td.' + flagCostUnitLocalVatIncl + ' input');
+      // let inputCostLocalVatExcl = row.querySelector('td.' + flagCostUnitLocalVatExcl + ' input');
+      // let inputCostLocalVatIncl = row.querySelector('td.' + flagCostUnitLocalVatIncl + ' input');
       var tdCurrencyCost = row.querySelector('td.' + flagCurrencyCost);
       var inputProfitLocalMin = row.querySelector('td.' + flagProfitLocalMin + ' input');
       var inputLatencyManufactureDays = row.querySelector('td.' + flagLatencyManufacture + ' input');
@@ -4671,8 +4671,8 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
       jsonRow[flagProductVariations] = tdProductVariations.getAttribute(attrValueCurrent);
       jsonRow[flagHasVariations] = jsonRow[flagProductVariations] != '';
       jsonRow[flagDescription] = inputDescription.getAttribute(attrValueCurrent);
-      jsonRow[flagCostUnitLocalVatExcl] = inputCostLocalVatExcl.getAttribute(attrValueCurrent);
-      jsonRow[flagCostUnitLocalVatIncl] = inputCostLocalVatIncl.getAttribute(attrValueCurrent);
+      // jsonRow[flagCostUnitLocalVatExcl] = inputCostLocalVatExcl.getAttribute(attrValueCurrent);
+      // jsonRow[flagCostUnitLocalVatIncl] = inputCostLocalVatIncl.getAttribute(attrValueCurrent);
       jsonRow[flagCurrencyCost] = tdCurrencyCost.getAttribute(attrValueCurrent);
       jsonRow[flagProfitLocalMin] = inputProfitLocalMin.getAttribute(attrValueCurrent);
       jsonRow[flagLatencyManufacture] = inputLatencyManufactureDays.getAttribute(attrValueCurrent);
@@ -4694,6 +4694,15 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
   }, {
     key: "initialiseRowNew",
     value: function initialiseRowNew(tbody, row) {
+      this.initialiseRowNewDdlsProductCategoryAndProduct(row);
+      var checkboxIsSubscription = row.querySelector('td.' + flagIsSubscription + ' input');
+      var checkboxDoesExpireFasterOnceUnsealed = row.querySelector('td.' + flagDoesExpireFasterOnceUnsealed + ' input');
+      this.handleChangeCheckboxDoesExpireFasterOnceUnsealed(null, checkboxDoesExpireFasterOnceUnsealed);
+      this.handleChangeCheckboxIsSubscription(null, checkboxIsSubscription);
+    }
+  }, {
+    key: "initialiseRowNewDdlsProductCategoryAndProduct",
+    value: function initialiseRowNewDdlsProductCategoryAndProduct(row) {
       var ddlCategoryFilter = document.querySelector(idFormFilters + ' #' + attrIdProductCategory);
       var idProductCategoryFilter = DOM.getElementValueCurrent(ddlCategoryFilter);
       var hasCategoryFilter = !(validation_Validation.isEmpty(idProductCategoryFilter) || idProductCategoryFilter == '0');
@@ -4842,21 +4851,26 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
     value: function hookupIsSubscriptionFields() {
       var _this3 = this;
       this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagIsSubscription + ' input', function (event, element) {
-        _this3.handleChangeNestedElementCellTable(event, element);
-        var isSubscription = DOM.getElementValueCurrent(element);
-        var row = DOM.getRowFromElement(element);
-        var inputCountIntervalRecurrence = row.querySelector('td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
-        var divOrDdlIntervalRecurrence = row.querySelector('td.' + flagUnitMeasurementIntervalRecurrence + ' .' + flagUnitMeasurementIntervalRecurrence);
-        if (isSubscription) {
-          inputCountIntervalRecurrence.classList.remove(flagCollapsed);
-          divOrDdlIntervalRecurrence.classList.remove(flagCollapsed);
-          var tdUnitMeasurementIntervalRecurrence = divOrDdlIntervalRecurrence.closest('td');
-          tdUnitMeasurementIntervalRecurrence.dispatchEvent(new Event('click'));
-        } else {
-          inputCountIntervalRecurrence.classList.add(flagCollapsed);
-          divOrDdlIntervalRecurrence.classList.add(flagCollapsed);
-        }
+        _this3.handleChangeCheckboxIsSubscription(event, element);
       });
+    }
+  }, {
+    key: "handleChangeCheckboxIsSubscription",
+    value: function handleChangeCheckboxIsSubscription(event, element) {
+      this.handleChangeNestedElementCellTable(event, element);
+      var isSubscription = DOM.getElementValueCurrent(element);
+      var row = DOM.getRowFromElement(element);
+      var inputCountIntervalRecurrence = row.querySelector('td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
+      var divOrDdlIntervalRecurrence = row.querySelector('td.' + flagUnitMeasurementIntervalRecurrence + ' .' + flagUnitMeasurementIntervalRecurrence);
+      if (isSubscription) {
+        inputCountIntervalRecurrence.classList.remove(flagCollapsed);
+        divOrDdlIntervalRecurrence.classList.remove(flagCollapsed);
+        var tdUnitMeasurementIntervalRecurrence = divOrDdlIntervalRecurrence.closest('td');
+        tdUnitMeasurementIntervalRecurrence.dispatchEvent(new Event('click'));
+      } else {
+        inputCountIntervalRecurrence.classList.add(flagCollapsed);
+        divOrDdlIntervalRecurrence.classList.add(flagCollapsed);
+      }
     }
   }, {
     key: "hookupIntervalRecurrenceFields",
@@ -4885,21 +4899,26 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
     value: function hookupDoesExpireFasterOnceUnsealedCheckboxes() {
       var _this4 = this;
       this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagDoesExpireFasterOnceUnsealed + ' input', function (event, element) {
-        _this4.handleChangeNestedElementCellTable(event, element);
-        var doesExpireFasterOnceUnsealed = DOM.getElementValueCurrent(element);
-        var row = DOM.getRowFromElement(element);
-        var inputCountIntervalExpirationUnsealed = row.querySelector('td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
-        var divOrDdlIntervalExpirationUnsealed = row.querySelector('td.' + flagUnitMeasurementIntervalExpirationUnsealed + ' .' + flagUnitMeasurementIntervalExpirationUnsealed);
-        if (doesExpireFasterOnceUnsealed) {
-          inputCountIntervalExpirationUnsealed.classList.remove(flagCollapsed);
-          divOrDdlIntervalExpirationUnsealed.classList.remove(flagCollapsed);
-          var tdUnitMeasurementIntervalExpirationUnsealed = divOrDdlIntervalExpirationUnsealed.closest('td');
-          tdUnitMeasurementIntervalExpirationUnsealed.dispatchEvent(new Event('click'));
-        } else {
-          inputCountIntervalExpirationUnsealed.classList.add(flagCollapsed);
-          divOrDdlIntervalExpirationUnsealed.classList.add(flagCollapsed);
-        }
+        _this4.handleChangeCheckboxDoesExpireFasterOnceUnsealed(event, element);
       });
+    }
+  }, {
+    key: "handleChangeCheckboxDoesExpireFasterOnceUnsealed",
+    value: function handleChangeCheckboxDoesExpireFasterOnceUnsealed(event, element) {
+      this.handleChangeNestedElementCellTable(event, element);
+      var doesExpireFasterOnceUnsealed = DOM.getElementValueCurrent(element);
+      var row = DOM.getRowFromElement(element);
+      var inputCountIntervalExpirationUnsealed = row.querySelector('td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
+      var divOrDdlIntervalExpirationUnsealed = row.querySelector('td.' + flagUnitMeasurementIntervalExpirationUnsealed + ' .' + flagUnitMeasurementIntervalExpirationUnsealed);
+      if (doesExpireFasterOnceUnsealed) {
+        inputCountIntervalExpirationUnsealed.classList.remove(flagCollapsed);
+        divOrDdlIntervalExpirationUnsealed.classList.remove(flagCollapsed);
+        var tdUnitMeasurementIntervalExpirationUnsealed = divOrDdlIntervalExpirationUnsealed.closest('td');
+        tdUnitMeasurementIntervalExpirationUnsealed.dispatchEvent(new Event('click'));
+      } else {
+        inputCountIntervalExpirationUnsealed.classList.add(flagCollapsed);
+        divOrDdlIntervalExpirationUnsealed.classList.add(flagCollapsed);
+      }
     }
   }, {
     key: "hookupIntervalExpirationUnsealedFields",

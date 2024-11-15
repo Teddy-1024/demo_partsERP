@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS tmp_Shop_Order;
 DROP TABLE IF EXISTS tmp_Shop_Product;
 DROP TABLE IF EXISTS tmp_Product;
 DROP TABLE IF EXISTS tmp_Product_Permutation;
+DROP TABLE IF EXISTS tmp_Permutation_Variation_Link;
 DROP TABLE IF EXISTS tmp_Permutation;
 DROP TABLE IF EXISTS tmp_Shop_Product_p_shop_calc_user;
 DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_Calc_User;
@@ -51,6 +52,7 @@ DROP TABLE IF EXISTS tmp_Manufacturing_Purchase_Order;
 DROP TABLE IF EXISTS tmp_Shop_Customer;
 DROP TABLE IF EXISTS tmp_Shop_Customer_Sale_Order_Product_Link;
 DROP TABLE IF EXISTS tmp_Shop_Customer_Sale_Order;
+DROP TABLE IF EXISTS tmp_Get_Variation_From_Csv_Variations;
 
 
 # Delete old tables
@@ -165,6 +167,7 @@ DROP TABLE IF EXISTS Shop_Product_Currency_Link;
 
 DROP TABLE IF EXISTS Shop_Product_Variation_Link_Audit;
 DROP TABLE IF EXISTS Shop_Product_Variation_Link;
+DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link_Temp;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link_Audit;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link;
 
@@ -304,6 +307,8 @@ DROP PROCEDURE IF EXISTS p_shop_save_product_variation;
 DROP PROCEDURE IF EXISTS p_shop_save_product_variation_test;
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
 DROP FUNCTION IF EXISTS fn_shop_get_id_product_permutation_from_variation_csv_list;
+DROP FUNCTION IF EXISTS fn_shop_get_product_variations_from_id_csv_list;
+DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_variations_csv;
 DROP PROCEDURE IF EXISTS p_shop_save_stock_item;
 DROP PROCEDURE IF EXISTS p_shop_save_stock_item_test;
 DROP PROCEDURE IF EXISTS p_shop_get_many_stock_item;

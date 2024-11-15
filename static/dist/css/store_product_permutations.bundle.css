@@ -57,13 +57,8 @@
 
 
 #formFilters {
-    width: 50vh;
+    width: 95vh;
 }
-
-#formFilters .container {
-    max-width: fit-content;
-}
-
 
 #tableMain {
     max-width: 90vw;

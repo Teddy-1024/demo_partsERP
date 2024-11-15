@@ -23,6 +23,8 @@ CREATE TRIGGER before_update_Shop_Product_Permutation
 BEFORE UPDATE ON Shop_Product_Permutation
 FOR EACH ROW
 BEGIN
+	DECLARE v_msg VARCHAR(4000);
+
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'New change Set ID must be provided.';
@@ -40,8 +42,10 @@ BEGIN
 		NEW.id_unit_measurement_interval_expiration_unsealed IS NULL
 		OR NEW.id_unit_measurement_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
+        SET v_msg := CONCAT('Unsealed expiration interval ID must be a unit of time. Invalid value: ', CAST(NEW.id_unit_measurement_interval_expiration_unsealed AS CHAR));
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Unsealed expiration interval ID must be a unit of time.';
+        SET MESSAGE_TEXT = v_msg
+        ;
     END IF;
     
     INSERT INTO Shop_Product_Permutation_Audit (

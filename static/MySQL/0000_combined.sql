@@ -1,3 +1,4 @@
+-- File: 0001_destroy.sql
 
 /* Clear Store DataBase */
 
@@ -18,6 +19,7 @@ DROP TABLE IF EXISTS tmp_Shop_Order;
 DROP TABLE IF EXISTS tmp_Shop_Product;
 DROP TABLE IF EXISTS tmp_Product;
 DROP TABLE IF EXISTS tmp_Product_Permutation;
+DROP TABLE IF EXISTS tmp_Permutation_Variation_Link;
 DROP TABLE IF EXISTS tmp_Permutation;
 DROP TABLE IF EXISTS tmp_Shop_Product_p_shop_calc_user;
 DROP TABLE IF EXISTS tmp_Shop_Product_p_Shop_Calc_User;
@@ -51,6 +53,7 @@ DROP TABLE IF EXISTS tmp_Manufacturing_Purchase_Order;
 DROP TABLE IF EXISTS tmp_Shop_Customer;
 DROP TABLE IF EXISTS tmp_Shop_Customer_Sale_Order_Product_Link;
 DROP TABLE IF EXISTS tmp_Shop_Customer_Sale_Order;
+DROP TABLE IF EXISTS tmp_Get_Variation_From_Csv_Variations;
 
 
 # Delete old tables
@@ -165,6 +168,7 @@ DROP TABLE IF EXISTS Shop_Product_Currency_Link;
 
 DROP TABLE IF EXISTS Shop_Product_Variation_Link_Audit;
 DROP TABLE IF EXISTS Shop_Product_Variation_Link;
+DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link_Temp;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link_Audit;
 DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link;
 
@@ -304,6 +308,8 @@ DROP PROCEDURE IF EXISTS p_shop_save_product_variation;
 DROP PROCEDURE IF EXISTS p_shop_save_product_variation_test;
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
 DROP FUNCTION IF EXISTS fn_shop_get_id_product_permutation_from_variation_csv_list;
+DROP FUNCTION IF EXISTS fn_shop_get_product_variations_from_id_csv_list;
+DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_variations_csv;
 DROP PROCEDURE IF EXISTS p_shop_save_stock_item;
 DROP PROCEDURE IF EXISTS p_shop_save_stock_item_test;
 DROP PROCEDURE IF EXISTS p_shop_get_many_stock_item;
@@ -330,6 +336,9 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_customer;
 DROP PROCEDURE IF EXISTS p_shop_save_customer_sales_order;
 DROP PROCEDURE IF EXISTS p_shop_get_many_customer_sales_order;
 
+
+-- File: 1000_tbl_Shop_Product_Change_Set.sql
+
 # Product Change Sets
 
 
@@ -342,6 +351,9 @@ CREATE TABLE Shop_Product_Change_Set (
 	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
+
+-- File: 1000_tbl_Split_Temp.sql
+
 # Split Staging
 -- USE partsltd_prod;
 -- DROP TABLE IF EXISTS Split_Temp;
@@ -353,6 +365,9 @@ CREATE TABLE Split_Temp (
     , display_order INT NOT NULL
 	, substring VARCHAR(4000) NOT NULL
 );
+
+
+-- File: 1001_tbl_Shop_User_Change_Set.sql
 
 # User Change Sets
 
@@ -366,6 +381,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Change_Set (
     updated_last_on DATETIME,
     updated_last_by VARCHAR(100)
 );
+
+-- File: 1001_tbl_Split_Key_Value_Pair_Csv_Temp.sql
+
 # Split Key Value Pair CSV Staging
 -- USE partsltd_prod;
 -- DROP TABLE IF EXISTS Split_Temp;
@@ -379,6 +397,9 @@ CREATE TABLE Split_Key_Value_Pair_Csv_Temp (
     , value_column VARCHAR(4000) NULL
 );
 
+
+-- File: 1002_tbl_Shop_Sales_And_Purchasing_Change_Set.sql
+
 # Sales And Purchasing Change Sets
 
 
@@ -391,6 +412,9 @@ CREATE TABLE Shop_Sales_And_Purchasing_Change_Set (
 	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
+
+-- File: 1003_tbl_Shop_Access_Level.sql
+
 # Access Levels
 
 
@@ -414,6 +438,9 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level (
 
 
 
+
+-- File: 1004_tbl_Shop_Access_Level_Audit.sql
+
 # Access Level Audits
 
 
@@ -435,6 +462,9 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1005_tbl_Msg_Error_Type.sql
+
 # Error Message Type
 
 
@@ -447,6 +477,9 @@ CREATE TABLE IF NOT EXISTS Shop_Msg_Error_Type (
 	name VARCHAR(500) NOT NULL,
 	description VARCHAR(1000)
 );
+
+
+-- File: 1010_tbl_File_Type.sql
 
 # File Types
 
@@ -464,6 +497,9 @@ CREATE TABLE IF NOT EXISTS File_Type (
 	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
+
+
+-- File: 1011_tbl_File_Type_Audit.sql
 
 # File Type Audit
 
@@ -486,6 +522,9 @@ CREATE TABLE IF NOT EXISTS File_Type_Audit (
 	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
+
+-- File: 1012_tbl_Shop_General.sql
+
 # Generic / shared properties
 
 
@@ -502,6 +541,9 @@ CREATE TABLE IF NOT EXISTS Shop_General (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1013_tbl_Shop_General_Audit.sql
+
 # Shop General Audits
 
 
@@ -523,6 +565,9 @@ CREATE TABLE IF NOT EXISTS Shop_General_Audit (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1014_tbl_Shop_Image_Type.sql
+
 # Image Types
 
 
@@ -550,6 +595,9 @@ CREATE TABLE IF NOT EXISTS Shop_Image_Type (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1015_tbl_Shop_Image_Type_Audit.sql
+
 # Image Type Audits
 
 
@@ -571,6 +619,9 @@ CREATE TABLE IF NOT EXISTS Shop_Image_Type_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1100_tbl_Shop_Region.sql
+
 # Regions
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Region';
@@ -588,6 +639,9 @@ CREATE TABLE IF NOT EXISTS Shop_Region (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1101_tbl_Shop_Region_Audit.sql
+
 # Region Audits
 
 
@@ -609,6 +663,9 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1102_tbl_Shop_Region_Temp.sql
+
 # Region Temp
 
 
@@ -628,6 +685,9 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Temp (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1103_tbl_Shop_Region_Branch.sql
+
 # Region Branchs
 
 
@@ -656,6 +716,9 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1104_tbl_Shop_Region_Branch_Audit.sql
+
 # Region Audits
 
 
@@ -677,6 +740,9 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1105_tbl_Shop_Region_Branch_Temp.sql
+
 # Region Branch Temp
 
 
@@ -691,6 +757,9 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch_Temp (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL
 );
+
+-- File: 1106_tbl_Shop_Address.sql
+
 # Addresses
 
 
@@ -721,6 +790,9 @@ CREATE TABLE Shop_Address (
 		FOREIGN KEY (id_change_set)
         REFERENCES partsltd_prod.Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1106_tbl_Shop_Plant.sql
+
 # Plant
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Plant';
@@ -743,6 +815,9 @@ CREATE TABLE IF NOT EXISTS Shop_Plant (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1107_tbl_Shop_Address_Audit.sql
+
 # Address Audits
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Address_Audit';
@@ -763,6 +838,9 @@ CREATE TABLE IF NOT EXISTS Shop_Address_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1107_tbl_Shop_Plant_Audit.sql
+
 # Plant Audits
 
 
@@ -785,6 +863,9 @@ CREATE TABLE IF NOT EXISTS Shop_Plant_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1108_tbl_Shop_Plant_Temp.sql
+
 # Plant Temp
 
 
@@ -800,6 +881,9 @@ CREATE TABLE IF NOT EXISTS Shop_Plant_Temp (
 	, active BIT NOT NULL DEFAULT 1
     , guid BINARY(36) NOT NULL
 );
+
+
+-- File: 1109_tbl_Shop_Storage_Location.sql
 
 # Storage Location
 
@@ -824,6 +908,9 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1110_tbl_Shop_Storage_Location_Audit.sql
+
 # Storage Location Audits
 
 
@@ -846,6 +933,9 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1111_tbl_Shop_Storage_Location_Temp.sql
+
 # Storage Location Temp
 
 
@@ -858,6 +948,9 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location (
     name VARCHAR(500) NOT NULL,
 	active BIT NOT NULL DEFAULT 1
 );
+
+
+-- File: 1112_tbl_Shop_Storage_Location_Branch.sql
 
 # Storage Location Branch
 
@@ -887,6 +980,9 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1113_tbl_Shop_Storage_Location_Branch_Audit.sql
+
 # Storage Location Branch Audits
 
 
@@ -909,6 +1005,9 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1114_tbl_Shop_Storage_Location_Branch_Temp.sql
+
 # Storage Location Branch Temp
 
 
@@ -923,6 +1022,9 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch_Temp (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL
 );
+
+-- File: 1115_tbl_Shop_Currency.sql
+
 # Currencies
 
 
@@ -945,6 +1047,9 @@ CREATE TABLE IF NOT EXISTS Shop_Currency (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1116_tbl_Shop_Currency_Audit.sql
+
 # Currency Audits
 
 
@@ -967,6 +1072,9 @@ CREATE TABLE IF NOT EXISTS Shop_Currency_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1117_tbl_Shop_Currency_Temp.sql
+
 # Currency Temp
 
 
@@ -982,6 +1090,9 @@ CREATE TABLE IF NOT EXISTS Shop_Currency_Temp (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL
 );
+
+-- File: 1118_tbl_Shop_Tax_Or_Surcharge.sql
+
 # Taxes and Surcharges
 
 
@@ -1020,6 +1131,9 @@ CREATE TABLE Shop_Tax_Or_Surcharge (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1119_tbl_Shop_Tax_Or_Surcharge_Audit.sql
+
 # Tax Or Surcharge Audits
 
 
@@ -1042,6 +1156,9 @@ CREATE TABLE IF NOT EXISTS Shop_Tax_Or_Surcharge_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1120_tbl_Shop_Tax_Or_Surcharge_Temp.sql
+
 # Taxes and Surcharges Temp
 
 
@@ -1063,6 +1180,9 @@ CREATE TABLE Shop_Tax_Or_Surcharge_Temp (
 	active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL
 );
+
+
+-- File: 1121_tbl_Shop_Unit_Measurement.sql
 
 # Unit of Measurement
 
@@ -1090,6 +1210,9 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement (
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1122_tbl_Shop_Unit_Measurement_Audit.sql
+
 # Unit of Measurement Audits
 
 
@@ -1111,6 +1234,9 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+
+-- File: 1124_tbl_Shop_Unit_Measurement_Conversion.sql
 
 # Unit of Measurement Conversion
 
@@ -1135,6 +1261,9 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion (
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1125_tbl_Shop_Unit_Measurement_Conversion_Audit.sql
+
 # Unit of Measurement Conversion Audits
 
 
@@ -1156,6 +1285,9 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+
+-- File: 1200_tbl_Shop_Product_Category.sql
 
 # Categories
 
@@ -1181,6 +1313,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1201_tbl_Shop_Product_Category_Audit.sql
+
 # Category Audits
 
 
@@ -1203,6 +1338,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1202_tbl_Shop_Product_Category_Temp.sql
+
 # Categories Temp
 
 -- DROP TABLE Shop_Product_Category_Temp;
@@ -1210,7 +1348,8 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Audit (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Category_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Product_Category_Temp (
-	id_category INT NOT NULL
+	id_temp INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+	, id_category INT NOT NULL
 	, code VARCHAR(50) NOT NULL
 	, name VARCHAR(255) NOT NULL
 	, description VARCHAR(4000) NULL
@@ -1222,6 +1361,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Temp (
 	, can_admin BIT NULL
     , guid BINARY(36) NOT NULL
 );
+
+
+-- File: 1203_tbl_Shop_Product.sql
 
 # Products
 
@@ -1271,6 +1413,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1204_tbl_Shop_Product_Audit.sql
+
 # Products
 
 
@@ -1292,6 +1437,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Audit (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1205_tbl_Shop_Product_Temp.sql
+
 # Products Temp
 
 -- DROP TABLE IF EXISTS Shop_Product_Temp;
@@ -1299,7 +1447,8 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Audit (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Product_Temp (
-	id_product INT NOT NULL
+	id_temp INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+	, id_product INT NOT NULL
 	, name VARCHAR(255) NOT NULL
 	, id_category INT NOT NULL
     , has_variations BIT NOT NULL
@@ -1312,6 +1461,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Temp (
     , guid BINARY(36) NOT NULL
 );
 
+
+-- File: 1206_tbl_Shop_Product_Permutation.sql
+
 # Product Permutation
 
 -- DROP TABLE partsltd_prod.Shop_Product_Permutation;
@@ -1320,6 +1472,7 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 
 CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
 	id_permutation INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_permutation_temp INT NOT NULL,
 	id_product INT NOT NULL,
 	CONSTRAINT FK_Shop_Product_Permutation_id_product
 		FOREIGN KEY (id_product)
@@ -1372,6 +1525,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1207_tbl_Shop_Product_Permutation_Audit.sql
+
 # Product Permutation Audits
 
 
@@ -1395,6 +1551,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Audit (
 		ON UPDATE RESTRICT
 );
 
+
+-- File: 1208_tbl_Shop_Product_Permutation_Temp.sql
+
 # Product Permutation Temp
 
 -- DROP TABLE IF EXISTS Shop_Product_Permutation_Temp;
@@ -1402,8 +1561,10 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Audit (
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation_Temp';
 
 CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
-	id_permutation INT NOT NULL
+	id_temp INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+	, id_permutation INT NOT NULL
 	, id_product INT NOT NULL
+	, csv_id_pairs_variation VARCHAR(4000) NULL
 	, description VARCHAR(4000) NOT NULL
 	, cost_local_VAT_excl FLOAT NULL
     , cost_local_VAT_incl FLOAT NULL
@@ -1430,6 +1591,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
 	, can_admin BIT NULL DEFAULT NULL
 );
 
+
+-- File: 1209_tbl_Shop_Variation_Type.sql
+
 # Variation Types
 
 
@@ -1451,6 +1615,9 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1210_tbl_Shop_Variation_Type_Audit.sql
+
 # Variation Type Audits
 
 
@@ -1473,6 +1640,9 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1211_tbl_Shop_Variation_Type_Temp.sql
+
 # Variation Types Temp
 
 -- DROP TABLE partsltd_prod.Shop_Variation_Type_Temp;
@@ -1492,6 +1662,9 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type_Temp (
 	, created_by INT
     , guid BINARY(36) NOT NULL
 );
+
+-- File: 1212_tbl_Shop_Variation.sql
+
 # Variations
 
 
@@ -1522,6 +1695,9 @@ CREATE TABLE Shop_Variation (
 		REFERENCES partsltd_prod.Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1213_tbl_Shop_Variation_Audit.sql
+
 # Variation Audits
 
 
@@ -1544,6 +1720,9 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1214_tbl_Shop_Variation_Temp.sql
+
 # Variations Temp
 
 -- DROP TABLE partsltd_prod.Shop_Variation_Temp;
@@ -1564,6 +1743,9 @@ CREATE TABLE Shop_Variation_Temp (
 	, created_by INT
 	, guid BINARY(36)
 );
+
+
+-- File: 1215_tbl_Shop_Product_Permutation_Variation_Link.sql
 
 # Product Permutation Variation Link
 
@@ -1593,6 +1775,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1216_tbl_Shop_Product_Permutation_Variation_Link_Audit.sql
+
 # Product Permutation Variation Link Audits
 
 
@@ -1615,6 +1800,28 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1217_tbl_Shop_Product_Permutation_Variation_Link_Temp.sql
+
+# Product Permutation Variation Link
+
+-- DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link_Temp;
+
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation_Variation_Link_Temp';
+
+CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link_Temp (
+	id_temp INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+	, id_link INT NOT NULL
+	, id_permutation INT NOT NULL
+	, id_variation INT NOT NULL
+	, active BIT NOT NULL
+	, display_order INT NOT NULL
+    , GUID BINARY(36) NOT NULL
+);
+
+
+-- File: 1218_tbl_Shop_Stock_Item.sql
+
 # Stock Stock Item
 
 -- DROP TABLE IF EXISTS Shop_Stock_Item;
@@ -1653,6 +1860,9 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1219_tbl_Shop_Stock_Item_Audit.sql
+
 # Stock Item Audits
 
 
@@ -1675,6 +1885,9 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 		ON UPDATE RESTRICT
 );
+
+
+-- File: 1220_tbl_Shop_Stock_Item_Temp.sql
 
 # Stock Stock Item Temp
 
@@ -1702,6 +1915,9 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item_Temp (
 	, active BIT NOT NULL
     , guid BINARY(36) NOT NULL
 );
+
+
+-- File: 1221_tbl_Shop_Product_Price.sql
 
 # Product Price
 
@@ -1734,6 +1950,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1222_tbl_Shop_Product_Price_Audit.sql
+
 # Product Price Audits
 
 
@@ -1756,6 +1975,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1223_tbl_Shop_Product_Price_Temp.sql
+
 # Product Price Temp
 
 
@@ -1772,6 +1994,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price_Temp (
 	id_stripe_price VARCHAR(200),
     active BIT NOT NULL DEFAULT 1
 );
+
+-- File: 1224_tbl_Shop_Product_Image.sql
+
 # Product Permutation Images
 
 
@@ -1798,6 +2023,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Image (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1225_tbl_Shop_Product_Image_Audit.sql
+
 # Product Image Audits
 
 
@@ -1818,6 +2046,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Image_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1227_tbl_Shop_Delivery_Option.sql
+
 # Delivery Options
 
 
@@ -1845,6 +2076,9 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option (
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1228_tbl_Shop_Delivery_Option_Audit.sql
+
 # Delivery Option Audits
 
 
@@ -1866,6 +2100,9 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1230_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql
+
 # Delivery Option
 
 
@@ -1911,6 +2148,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Delivery_Option_Link (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1231_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql
+
 # Delivery Option Audits
 
 
@@ -1932,6 +2172,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Delivery_Option_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1233_tbl_Shop_Discount.sql
+
 # Discounts
 
 
@@ -1980,6 +2223,9 @@ CREATE TABLE Shop_Discount (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
+
+-- File: 1234_tbl_Shop_Discount_Audit.sql
+
 # Discount Audits
 
 
@@ -2002,6 +2248,9 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1236_tbl_Shop_Discount_Region_Currency_Link.sql
+
 # Discount Region Currency Link
 
 
@@ -2033,6 +2282,9 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Region_Currency_Link (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1237_tbl_Shop_Discount_Region_Currency_Link_Audit.sql
+
 # Discount Region Currency Link Audits
 
 
@@ -2055,6 +2307,9 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Region_Currency_Link_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1300_tbl_Shop_Permission_Group.sql
+
 # Permission Groups
 
 
@@ -2075,6 +2330,9 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Group (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1301_tbl_Shop_Permission_Group_Audit.sql
+
 # Permission Group Audits
 
 
@@ -2097,6 +2355,9 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Group_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1303_tbl_Shop_Permission.sql
+
 # Permissions
 
 
@@ -2125,6 +2386,9 @@ CREATE TABLE IF NOT EXISTS Shop_Permission (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1304_tbl_Shop_Permission_Audit.sql
+
 # Permission Audits
 
 
@@ -2147,6 +2411,9 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1306_tbl_Shop_Role.sql
+
 # Roles
 
 
@@ -2166,6 +2433,9 @@ CREATE TABLE IF NOT EXISTS Shop_Role (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1307_tbl_Shop_Role_Audit.sql
+
 # Role Audits
 
 
@@ -2188,6 +2458,9 @@ CREATE TABLE Shop_Role_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1309_tbl_Shop_Role_Permission_Link.sql
+
 # Role Permission link
 
 
@@ -2218,6 +2491,9 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1310_tbl_Shop_Role_Permission_Link_Audit.sql
+
 # Role Permission link Audits
 
 
@@ -2239,6 +2515,9 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1312_tbl_Shop_User.sql
+
 # Users
 
 
@@ -2265,6 +2544,9 @@ CREATE TABLE IF NOT EXISTS Shop_User (
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
 
+
+-- File: 1313_tbl_Shop_User_Audit.sql
+
 # User Audits
 
 
@@ -2287,6 +2569,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1315_tbl_Shop_User_Role_Link.sql
+
 # User Role link
 
 
@@ -2312,6 +2597,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1316_tbl_Shop_User_Role_Link_Audit.sql
+
 # User Role Link Audits
 
 
@@ -2333,6 +2621,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+
+-- File: 1318_tbl_Shop_User_Address.sql
 
 # User Addresses
 
@@ -2362,6 +2653,9 @@ CREATE TABLE Shop_User_Address (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1319_tbl_Shop_User_Address_Audit.sql
+
 # Address Audits
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Address_Audit';
@@ -2382,6 +2676,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Address_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1321_tbl_Shop_User_Basket.sql
+
 # User Basket (Product Link)
 
 
@@ -2421,6 +2718,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket (
         */
 );
 
+
+-- File: 1322_tbl_Shop_User_Basket_Audit.sql
+
 # Product Basket Audits
 
 
@@ -2448,6 +2748,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket_Audit (
 	*/
 );
 
+
+-- File: 1397_tbl_Shop_Order_Status.sql
+
 # User Order Types
 
 
@@ -2468,6 +2771,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order_Status (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_User_Change_Set(id_change_set)
 );
+
+
+-- File: 1398_tbl_Shop_Order_Status_Audit.sql
 
 # Order Type Audits
 
@@ -2490,6 +2796,9 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order_Status_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
+
+-- File: 1400_tbl_Shop_Supplier.sql
+
 # Supplier
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier';
@@ -2523,6 +2832,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier (
 	, id_supplier_temp INT NOT NULL
 );
 
+
+-- File: 1401_tbl_Shop_Supplier_Audit.sql
+
 # Supplier Audits
 
 
@@ -2545,6 +2857,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
 
+
+-- File: 1402_tbl_Shop_Supplier_Temp.sql
+
 # Supplier Staging
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Temp';
@@ -2564,6 +2879,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Temp (
     active BIT NULL,
     GUID BINARY(36) NOT NULL
 );
+
+
+-- File: 1403_tbl_Shop_Supplier_Address.sql
 
 # Supplier Addresses
 
@@ -2593,6 +2911,9 @@ CREATE TABLE Shop_Supplier_Address (
 		FOREIGN KEY (id_change_set)
         REFERENCES partsltd_prod.Shop_User_Change_Set(id_change_set)
 );
+
+-- File: 1404_tbl_Shop_Supplier_Address_Audit.sql
+
 # Supplier Address Audits
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Address_Audit';
@@ -2613,6 +2934,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Address_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1405_tbl_Shop_Supplier_Address_Temp.sql
+
 # Supplier Addresses Staging
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Address_Temp';
@@ -2629,6 +2953,9 @@ CREATE TABLE Shop_Supplier_Address_Temp (
     , active BIT NOT NULL DEFAULT 1
     , GUID BINARY(36) NOT NULL
 );
+
+-- File: 1409_tbl_Shop_Supplier_Purchase_Order.sql
+
 # Supplier Purchase Order
 
 
@@ -2672,6 +2999,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
+
+-- File: 1410_tbl_Shop_Supplier_Purchase_Order_Audit.sql
+
 # Supplier Purchase Order Audits
 
 
@@ -2694,6 +3024,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Audit (
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
+
+-- File: 1411_tbl_Shop_Supplier_Purchase_Order_Temp.sql
+
 # Supplier Purchase Order Staging
 
 DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Temp;
@@ -2708,6 +3041,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Temp (
     , active BIT NULL
     , GUID BINARY(36) NOT NULL
 );
+
+
+-- File: 1412_tbl_Shop_Supplier_Purchase_Order_Product_Link.sql
 
 # Supplier Purchase Order Product Link
 
@@ -2749,6 +3085,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
+
+-- File: 1413_tbl_Shop_Supplier_Purchase_Order_Product_Link_Audit.sql
+
 # Supplier Purchase Order Product Link Audits
 
 
@@ -2770,6 +3109,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
+
+
+-- File: 1414_tbl_Shop_Supplier_Purchase_Order_Product_Link_Temp.sql
 
 # Supplier Purchase Order Product Link Temp
 
@@ -2796,6 +3138,9 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link_Temp (
     , cost_total_local_VAT_incl FLOAT NOT NULL
     , GUID BINARY(36) NOT NULL
 );
+
+
+-- File: 1415_tbl_Shop_Manufacturing_Purchase_Order.sql
 
 # Manufacturing Purchase Order
 
@@ -2837,6 +3182,9 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
+
+-- File: 1416_tbl_Shop_Manufacturing_Purchase_Order_Audit.sql
+
 # Manufacturing Purchase Order Audits
 
 
@@ -2858,6 +3206,9 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
+
+
+-- File: 1417_tbl_Shop_Manufacturing_Purchase_Order_Temp.sql
 
 # Manufacturing Purchase Order Temp
 
@@ -2889,6 +3240,9 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Temp (
     active BIT NOT NULL DEFAULT 1,
     GUID BINARY(36) NOT NULL
 );
+
+
+-- File: 1418_tbl_Shop_Manufacturing_Purchase_Order_Product_Link.sql
 
 # Manufacturing Purchase Order Product Link
 
@@ -2934,6 +3288,9 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
 		REFERENCES partsltd_prod.Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
+
+-- File: 1419_tbl_Shop_Manufacturing_Purchase_Order_Product_Link_Audit.sql
+
 # Manufacturing Purchase Order Product Link Audits
 
 
@@ -2955,6 +3312,9 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Audit 
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
+
+
+-- File: 1420_tbl_Shop_Manufacturing_Purchase_Order_Product_Link_Temp.sql
 
 # Manufacturing Purchase Order Product Link Temp
 
@@ -2983,6 +3343,9 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
     price_unit_local_VAT_incl FLOAT NULL,
     GUID BINARY(36) NOT NULL
 );
+
+
+-- File: 1421_tbl_Shop_Customer.sql
 # Customer
 
 
@@ -3013,6 +3376,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer (
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
+
+-- File: 1422_tbl_Shop_Customer_Audit.sql
+
 # Customer Audits
 
 
@@ -3034,6 +3400,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
+
+
+-- File: 1424_tbl_Shop_Customer_Sales_Order.sql
 
 # Customer Sales Purchase Order
 
@@ -3070,6 +3439,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
+
+-- File: 1425_tbl_Shop_Customer_Sales_Order_Audit.sql
+
 # Customer Sales Order Audits
 
 
@@ -3091,6 +3463,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
+
+
+-- File: 1427_tbl_Shop_Customer_Sales_Order_Product_Link.sql
 
 # Customer Sales Order Product Link
 
@@ -3130,6 +3505,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
+
+-- File: 1428_tbl_Shop_Customer_Sales_Order_Product_Link_Audit.sql
+
 # Customer Sales Order Product Link Audits
 
 
@@ -3151,6 +3529,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
+
+
+-- File: 1429_tbl_Shop_Customer_Sales_Order_Product_Link_Temp.sql
 
 # Customer Sales Order Product Link Temp
 
@@ -3186,6 +3567,9 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link_Temp (
     active BIT NOT NULL
 );
 
+
+-- File: 1500_tbl_Shop_Calc_User_Temp.sql
+
 # Calc User Staging
 -- USE partsltd_prod;
 -- DROP TABLE IF EXISTS Shop_Calc_User_Temp;
@@ -3211,6 +3595,9 @@ CREATE TABLE Shop_Calc_User_Temp (
 	can_edit BIT,
 	can_admin BIT
 );
+
+-- File: 3000_tri_Shop_Access_Level.sql
+
 # Shop Access Level
 
 
@@ -3270,6 +3657,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3000_tri_Shop_Product_Change_Set.sql
+
 # Product Change Set
 
 
@@ -3289,6 +3679,9 @@ BEGIN
 	END IF;
 END //
 DELIMITER ;;
+
+
+-- File: 3001_tri_Shop_User_Change_Set.sql
 
 # Shop User Change Set
 
@@ -3310,6 +3703,9 @@ BEGIN
 	END IF;
 END //
 DELIMITER ;;
+
+-- File: 3002_tri_Shop_Sales_And_Purchasing_Change_Set.sql
+
 # Product Change Set
 
 
@@ -3329,6 +3725,9 @@ BEGIN
 	END IF;
 END //
 DELIMITER ;;
+
+
+-- File: 3010_tri_File_Type.sql
 
 # File Type
 
@@ -3373,6 +3772,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3011_tri_File_Type_Audit.sql
+
 # File Type Audits
 
 
@@ -3400,6 +3802,9 @@ BEGIN
     SET NEW.updated_last_by = CURRENT_USER();
 END //
 DELIMITER ;;
+
+-- File: 3012_tri_Shop_General.sql
+
 # Shop General
 
 
@@ -3440,6 +3845,9 @@ BEGIN
 	;
 END //
 DELIMITER ;;
+
+-- File: 3014_tri_Shop_Image_Type.sql
+
 # Shop Image Type
 
 
@@ -3504,6 +3912,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3100_tri_Shop_Region.sql
+
 # Shop Delivery Region
 
 
@@ -3559,6 +3970,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3103_tri_Shop_Region_Branch.sql
+
 # Shop Region Branch
 
 
@@ -3611,6 +4025,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+
+-- File: 3106_tri_Shop_Address.sql
 
 # Shop Address
 
@@ -3678,6 +4095,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3109_tri_Shop_Storage_Location.sql
+
 # Shop Storage Location
 
 
@@ -3732,6 +4152,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+
+-- File: 3115_tri_Shop_Currency.sql
 
 # Shop Currency
 
@@ -3795,6 +4218,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3118_tri_Shop_Tax_Or_Surcharge.sql
+
 # Shop Tax_Or_Surcharge
 
 
@@ -3870,6 +4296,9 @@ END //
 DELIMITER ;;
 
 
+
+-- File: 3200_tri_Shop_Category.sql
+
 # Shop Category
 
 
@@ -3930,6 +4359,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+
+-- File: 3203_tri_Shop_Product.sql
 
 # Shop Product
 
@@ -4101,6 +4533,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3206_tri_Shop_Product_Permutation.sql
+
 # Shop Product Permutation
 
 
@@ -4264,6 +4699,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3209_tri_Shop_Variation_Type.sql
+
 # Shop Variation Type
 
 
@@ -4323,6 +4761,9 @@ BEGIN
 	;
 END //
 DELIMITER ;;
+
+
+-- File: 3212_tri_Shop_Variation.sql
 
 # Shop Variation
 
@@ -4387,6 +4828,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3215_tri_Shop_Product_Permutation_Variation_Link.sql
+
 # Shop Product Permutation Variation Link
 
 
@@ -4443,6 +4887,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3218_tri_Shop_Stock_Item.sql
+
 # Shop Product Permutation
 
 
@@ -4534,6 +4981,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3221_tri_Shop_Product_Price.sql
+
 # Shop Product Currency Link
 
 
@@ -4621,6 +5071,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3224_tri_Shop_Product_Image.sql
+
 # Shop Image
 
 
@@ -4693,6 +5146,9 @@ BEGIN
 	;
 END //
 DELIMITER ;;
+
+-- File: 3227_tri_Shop_Delivery_Option.sql
+
 # Shop Delivery Option Type
 
 
@@ -4765,6 +5221,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3230_tri_Shop_Product_Permutation_Delivery_Option_Link.sql
+
 # Shop Product Delivery Option Link
 
 
@@ -4843,6 +5302,9 @@ BEGIN
 	;
 END //
 DELIMITER ;;
+
+-- File: 3233_tri_Shop_Discount.sql
+
 # Shop Discount
 
 
@@ -4926,6 +5388,9 @@ END //
 DELIMITER ;;
 
 
+
+-- File: 3236_tri_Shop_Discount_Region_Currency_Link.sql
+
 # Shop Discount Region Currency Link
 
 
@@ -4978,6 +5443,9 @@ BEGIN
 	;
 END //
 DELIMITER ;;
+
+-- File: 3300_tri_Shop_Permission_Group.sql
+
 # Shop Permission Group
 
 
@@ -5032,6 +5500,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3303_tri_Shop_Permission.sql
+
 # Shop Permission
 
 
@@ -5094,6 +5565,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3306_tri_Shop_Role.sql
+
 # Shop Role
 
 
@@ -5148,6 +5622,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+
+-- File: 3309_tri_Shop_Role_Permission_Link.sql
 
 # Shop Role Permission Link
 
@@ -5205,6 +5682,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+
+-- File: 3312_tri_Shop_User.sql
 
 # Shop User
 
@@ -5284,6 +5764,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3315_tri_Shop_User_Role_Link.sql
+
 # Shop User Role Link
 
 
@@ -5326,6 +5809,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3318_tri_Shop_User_Address.sql
+
 # Shop Address
 
 
@@ -5400,6 +5886,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3321_tri_Shop_User_Basket.sql
+
 # Shop Product Variation Link
 
 
@@ -5454,6 +5943,9 @@ BEGIN
 	;
 END //
 DELIMITER ;;
+
+-- File: 3324_tri_Shop_User_Order_Status.sql
+
 # Shop User Order Type
 
 
@@ -5512,6 +6004,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3400_tri_Shop_Supplier.sql
+
 # Shop Supplier
 
 
@@ -5593,6 +6088,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3403_tri_Shop_Supplier_Address.sql
+
 # Shop Supplier Address
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Supplier_Address;
@@ -5657,6 +6155,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+-- File: 3403_tri_Shop_Unit_Measurement.sql
+
 # Shop Unit of Measurement
 
 
@@ -5733,6 +6234,9 @@ END //
 DELIMITER ;;
 
 
+
+-- File: 3406_tri_Shop_Unit_Of_Measurement_Conversion.sql
+
 # Shop Unit of Measurement Conversion
 
 
@@ -5796,6 +6300,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+
+-- File: 3409_tri_Shop_Supplier_Purchase_Order.sql
 
 # Shop Supplier Purchase Order
 
@@ -5874,6 +6381,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+
+-- File: 3412_tri_Shop_Supplier_Purchase_Order_Product_Link.sql
 
 # Shop Supplier Purchase Order Product Link
 
@@ -5968,6 +6478,9 @@ BEGIN
 END //
 DELIMITER ;;
 
+
+-- File: 3415_tri_Shop_Manufacturing_Purchase_Order.sql
+
 # Shop Manufacturing Purchase Order
 
 
@@ -6038,6 +6551,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+
+-- File: 3418_tri_Shop_Manufacturing_Purchase_Order_Product_Link.sql
 
 # Shop Manufacturing Purchase Order Product Link
 
@@ -6131,6 +6647,9 @@ END //
 DELIMITER ;;
 
 
+
+-- File: 3421_tri_Shop_Customer.sql
+
 # Shop Customer
 
 
@@ -6203,6 +6722,9 @@ END //
 DELIMITER ;;
 
 
+
+-- File: 3424_tri_Shop_Customer_Sales_Order.sql
+
 # Shop Customer Sales Order
 
 
@@ -6257,6 +6779,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+
+-- File: 3427_tri_Shop_Customer_Sales_Order_Product_Link.sql
 
 # Shop Customer Sales Order Product Link
 
@@ -6336,6 +6861,9 @@ BEGIN
     ;
 END //
 DELIMITER ;;
+
+
+-- File: 6000_p_debug_timing_reporting.sql
 -- USE partsltd_prod;
 
 -- Clear previous proc
@@ -6379,6 +6907,9 @@ CALL partsltd_prod.p_debug_timing_reporting (
 	CURRENT_TIMESTAMP(6)
 );
 */
+
+-- File: 6000_p_split.sql
+
 
 DROP PROCEDURE IF EXISTS p_split;
 
@@ -6483,6 +7014,9 @@ WHERE GUID = 'nips';
 CALL p_clear_split_temp( 'nips' );
 */
 
+
+-- File: 6001_p_clear_split_temp.sql
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_clear_split_temp;
 
@@ -6511,6 +7045,9 @@ CALL p_clear_split_temp ( 'nips' );
 
 
 */
+
+
+-- File: 6001_p_validate_guid.sql
 
 
 DROP PROCEDURE IF EXISTS p_validate_guid;
@@ -6570,6 +7107,9 @@ END //
 DELIMITER ;;
 
 CALL p_validate_guid_test();
+
+-- File: 6003_p_split_key_value_pair_csv.sql
+
 
 DROP PROCEDURE IF EXISTS p_split_key_value_pair_csv;
 
@@ -6678,6 +7218,9 @@ WHERE GUID = 'nipsnipsnipsnipsnipsnipsnipsnipsnips';
 CALL p_clear_split_key_value_pair_csv_temp( 'nipsnipsnipsnipsnipsnipsnipsnipsnips' );
 */
 
+
+-- File: 6004_p_clear_split_key_value_pair_csv_temp.sql
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_clear_split_key_value_pair_csv_temp;
 
@@ -6706,6 +7249,9 @@ CALL p_clear_split_key_value_pair_csv_temp ( 'nipsnipsnipsnipsnipsnipsnipsnipsni
 
 
 */
+
+
+-- File: 6206_fn_shop_get_product_permutation_name.sql
 
 DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_name;
 
@@ -6750,6 +7296,9 @@ SELECT
 	)
 ;
 */
+
+-- File: 6210_fn_shop_get_id_product_permutation_from_variation_csv_list.sql
+
 DROP FUNCTION IF EXISTS fn_shop_get_id_product_permutation_from_variation_csv_list;
 
 DELIMITER //
@@ -6970,6 +7519,165 @@ WHERE GUID = 'nipsnipsnipsnipsnipsnipsnipsnipsnips';
 
 CALL p_clear_split_key_value_pair_csv_temp( 'nipsnipsnipsnipsnipsnipsnipsnipsnips' );
 */
+
+
+-- File: 6211_fn_shop_get_product_variations_from_id_csv_list.sql
+
+DROP FUNCTION IF EXISTS fn_shop_get_product_variations_from_id_csv_list;
+
+DELIMITER //
+
+CREATE FUNCTION fn_shop_get_product_variations_from_id_csv_list (
+	a_id_permutation INT
+	, a_variation_csv TEXT
+    , a_guid BINARY(36)
+) 
+RETURNS INT
+DETERMINISTIC
+READS SQL DATA
+BEGIN
+	DECLARE v_csv_pairs VARCHAR(4000);
+    DECLARE v_current_pair VARCHAR(50);
+    DECLARE v_id_variation_type INT;
+    DECLARE v_id_variation INT;
+    DECLARE v_rank_counter INT;
+
+	CALL p_validate_guid( a_guid );
+    
+    SET v_csv_pairs := a_variation_csv;
+    SET v_rank_counter := 1;
+    
+    DROP TEMPORARY TABLE IF EXISTS tmp_Get_Variation_From_Csv_Variations;
+    CREATE TEMPORARY TABLE tmp_Get_Variation_From_Csv_Variations (
+		id_variation_type INT NULL
+        , id_variation INT NOT NULL
+	);
+    
+    WHILE LENGTH(v_csv_pairs) > 0 DO
+        IF LOCATE(',', v_csv_pairs) > 0 THEN
+            SET v_current_pair := SUBSTRING_INDEX(v_csv_pairs, ',', 1);
+            SET v_csv_pairs := SUBSTRING(v_csv_pairs, LOCATE(',', v_csv_pairs) + 1);
+        ELSE
+            SET v_current_pair := v_csv_pairs;
+            SET v_csv_pairs := '';
+        END IF;
+        
+        SET v_id_variation_type := SUBSTRING_INDEX(v_current_pair, ':', 1);
+        SET v_id_variation := SUBSTRING_INDEX(v_current_pair, ':', -1);
+	
+		IF NOT ISNULL(v_id_variation) THEN
+			INSERT INTO tmp_Get_Variation_From_Csv_Variations (
+				id_variation_type
+				, id_variation
+			)
+			SELECT
+				v_id_variation_type AS id_variation_type
+				, v_id_variation AS id_variation
+			;
+			
+			SET v_rank_counter := v_rank_counter + 1;
+        END IF;
+    END WHILE;
+    
+	INSERT INTO partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp (
+		id_link
+		, id_permutation
+		, id_variation
+		, display_order
+        , active
+		, GUID
+	)
+	SELECT
+		IFNULL(PPVL.id_link, -v_rank_counter) AS id_link
+		, a_id_permutation
+		, t_V.id_variation
+		, v_rank_counter AS display_order
+        , 1 AS active
+		, a_guid
+	FROM tmp_Get_Variation_From_Csv_Variations t_V
+	LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON t_V.id_variation = PPVL.id_variation
+	;
+	
+    DROP TEMPORARY TABLE tmp_Get_Variation_From_Csv_Variations;
+    
+    RETURN v_rank_counter;
+END //
+
+DELIMITER ;
+
+
+/*
+
+SELECT 
+	partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
+		1 -- a_id_permutation
+        , '1:1' -- a_variation_csv
+        , 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE' -- a_guid
+	)
+;
+SELECT *
+FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+WHERE GUID = 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE'
+;
+DELETE
+FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+WHERE GUID = 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE'
+;
+*/
+
+
+-- File: 6212_fn_shop_get_product_permutation_variations_csv.sql
+
+DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_variations_csv;
+
+DELIMITER //
+
+CREATE FUNCTION fn_shop_get_product_permutation_variations_csv(id_product_permutation INT)
+RETURNS VARCHAR(4000)
+DETERMINISTIC
+BEGIN
+    DECLARE csv VARCHAR(4000);
+    
+    SET csv := (
+        SELECT 
+			CASE WHEN P.has_variations = 0 THEN
+				''
+            ELSE
+				GROUP_CONCAT(
+					CONCAT(
+						PV.id_type
+						, ':'
+						, PV.id_variation
+					)
+					SEPARATOR ','
+				)
+			END 
+		FROM partsltd_prod.Shop_Product_Permutation PP
+		LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
+		LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+		LEFT JOIN partsltd_prod.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
+		LEFT JOIN partsltd_prod.Shop_Variation_Type PVT ON PV.id_type = PVT.id_type
+        WHERE PP.id_permutation = id_product_permutation
+        GROUP BY P.id_product, P.has_variations, PVT.display_order, PVT.name, PV.display_order, PV.name
+        LIMIT 1
+    );
+    
+    RETURN csv;
+END //
+
+DELIMITER ;
+SELECT 
+	fn_shop_get_product_permutation_variations_csv(
+		3 -- id_product_permutation
+	)
+    , fn_shop_get_product_permutation_variations_csv(
+		1 -- id_product_permutation
+	)
+;
+/*
+*/
+
+-- File: 6500_p_shop_calc_user.sql
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_user_eval;
@@ -7527,6 +8235,9 @@ SELECT * FROM partsltd_prod.shop_user_role_link;
 SELECT * FROM partsltd_prod.shop_role_permission_link;
 
 */
+
+-- File: 6501_p_shop_clear_calc_user.sql
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_clear_Shop_Calc_User_Temp;
 DROP PROCEDURE IF EXISTS p_clear_Shop_Calc_User_Temp;
@@ -7571,6 +8282,9 @@ WHERE GUID = 'noods, cheese '
 ;
 
 */
+
+
+-- File: 7003_p_shop_get_many_access_level.sql
 
 
 
@@ -7618,6 +8332,9 @@ CALL p_shop_get_many_access_level (
 */
 
 
+-- File: 7101_p_shop_get_many_region.sql
+
+
 
 /*
 
@@ -7663,6 +8380,9 @@ CALL p_shop_get_many_region (
 */
 
 
+-- File: 7106_p_shop_get_many_plant.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_plant;
 
@@ -7697,6 +8417,9 @@ CALL p_shop_get_many_plant (
 	0 # a_get_inactive_plant
 );
 */
+
+
+-- File: 7109_p_shop_get_many_storage_location.sql
 
 
 -- Clear previous proc
@@ -7734,6 +8457,9 @@ CALL p_shop_get_many_storage_location (
 	0 # a_get_inactive_storage_location
 );
 */
+
+
+-- File: 7116_p_shop_get_many_currency.sql
 
 
 
@@ -7782,6 +8508,9 @@ CALL p_shop_get_many_currency (
 );
 */
 
+
+-- File: 7122_p_shop_get_many_unit_measurement.sql
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_unit_measurement;
 
@@ -7822,6 +8551,9 @@ CALL p_shop_get_many_unit_measurement (
 select *
 from shop_unit_measurement
 */
+
+
+-- File: 7200_p_shop_save_product_category.sql
 
 
 -- Clear previous proc
@@ -8095,6 +8827,9 @@ END //
 DELIMITER ;;
 
 
+
+-- File: 7200_p_shop_save_product_category_test.sql
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_category_test;
 
@@ -8170,6 +8905,9 @@ DELETE FROM partsltd_prod.Shop_Product_Category_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 */
 
+
+-- File: 7202_p_shop_clear_calc_product_permutation.sql
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_clear_calc_product_permutation;
 
@@ -8221,6 +8959,9 @@ WHERE GUID = a_guid
 ;
 
 */
+
+
+-- File: 7203_p_shop_save_product.sql
 
 
 
@@ -8535,6 +9276,9 @@ DELIMITER ;;
 
 
 
+-- File: 7203_p_shop_save_product_test.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_test;
 
@@ -8625,7 +9369,10 @@ CALL partsltd_prod.p_shop_save_product_test ();
 DELETE FROM partsltd_prod.Shop_Product_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
-*/-- USE partsltd_prod;
+*/
+
+-- File: 7204_p_shop_calc_product_permutation.sql
+-- USE partsltd_prod;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_calc_product_permutation;
@@ -9339,7 +10086,10 @@ CALL partsltd_prod.p_shop_calc_product_permutation (
         WHERE GUID = 'NIPS                                '
         ;
         
-*/-- 
+*/
+
+-- File: 7204_p_shop_get_many_product.sql
+-- 
 USE partsltd_prod;
 
 -- Clear previous proc
@@ -9863,6 +10613,9 @@ FROM partsltd_prod.Shop_Calc_User_Temp;
 */
 
 
+-- File: 7205_p_shop_get_many_stripe_product_new.sql
+
+
 
 /*
 
@@ -10170,6 +10923,9 @@ CALL p_shop_calc_user (
 */
 
 
+-- File: 7206_p_shop_save_product_permutation.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_save_permutation;
 DROP PROCEDURE IF EXISTS p_shop_save_product_permutation;
@@ -10237,11 +10993,14 @@ BEGIN
     
     CALL p_validate_guid ( a_guid );
     
-    DROP TABLE IF EXISTS tmp_Permutation;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation_Variation_Link;
+    DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     
     CREATE TEMPORARY TABLE tmp_Permutation (
 		id_permutation INT NOT NULL
+        , id_permutation_temp INT NOT NULL
 		, id_product INT NOT NULL
+        , csv_id_pairs_variation VARCHAR(4000) NULL
 		, description VARCHAR(4000) NOT NULL
 		, cost_local_VAT_excl FLOAT NULL
 		, cost_local_VAT_incl FLOAT NULL
@@ -10267,6 +11026,15 @@ BEGIN
         , name_error VARCHAR(255) NOT NULL
         , is_new BIT NOT NULL
     );
+    
+    CREATE TEMPORARY TABLE tmp_Permutation_Variation_Link (
+		id_link INT NOT NULL
+        , id_permutation INT NOT NULL
+        , id_variation INT NOT NULL
+        , active BIT NOT NULL
+        , display_order INT NOT NULL
+        , is_new BIT NOT NULL
+    );
         
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
@@ -10279,7 +11047,9 @@ BEGIN
     -- Get data from Temp table
     INSERT INTO tmp_Permutation (
 		id_permutation
+		, id_permutation_temp
 		, id_product
+        , csv_id_pairs_variation
 		, description
 		, cost_local_VAT_excl
 		, cost_local_VAT_incl
@@ -10304,7 +11074,9 @@ BEGIN
 	)
     SELECT 
 		PP_T.id_permutation
+		, PP_T.id_permutation
 		, IFNULL(PP_T.id_product, PP.id_product) AS id_product
+        , PP_T.csv_id_pairs_variation
         , IFNULL(PP_T.description, PP.description) AS description
 		, IFNULL(PP_T.cost_local_VAT_excl, PP.cost_local_VAT_excl) AS cost_local_VAT_excl
 		, IFNULL(PP_T.cost_local_VAT_incl, PP.cost_local_VAT_incl) AS cost_local_VAT_incl
@@ -10330,6 +11102,42 @@ BEGIN
     LEFT JOIN Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
     WHERE PP_T.guid = a_guid
     ;
+    
+    select 'nips';
+    
+    SELECT
+			partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
+			t_PP.id_permutation -- a_id_permutation
+			, t_PP.csv_id_pairs_variation -- a_variation_csv
+			, a_guid -- a_guid
+		)
+    FROM tmp_Permutation t_PP
+    WHERE NOT ISNULL(t_PP.csv_id_pairs_variation)
+    ;
+    
+    SELECT 'CHIPS';
+    
+    INSERT INTO tmp_Permutation_Variation_Link (
+		id_link
+        , id_permutation
+        , id_variation
+        , display_order
+        , active
+        , is_new
+	)
+    SELECT
+		PPVL_T.id_link
+        , PPVL_T.id_permutation
+        , PPVL_T.id_variation
+        , PPVL_T.display_order
+        , ISNULL(PPVL_T.id_link) AS active
+        , IFNULL(PPVL_T.id_link, 0) < 1 AS is_new
+    FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp PPVL_T
+    RIGHT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PPVL_T.id_link = PPVL.id_variation
+    INNER JOIN tmp_Permutation t_PP ON PPVL_T.id_permutation = t_PP.id_permutation
+    ;
+    
+    select 'lips';
     
     -- Validation
     -- Missing mandatory fields
@@ -10546,6 +11354,17 @@ BEGIN
 		, t_P.can_admin = UE_T.can_admin
 	;
 	
+    IF a_debug = 1 THEN
+		SELECT *
+        FROM partsltd_prod.Shop_Calc_User_Temp
+        WHERE GUID = a_guid
+        ;
+        SELECT *
+        FROM tmp_Permutation t_PP
+        LEFT JOIN Shop_Product P ON t_PP.id_product = P.id_product
+        ;
+    END IF;
+    
 	CALL p_shop_clear_calc_user(
 		a_guid
         , 0 -- a_debug
@@ -10562,19 +11381,72 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following product permutation(s) do not have product edit permission: ', GROUP_CONCAT(t_P.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Permutation t_P
-		WHERE ISNULL(t_P.can_edit)
+		WHERE 
+			ISNULL(t_P.can_edit)
 		;
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
 		
-		IF NOT ISNULL(v_ids_product_permission) THEN
 			INSERT INTO Shop_Product_Change_Set ( comment )
 			VALUES ( a_comment )
 			;
 			
 			SET v_id_change_set := LAST_INSERT_ID();
+			
+			INSERT INTO Shop_Product_Permutation (
+				id_product
+				, description
+				, cost_local_VAT_excl
+				, cost_local_VAT_incl
+				, id_currency_cost
+				, profit_local_min
+				, latency_manufacture
+				, id_unit_measurement_quantity
+				, count_unit_measurement_per_quantity_step
+				, quantity_min
+				, quantity_max
+				, quantity_stock
+				, is_subscription
+				, id_unit_measurement_interval_recurrence
+				, count_interval_recurrence
+				, id_stripe_product
+				, does_expire_faster_once_unsealed
+				, id_unit_measurement_interval_expiration_unsealed
+				, count_interval_expiration_unsealed
+				, active
+				, created_by
+				, created_on
+			)
+			SELECT
+				t_P.id_product AS id_product
+				, t_P.description AS description
+				, t_P.cost_local_VAT_excl AS cost_local_VAT_excl
+				, t_P.cost_local_VAT_incl AS cost_local_VAT_incl
+				, t_P.id_currency_cost AS id_currency_cost
+				, t_P.profit_local_min AS profit_local_min
+				, t_P.latency_manufacture AS latency_manufacture
+				, t_P.id_unit_measurement_quantity AS id_unit_measurement_quantity
+				, t_P.count_unit_measurement_per_quantity_step AS count_unit_measurement_per_quantity_step
+				, t_P.quantity_min AS quantity_min
+				, t_P.quantity_max AS quantity_max
+				, t_P.quantity_stock AS quantity_stock
+				, t_P.is_subscription AS is_subscription
+				, t_P.id_unit_measurement_interval_recurrence AS id_unit_measurement_interval_recurrence
+				, t_P.count_interval_recurrence AS count_interval_recurrence
+				, t_P.id_stripe_product AS id_stripe_product
+				, t_P.does_expire_faster_once_unsealed AS does_expire_faster_once_unsealed
+				, t_P.id_unit_measurement_interval_expiration_unsealed AS id_unit_measurement_interval_expiration_unsealed
+				, t_P.count_interval_expiration_unsealed AS count_interval_expiration_unsealed
+				, t_P.active AS active
+				, a_id_user AS created_by
+				, v_time_start AS created_on
+			FROM tmp_Permutation t_P
+			WHERE 
+				is_new = 1
+				AND active = 1
+			;
 			
 			UPDATE Shop_Product_Permutation PP
 			INNER JOIN tmp_Permutation t_P ON PP.id_permutation = t_P.id_permutation
@@ -10601,66 +11473,57 @@ BEGIN
 				, PP.active = t_P.active
 				, PP.id_change_set = v_id_change_set
 			;
+            
+            UPDATE tmp_Permutation t_PP
+            INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation_temp
+            SET
+				t_PP.id_permutation = PP.id_permutation
+			;
+            UPDATE tmp_Permutation_Variation_Link t_PPVL
+            INNER JOIN tmp_Permutation t_PP ON t_PPVL.id_permutation = t_PP.id_permutation_temp
+            SET
+				t_PPVL.id_permutation = t_PP.id_permutation
+			;
+            
+            INSERT INTO partsltd_prod.Shop_Product_Permutation_Variation_Link (
+				id_permutation
+                , id_variation
+                , display_order
+                , active
+			)
+            SELECT 
+				t_PPVL.id_permutation
+                , t_PPVL.id_variation
+                , t_PPVL.display_order
+                , t_PPVL.active
+			FROM tmp_Permutation_Variation_Link t_PPVL
+            WHERE 
+				t_PPVL.is_new = 1
+                AND t_PPVL.active = 1
+            ;
+            
+            UPDATE partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL
+            INNER JOIN tmp_Permutation_Variation_Link t_PPVL 
+				ON PPVL.id_link = t_PPVL.id_link
+                AND t_PPVL.is_new = 1
+            SET
+				PPVL.id_permutation = t_PPVL.id_permutation
+                , PPVL.id_variation = t_PPVL.id_variation
+                , PPVL.display_order = t_PPVL.display_order
+                , PPVL.active = t_PPVL.active
+                , PPVL.id_change_set = v_id_change_set
+            ;
 		END IF;
 		
-		INSERT INTO Shop_Product_Permutation (
-			id_product
-			, description
-			, cost_local_VAT_excl
-            , cost_local_VAT_incl
-			, id_currency_cost
-			, profit_local_min
-			, latency_manufacture
-			, id_unit_measurement_quantity
-			, count_unit_measurement_per_quantity_step
-			, quantity_min
-			, quantity_max
-			, quantity_stock
-			, is_subscription
-			, id_unit_measurement_interval_recurrence
-			, count_interval_recurrence
-			, id_stripe_product
-			, does_expire_faster_once_unsealed
-			, id_unit_measurement_interval_expiration_unsealed
-			, count_interval_expiration_unsealed
-            , active
-			, created_by
-			, created_on
-		)
-		SELECT
-			t_P.id_product AS id_product
-			, t_P.description AS description
-			, t_P.cost_local_VAT_excl AS cost_local_VAT_excl
-			, t_P.cost_local_VAT_incl AS cost_local_VAT_incl
-			, t_P.id_currency_cost AS id_currency_cost
-			, t_P.profit_local_min AS profit_local_min
-			, t_P.latency_manufacture AS latency_manufacture
-			, t_P.id_unit_measurement_quantity AS id_unit_measurement_quantity
-			, t_P.count_unit_measurement_per_quantity_step AS count_unit_measurement_per_quantity_step
-			, t_P.quantity_min AS quantity_min
-			, t_P.quantity_max AS quantity_max
-			, t_P.quantity_stock AS quantity_stock
-			, t_P.is_subscription AS is_subscription
-			, t_P.id_unit_measurement_interval_recurrence AS id_unit_measurement_interval_recurrence
-			, t_P.count_interval_recurrence AS count_interval_recurrence
-			, t_P.id_stripe_product AS id_stripe_product
-			, t_P.does_expire_faster_once_unsealed AS does_expire_faster_once_unsealed
-			, t_P.id_unit_measurement_interval_expiration_unsealed AS id_unit_measurement_interval_expiration_unsealed
-			, t_P.count_interval_expiration_unsealed AS count_interval_expiration_unsealed
-			, t_P.active AS active
-			, a_id_user AS created_by
-			, v_time_start AS created_on
-		FROM tmp_Permutation t_P
-		WHERE 
-			is_new = 1
-			AND active = 1
-		;
     
 		DELETE FROM Shop_Product_Permutation_Temp
-		WHERE GUID = a_guid;
-		
-		COMMIT;
-    END IF;
+		WHERE GUID = a_guid
+        ;
+		DELETE FROM Shop_Product_Permutation_Variation_Link_Temp
+		WHERE GUID = a_guid
+        ;
+	
+	COMMIT;
     
     # Errors
     SELECT *
@@ -10669,9 +11532,11 @@ BEGIN
 	;
     
 	IF a_debug = 1 THEN
-		SELECT * from tmp_Permutation;
+		SELECT * FROM tmp_Permutation;
+        SELECT * FROM tmp_Permutation_Variation_Link;
 	END IF;
 
+    DROP TEMPORARY TABLE tmp_Permutation_Variation_Link;
     DROP TEMPORARY TABLE tmp_Permutation;
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
@@ -10764,6 +11629,9 @@ WHERE id_permutation = 1;
 
 
 
+-- File: 7206_p_shop_save_product_permutation_test.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_permutation_test;
 
@@ -10790,6 +11658,7 @@ BEGIN
 		INSERT INTO partsltd_prod.Shop_Product_Permutation_Temp (
 			id_permutation
 			, id_product
+            , csv_id_pairs_variation
             , description
 			, cost_local_VAT_excl
 			, cost_local_VAT_incl
@@ -10812,10 +11681,11 @@ BEGIN
 			, guid
 		)
 		VALUES 
-        /* Test 1 - Insert */
+        /* Test 1 - Insert 
         (
 			-1 -- id_permutation
 			, 5 -- id_product
+            , '' -- csv_id_pairs_variation
             , 'Hair clip' -- description
             , NULL -- cost_local_VAT_excl
             , NULL -- cost_local_VAT_incl
@@ -10837,6 +11707,7 @@ BEGIN
 			, 1 -- active
 			, v_guid
 		)
+        */
         /* Test 2 - Update
         (
 			4 -- id_product
@@ -10849,6 +11720,32 @@ BEGIN
 			, v_guid
 		)
         */
+        /* Test 3 - Insert with Variations */
+        (
+			-1 -- id_permutation
+			, 8 -- id_product
+            , '1:1' -- csv_id_pairs_variation
+            , 'Test with variations' -- description
+            , NULL -- cost_local_VAT_excl
+            , NULL -- cost_local_VAT_incl
+            , 1 -- id_currency_cost
+            , NULL -- profit_local_min
+            , 1 -- latency_manufacture
+            , 3 -- id_unit_measurement_quantity
+            , 1 -- count_unit_measurement_per_quantity_step
+            , 0 -- quantity_min
+            , 0 -- quantity_max
+            , 2 -- quantity_stock
+            , FALSE -- is_subscription
+            , NULL -- id_unit_measurement_interval_recurrence
+            , NULL -- count_interval_recurrence
+            , NULL -- id_stripe_product
+            , FALSE -- does_expire_faster_once_unsealed
+            , NULL -- id_unit_measurement_interval_expiration_unsealed
+            , NULL -- count_interval_expiration_unsealed
+			, 1 -- active
+			, v_guid
+		)
         ;
 		
 	COMMIT;
@@ -10876,6 +11773,7 @@ BEGIN
 END //
 DELIMITER ;;
 
+/*
 CALL partsltd_prod.p_shop_save_product_permutation_test ();
 
 DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
@@ -10883,10 +11781,12 @@ DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 
-/*
 SELECT * FROM partsltd_prod.Shop_Product
 Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_product_permutation`, CONSTRAINT `FK_Shop_Product_Permutation_id_product` FOREIGN KEY (`id_product`) REFERENCES `shop_product` (`id_product`) ON UPDATE RESTRICT)
 */
+
+-- File: 7210_p_shop_get_many_product_variation.sql
+
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
 
 DELIMITER //
@@ -11303,6 +12203,9 @@ insert into shop_product_change_set (comment)
 			;
 		END IF;
 */
+
+-- File: 7212_p_shop_save_product_variation.sql
+
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_save_product_variation;
@@ -11851,6 +12754,9 @@ DELIMITER ;;
 
 
 
+-- File: 7212_p_shop_save_product_variation_test.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_variation_test;
 
@@ -12035,6 +12941,9 @@ where id_type = -1
 Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_variation_type`, CONSTRAINT `FK_Shop_Variation_Type_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`))
 
 */
+
+-- File: 7219_p_shop_get_many_stock_item.sql
+
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_stock_item;
@@ -12811,6 +13720,9 @@ insert into shop_product_change_set (comment)
 */
 
 
+-- File: 7220_p_shop_save_stock_item.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_save_stock_item;
 
@@ -13509,6 +14421,9 @@ WHERE id_permutation = 1;
 
 
 
+-- File: 7220_p_shop_save_stock_item_test.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_stock_item_test;
 
@@ -13607,7 +14522,10 @@ DELETE FROM partsltd_prod.Shop_Stock_Item_Temp;
 /*
 update shop_product p set p.has_variations = 0 where id_product = 4
 DROP TABLE IF EXISTS tmp_Msg_Error;
-*/-- USE partsltd_prod;
+*/
+
+-- File: 7221_p_get_many_shop_product_price_and_discount_and_delivery_option.sql
+-- USE partsltd_prod;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_price_and_discount_and_delivery_option;
@@ -14615,6 +15533,9 @@ FROM Shop_Calc_User_Temp;
 */
 
 
+-- File: 7223_p_shop_get_many_stripe_price_new.sql
+
+
 
 /*
 
@@ -14858,6 +15779,9 @@ CALL p_shop_get_many_stripe_price_new (
 */
 
 
+-- File: 7312_p_shop_save_user.sql
+
+
 
 /*
 
@@ -15036,6 +15960,9 @@ CALL p_shop_edit_user (
 )
 
 */
+
+
+-- File: 7313_p_get_many_user.sql
 
 
 -- Clear previous proc
@@ -15546,6 +16473,9 @@ CALL p_get_many_user(
 );
 
 */
+
+
+-- File: 7321_p_shop_save_user_basket.sql
 
 
 
@@ -16378,6 +17308,9 @@ CALL p_shop_edit_user_basket (
 */
 
 
+-- File: 7400_p_shop_save_supplier.sql
+
+
 
 
 -- Clear previous proc
@@ -16966,6 +17899,9 @@ delete from shop_supplier where id_supplier = 9;
 delete from shop_supplier_address_audit where id_address = -4;
 delete from shop_supplier_address where id_address = -4;
 
+-- File: 7400_p_shop_save_supplier_temp.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_supplier_test;
 
@@ -17131,6 +18067,9 @@ DROP TABLE IF EXISTS tmp_Msg_Error;
 Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier`, CONSTRAINT `FK_Shop_Supplier_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_sales_and_purchasing_change_set` (`id_change_set`))
 
 */
+
+-- File: 7401_p_shop_get_many_supplier.sql
+
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_supplier;
 
@@ -17393,6 +18332,9 @@ CALL p_shop_get_many_supplier (
 );
 
 */
+
+-- File: 7403_p_shop_save_supplier_purchase_order.sql
+
 
 
 
@@ -17797,8 +18739,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'A valid quantity ordered is required for the following Supplier Purchase Order Item(s): '
 				, GROUP_CONCAT(t_SPOPL.name_error SEPARATOR ', ')
@@ -17819,8 +18761,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'A valid quantity received is required for the following Supplier Purchase Order Item(s): '
 				, GROUP_CONCAT(t_SPOPL.name_error, ' - ', t_SPOPL.quantity_received SEPARATOR ', ')
@@ -17839,8 +18781,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'A valid delivery latency is required for the following Supplier Purchase Order Item(s): '
 				, GROUP_CONCAT(t_SPOPL.name_error, ' - ', t_SPOPL.latency_delivery_days SEPARATOR ', ')
@@ -17864,8 +18806,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT('Duplicate records: ', GROUP_CONCAT(t_SPOPLC.name_error SEPARATOR ', '))
 		FROM (
 			SELECT 
@@ -17884,8 +18826,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'There are no items in the following Supplier Purchase Order(s): '
 				, GROUP_CONCAT(t_SPO.name_error SEPARATOR ', ')
@@ -17907,8 +18849,8 @@ BEGIN
 			id_type, code, msg
 		)
 		SELECT
-			v_id_error_type_bad_data, 
-			v_code_error_type_bad_data, 
+			v_id_type_error_bad_data, 
+			v_code_type_error_bad_data, 
 			CONCAT(
 				'There is no order for the following Supplier Purchase Order Item(s): '
 				, GROUP_CONCAT(t_SPOPL.name_error SEPARATOR ', ')
@@ -18244,6 +19186,9 @@ DELETE FROM Shop_Supplier_Purchase_Order;
 
 
 
+-- File: 7403_p_shop_save_supplier_purchase_order_test.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_supplier_purchase_order_test;
 
@@ -18302,7 +19247,6 @@ BEGIN
         WHERE id_order = 6
         */
 		;
-        
 		INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp (
 			id_link
 			, id_order
@@ -18395,10 +19339,12 @@ DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-/*
 Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier_address`, CONSTRAINT `FK_Shop_Supplier_Address_id_supplier` FOREIGN KEY (`id_supplier`) REFERENCES `shop_supplier` (`id_supplier`) ON UPDATE RESTRICT)
 
 */
+
+-- File: 7404_p_shop_get_many_supplier_purchase_order.sql
+
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_supplier_purchase_order;
 
@@ -18841,6 +19787,7 @@ BEGIN
         , P.id_product
 		, SPOPL.id_permutation
         , fn_shop_get_product_permutation_name(SPOPL.id_permutation) AS name_permutation
+        , fn_shop_get_product_permutation_variations_csv(SPOPL.id_permutation) AS csv_id_pairs_variation
 		-- , SPOPL.id_currency_cost
 		, SPOPL.id_unit_quantity
 		, SPOPL.quantity_ordered
@@ -18901,6 +19848,9 @@ CALL p_shop_get_many_supplier_purchase_order (
 );
 
 */
+
+
+-- File: 7415_p_shop_save_manufacturing_purchase_order.sql
 
 
 
@@ -19000,7 +19950,6 @@ BEGIN
 		, id_order INT NOT NULL
         , id_product INT NULL
         , id_permutation INT NULL
-		, id_currency INT NOT NULL
 		, id_unit_quantity INT NOT NULL
 		, quantity_used FLOAT NOT NULL
 		, quantity_produced FLOAT NULL
@@ -19018,7 +19967,7 @@ BEGIN
 		, price_total_local_VAT_incl FLOAT NULL
 		, has_order BIT NULL
 		, is_new BIT NOT NULL
-		, name_error VARCHAR(1000) NOT NULL
+		, name_error VARCHAR(1000) NULL
     );
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
@@ -19485,13 +20434,14 @@ BEGIN
 	END IF;
     
     -- Duplicates
+    /*
 	IF EXISTS (
 		SELECT 
-			id_permutation
-			, name_error
+			t_MPOPL.id_permutation
+			, t_MPOPL.name_error
 			, COUNT(*)
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL 
-		GROUP BY id_permutation 
+		GROUP BY t_MPOPL.id_permutation, t_MPOPL.name_error
 		HAVING COUNT(*) > 1
 	) THEN
 		INSERT INTO tmp_Msg_Error ( 
@@ -19503,15 +20453,16 @@ BEGIN
 			CONCAT('Duplicate records: ', GROUP_CONCAT(t_MPOPLC.name_error SEPARATOR ', '))
 		FROM (
 			SELECT 
-				id_permutation
-				, name_error
-				, COUNT(*) 
+				t_MPOPL.id_permutation
+				, t_MPOPL.name_error
+				, COUNT(*)
 			FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL 
-			GROUP BY id_permutation 
+			GROUP BY t_MPOPL.id_permutation, t_MPOPL.name_error
 			HAVING COUNT(*) > 1
 		) t_MPOPLC
 		;
 	END IF;
+    */
 	-- Empty Manufacturing Purchase Order
 	IF EXISTS ( SELECT * FROM tmp_Manufacturing_Purchase_Order t_MPO LEFT JOIN tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL ON t_MPO.id_order = t_MPOPL.id_order WHERE ISNULL(t_MPOPL.id_order) ) THEN
 		INSERT INTO tmp_Msg_Error ( 
@@ -19916,6 +20867,9 @@ DELETE FROM Shop_Manufacturing_Purchase_Order;
 
 
 
+-- File: 7415_p_shop_save_Manufacturing_purchase_order_test.sql
+
+
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_Manufacturing_purchase_order_test;
 
@@ -20062,7 +21016,11 @@ DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 select * from partsltd_prod.Shop_User;
+Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'partsltd_prod.t_MPOPL.name_error' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
 */
+
+-- File: 7416_p_shop_get_many_manufacturing_purchase_order.sql
+
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_manufacturing_purchase_order;
 
@@ -20346,13 +21304,13 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_manufacturing LIMIT 1))
+			, CONCAT('You do not have view permissions for ', IFNULL((SELECT IFNULL(name, '(No Permission Name)') FROM partsltd_prod.Shop_Permission WHERE FIND_IN_SET(id_permission, v_ids_permission_manufacturing_purchase_order) > 0 LIMIT 1), '(No Permissions Found)'))
 		)
 		;
 	END IF;
     
 	IF EXISTS ( SELECT * FROM tmp_Msg_Error LIMIT 1 ) THEN
-		DELETE FROM tmp_Manufacturing_Purchase_Order_Product_Link;
+		-- DELETE FROM tmp_Manufacturing_Purchase_Order_Product_Link;
 		DELETE FROM tmp_Manufacturing_Purchase_Order;
 	END IF;
 	
@@ -20403,8 +21361,11 @@ BEGIN
     SELECT
 		MPOPL.id_link
 		, MPOPL.id_order
+        , P.id_category
+        , P.id_product
 		, MPOPL.id_permutation
         , fn_shop_get_product_permutation_name(MPOPL.id_permutation) AS name_permutation
+        , fn_shop_get_product_permutation_variations_csv(MPOPL.id_permutation) AS csv_id_pairs_variation
 		, MPOPL.id_unit_quantity
 		, MPOPL.quantity_used
 		, MPOPL.quantity_produced
@@ -20417,7 +21378,9 @@ BEGIN
         , MPOPL.price_unit_local_VAT_incl
         , MPOPL.active
     FROM tmp_Manufacturing_Purchase_Order t_MPO
-    INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPO.id_order = MPOPL.id_order
+	INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPO.id_order = MPOPL.id_order
+    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
     ;
     
     # Errors
@@ -20444,11 +21407,12 @@ END //
 DELIMITER ;;
 
 
+/*
 
 CALL p_shop_get_many_manufacturing_purchase_order (
-	1 # a_id_user
+	0 # a_id_user
 	, 1 # a_get_all_order
-	, 0 # a_get_inactive_order
+	, 1 # a_get_inactive_order
     , '' # a_ids_order
     , '' # a_ids_permutation
     , NULL # a_date_from
@@ -20456,8 +21420,17 @@ CALL p_shop_get_many_manufacturing_purchase_order (
 	, 0 # a_debug
 );
 
-/*
+
+select *
+from partsltd_prod.shop_manufacturing_purchase_order
+;
+select *
+from partsltd_prod.shop_manufacturing_purchase_order_product_link
+;
 */
+
+
+-- File: 7421_p_shop_save_customer.sql
 
 
 
@@ -20760,6 +21733,9 @@ DELETE FROM Shop_Customer
 */
 
 
+-- File: 7422_p_shop_get_many_customer.sql
+
+
 
 /*
 
@@ -21029,6 +22005,9 @@ SELECT *
 FROM Shop_Customer;
 
 */
+
+
+-- File: 7424_p_shop_save_customer_sales_order.sql
 
 
 
@@ -21586,6 +22565,9 @@ DELETE FROM Shop_Customer_Sales_Order;
 
 */
 
+
+
+-- File: 7425_p_shop_get_many_customer_sales_order.sql
 
 
 
@@ -22364,6 +23346,9 @@ insert into shop_product_change_set (comment)
 */
 
 
+-- File: 9000_populate.sql
+
+
 
 /*
 
@@ -22727,6 +23712,7 @@ VALUES
 # Product Permutations
 INSERT INTO Shop_Product_Permutation (
 	-- display_order,
+    id_permutation_temp,
 	id_product,
 	description,
     cost_local_VAT_excl,
@@ -22751,7 +23737,8 @@ INSERT INTO Shop_Product_Permutation (
 )
 VALUES 
 	(
-		-- 1, 
+		-- 1,
+        -1,
 		1, 
 		'Good Red',
         5,
@@ -22776,6 +23763,7 @@ VALUES
 	),
 	(
 		-- 2, 
+		-2,
 		1, 
 		'Good Blue',
         6,
@@ -22800,6 +23788,7 @@ VALUES
 	),
 	(
 		-- 3, 
+		-3,
 		2, 
 		'Test product describes good',
         10,
@@ -22824,6 +23813,7 @@ VALUES
 	),
 	(
 		-- 4, 
+		-4,
 		3, 
 		'Phone describes good',
         10,
@@ -22848,6 +23838,7 @@ VALUES
 	),
 	(
 		-- 5, 
+		-5,
 		4, 
 		'Laptop describes good',
         10,
@@ -22872,6 +23863,7 @@ VALUES
 	),
 	(
 		-- 6, 
+		-6,
 		5, 
 		'Smart watch describes good',
         10,
@@ -22912,6 +23904,9 @@ INSERT INTO Shop_Variation (
 VALUES 
 	(1, 1, 'RED', 'Red', NULL, NULL)
 	, (2, 1, 'BLUE', 'Blue', NULL, NULL)
+	, (3, 1, 'GREEN', 'Green', NULL, NULL)
+	, (4, 1, 'White', 'White', NULL, NULL)
+	, (5, 1, 'BLACK', 'Black', NULL, NULL)
 	, (1, 2, '400ml', '400 millilitres', 6, 400)
 	, (2, 2, '400g', '400 grams', 4, 400)
 	, (3, 2, '410g', '410 grams', 4, 410)
@@ -23469,6 +24464,9 @@ CALL p_populate_database();
 DROP PROCEDURE IF EXISTS p_populate_database;
 */
 
+-- File: 9001_view.sql
+
+
 
 # Product Change Sets
 SELECT * FROM Shop_Product_Change_Set;
@@ -23673,4 +24671,39 @@ SELECT * FROM Shop_Customer_Sales_Order_Audit;
 # Customer Sales Order Product Link
 SELECT * FROM Shop_Customer_Sales_Order_Product_Link;
 SELECT * FROM Shop_Customer_Sales_Order_Product_Link_Audit;
+
+
+
+-- File: 9010_anal.sql
+
+
+/*
+
+SELECT TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_NAME LIKE '%SHOP%'
+	OR TABLE_NAME LIKE '%FILE_TYPE%';
+
+
+SELECT FOUND_ROWS();
+
+
+
+SELECT
+    CONSTRAINT_NAME,
+    CONSTRAINT_TYPE,
+    TABLE_NAME,
+    COLUMN_NAME,
+    REFERENCED_TABLE_NAME,
+    REFERENCED_COLUMN_NAME
+FROM
+    INFORMATION_SCHEMA.TABLES
+WHERE
+    TABLE_SCHEMA = 'PARTS'
+    -- AND TABLE_NAME = 'your_table_name'
+;
+
+*/
+
+
 
