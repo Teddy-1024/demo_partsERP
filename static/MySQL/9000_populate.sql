@@ -636,50 +636,49 @@ INSERT INTO partsltd_prod.Shop_Product_Change_Set (
 )
 VALUES ( 'Update Variation Display Orders' )
 ;
-WITH RECURSIVE RANKED AS (
+UPDATE partsltd_prod.Shop_Variation V
+INNER JOIN (
     SELECT 
         V.id_variation,
         RANK() OVER (ORDER BY 
-			CONCAT(
-				CASE WHEN V.count_unit_measurement = FLOOR(V.count_unit_measurement) THEN
-					LPAD(CAST(V.count_unit_measurement AS CHAR), 25, '0')
-				ELSE
-					CONCAT(
-						LPAD(
-							CAST(FLOOR(V.count_unit_measurement) AS CHAR)
-							, 25
-							, '0'
-						)
-						, SUBSTRING(
-							CAST(V.count_unit_measurement AS CHAR)
-							FROM LOCATE('.', CAST(V.count_unit_measurement AS CHAR))
-						)
-					)
-				END
+            CONCAT(
+                CASE WHEN V.count_unit_measurement = FLOOR(V.count_unit_measurement) THEN
+                    LPAD(CAST(V.count_unit_measurement AS CHAR), 25, '0')
+                ELSE
+                    CONCAT(
+                        LPAD(
+                            CAST(FLOOR(V.count_unit_measurement) AS CHAR)
+                            , 25
+                            , '0'
+                        )
+                        , SUBSTRING(
+                            CAST(V.count_unit_measurement AS CHAR)
+                            FROM LOCATE('.', CAST(V.count_unit_measurement AS CHAR))
+                        )
+                    )
+                END
                 , ' '
                 , IFNULL(IFNULL(UM.symbol, UM.name_singular), '(No Unit of Measurement)')
-			)
-		) as new_order
+            )
+        ) as new_order
     FROM partsltd_prod.Shop_Variation V
     INNER JOIN partsltd_prod.Shop_Unit_Measurement UM 
-		ON V.id_unit_measurement = UM.id_unit_measurement
+        ON V.id_unit_measurement = UM.id_unit_measurement
         AND UM.active = 1
     WHERE 
-		V.id_type = 2
-)
-UPDATE partsltd_prod.Shop_Variation V
-INNER JOIN RANKED ON V.id_variation = RANKED.id_variation
+        V.id_type = 2
+) AS RANKED ON V.id_variation = RANKED.id_variation
 JOIN (
-	SELECT CS.id_change_set
+    SELECT CS.id_change_set
     FROM partsltd_prod.Shop_Product_Change_Set CS
     ORDER BY CS.id_change_set DESC
     LIMIT 1
 ) AS CS
 SET 
-	V.display_order = RANKED.new_order
+    V.display_order = RANKED.new_order
     , V.id_change_set = CS.id_change_set
 WHERE 
-	V.id_type = 2
+    V.id_type = 2
 ;
 
 # Product Permutation Variation Links

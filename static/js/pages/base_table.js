@@ -25,6 +25,7 @@ export default class TableBasePage extends BasePage {
         this.dragSrcRow = null;
 
         this.hookupTableCellDdls = this.hookupTableCellDdls.bind(this);
+        this.getAndLoadFilteredTableContent = this.getAndLoadFilteredTableContent.bind(this);
     }
     
     initialize(isPopState = false) {
@@ -87,7 +88,7 @@ export default class TableBasePage extends BasePage {
             this.getAndLoadFilteredTableContent();
         });
     }
-    getAndLoadFilteredTableContent() {
+    getAndLoadFilteredTableContent = () => {
         this.callFilterTableContent()
             .catch(error => console.error('Error:', error));
     }
