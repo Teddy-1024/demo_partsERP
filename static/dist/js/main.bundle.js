@@ -324,6 +324,8 @@ var DOM = /*#__PURE__*/function () {
           returnVal = element.value;
         } else if (element.tagName === 'BUTTON' && element.classList.contains(flagActive)) {
           returnVal = element.classList.contains(flagDelete);
+        } else if (element.tagName === 'TD') {
+          returnVal = DOM.getElementAttributeValueCurrent(element);
         } else {
           returnVal = element.textContent;
         }
@@ -2470,9 +2472,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
           wasDirtyParentRows: wasDirtyParentRows
         });
       }
+      var td = DOM.getCellFromElement(element);
+      DOM.setElementAttributeValueCurrent(td, DOM.getElementAttributeValueCurrent(element));
       if (isDirtyElement != wasDirtyElement) {
-        var td = DOM.getCellFromElement(element);
-        DOM.setElementAttributeValueCurrent(td, DOM.getElementAttributeValueCurrent(element));
         DOM.handleDirtyElement(td, isDirtyElement);
         this.updateAndToggleShowButtonsSaveCancel();
         this.cascadeChangedIsDirtyNestedElementCellTable(element, isDirtyElement, wasDirtyParentRows);
@@ -3025,14 +3027,14 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "handleChangeDdlProductVariationOrVariationType",
     value: function handleChangeDdlProductVariationOrVariationType(event, element) {
-      this.updateProductPermutationVariations(element);
       this.handleChangeNestedElementCellTable(event, element);
+      this.updateProductPermutationVariations(element);
     }
   }, {
     key: "hookupDdlsProductPermutationVariation",
     value: function hookupDdlsProductPermutationVariation() {
       var _this22 = this;
-      this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation, function (event, ddlVariation) {
+      this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation + ' select', function (event, ddlVariation) {
         _this22.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
       });
     }
@@ -3073,7 +3075,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       var variationsCell = element.closest('td.' + flagProductVariations);
       var variationPairsString = this.getProductPermutationVariationsText(variationsCell);
       DOM.setElementAttributeValueCurrent(variationsCell, variationPairsString);
-      DOM.isElementDirty(variationsCell);
+      this.handleChangeNestedElementCellTable(null, variationsCell);
     }
   }, {
     key: "getProductPermutationVariationsText",
@@ -4739,6 +4741,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
       this.hookupFieldsProductPermutationVariation();
       this.hookupDescriptionTextareas();
       this.hookupCostFields();
+      this.hookupProfitFields();
       this.hookupLatencyManufactureInputs();
       this.hookupQuantityFields();
       this.hookupSubscriptionFields();
@@ -4797,6 +4800,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
   }, {
     key: "hookupProfitInputs",
     value: function hookupProfitInputs() {
+      debugger;
       this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagProfitLocalMin + ' input');
     }
   }, {
