@@ -213,6 +213,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupFieldsProductPermutationVariation();
         this.hookupDescriptionTextareas();
         this.hookupCostFields();
+        this.hookupProfitFields();
         this.hookupLatencyManufactureInputs();
         this.hookupQuantityFields();
         this.hookupSubscriptionFields();
@@ -256,7 +257,8 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupTableCellDdlPreviews(idTableMain + ' td.' + flagCurrency, Utils.getListFromDict(currencies));
     }
     */
-    hookupProfitInputs(){
+    hookupProfitInputs() {
+        debugger;
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagProfitLocalMin + ' input');
     }
     hookupLatencyManufactureInputs(){

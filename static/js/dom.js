@@ -123,6 +123,9 @@ export default class DOM {
             else if (element.tagName === 'BUTTON' && element.classList.contains(flagActive)) {
                 returnVal = element.classList.contains(flagDelete);
             }
+            else if (element.tagName === 'TD') {
+                returnVal = DOM.getElementAttributeValueCurrent(element);
+            }
             else {
                 returnVal = element.textContent;
             }

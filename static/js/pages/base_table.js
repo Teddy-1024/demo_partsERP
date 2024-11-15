@@ -362,9 +362,9 @@ export default class TableBasePage extends BasePage {
         let wasDirtyElement = element.classList.contains(flagDirty);
         let isDirtyElement = DOM.updateAndCheckIsElementDirty(element);
         if (_verbose) { console.log({isDirtyElement, wasDirtyElement, wasDirtyParentRows}); }
+        let td = DOM.getCellFromElement(element);
+        DOM.setElementAttributeValueCurrent(td, DOM.getElementAttributeValueCurrent(element));
         if (isDirtyElement != wasDirtyElement) {
-            let td = DOM.getCellFromElement(element);
-            DOM.setElementAttributeValueCurrent(td, DOM.getElementAttributeValueCurrent(element));
             DOM.handleDirtyElement(td, isDirtyElement);
             this.updateAndToggleShowButtonsSaveCancel();
             this.cascadeChangedIsDirtyNestedElementCellTable(element, isDirtyElement, wasDirtyParentRows);
@@ -849,11 +849,11 @@ export default class TableBasePage extends BasePage {
         );
     }
     handleChangeDdlProductVariationOrVariationType(event, element) {
-        this.updateProductPermutationVariations(element);
         this.handleChangeNestedElementCellTable(event, element);
+        this.updateProductPermutationVariations(element);
     }
     hookupDdlsProductPermutationVariation() {
-        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation, (event, ddlVariation) => { this.handleChangeDdlProductVariationOrVariationType(event, ddlVariation); });
+        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation + ' select', (event, ddlVariation) => { this.handleChangeDdlProductVariationOrVariationType(event, ddlVariation); });
     }
     hookupButtonsProductPermutationVariationAddDelete() {
         let selectorButton = idTableMain + ' td.' + flagProductVariations + ' tr.' + flagProductVariation + ' button';
@@ -884,7 +884,7 @@ export default class TableBasePage extends BasePage {
         let variationsCell = element.closest('td.' + flagProductVariations);
         let variationPairsString = this.getProductPermutationVariationsText(variationsCell);
         DOM.setElementAttributeValueCurrent(variationsCell, variationPairsString);
-        DOM.isElementDirty(variationsCell);
+        this.handleChangeNestedElementCellTable(null, variationsCell);
     }
     getProductPermutationVariationsText(variationsTd) {
         let rows = variationsTd.querySelectorAll(':scope tbody tr');
