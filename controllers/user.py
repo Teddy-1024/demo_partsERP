@@ -21,6 +21,7 @@ import lib.argument_validation as av
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session, Blueprint, current_app
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
 from flask_wtf.csrf import generate_csrf
 from werkzeug.exceptions import BadRequest
 from extensions import oauth # db, 
@@ -33,6 +34,21 @@ from functools import wraps
 db = SQLAlchemy()
 
 routes_user = Blueprint('routes_user', __name__)
+
+def handle_db_disconnect(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except exc.OperationalError as e:
+            if "MySQL server has gone away" in str(e):
+                # Close the session and create a new connection
+                db.session.remove()
+                db.session.rollback()
+                # Retry the operation
+                return f(*args, **kwargs)
+            raise
+    return decorated_function
 
 # User authentication
 @routes_user.route("/login", methods=['POST', 'OPTIONS'])
@@ -109,6 +125,7 @@ def login():
     
 
 @routes_user.route("/login_callback") # <path:subpath>/<code>
+@handle_db_disconnect
 def login_callback():
     try:
         error_state = request.args.get(Model_View_User.FLAG_ERROR_OAUTH)
@@ -185,6 +202,7 @@ def logout():
     return redirect(url_logout)
 
 @routes_user.route("/logout_callback") # <path:subpath>/<code>
+@handle_db_disconnect
 def logout_callback():
     return redirect(url_for('routes_core.home'))
     try:

@@ -31,6 +31,12 @@ class Config:
     # MySQL
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_size': 10,
+        'pool_recycle': 280,
+        'pool_pre_ping': True,
+        'pool_timeout': 30,
+    }
     # Auth0
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
