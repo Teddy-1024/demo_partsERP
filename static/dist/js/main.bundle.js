@@ -4800,7 +4800,6 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
   }, {
     key: "hookupProfitInputs",
     value: function hookupProfitInputs() {
-      debugger;
       this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagProfitLocalMin + ' input');
     }
   }, {
@@ -4883,7 +4882,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
   }, {
     key: "hookupCountIntervalRecurrenceInputs",
     value: function hookupCountIntervalRecurrenceInputs() {
-      this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
+      this.hookupChangeHandlerTableCellsWhenNotCollapsed(idTableMain + ' td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
     }
   }, {
     key: "hookupIdStripeProductInputs",
@@ -4918,6 +4917,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
         divOrDdlIntervalExpirationUnsealed.classList.remove(flagCollapsed);
         var tdUnitMeasurementIntervalExpirationUnsealed = divOrDdlIntervalExpirationUnsealed.closest('td');
         tdUnitMeasurementIntervalExpirationUnsealed.dispatchEvent(new Event('click'));
+        this.hook;
       } else {
         inputCountIntervalExpirationUnsealed.classList.add(flagCollapsed);
         divOrDdlIntervalExpirationUnsealed.classList.add(flagCollapsed);
@@ -4931,7 +4931,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
   }, {
     key: "hookupCountIntervalExpirationUnsealedInputs",
     value: function hookupCountIntervalExpirationUnsealedInputs() {
-      this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
+      this.hookupChangeHandlerTableCellsWhenNotCollapsed(idTableMain + ' td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
     }
   }, {
     key: "leave",

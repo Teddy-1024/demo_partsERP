@@ -258,7 +258,6 @@ export default class PageStoreProductPermutations extends TableBasePage {
     }
     */
     hookupProfitInputs() {
-        debugger;
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagProfitLocalMin + ' input');
     }
     hookupLatencyManufactureInputs(){
@@ -316,7 +315,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupTableCellDDlPreviewsWhenNotCollapsed(idTableMain + ' td.' + flagUnitMeasurementIntervalRecurrence, Utils.getListFromDict(unitMeasurementsTime));
     }
     hookupCountIntervalRecurrenceInputs(){
-        this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
+        this.hookupChangeHandlerTableCellsWhenNotCollapsed(idTableMain + ' td.' + flagCountUnitMeasurementIntervalRecurrence + ' input');
     }
     hookupIdStripeProductInputs(){
         this.hookupChangeHandlerTableCells(idTableMain + ' td.' + flagIdStripeProduct + ' input');
@@ -342,6 +341,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
             divOrDdlIntervalExpirationUnsealed.classList.remove(flagCollapsed);
             let tdUnitMeasurementIntervalExpirationUnsealed = divOrDdlIntervalExpirationUnsealed.closest('td');
             tdUnitMeasurementIntervalExpirationUnsealed.dispatchEvent(new Event('click'));
+            this.hook
         } else {
             inputCountIntervalExpirationUnsealed.classList.add(flagCollapsed);
             divOrDdlIntervalExpirationUnsealed.classList.add(flagCollapsed);
@@ -351,7 +351,7 @@ export default class PageStoreProductPermutations extends TableBasePage {
         this.hookupTableCellDDlPreviewsWhenNotCollapsed(idTableMain + ' td.' + flagUnitMeasurementIntervalExpirationUnsealed, Utils.getListFromDict(unitMeasurementsTime));
     }
     hookupCountIntervalExpirationUnsealedInputs(){
-        this.hookupChangeHandlerTableCellsWhenNotCollapsed("change", idTableMain + ' td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
+        this.hookupChangeHandlerTableCellsWhenNotCollapsed(idTableMain + ' td.' + flagCountUnitMeasurementIntervalExpirationUnsealed + ' input');
     }
 
     leave() {
