@@ -32,7 +32,7 @@ BEGIN
 
 	IF (NOT (
 		NEW.id_unit_measurement_interval_recurrence IS NULL
-		OR NEW.id_unit_measurement_interval_recurrence NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
+		OR NEW.id_unit_measurement_interval_recurrence IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Recurrence interval ID must be a unit of time.';
@@ -40,7 +40,7 @@ BEGIN
 
 	IF (NOT (
 		NEW.id_unit_measurement_interval_expiration_unsealed IS NULL
-		OR NEW.id_unit_measurement_interval_expiration_unsealed NOT IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
+		OR NEW.id_unit_measurement_interval_expiration_unsealed IN (SELECT id_unit_measurement FROM Shop_Unit_Measurement WHERE is_unit_of_time = 1)
 	)) THEN
         SET v_msg := CONCAT('Unsealed expiration interval ID must be a unit of time. Invalid value: ', CAST(NEW.id_unit_measurement_interval_expiration_unsealed AS CHAR));
 		SIGNAL SQLSTATE '45000'

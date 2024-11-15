@@ -2012,12 +2012,9 @@ var OverlayError = /*#__PURE__*/function () {
 
 ;// CONCATENATED MODULE: ./static/js/pages/base_table.js
 function base_table_typeof(o) { "@babel/helpers - typeof"; return base_table_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, base_table_typeof(o); }
-function base_table_defineProperty(e, r, t) { return (r = base_table_toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function base_table_classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function base_table_defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, base_table_toPropertyKey(o.key), o); } }
 function base_table_createClass(e, r, t) { return r && base_table_defineProperties(e.prototype, r), t && base_table_defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function base_table_toPropertyKey(t) { var i = base_table_toPrimitive(t, "string"); return "symbol" == base_table_typeof(i) ? i : i + ""; }
-function base_table_toPrimitive(t, r) { if ("object" != base_table_typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != base_table_typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function base_table_callSuper(t, o, e) { return o = base_table_getPrototypeOf(o), base_table_possibleConstructorReturn(t, base_table_isNativeReflectConstruct() ? Reflect.construct(o, e || [], base_table_getPrototypeOf(t).constructor) : o.apply(t, e)); }
 function base_table_possibleConstructorReturn(t, e) { if (e && ("object" == base_table_typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return base_table_assertThisInitialized(t); }
 function base_table_assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
@@ -2028,6 +2025,9 @@ function base_table_superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) &
 function base_table_getPrototypeOf(t) { return base_table_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, base_table_getPrototypeOf(t); }
 function base_table_inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && base_table_setPrototypeOf(t, e); }
 function base_table_setPrototypeOf(t, e) { return base_table_setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, base_table_setPrototypeOf(t, e); }
+function base_table_defineProperty(e, r, t) { return (r = base_table_toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function base_table_toPropertyKey(t) { var i = base_table_toPrimitive(t, "string"); return "symbol" == base_table_typeof(i) ? i : i + ""; }
+function base_table_toPrimitive(t, r) { if ("object" != base_table_typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != base_table_typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
 
 
@@ -2047,12 +2047,18 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
     var _this;
     base_table_classCallCheck(this, TableBasePage);
     _this = base_table_callSuper(this, TableBasePage, [router]);
+    base_table_defineProperty(_this, "getAndLoadFilteredTableContent", function () {
+      _this.callFilterTableContent()["catch"](function (error) {
+        return console.error('Error:', error);
+      });
+    });
     _this.cursorYInitial = null;
     _this.rowInitial = null;
     _this.placeholder = null;
     _this.dragSrcEl = null;
     _this.dragSrcRow = null;
     _this.hookupTableCellDdls = _this.hookupTableCellDdls.bind(_this);
+    _this.getAndLoadFilteredTableContent = _this.getAndLoadFilteredTableContent.bind(_this);
     return _this;
   }
   base_table_inherits(TableBasePage, _BasePage);
@@ -2128,13 +2134,6 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       this.hookupEventHandler("click", idButtonApplyFilters, function (event, button) {
         event.stopPropagation();
         _this3.getAndLoadFilteredTableContent();
-      });
-    }
-  }, {
-    key: "getAndLoadFilteredTableContent",
-    value: function getAndLoadFilteredTableContent() {
-      this.callFilterTableContent()["catch"](function (error) {
-        return console.error('Error:', error);
       });
     }
   }, {
