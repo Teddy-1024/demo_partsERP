@@ -7,7 +7,7 @@
     -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_products.bundle.css') }}">
     
-    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product.filter_product') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
+    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}"> <!-- {{ model.FLAG_CONTAINER }} -->
         {{ model.form_filters.hidden_tag() }}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
             <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_FILTER }}">
