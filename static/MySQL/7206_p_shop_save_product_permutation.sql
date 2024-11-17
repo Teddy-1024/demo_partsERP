@@ -536,7 +536,9 @@ BEGIN
 			;
 			
 			UPDATE Shop_Product_Permutation PP
-			INNER JOIN tmp_Permutation t_P ON PP.id_permutation = t_P.id_permutation
+			INNER JOIN tmp_Permutation t_P 
+				ON PP.id_permutation = t_P.id_permutation
+                AND t_P.is_new = 0
 			SET 
 				PP.id_product = t_P.id_product
 				, PP.description = t_P.description

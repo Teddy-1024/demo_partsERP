@@ -261,6 +261,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
             has_variations: {self.has_variations}
             permutations: {self.permutations}
             variation trees: {self.variation_trees}
+            active: {self.active}
             '''
     """
     def get_index_permutation_from_id(self, id_permutation):

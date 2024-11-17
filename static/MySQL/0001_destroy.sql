@@ -117,6 +117,7 @@ DROP TABLE IF EXISTS Shop_User_Address;
 DROP TABLE IF EXISTS Shop_User_Role_Link_Audit;
 DROP TABLE IF EXISTS Shop_User_Role_Link;
 
+DROP TABLE IF EXISTS Shop_User_Temp;
 DROP TABLE IF EXISTS Shop_User_Audit;
 DROP TABLE IF EXISTS Shop_User;
 

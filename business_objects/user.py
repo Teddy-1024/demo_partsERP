@@ -9,6 +9,7 @@ Feature:    User Business Object
 
 # internal
 from business_objects.base import Base
+from business_objects.db_base import Get_Many_Parameters_Base
 import lib.argument_validation as av
 from forms.forms import Form_Filters_User
 from extensions import db
@@ -22,6 +23,9 @@ class User(db.Model, Base):
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Base.ATTR_ID_USER
     NAME_ATTR_OPTION_TEXT: ClassVar[str] = 'email'
 
+    __tablename__ = 'Shop_User'
+    __table_args__ = { 'extend_existing': True }
+
     id_user = db.Column(db.Integer, primary_key=True)
     id_user_auth0 = db.Column(db.String(255))
     firstname = db.Column(db.String(255))
@@ -34,13 +38,16 @@ class User(db.Model, Base):
     is_included_VAT_default = db.Column(db.Boolean)
     can_admin_store = db.Column(db.Boolean)
     can_admin_user = db.Column(db.Boolean)
-
+    is_new = db.Column(db.Boolean)
     # is_logged_in: bool
 
     def __init__(self):
         self.id_user = 0
         self.is_logged_in = False
+        self.is_new = False
         super().__init__()
+        self.currency_default = None
+        self.region_default = None
         
     def from_DB_user(query_row):
         _m = 'User.from_DB_user'
@@ -58,6 +65,7 @@ class User(db.Model, Base):
         user.can_admin_store = av.input_bool(query_row[10], 'can_admin_store', _m)
         user.can_admin_user = av.input_bool(query_row[11], 'can_admin_user', _m)
         user.is_logged_in = (user.id_user is not None and user.id_user > 0)
+        user.is_new = av.input_bool(query_row[12], 'is_new', _m)
         return user
     
     @staticmethod
@@ -140,58 +148,42 @@ class User(db.Model, Base):
             can_admin_user: {self.can_admin_user}
             '''
     
-    
-    
-@dataclass
-class User_Filters():
+
+class Parameters_User(Get_Many_Parameters_Base):
     get_all_user: bool
     get_inactive_user: bool
-    get_first_user_only: bool
     ids_user: str
     ids_user_auth0: str
 
-    def to_json(self):
-        return {
-            'a_get_all_user': self.get_all_user,
-            'a_get_inactive_user': self.get_inactive_user,
-            'a_get_first_user_only': self.get_first_user_only,
-            'a_ids_user': self.ids_user,
-            'a_ids_user_auth0': self.ids_user_auth0,
-        }
-    
     @staticmethod
     def from_form(form):
-        av.val_instance(form, 'form', 'User_Filters.from_form', Form_Filters_User)
-        get_inactive = av.input_bool(form.active.data, "active", "User_Filters.from_form")
+        av.val_instance(form, 'form', 'Parameters_User.from_form', Form_Filters_User)
+        get_inactive = av.input_bool(form.active.data, "active", "Parameters_User.from_form")
         id_user = form.id_user.data
-        return User_Filters(
+        return Parameters_User(
             get_all_user = (id_user is None),
             get_inactive_user = get_inactive,
-            get_first_user_only = False,
             ids_user = id_user,
             ids_user_auth0 = '',
         )
     
     @staticmethod
     def from_user(user):
-        av.val_instance(user, 'user', 'User_Filters.from_user', User)
-        return User_Filters(
-            get_all_user = (user.id_user is None and user.id_user_auth0 is None),
+        av.val_instance(user, 'user', 'Parameters_User.from_user', User)
+        return Parameters_User(
+            get_all_user = ((user.id_user is None or user.id_user == 0) and user.id_user_auth0 is None),
             get_inactive_user = False,
-            get_first_user_only = False,
             ids_user = user.id_user,
             ids_user_auth0 = user.id_user_auth0,
         )
     
     @staticmethod
-    def get_default(datastore_store):
-        user = datastore_store.get_user_session()
-        return User_Filters(
+    def get_default():
+        return Parameters_User(
             get_all_user = False,
             get_inactive_user = False,
-            get_first_user_only = False,
-            ids_user = user.id_user,
-            ids_user_auth0 = '',
+            ids_user = '',
+            ids_user_auth0 = ''
         )
 """ User_Eval
 @dataclass
@@ -278,3 +270,24 @@ class User_Permission_Evaluation(db.Model):
             can_edit: {self.can_edit}
             can_admin: {self.can_admin}
             '''
+
+
+class User_Temp(db.Model, Base):
+    __tablename__ = 'Shop_User_Temp'
+    __table_args__ = { 'extend_existing': True }
+    id_user = db.Column(db.Integer, primary_key=True)
+    id_user_auth0 = db.Column(db.String(255))
+    firstname = db.Column(db.String(255))
+    surname = db.Column(db.String(255))
+    email = db.Column(db.String(255))
+    is_email_verified = db.Column(db.Boolean)
+    is_super_user = db.Column(db.Boolean)
+    id_currency_default = db.Column(db.Integer)
+    id_region_default = db.Column(db.Integer)
+    is_included_VAT_default = db.Column(db.Boolean)
+    # is_logged_in: bool
+
+    def __init__(self):
+        self.id_user = 0
+        self.is_logged_in = False
+        super().__init__()

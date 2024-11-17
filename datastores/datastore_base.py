@@ -20,15 +20,15 @@ from business_objects.store.product_category import Product_Category_Container, 
 from business_objects.store.currency import Currency
 from business_objects.store.image import Image
 from business_objects.store.delivery_option import Delivery_Option
-from business_objects.store.delivery_region import Region
 from business_objects.store.discount import Discount
 from business_objects.store.order import Order
 from business_objects.store.product import Product, Product_Permutation, Product_Price, Parameters_Product # Permutation_Variation_Link
 """
+from business_objects.region import Region
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
 from business_objects.unit_measurement import Unit_Measurement
-from business_objects.user import User, User_Filters, User_Permission_Evaluation
+from business_objects.user import User, Parameters_User, User_Permission_Evaluation
 # from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
 from extensions import db
@@ -155,23 +155,57 @@ class DataStore_Base(BaseModel):
     @staticmethod
     def get_user_session():
         Helper_App.console_log('DataStore_Base.get_user_session')
-        return User.from_json(session.get(User.FLAG_USER))
-        user = User.get_default()
-        try:
-            Helper_App.console_log(f'user session: {session[self.app.ID_TOKEN_USER]}')
-            info_user = session[self.app.ID_TOKEN_USER].get('userinfo')
-            Helper_App.console_log(f'info_user: {info_user}')
-            user.is_logged_in = ('sub' in list(info_user.keys()) and not info_user['sub'] == '' and not str(type(info_user['sub'])) == "<class 'NoneType'?")
-            user.id_user_auth0 = info_user['sub'] if user.is_logged_in else None
-            Helper_App.console_log(f'user.id_user_auth0: {user.id_user_auth0}')
-        except:
-            Helper_App.console_log('get user login failed')
+        user = User.from_json(session.get(User.FLAG_USER))
+        if user.is_logged_in:
+            filters_user = Parameters_User.get_default()
+            filters_user.ids_user = user.id_user
+            users = DataStore_Base.get_many_user(filters_user)
         return user
-    """
-    @staticmethod
-    def get_user_auth0():
-        return User.from_json_auth0(session.get(current_app.config['ID_TOKEN_USER']))
-    """
+    @classmethod
+    def get_many_user(cls, filters=None):
+        _m = 'DataStore_Store_Base.get_many_access_level'
+        user = User.from_json(session.get(User.FLAG_USER))
+        if filters is None:
+            filters_user = Parameters_User.get_default()
+            filters_user.ids_user = user.id_user if user.is_logged_in else None
+        av.val_instance(filters, 'filters', _m, Parameters_User) 
+        argument_dict = filters.to_json()
+
+        argument_dict = {
+            'a_id_user': user.id_user,
+            'a_id_user_auth0': user.id_user_auth0,
+            **argument_dict,
+            'a_debug': 0,
+        }
+
+        Helper_App.console_log(f'argument_dict: {argument_dict}')
+        Helper_App.console_log('executing p_get_many_user')
+        result = cls.db_procedure_execute('p_get_many_user', argument_dict)
+        cursor = result.cursor
+        Helper_App.console_log('data received')
+        
+        # users
+        result_set_1 = cursor.fetchall()
+        Helper_App.console_log(f'raw users: {result_set_1}')
+        users = []
+        for row in result_set_1:
+            new_user = User.from_DB_user(row)
+            users.append(new_user)
+            
+        # Errors
+        cursor.nextset()
+        result_set_e = cursor.fetchall()
+        Helper_App.console_log(f'raw errors: {result_set_e}')
+        errors = []
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            for error in errors:
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
+        
+        DataStore_Base.db_cursor_clear(cursor)
+        cursor.close()
+
+        return users, errors
     @staticmethod
     def upload_bulk(permanent_table_name, records, batch_size):
         _m = 'DataStore_Base.upload_bulk'
@@ -283,3 +317,29 @@ class DataStore_Base(BaseModel):
         cursor.close()
 
         return units, errors
+    
+    @classmethod
+    def get_many_region(cls, get_inactive = False):
+        _m  = 'DataStore_Store_Base.get_many_region'
+        _m_db_region = 'p_shop_get_many_region'
+
+        argument_dict_list_region = {
+            'a_get_inactive_region': 1 if get_inactive else 0
+        }
+
+        Helper_App.console_log(f'executing {_m_db_region}')
+        result = cls.db_procedure_execute(_m_db_region, argument_dict_list_region)
+        cursor = result.cursor
+        Helper_App.console_log('data received')
+
+        # cursor.nextset()
+        result_set_1 = cursor.fetchall()
+        regions = []
+        for row in result_set_1:
+            region = Region.from_DB_region(row)
+            regions.append(region)
+        Helper_App.console_log(f'regions: {regions}')
+        DataStore_Base.db_cursor_clear(cursor)
+        cursor.close()
+
+        return regions

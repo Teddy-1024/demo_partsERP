@@ -44,42 +44,6 @@ def stock_items():
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_stock_items.html', model = model, datetime = datetime)
 
-@routes_store_stock_item.route(Model_View_Store_Stock_Item.HASH_GET_STORE_STOCK_ITEM, methods=['POST'])
-def filter_stock_item():
-    data = Helper_App.get_request_data(request)
-    try:
-        form_filters = Filters_Stock_Item.from_json(data)
-        if not form_filters.validate_on_submit():
-            error_keys = list(form_filters.errors.keys())
-            try:
-                error_keys.remove(Stock_Item.ATTR_ID_PRODUCT_CATEGORY)
-                """
-                if not av.val_int(form_filters.id_product_category.data):
-                    form_filters.errors[Stock_Item.ATTR_ID_PRODUCT_CATEGORY] = ['Invalid category.']
-                """
-            except:
-                pass
-            try:
-                error_keys.remove(Stock_Item.ATTR_ID_PRODUCT)
-            except:
-                pass
-            if error_keys:
-                return jsonify({
-                    Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
-                    Model_View_Store_Stock_Item.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
-                })
-        model = Model_View_Store_Stock_Item(filters_stock_item = form_filters)
-        if not model.is_user_logged_in:
-            raise Exception('User not logged in.')
-        return jsonify({
-            Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_SUCCESS, 
-            Model_View_Store_Stock_Item.FLAG_DATA: model.category_list.to_json()
-        })
-    except Exception as e:
-        return jsonify({
-            Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
-            Model_View_Store_Stock_Item.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
-        })
 
 @routes_store_stock_item.route(Model_View_Store_Stock_Item.HASH_SAVE_STORE_STOCK_ITEM, methods=['POST'])
 def save_stock_item():

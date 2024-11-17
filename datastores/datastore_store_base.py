@@ -25,7 +25,6 @@ from business_objects.store.product import Product, Product_Permutation, Paramet
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
 from business_objects.store.storage_location import Storage_Location
-from business_objects.user import User, User_Filters, User_Permission_Evaluation
 from business_objects.store.product_variation import Product_Variation, Parameters_Product_Variation
 from business_objects.store.product_variation_type import Product_Variation_Type
 from datastores.datastore_base import DataStore_Base
@@ -273,32 +272,6 @@ class DataStore_Store_Base(DataStore_Base):
         DataStore_Store_Base.db_cursor_clear(cursor)
 
         return currencies
-    
-    @classmethod
-    def get_many_region(cls, get_inactive = False):
-        _m  = 'DataStore_Store_Base.get_many_region'
-        _m_db_region = 'p_shop_get_many_region'
-
-        argument_dict_list_region = {
-            'a_get_inactive_region': 1 if get_inactive else 0
-        }
-
-        Helper_App.console_log(f'executing {_m_db_region}')
-        result = cls.db_procedure_execute(_m_db_region, argument_dict_list_region)
-        cursor = result.cursor
-        Helper_App.console_log('data received')
-
-        # cursor.nextset()
-        result_set_1 = cursor.fetchall()
-        regions = []
-        for row in result_set_1:
-            region = Region.from_DB_region(row)
-            regions.append(region)
-        Helper_App.console_log(f'regions: {regions}')
-        DataStore_Store_Base.db_cursor_clear(cursor)
-        cursor.close()
-
-        return regions
     
     @classmethod
     def get_many_region_and_currency(cls, get_inactive_currency = False, get_inactive_region = False):

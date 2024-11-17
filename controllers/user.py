@@ -14,7 +14,7 @@ Initializes the Flask application, sets the configuration based on the environme
 # internal
 from models.model_view_base import Model_View_Base
 from models.model_view_user import Model_View_User
-from business_objects.user import User, User_Filters
+from business_objects.user import User, Parameters_User
 from datastores.datastore_user import DataStore_User
 from helpers.helper_app import Helper_App
 import lib.argument_validation as av
@@ -154,9 +154,9 @@ def login_callback():
         Helper_App.console_log(f'user ID: {id_user}')
         """
         user = User.from_json_auth0(token) # datastore_user.get_user_auth0()
-        user_filters = User_Filters.from_user(user)
+        filters = Parameters_User.from_user(user)
         datastore_user = DataStore_User()
-        users, errors = datastore_user.get_many_user(user_filters, user)
+        users, errors = datastore_user.get_many_user(filters, user)
         try:
             user = users[0]
             Helper_App.console_log('User logged in')
@@ -166,7 +166,7 @@ def login_callback():
             session[Model_View_Base.FLAG_USER] = user_json
             Helper_App.console_log(f'user stored on session')
         except:
-            Helper_App.console_log(f'User not found: {user_filters}\nDatabase query error: {errors}')
+            Helper_App.console_log(f'User not found: {Parameters_User}\nDatabase query error: {errors}')
         
         try:
             hash_callback = token.get('hash_callback')
@@ -231,7 +231,16 @@ def logout_callback():
 @routes_user.route("/user")
 def user():
     try:
-        model = Model_View_User(current_app, db)
+        model = Model_View_User()
+        for currency in model.currencies:
+            if currency.id_currency == model.user.id_currency_default:
+                model.user.currency_default = currency
+                break
+        for region in model.regions:
+            if region.id_region == model.user.id_region_default:
+                model.user.region_default = region
+                break
+        model.users = [model.user]
         if not model.is_user_logged_in:
             # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_User.FLAG_CALLBACK: Model_View_User.HASH_PAGE_USER_ACCOUNT })))
             return redirect(url_for('routes_core.home'))

@@ -46,28 +46,6 @@ def permutations():
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_permutations.html', model = model)
 
-@routes_store_product_permutation.route(Model_View_Store_Product_Permutation.HASH_GET_STORE_PRODUCT_PERMUTATION, methods=['POST'])
-def filter_permutation():
-    data = Helper_App.get_request_data(request)
-    try:
-        form_filters = Filters_Product_Permutation.from_json(data)
-        if not form_filters.validate_on_submit():
-            return jsonify({
-                Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_FAILURE, 
-                Model_View_Store_Product_Permutation.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
-            })
-        model = Model_View_Store_Product_Permutation(form_filters_old = form_filters)
-        if not model.is_user_logged_in:
-            raise Exception('User not logged in')
-        return jsonify({
-            Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_SUCCESS, 
-            Model_View_Store_Product_Permutation.FLAG_DATA: model.category_list.to_json()
-        })
-    except Exception as e:
-        return jsonify({
-            Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_FAILURE, 
-            Model_View_Store_Product_Permutation.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
-        })
 
 @routes_store_product_permutation.route(Model_View_Store_Product_Permutation.HASH_SAVE_STORE_PRODUCT_PERMUTATION, methods=['POST'])
 def save_permutation():

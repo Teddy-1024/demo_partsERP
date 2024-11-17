@@ -17,25 +17,6 @@ Initializes the Flask application, sets the configuration based on the environme
 # IMPORTS
 # internal
 from config import app_config, Config
-# from routes import bp_home
-"""
-from forms import Form_Contact, Form_Supplier, Form_Filters_Permutation, Filters_Stock_Item
-from models.model_view_base import Model_View_Base
-from models.model_view_admin import Model_View_Admin
-from models.model_view_home import Model_View_Home
-from models.model_view_contact import Model_View_Contact
-from models.model_view_services import Model_View_Services
-from models.Model_View_Store_Stock_Item import Model_View_Store_Stock_Item
-from models.model_view_store_supplier import Model_View_Store_Supplier
-from models.model_view_store_product_permutation import Model_View_Store_Product_Permutations
-from models.model_view_user import Model_View_User
-from business_objects.store.product import Product, Parameters_Product, Product_Permutation # , Product_Image_Filters, Resolution_Level_Enum
-from business_objects.store.stock_item import Stock_Item
-from business_objects.user import User, User_Filters
-from datastores.datastore_store_base import DataStore_Store
-from helpers.helper_app import Helper_App
-import lib.argument_validation as av
-"""
 from controllers.core import routes_core
 from controllers.legal import routes_legal
 from controllers.store.store import routes_store

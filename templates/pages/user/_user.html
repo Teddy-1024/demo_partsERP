@@ -1,32 +1,56 @@
-<!-- v2a -->
-
 {% extends 'layouts/layout.html' %}
 
 {% block page_body %}
-    <!-- Include Stylesheet
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/user.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/user.css') }}" />
-    -->
-    <!-- HTML content -->
-    <div>
-        {% set firstname = 'new user' if user.firstname is none else user.firstname %}
-        <h2 style="font-size: 24px; color: white; font-weight: normal;">Welcome, {{ firstname }}</h2>
-        {% set block_id = 'button_get_in_touch' %}
-        {% include 'components/common/buttons/_buttons_save_cancel.html' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/user_user.bundle.css') }}">
+
+    {% set user = model.users[0] %}
+    <div class="{{ model.FLAG_USER }} {{ model.FLAG_CARD }} {{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}" {{ model.ATTR_ID_USER }}="{{ user.id_user }}">
+        <div class="{{ model.FLAG_CONTAINER }}">
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_COLUMN }}">
+                    <label for="{{ model.FLAG_FIRSTNAME }}">Firstname</label>
+                    <input type="text" id="{{ model.FLAG_FIRSTNAME }}" name="{{ model.FLAG_FIRSTNAME }}" value="{{ user.firstname }}" />
+                </div>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_COLUMN }}">
+                    <label for="{{ model.FLAG_SURNAME }}">Surname</label>
+                    <input type="text" id="{{ model.FLAG_SURNAME }}" name="{{ model.FLAG_SURNAME }}" value="{{ user.surname }}" />
+                </div>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_COLUMN }}">
+                    <label for="{{ model.FLAG_EMAIL }}">Email</label>
+                    <input type="email" id="{{ model.FLAG_EMAIL }}" name="{{ model.FLAG_EMAIL }}" value="{{ user.email }}" />
+                </div>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_COLUMN }}">
+                    <label for="{{ model.ATTR_ID_CURRENCY }}">Currency</label>
+                    {% set currency = user.currency_default %}
+                    {% include 'components/store/_preview_DDL_currency.html' %}
+                </div>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_COLUMN }}">
+                    <label for="{{ model.ATTR_ID_REGION_DEFAULT }}">Region</label>
+                    <div class="{{ model.ATTR_ID_REGION_DEFAULT }}" {{ model.ATTR_VALUE_CURRENT }}="{{ user.id_region_default }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ user.id_region_default }}">
+                        {{ user.region_default.name }}
+                    </div>
+                </div>
+            </div>
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_COLUMN }}">
+                    <label for="{{ model.FLAG_IS_INCLUDED_VAT }}">Include VAT?</label>
+                    <input type="checkbox" id="{{ model.FLAG_IS_INCLUDED_VAT }}" name="{{ model.FLAG_IS_INCLUDED_VAT }}" {{ model.ATTR_VALUE_CURRENT }}="{{ user.is_included_VAT }}" {{ model.ATTR_VALUE_PREVIOUS }}="{{ user.is_included_VAT}}" {% if user.is_included_VAT %}checked{% endif %}/>
+                </div>
+            </div>        
+        </div>        
     </div>
     
-    <!-- Include JavaScript
-    <script type="module" src="{{ url_for('static', filename='js/sections/user.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/pages/user.js') }}"></script>
-    -->
+    {% include 'components/common/temporary/_overlay_confirm.html' %}
+    {% include 'components/common/temporary/_overlay_error.html' %}
     
-    <!--
     <script>
-        var hashPageCurrent = "{{ model.HASH_PAGE_USER_ACCOUNT }}";
-
-        $(document).ready(function() {
-            hookupPageUserAccount();
-        });
     </script>
-    -->
 {% endblock %}
