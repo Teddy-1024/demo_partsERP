@@ -118,69 +118,6 @@ class Product_Variation(db.Model, Store_Base):
             'text': self.name
         }
 
-"""
-@dataclass
-class Product_Variation_Filters():
-    get_all_variation_type: bool
-    get_inactive_variation_type: bool
-    # get_first_variation_type: bool
-    ids_variation_type: str
-    get_all_variation: bool
-    get_inactive_variation: bool
-    # get_first_variation: bool
-    ids_variation: str
-
-    def to_json(self):
-        return {
-            'a_get_all_variation_type': self.get_all_variation_type,
-            'a_get_inactive_variation_type': self.get_inactive_variation_type,
-            # 'a_get_first_variation_type': self.get_first_variation_type,
-            'a_ids_variation_type': self.ids_variation_type,
-            'a_get_all_variation': self.get_all_variation,
-            'a_get_inactive_variation': self.get_inactive_variation,
-            # 'a_get_first_variation': self.get_first_variation,
-            'a_ids_variation': self.ids_variation,
-
-        }
-    ""
-    @staticmethod
-    def from_form(form):
-        av.val_instance(form, 'form', 'User_Filters.from_form', Filters_Product_Variation)
-        get_inactive = av.input_bool(form.active.data, "active", "User_Filters.from_form")
-        id_user = form.id_user.data
-        return User_Filters(
-            get_all_user = (id_user is None),
-            get_inactive_user = get_inactive,
-            get_first_user_only = False,
-            ids_user = id_user,
-            ids_user_auth0 = '',
-        )
-    
-    @staticmethod
-    def from_user(user):
-        av.val_instance(user, 'user', 'User_Filters.from_user', User)
-        return User_Filters(
-            get_all_user = (user.id_user is None and user.id_user_auth0 is None),
-            get_inactive_user = False,
-            get_first_user_only = False,
-            ids_user = user.id_user,
-            ids_user_auth0 = user.id_user_auth0,
-        )
-    ""
-    
-    @staticmethod
-    def get_default():
-        return Product_Variation_Filters(
-            get_all_variation_type = True,
-            get_inactive_variation_type = False,
-            # get_first_variation_type = False,
-            ids_variation_type = '',
-            get_all_variation = True,
-            get_inactive_variation = False,
-            # get_first_variation = False,
-            ids_variation = ''
-        )
-"""
 class Parameters_Product_Variation(Get_Many_Parameters_Base):
     a_get_all_variation_type: bool
     a_get_inactive_variation_type: bool

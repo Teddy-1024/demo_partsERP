@@ -10,7 +10,6 @@ CREATE PROCEDURE p_get_many_user (
     , IN a_id_user_auth0 VARCHAR(200)
 	, IN a_get_all_user BIT
 	, IN a_get_inactive_user BIT
-    , IN a_get_first_user_only BIT
 	, IN a_ids_user LONGTEXT
     , IN a_ids_user_auth0 LONGTEXT
     , IN a_debug BIT
@@ -22,7 +21,6 @@ BEGIN
     DECLARE v_id_permission_user INT;
     DECLARE v_id_permission_user_admin INT;
     DECLARE v_ids_permission_required VARCHAR(4000);
-    DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_code_error_bad_data VARCHAR(50);
     DECLARE v_id_type_error_bad_data INT;
@@ -31,6 +29,7 @@ BEGIN
     DECLARE v_guid BINARY(36);
     DECLARE v_rank_max INT;
     DECLARE v_time_start TIMESTAMP(6);
+    DECLARE v_is_new BIT;
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
@@ -42,10 +41,11 @@ BEGIN
     SET v_code_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
     SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_error_bad_data LIMIT 1);
     SET v_ids_permission_required := CONCAT(v_id_permission_user, ',', v_id_permission_user_admin, ',', v_id_permission_store_admin);
+    SET v_is_new := FALSE;
     
     SET a_get_all_user := IFNULL(a_get_all_user, 1);
     SET a_get_inactive_user := IFNULL(a_get_inactive_user, 0);
-    SET a_get_first_user_only := IFNULL(a_get_first_user_only, 0);
+    -- SET a_get_first_user_only := IFNULL(a_get_first_user_only, 0);
     SET a_ids_user := TRIM(IFNULL(a_ids_user, ''));
     SET a_ids_user_auth0 := TRIM(IFNULL(a_ids_user_auth0, ''));
     SET a_debug := IFNULL(a_debug, 0);
@@ -56,7 +56,7 @@ BEGIN
 			, a_id_user_auth0
 			, a_get_all_user
 			, a_get_inactive_user
-			, a_get_first_user_only
+			-- , a_get_first_user_only
 			, a_ids_user
 			, a_ids_user_auth0
 			, a_debug
@@ -91,17 +91,33 @@ BEGIN
     END IF;
     
     IF ISNULL(a_id_user) THEN
-		INSERT INTO tmp_Msg_Error (
-			id_type,
-			code,
-			msg
-		)
-		VALUES (
-			v_id_type_error_bad_data,
-			v_code_error_bad_data, 
-			CONCAT('User ID required for authorisation.')
-		)
-		;
+		IF NOT ISNULL(a_id_user_auth0) THEN
+			INSERT INTO partsltd_prod.Shop_User (
+				id_user_auth0
+				, is_super_user
+				, active
+			)
+			VALUES (
+				a_id_user_auth0
+				, 0 -- is_super_user
+				, 1 -- active
+			)
+			;
+            SET a_id_user := (SELECT U.id_user FROM partsltd_prod.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1);
+			SET v_is_new := TRUE;
+        ELSE
+			INSERT INTO tmp_Msg_Error (
+				id_type,
+				code,
+				msg
+			)
+			VALUES (
+				v_id_type_error_bad_data,
+				v_code_error_bad_data, 
+				CONCAT('User ID required for authorisation.')
+			)
+			;
+        END IF;
     END IF;
     
     SET v_has_filter_user := CASE WHEN a_ids_user = '' THEN 0 ELSE 1 END;
@@ -268,6 +284,7 @@ BEGIN
 		SELECT * FROM tmp_User;
     END IF;
 
+	/*
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN    
 		IF a_get_first_user_only THEN
 			DELETE t_U
@@ -276,6 +293,7 @@ BEGIN
 			;
 		END IF;
 	END IF;
+    */
     
     IF a_debug = 1 THEN
 		SELECT * FROM tmp_User;
@@ -440,6 +458,7 @@ BEGIN
 		, U.is_super_user
 		, t_U.can_admin_store
 		, t_U.can_admin_user
+        , v_is_new AS is_new
 	FROM tmp_User t_U
 	INNER JOIN partsltd_prod.Shop_User U ON t_U.id_user = U.id_user
 	;
@@ -478,13 +497,22 @@ DELIMITER ;;
 
 
 
-CALL p_get_many_user (NULL, 'google-oauth2|109567376920138999933', False, False, False, NULL, 'google-oauth2|109567376920138999933', 0);
 /*
+CALL p_get_many_user (
+	NULL
+	, 'google-oauth2|109567376920138999933'
+	, False
+	, False
+	-- , False
+	, NULL
+	, 'google-oauth2|109567376920138999933'
+	, 0
+);
 	NULL # a_id_user
     , 'auth0|6582b95c895d09a70ba10fef' # a_id_user_auth0
     , 0 # a_get_all_user
 	, 0 # a_get_inactive_user
-    , 0 # a_get_first_user_only
+    -- , 0 # a_get_first_user_only
 	, NULL # a_ids_user
 	, 'auth0|6582b95c895d09a70ba10fef' # a_ids_user_auth0
     , 0 -- a_debug
@@ -502,7 +530,7 @@ CALL p_get_many_user(
     , 'auth0|6582b95c895d09a70ba10fef' -- :a_id_user_auth0, 
     , 1 -- :a_get_all_user,
     , 0 --  :a_get_inactive_user,
-    , 0 --  :a_get_first_user_only,
+    -- , 0 --  :a_get_first_user_only,
     , NULL --  :a_ids_user,
     , 'auth0|6582b95c895d09a70ba10fef' --  :a_ids_user_auth0
 );

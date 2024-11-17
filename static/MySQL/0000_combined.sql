@@ -118,6 +118,7 @@ DROP TABLE IF EXISTS Shop_User_Address;
 DROP TABLE IF EXISTS Shop_User_Role_Link_Audit;
 DROP TABLE IF EXISTS Shop_User_Role_Link;
 
+DROP TABLE IF EXISTS Shop_User_Temp;
 DROP TABLE IF EXISTS Shop_User_Audit;
 DROP TABLE IF EXISTS Shop_User;
 
@@ -2527,9 +2528,9 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 CREATE TABLE IF NOT EXISTS Shop_User (
     id_user INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_user_auth0 VARCHAR(200) NOT NULL,
-    firstname VARCHAR(255) NOT NULL,
-    surname VARCHAR(255) NOT NULL,
-    email VARCHAR(254) NOT NULL,
+    firstname VARCHAR(255) NULL,
+    surname VARCHAR(255) NULL,
+    email VARCHAR(254) NULL,
     is_email_verified BIT NOT NULL DEFAULT 0,
     is_super_user BIT NOT NULL DEFAULT 0,
     id_currency_default INT NULL,
@@ -2569,6 +2570,31 @@ CREATE TABLE IF NOT EXISTS Shop_User_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
+
+-- File: 1314_tbl_Shop_User_Temp.sql
+
+# Users Temp
+
+-- DROP TABLE IF EXISTS Shop_User_Temp;
+
+SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Temp';
+
+CREATE TABLE IF NOT EXISTS Shop_User_Temp (
+    id_temp INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+    , id_user INT NOT NULL
+    , id_user_auth0 VARCHAR(200) NOT NULL
+    , firstname VARCHAR(255)
+    , surname VARCHAR(255)
+    , email VARCHAR(254)
+    , is_email_verified BIT
+    , is_super_user BIT
+    , id_currency_default INT
+    , id_region_default INT
+    , is_included_VAT_default BIT
+    , active BIT
+    , guid BINARY(36) NOT NULL
+);
+
 
 -- File: 1315_tbl_Shop_User_Role_Link.sql
 
@@ -8584,18 +8610,13 @@ BEGIN
     
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
-        -- Get diagnostic information
         GET DIAGNOSTICS CONDITION 1
             @sqlstate = RETURNED_SQLSTATE
             , @errno = MYSQL_ERRNO
             , @text = MESSAGE_TEXT
 		;
         
-        -- Rollback the transaction
         ROLLBACK;
-        
-        -- Select the error information
-        -- SELECT 'Error' AS status, @errno AS error_code, @sqlstate AS sql_state, @text AS message;
         
 		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 			display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
@@ -8691,7 +8712,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a code: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following category(s) do not have a code: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.code)
 		;
@@ -8706,7 +8727,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a name: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following category(s) do not have a name: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.name)
 		;
@@ -8721,7 +8742,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a display order: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following category(s) do not have a display order: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.display_order)
 		;
@@ -11466,7 +11487,9 @@ BEGIN
 			;
 			
 			UPDATE Shop_Product_Permutation PP
-			INNER JOIN tmp_Permutation t_P ON PP.id_permutation = t_P.id_permutation
+			INNER JOIN tmp_Permutation t_P 
+				ON PP.id_permutation = t_P.id_permutation
+                AND t_P.is_new = 0
 			SET 
 				PP.id_product = t_P.id_product
 				, PP.description = t_P.description
@@ -15820,185 +15843,280 @@ CALL p_shop_get_many_stripe_price_new (
 
 -- File: 7312_p_shop_save_user.sql
 
-
-
-/*
-
-CALL p_shop_edit_user (
-	'auth0|6582b95c895d09a70ba10fef', # a_id_user
-	'', # a_name
-	'', # a_email
-    0 # a_email_verified
-)
-
-*/
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS p_shop_edit_user;
+ 
+DROP PROCEDURE IF EXISTS p_shop_save_user;
 
 
 DELIMITER //
-CREATE PROCEDURE p_shop_edit_user (
-	IN a_id_user INT,
-    IN a_name VARCHAR(255),
-	IN a_email VARCHAR(254),
-    IN a_email_verified BIT
+CREATE PROCEDURE p_shop_save_user (
+    IN a_comment VARCHAR(500),
+	IN a_guid BINARY(36),
+    IN a_id_user INT,
+    IN a_debug BIT
 )
 BEGIN
-	-- Argument redeclaration
-	-- Variable declaration
-    DECLARE v_has_filter_user BIT;
-    -- DECLARE v_now DATETIME;
+	DECLARE v_code_type_error_bad_data VARCHAR(100);
+    DECLARE v_id_type_error_bad_data INT;
+    DECLARE v_id_permission_product INT;
+    DECLARE v_id_permission_user_admin LONGTEXT;
+    DECLARE v_id_change_set INT;
+    DECLARE v_id_access_level_edit INT;
+    DECLARE v_can_admin_user BIT;
+    DECLARE v_time_start TIMESTAMP(6);
     
+    DECLARE exit handler for SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1
+            @sqlstate = RETURNED_SQLSTATE
+            , @errno = MYSQL_ERRNO
+            , @text = MESSAGE_TEXT
+		;
+        
+        ROLLBACK;
+        
+		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
+			display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+			, id_type INT NULL
+			, code VARCHAR(50) NOT NULL
+			, msg VARCHAR(4000) NOT NULL
+		);
+        INSERT INTO tmp_Msg_Error (
+			id_type
+            , code
+            , msg
+		)
+        SELECT 
+			MET.id_type
+            , @errno
+            , @text
+		FROM partsltd_prod.Shop_Msg_Error_Type MET
+        WHERE MET.code = 'MYSQL_ERROR'
+		;
+        SELECT *
+        FROM tmp_Msg_Error;
+		DROP TABLE IF EXISTS tmp_Msg_Error;
+    END;
     
-	-- Argument validation + default values
-	IF a_id_user IS NULL THEN
-		SET a_id_user = '';
-	ELSE
-		SET a_id_user = TRIM(a_id_user);
-    END IF;
-	IF a_name IS NULL THEN
-		SET a_name = '';
-	ELSE
-		SET a_name = TRIM(a_name);
-    END IF;
-	IF a_email IS NULL THEN
-		SET a_email = '';
-	ELSE
-		SET a_email = TRIM(a_email);
-    END IF;
-	IF a_email_verified IS NULL THEN
-		SET a_email_verified = 0;
-    END IF;
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+    SET v_code_type_error_bad_data := 'BAD_DATA';
+    SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_id_access_level_edit := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_id_permission_user_admin := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM Shop_Permission WHERE code = 'STORE_USER_ADMIN' LIMIT 1);
+    CALL p_validate_guid ( a_guid );
     
-    -- Temporary tables
     DROP TABLE IF EXISTS tmp_Msg_Error;
-    DROP TABLE IF EXISTS tmp_Shop_User;
+    DROP TABLE IF EXISTS tmp_User;
     
-    CREATE TABLE tmp_Shop_User (
-		id_user INT NOT NULL,
-        CONSTRAINT FK_tmp_Shop_User_id_user
-			FOREIGN KEY (id_user)
-			REFERENCES Shop_User(id_user),
-        active BIT NOT NULL
+    CREATE TABLE tmp_User (
+		id_user INT NOT NULL
+        , id_user_auth0 VARCHAR(200) NOT NULL
+        , firstname VARCHAR(255)
+        , surname VARCHAR(255)
+        , email VARCHAR(254)
+        , is_email_verified BIT NOT NULL
+        , is_super_user BIT NOT NULL
+        , id_currency_default INT
+        , id_region_default INT
+        , is_included_VAT_default BIT
+        , active BIT NOT NULL
+        , name_error VARCHAR(1000)
     );
     
     CREATE TABLE tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 		id_type INT NOT NULL,
-        # code VARCHAR(50) NOT NULL,
-        # CONSTRAINT chk_tmp_Msg_Error_code CHECK (code IN (SELECT code FROM Shop_Msg_Error_Type)),
-        CONSTRAINT FK_tmp_Msg_Error_id_type
-			FOREIGN KEY (id_type)
-			REFERENCES Shop_Msg_Error_Type(id_type),
+        code VARCHAR(50) NOT NULL,
 		msg VARCHAR(4000) NOT NULL
     );
     
-    
-    -- Parse filters
-    SET v_has_filter_user = CASE WHEN a_id_user = '' THEN 0 ELSE 1 END;
-    
-    
-    -- User
-    IF v_has_filter_user THEN
-        INSERT INTO tmp_Shop_User (
-			id_user,
-			active
-		)
-        SELECT id_user,
-			active
-		FROM Shop_User
-        WHERE id_user LIKE CONCAT('%', a_id_user, '%')
-			AND active
-		LIMIT 1
-        ;
-        
-		IF NOT EXISTS (SELECT id_user FROM tmp_Shop_User LIMIT 1) THEN
-			INSERT INTO Shop_User (
-				id_user,
-                name,
-                email,
-                email_verified
-            )
-            VALUES (
-				a_id_user,
-                a_name,
-                a_email,
-                a_email_verified
-            );
-            
-            INSERT INTO tmp_Shop_User (
-				id_user,
-				active
-			)
-			SELECT id_user,
-				active
-			FROM Shop_User
-			WHERE id_user LIKE CONCAT('%', a_id_user, '%')
-				AND active
-			LIMIT 1
-            ;
-        END IF;
-        
-        SET a_id_user := (SELECT id_user FROM tmp_Shop_User LIMIT 1);
-	ELSE
-		INSERT INTO tmp_Msg_Error (
-			id_type,
-            msg
-		)
-        VALUES (
-			 (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1), 
-            'No user ID provided.'
-		)
-        ;
-    END IF;
-    
-    
-    /*
-    IF NOT EXISTS (SELECT msg FROM tmp_Msg_Error LIMIT 1) THEN
-    END IF;
-    */
-    
-    
-    -- Returns
-    # User
-    SELECT *
-    FROM tmp_Shop_User
+    -- Get data from Temp table
+    INSERT INTO tmp_User (
+		id_user
+        , id_user_auth0
+        , firstname
+        , surname
+        , email
+        , is_email_verified
+        , is_super_user
+        , id_currency_default
+        , id_region_default
+        , is_included_VAT_default
+        , active
+	)
+    SELECT 
+        U_T.id_user
+        , U_T.id_user_auth0
+        , IFNULL(U_T.firstname, U.firstname) AS firstname
+        , IFNULL(U_T.surname, U.surname) AS surname
+        , IFNULL(U_T.email, U.email) AS email
+        , IFNULL(U_T.is_email_verified, U.is_email_verified) AS is_email_verified
+        , IFNULL(U_T.is_super_user, U.is_super_user) AS is_super_user
+        , IFNULL(U_T.id_currency_default, U.id_currency_default) AS id_currency_default
+        , IFNULL(U_T.id_region_default, U.id_region_default) AS id_region_default
+        , IFNULL(U_T.is_included_VAT_default, U.is_included_VAT_default) AS is_included_VAT_default
+        , IFNULL(IFNULL(U_T.active, U.active), 1) AS active
+        , IFNULL(U_T.display_order, PC.display_order) AS display_order
+	FROM partsltd_prod.Shop_User_Temp U_T
+    LEFT JOIN Shop_User U ON U_T.id_user = U.id_user
+    WHERE U_T.guid = a_guid
     ;
+
+    UPDATE tmp_User t_U
+    SET 
+        t_U.name_error = IFNULL(t_U.email, t_U.id_user_auth0)
+    ;
+    
+    -- Validation
+    -- Missing mandatory fields
+    -- email
+    IF EXISTS (SELECT * FROM tmp_User t_U WHERE ISNULL(t_U.email) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following User(s) do not have an email: ', GROUP_CONCAT(t_U.name_error SEPARATOR ', ')) AS msg
+		FROM tmp_User t_U
+		WHERE ISNULL(t_U.email)
+		;
+    END IF;
+    -- is_super_user
+    IF EXISTS (SELECT * FROM tmp_User t_U WHERE ISNULL(t_U.is_super_user) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following User(s) do not have an is super user field: ', GROUP_CONCAT(t_U.name_error SEPARATOR ', ')) AS msg
+		FROM tmp_User t_U
+		WHERE ISNULL(t_U.is_super_user)
+		;
+    END IF;
+    -- is_email_verified
+    IF EXISTS (SELECT * FROM tmp_User t_U WHERE ISNULL(t_U.is_email_verified) LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, CONCAT('The following User(s) do not have an is email verified: ', GROUP_CONCAT(t_U.name_error SEPARATOR ', ')) AS msg
+		FROM tmp_User t_U
+		WHERE ISNULL(t_U.is_email_verified)
+		;
+    END IF;
+    
+    
+    -- Permissions
+    IF a_debug = 1 THEN
+        SELECT 
+            a_guid -- GUID
+            , a_id_user -- ID User
+            , FALSE -- get inactive Users
+            , v_id_permission_user_admin -- IDs Permission
+            , v_id_access_level_edit -- ID Access Level
+            , NULL -- IDs Product
+        ;
+    END IF;
+
+    CALL p_shop_calc_user(
+        a_guid -- GUID
+        , a_id_user -- ID User
+        , FALSE -- get inactive Users
+        , v_id_permission_user_admin -- IDs Permission
+        , v_id_access_level_edit -- ID Access Level
+        , NULL -- IDs Product
+    );
+
+    SET v_can_admin_user := (
+        SELECT IFNULL(UE_T.can_edit, 0) = 1
+        FROM partsltd_prod.Shop_User_Eval_Temp UE_T 
+        WHERE
+            UE_T.GUID = a_guid
+            AND UE_T.id_user = a_id_user
+            AND UE_T.id_permission = v_id_permission_user_admin
+    );
+
+    IF (v_can_admin_user = 0 AND EXISTS (
+        SELECT * 
+        FROM tmp_User t_U
+        WHERE
+            t_U.id_user <> a_id_user
+    )) THEN
+        DELETE FROM tmp_Msg_Error;
+        INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		VALUES (
+			v_id_type_error_no_permission
+			, v_code_type_error_no_permission
+			, 'You do not have permission to edit other Users.'
+        )
+        ;
+    END IF;
+    
+    CALL p_shop_clear_calc_user(a_guid);
+    
+    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
+		START TRANSACTION;
+        
+            INSERT INTO Shop_User_Change_Set ( comment )
+            VALUES ( a_comment )
+            ;
+            
+            SET v_id_change_set := LAST_INSERT_ID();
+            
+            UPDATE Shop_User U
+            INNER JOIN tmp_User t_U ON U.id_user = t_U.id_user
+            SET 
+                U.id_user_auth0 = t_U.id_user_auth0
+                , U.firstname = t_U.firstname
+                , U.surname = t_U.surname
+                , U.email = t_U.email
+                , U.is_email_verified = t_U.is_email_verified
+                , U.is_super_user = t_U.is_super_user
+                , U.id_currency_default = t_U.id_currency_default
+                , U.id_region_default = t_U.id_region_default
+                , U.is_included_VAT_default = t_U.is_included_VAT_default
+                , U.active = t_U.active
+                , U.id_change_set = v_id_change_set
+            ;
+		
+			DELETE FROM Shop_User_Temp
+			WHERE GUID = a_guid;
+			
+		COMMIT;
+    END IF;
     
     # Errors
     SELECT *
-    FROM tmp_Msg_Error
-    ;
+    FROM tmp_Msg_Error t_ME
+	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	;
     
-    /*
-    # Return arguments for test
-    SELECT a_id_user,
-		a_name,
-        a_email,
-        a_email_verified
-    ;
-    */
-    
-    -- Clean up
+	IF a_debug = 1 THEN
+		SELECT * from tmp_User;
+	END IF;
+
     DROP TABLE IF EXISTS tmp_Msg_Error;
-    DROP TABLE IF EXISTS tmp_Shop_User;
+    DROP TABLE IF EXISTS tmp_User;
+    
+	IF a_debug = 1 THEN
+		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+	END IF;
 END //
 DELIMITER ;;
 
-
-
-/*
-
-CALL p_shop_edit_user (
-	'',
-	'',
-	'',
-    0
-)
-
-*/
 
 
 -- File: 7313_p_get_many_user.sql
@@ -16014,7 +16132,6 @@ CREATE PROCEDURE p_get_many_user (
     , IN a_id_user_auth0 VARCHAR(200)
 	, IN a_get_all_user BIT
 	, IN a_get_inactive_user BIT
-    , IN a_get_first_user_only BIT
 	, IN a_ids_user LONGTEXT
     , IN a_ids_user_auth0 LONGTEXT
     , IN a_debug BIT
@@ -16026,7 +16143,6 @@ BEGIN
     DECLARE v_id_permission_user INT;
     DECLARE v_id_permission_user_admin INT;
     DECLARE v_ids_permission_required VARCHAR(4000);
-    DECLARE v_now DATETIME;
     DECLARE v_id_minimum INT;
     DECLARE v_code_error_bad_data VARCHAR(50);
     DECLARE v_id_type_error_bad_data INT;
@@ -16035,6 +16151,7 @@ BEGIN
     DECLARE v_guid BINARY(36);
     DECLARE v_rank_max INT;
     DECLARE v_time_start TIMESTAMP(6);
+    DECLARE v_is_new BIT;
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
@@ -16046,10 +16163,11 @@ BEGIN
     SET v_code_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
     SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_error_bad_data LIMIT 1);
     SET v_ids_permission_required := CONCAT(v_id_permission_user, ',', v_id_permission_user_admin, ',', v_id_permission_store_admin);
+    SET v_is_new := FALSE;
     
     SET a_get_all_user := IFNULL(a_get_all_user, 1);
     SET a_get_inactive_user := IFNULL(a_get_inactive_user, 0);
-    SET a_get_first_user_only := IFNULL(a_get_first_user_only, 0);
+    -- SET a_get_first_user_only := IFNULL(a_get_first_user_only, 0);
     SET a_ids_user := TRIM(IFNULL(a_ids_user, ''));
     SET a_ids_user_auth0 := TRIM(IFNULL(a_ids_user_auth0, ''));
     SET a_debug := IFNULL(a_debug, 0);
@@ -16060,7 +16178,7 @@ BEGIN
 			, a_id_user_auth0
 			, a_get_all_user
 			, a_get_inactive_user
-			, a_get_first_user_only
+			-- , a_get_first_user_only
 			, a_ids_user
 			, a_ids_user_auth0
 			, a_debug
@@ -16095,17 +16213,33 @@ BEGIN
     END IF;
     
     IF ISNULL(a_id_user) THEN
-		INSERT INTO tmp_Msg_Error (
-			id_type,
-			code,
-			msg
-		)
-		VALUES (
-			v_id_type_error_bad_data,
-			v_code_error_bad_data, 
-			CONCAT('User ID required for authorisation.')
-		)
-		;
+		IF NOT ISNULL(a_id_user_auth0) THEN
+			INSERT INTO partsltd_prod.Shop_User (
+				id_user_auth0
+				, is_super_user
+				, active
+			)
+			VALUES (
+				a_id_user_auth0
+				, 0 -- is_super_user
+				, 1 -- active
+			)
+			;
+            SET a_id_user := (SELECT U.id_user FROM partsltd_prod.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1);
+			SET v_is_new := TRUE;
+        ELSE
+			INSERT INTO tmp_Msg_Error (
+				id_type,
+				code,
+				msg
+			)
+			VALUES (
+				v_id_type_error_bad_data,
+				v_code_error_bad_data, 
+				CONCAT('User ID required for authorisation.')
+			)
+			;
+        END IF;
     END IF;
     
     SET v_has_filter_user := CASE WHEN a_ids_user = '' THEN 0 ELSE 1 END;
@@ -16272,6 +16406,7 @@ BEGIN
 		SELECT * FROM tmp_User;
     END IF;
 
+	/*
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN    
 		IF a_get_first_user_only THEN
 			DELETE t_U
@@ -16280,6 +16415,7 @@ BEGIN
 			;
 		END IF;
 	END IF;
+    */
     
     IF a_debug = 1 THEN
 		SELECT * FROM tmp_User;
@@ -16444,6 +16580,7 @@ BEGIN
 		, U.is_super_user
 		, t_U.can_admin_store
 		, t_U.can_admin_user
+        , v_is_new AS is_new
 	FROM tmp_User t_U
 	INNER JOIN partsltd_prod.Shop_User U ON t_U.id_user = U.id_user
 	;
@@ -16482,13 +16619,22 @@ DELIMITER ;;
 
 
 
-CALL p_get_many_user (NULL, 'google-oauth2|109567376920138999933', False, False, False, NULL, 'google-oauth2|109567376920138999933', 0);
+CALL p_get_many_user (
+	NULL
+	, 'google-oauth2|109567376920138999933'
+	, False
+	, False
+	-- , False
+	, NULL
+	, 'google-oauth2|109567376920138999933'
+	, 0
+);
 /*
 	NULL # a_id_user
     , 'auth0|6582b95c895d09a70ba10fef' # a_id_user_auth0
     , 0 # a_get_all_user
 	, 0 # a_get_inactive_user
-    , 0 # a_get_first_user_only
+    -- , 0 # a_get_first_user_only
 	, NULL # a_ids_user
 	, 'auth0|6582b95c895d09a70ba10fef' # a_ids_user_auth0
     , 0 -- a_debug
@@ -16506,7 +16652,7 @@ CALL p_get_many_user(
     , 'auth0|6582b95c895d09a70ba10fef' -- :a_id_user_auth0, 
     , 1 -- :a_get_all_user,
     , 0 --  :a_get_inactive_user,
-    , 0 --  :a_get_first_user_only,
+    -- , 0 --  :a_get_first_user_only,
     , NULL --  :a_ids_user,
     , 'auth0|6582b95c895d09a70ba10fef' --  :a_ids_user_auth0
 );
@@ -24265,12 +24411,34 @@ INSERT INTO Shop_User (
 	, firstname
     , surname
 	, email
-	# email_verified
 	, is_super_user
+    , active
 )
 VALUES 
-	('auth0|6582b95c895d09a70ba10fef', 'Teddy', 'Middleton-Smith', 'edward.middletonsmith@gmail.com', 1),
-	('parts_guest', 'Guest', '', '', 0)
+	(
+		'auth0|6582b95c895d09a70ba10fef' -- id_user_auth0
+		, 'Teddy' -- firstname
+        , 'Middleton-Smith' -- surname
+        , 'edward.middletonsmith@gmail.com' -- email
+        , 1 -- is_super_user
+		, 1 -- active
+	),
+	(
+		'parts_guest' -- id_user_auth0
+        , 'Guest' -- firstname
+        , '' -- surname
+        , '' -- email
+        , 0 -- is_super_user
+		, 1 -- active
+	),
+    (
+		'auth0|672659014296b7f94a9bab45' -- id_user_auth0
+		, 'Tierney' -- firstname
+		, 'Gullen' -- surname
+		, 'tierneybailey13@gmail.com' -- email
+		, 1 -- is_super_user
+		, 1 -- active
+	)
 ;
 
 # User Role link

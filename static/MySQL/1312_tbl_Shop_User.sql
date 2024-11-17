@@ -8,9 +8,9 @@ SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning 
 CREATE TABLE IF NOT EXISTS Shop_User (
     id_user INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_user_auth0 VARCHAR(200) NOT NULL,
-    firstname VARCHAR(255) NOT NULL,
-    surname VARCHAR(255) NOT NULL,
-    email VARCHAR(254) NOT NULL,
+    firstname VARCHAR(255) NULL,
+    surname VARCHAR(255) NULL,
+    email VARCHAR(254) NULL,
     is_email_verified BIT NOT NULL DEFAULT 0,
     is_super_user BIT NOT NULL DEFAULT 0,
     id_currency_default INT NULL,

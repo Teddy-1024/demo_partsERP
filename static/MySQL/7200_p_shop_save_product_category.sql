@@ -24,18 +24,13 @@ BEGIN
     
     DECLARE exit handler for SQLEXCEPTION
     BEGIN
-        -- Get diagnostic information
         GET DIAGNOSTICS CONDITION 1
             @sqlstate = RETURNED_SQLSTATE
             , @errno = MYSQL_ERRNO
             , @text = MESSAGE_TEXT
 		;
         
-        -- Rollback the transaction
         ROLLBACK;
-        
-        -- Select the error information
-        -- SELECT 'Error' AS status, @errno AS error_code, @sqlstate AS sql_state, @text AS message;
         
 		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 			display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT
@@ -131,7 +126,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a code: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following category(s) do not have a code: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.code)
 		;
@@ -146,7 +141,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a name: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following category(s) do not have a name: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.name)
 		;
@@ -161,7 +156,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a display order: ', GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', ')) AS msg
+			, CONCAT('The following category(s) do not have a display order: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.display_order)
 		;

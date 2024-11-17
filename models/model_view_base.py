@@ -19,7 +19,7 @@ Base data model for views
 # from routes import bp_home
 from business_objects.base import Base
 from business_objects.store.product_category import Product_Category
-from business_objects.user import User, User_Filters
+from business_objects.user import User, Parameters_User
 from datastores.datastore_base import DataStore_Base
 from datastores.datastore_user import DataStore_User
 from forms.access_level import Filters_Access_Level
@@ -94,6 +94,7 @@ class Model_View_Base(BaseModel, ABC):
     FLAG_HAMBURGER: ClassVar[str] = 'hamburger'
     FLAG_IMAGE_LOGO: ClassVar[str] = 'image-logo'
     FLAG_INITIALISED: ClassVar[str] = 'initialised'
+    FLAG_IS_INCLUDED_VAT: ClassVar[str] = 'is_included_VAT'
     # FLAG_KEY_PRIMARY: ClassVar[str] = Store_Base.FLAG_KEY_PRIMARY
     FLAG_MESSAGE: ClassVar[str] = 'Message'
     FLAG_MODAL: ClassVar[str] = 'modal'
@@ -300,7 +301,7 @@ class Model_View_Base(BaseModel, ABC):
         datastore_store = DataStore_Store()
         user = datastore_store.get_user_session()
         if not user.is_logged_in: return False
-        filters_user = User_Filters.from_user(user) # get_default(datastore_store)
+        filters_user = Parameters_User.from_user(user) # get_default(datastore_store)
         users, errors = datastore_store.get_many_user(filters_user)
         try:
             user = users[0]
@@ -314,7 +315,7 @@ class Model_View_Base(BaseModel, ABC):
         datastore_store = DataStore_Store()
         user = datastore_store.get_user_session()
         if not user.is_logged_in: return False
-        filters_user = User_Filters.from_user(user) # .get_default(datastore_store)
+        filters_user = Parameters_User.from_user(user) # .get_default(datastore_store)
         users, errors = datastore_store.get_many_user(filters_user)
         try:
             user = users[0]

@@ -1,0 +1,146 @@
+DataStore_Base.db_procedure_execute
+proc_string: CALL p_shop_get_many_product(:a_id_user, :a_get_all_product_category, :a_get_inactive_product_category, :a_ids_product_category, :a_get_all_product, :a_get_inactive_product, :a_ids_product, :a_get_all_permutation, :a_get_inactive_permutation, :a_ids_permutation, :a_get_all_image, :a_get_inactive_image, :a_ids_image, :a_get_products_quantity_stock_below_min, :a_debug)
+args: {'a_id_user': 1, 'a_get_all_product_category': True, 'a_get_inactive_product_category': True, 'a_ids_product_category': '', 'a_get_all_product': True, 'a_get_inactive_product': False, 'a_ids_product': '', 'a_get_all_permutation': True, 'a_get_inactive_permutation': False, 'a_ids_permutation': '', 'a_get_all_image': False, 'a_get_inactive_image': False, 'a_ids_image': '', 'a_get_products_quantity_stock_below_min': False, 'a_debug': 0}
+result: <sqlalchemy.engine.cursor.CursorResult object at 0x000002EF7793FC40>
+data received
+initial category_list: categories: []
+raw categories: ((1, 'ASS', 'Assistive Devices', 'Braille product line and other assistive devices', 1, 'View', 1, b'\x01', None, None, None), (3, 'TECH', 'Technology', 'Technological devices', 1, 'View', 2, b'\x01', None, None, None), (2, 'MISC', 'Miscellaneous', 'Not category allocated products', 1, 'View', 99, b'\x01', None, None, None))
+new_category: 
+            id: 1
+            code: ASS
+            name: Assistive Devices
+            description: Braille product line and other assistive devices
+            access_level: View
+            display_order: 1
+            active: True
+            products: []
+            
+new_category: 
+            id: 3
+            code: TECH
+            name: Technology
+            description: Technological devices
+            access_level: View
+            display_order: 2
+            active: True
+            products: []
+            
+new_category: 
+            id: 2
+            code: MISC
+            name: Miscellaneous
+            description: Not category allocated products
+            access_level: View
+            display_order: 99
+            active: True
+            products: []
+            
+category-loaded category_list: categories: [
+            id: 1
+            code: ASS
+            name: Assistive Devices
+            description: Braille product line and other assistive devices
+            access_level: View
+            display_order: 1
+            active: True
+            products: []
+            , 
+            id: 3
+            code: TECH
+            name: Technology
+            description: Technological devices
+            access_level: View
+            display_order: 2
+            active: True
+            products: []
+            , 
+            id: 2
+            code: MISC
+            name: Miscellaneous
+            description: Not category allocated products
+            access_level: View
+            display_order: 99
+            active: True
+            products: []
+            ]
+raw products: ()
+raw errors: ()
+new result set: ()
+get many category_list: categories: [
+            id: 1
+            code: ASS
+            name: Assistive Devices
+            description: Braille product line and other assistive devices
+            access_level: View
+            display_order: 1
+            active: True
+            products: []
+            , 
+            id: 3
+            code: TECH
+            name: Technology
+            description: Technological devices
+            access_level: View
+            display_order: 2
+            active: True
+            products: []
+            , 
+            id: 2
+            code: MISC
+            name: Miscellaneous
+            description: Not category allocated products
+            access_level: View
+            display_order: 99
+            active: True
+            products: []
+            ]
+categories
+form_filters=Filters_Product_Category(is_not_empty=False, active=True)
+Model_View_Store_Product_Category.__init__
+starting...
+Model_View_Store.__init__
+starting
+session: <SecureCookieSession {'_permanent': True, 'authorisedUser': {'can_admin_store': True, 'can_admin_user': True, 'email': 'edward.middletonsmith@gmail.com', 'firstname': 'Teddy', 'id_currency_default': None, 'id_region_default': None, 'id_user': 1, 'id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'is_email_verified': False, 'is_included_VAT_default': True, 'is_super_user': True, 'surname': 'Middleton-Smith'}, 'csrf_token': '62a72bf881c6405d538a3e29f81249c4b05b8139', 'user': {'access_token': 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiaXNzIjoiaHR0cHM6Ly9kZXYtbndhazIwNjZlZjZoOGl4bi51cy5hdXRoMC5jb20vIn0..U5ygDcfqoeoGTLgA.CSpBOxXywtwjmGGVQH9h2MDcYueJhBoblhO0MBYMk120anymk-mioySgkGJBiIRGWM_7P4-AMf-7bxlO1mMQBG84-da_XziygHVTHtZdi5hD0tp7osa6RNjUpHG4CAnZ3q0Hj_EaSMPTz3-XhWsR5izqOALDsBp69kliXzjbHBkvnzJGPgeQZcP1-FkXlTQYkCm-A9oOzdCqI9mbGaQVzvxDWfYeSnW5BAtEkhXCy_eMEOnKY0y9mlYs-koIhF-dT2WA_c_K8reOq1NjIZBjJLAJ88xr7AVd5jsEMsPr-aEIW7wHcUOeawa3Kfnh9NfNMZaHoBjFAv6g4aP3y9bkbMpK.3-McrmK7ITgjpNPlJefLNQ', 'expires_at': 1731923381, 'expires_in': 86400, 'id_token': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InVveXZURk44bjJvZHg1VkFLMFh1RyJ9.eyJuaWNrbmFtZSI6ImVkd2FyZC5taWRkbGV0b25zbWl0aCIsIm5hbWUiOiJlZHdhcmQubWlkZGxldG9uc21pdGhAZ21haWwuY29tIiwicGljdHVyZSI6Imh0dHBzOi8vcy5ncmF2YXRhci5jb20vYXZhdGFyLzUzZDNmMjQ0MDdkNTI1N2Y4NGYyN2NhMDc4NzRiZDY0P3M9NDgwJnI9cGcmZD1odHRwcyUzQSUyRiUyRmNkbi5hdXRoMC5jb20lMkZhdmF0YXJzJTJGZWQucG5nIiwidXBkYXRlZF9hdCI6IjIwMjQtMTEtMTdUMDk6NDk6NDEuNzIyWiIsImVtYWlsIjoiZWR3YXJkLm1pZGRsZXRvbnNtaXRoQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiaXNzIjoiaHR0cHM6Ly9kZXYtbndhazIwNjZlZjZoOGl4bi51cy5hdXRoMC5jb20vIiwiYXVkIjoiZ0dqeXRxTk1XQ2hTaXhxTzcyUlF6VkhXQWFlSkp6UmkiLCJpYXQiOjE3MzE4MzY5ODIsImV4cCI6MTczMTg3Mjk4Miwic3ViIjoiYXV0aDB8NjU4MmI5NWM4OTVkMDlhNzBiYTEwZmVmIiwic2lkIjoiTXBlbFE4cEtSOWhOOVg0bUlsZkJxM1JaR3p4WExBeGkiLCJub25jZSI6ImxJUVNIS1lzZW9sMjVhN3NFTFBPIn0.oB687ksKRtGbZQYXO4GS5GskJq0SmKofO-BaQftxowZmqIYMwzFumG8mVfm4l7-YI19tc8ik7jXiNGgAI3XpXQH5Ieud8h_TGsh3jNfmVIp4zjxO45Y39kaNHZQgnU2N6ckKD1W0pONirwKLD2Drdj9zVvdcYywQHPmhPHXoz06P8k4UvkdjST_AGgt-RAfpT-j5Nnbh3vqadv95ZGzJPHy3_q0lFS1PRUksYG9YGIMSrSpevC_sVgD3Qum_E35mZyJtwJMyNFzRj3kJHcpMKJH5qAZ2CTMbGLh5iHrUA9_KgOyMRGZTcooHSQnwemq_Sh3lNXJE0fUXzf99FMfaBw', 'scope': 'openid profile email', 'token_type': 'Bearer', 'userinfo': {'aud': 'gGjytqNMWChSixqO72RQzVHWAaeJJzRi', 'email': 'edward.middletonsmith@gmail.com', 'email_verified': False, 'exp': 1731872982, 'iat': 1731836982, 'iss': 'https://dev-nwak2066ef6h8ixn.us.auth0.com/', 'name': 'edward.middletonsmith@gmail.com', 'nickname': 'edward.middletonsmith', 'nonce': 'lIQSHKYseol25a7sELPO', 'picture': 'https://s.gravatar.com/avatar/53d3f24407d5257f84f27ca07874bd64?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fed.png', 'sid': 'MpelQ8pKR9hN9X4mIlfBq3RZGzxXLAxi', 'sub': 'auth0|6582b95c895d09a70ba10fef', 'updated_at': '2024-11-17T09:49:41.722Z'}}}>
+DataStore_Base.get_user_session
+User.from_json
+json: {'can_admin_store': True, 'can_admin_user': True, 'email': 'edward.middletonsmith@gmail.com', 'firstname': 'Teddy', 'id_currency_default': None, 'id_region_default': None, 'id_user': 1, 'id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'is_email_verified': False, 'is_included_VAT_default': True, 'is_super_user': True, 'surname': 'Middleton-Smith'}
+user: 
+            id_user: 1
+            id_user_auth0: auth0|6582b95c895d09a70ba10fef
+            firstname: Teddy
+            surname: Middleton-Smith
+            email: edward.middletonsmith@gmail.com
+            is_email_verified: False
+            is_super_user: True
+            id_currency_default: None
+            id_region_default: None
+            is_included_VAT_default: True
+            can_admin_store: True
+            can_admin_user: True
+            
+User.from_json
+json: {'can_admin_store': True, 'can_admin_user': True, 'email': 'edward.middletonsmith@gmail.com', 'firstname': 'Teddy', 'id_currency_default': None, 'id_region_default': None, 'id_user': 1, 'id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'is_email_verified': False, 'is_included_VAT_default': True, 'is_super_user': True, 'surname': 'Middleton-Smith'}
+user: 
+            id_user: 1
+            id_user_auth0: auth0|6582b95c895d09a70ba10fef
+            firstname: Teddy
+            surname: Middleton-Smith
+            email: edward.middletonsmith@gmail.com
+            is_email_verified: False
+            is_super_user: True
+            id_currency_default: None
+            id_region_default: None
+            is_included_VAT_default: True
+            can_admin_store: True
+            can_admin_user: True
+            
+argument_dict: {'a_id_user': 1, 'a_id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'get_all_user': False, 'get_inactive_user': False, 'ids_user': 1, 'ids_user_auth0': '', 'a_debug': 0}
+executing p_get_many_user
+DataStore_Base.db_procedure_execute
+proc_string: CALL p_get_many_user(:a_id_user, :a_id_user_auth0, :get_all_user, :get_inactive_user, :ids_user, :ids_user_auth0, :a_debug)
+args: {'a_id_user': 1, 'a_id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'get_all_user': False, 'get_inactive_user': False, 'ids_user': 1, 'ids_user_auth0': '', 'a_debug': 0}
+result: <sqlalchemy.engine.cursor.CursorResult object at 0x000002EF7793FCB0>
+data received
+raw users: ((1, 'auth0|6582b95c895d09a70ba10fef', 'Teddy', 'Middleton-Smith', 'edward.middletonsmith@gmail.com', b'\x00', None, None, b'\x01', b'\x01', b'\x01', b'\x01', b'\x00'),)
+raw errors: ()
+new result set: ()

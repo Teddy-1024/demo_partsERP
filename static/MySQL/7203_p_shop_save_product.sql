@@ -266,6 +266,7 @@ BEGIN
                     , P.has_variations = t_P.has_variations
                     , P.id_access_level_required = t_P.id_access_level_required
                     , P.display_order = t_P.display_order
+                    , P.active = t_P.active
                     , P.id_change_set = v_id_change_set
                 ;
             END IF;

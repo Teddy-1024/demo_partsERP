@@ -15,8 +15,9 @@ Datastore for Users
 import lib.argument_validation as av
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
-from business_objects.user import User, User_Filters, User_Permission_Evaluation
-from datastores.datastore_base import DataStore_Base
+from business_objects.user import User, Parameters_User, User_Permission_Evaluation
+# from datastores.datastore_base import DataStore_Base
+from datastores.datastore_store_base import DataStore_Store_Base
 from helpers.helper_app import Helper_App
 from helpers.helper_db_mysql import Helper_DB_MySQL
 # from models.model_view_store_checkout import Model_View_Store_Checkout # circular!
@@ -35,7 +36,7 @@ from datetime import datetime
 db = SQLAlchemy()
 
 
-class DataStore_User(DataStore_Base):
+class DataStore_User(DataStore_Store_Base):
     # Global constants
     # Attributes
 
@@ -120,7 +121,7 @@ class DataStore_User(DataStore_Base):
         Helper_App.console_log(_m)
         # av.val_str(user_filters, 'user_filters', _m)
         # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
-        av.val_instance(user_filters, 'user_filters', _m, User_Filters)
+        av.val_instance(user_filters, 'user_filters', _m, Parameters_User)
 
         guid = Helper_DB_MySQL.create_guid()
         # now = datetime.now()
@@ -188,7 +189,7 @@ class DataStore_User(DataStore_Base):
         Helper_App.console_log(_m)
         # av.val_str(user_filters, 'user_filters', _m)
         # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
-        av.val_instance(user_filters, 'user_filters', _m, User_Filters)
+        av.val_instance(user_filters, 'user_filters', _m, Parameters_User)
 
         guid = Helper_DB_MySQL.create_guid()
         # now = datetime.now()

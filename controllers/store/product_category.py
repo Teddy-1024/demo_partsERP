@@ -59,32 +59,6 @@ def categories():
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_categories.html', model = model)
 
-@routes_store_product_category.route(Model_View_Store_Product_Category.HASH_GET_STORE_PRODUCT_CATEGORY, methods=['POST'])
-def filter_category():
-    data = Helper_App.get_request_data(request)
-    # form_filters = None
-    try:
-        form_filters = Filters_Product_Category.from_json(data)
-        if not form_filters.validate_on_submit():
-            return jsonify({
-                Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_FAILURE, 
-                Model_View_Store_Product_Category.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
-            })
-        # ToDo: manually validate category, product
-        # filters_form = Filters_Product_Category.from_form(form_filters)
-        model = Model_View_Store_Product_Category(form_filters_old = form_filters)
-        if not model.is_user_logged_in:
-            raise Exception('User not logged in')
-        return jsonify({
-            Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
-            Model_View_Store_Product_Category.FLAG_DATA: model.category_list.to_json()
-        })
-    except Exception as e:
-        return jsonify({
-            Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_FAILURE, 
-            Model_View_Store_Product_Category.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
-        })
-
 @routes_store_product_category.route(Model_View_Store_Product_Category.HASH_SAVE_STORE_PRODUCT_CATEGORY, methods=['POST'])
 def save_category():
     data = Helper_App.get_request_data(request)

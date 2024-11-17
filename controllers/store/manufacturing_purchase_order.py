@@ -42,38 +42,6 @@ def manufacturing_purchase_orders():
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_manufacturing_purchase_orders.html', model = model, datetime = datetime)
 
-@routes_store_manufacturing_purchase_order.route(Model_View_Store_Manufacturing_Purchase_Order.HASH_GET_STORE_MANUFACTURING_PURCHASE_ORDER, methods=['POST'])
-def filter_manufacturing_purchase_order():
-    data = Helper_App.get_request_data(request)
-    try:
-        form_filters = Filters_Manufacturing_Purchase_Order.from_json(data)
-        if not form_filters.validate_on_submit():
-            error_keys = list(form_filters.errors.keys())
-            try:
-                error_keys.remove(Manufacturing_Purchase_Order.ATTR_ID_PRODUCT_CATEGORY)
-            except:
-                pass
-            try:
-                error_keys.remove(Manufacturing_Purchase_Order.ATTR_ID_PRODUCT)
-            except:
-                pass
-            if error_keys:
-                return jsonify({
-                    Model_View_Store_Manufacturing_Purchase_Order.FLAG_STATUS: Model_View_Store_Manufacturing_Purchase_Order.FLAG_FAILURE, 
-                    Model_View_Store_Manufacturing_Purchase_Order.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
-                })
-        model = Model_View_Store_Manufacturing_Purchase_Order(form_filters_old = form_filters)
-        if not model.is_user_logged_in:
-            raise Exception('User not logged in.')
-        return jsonify({
-            Model_View_Store_Manufacturing_Purchase_Order.FLAG_STATUS: Model_View_Store_Manufacturing_Purchase_Order.FLAG_SUCCESS, 
-            Model_View_Store_Manufacturing_Purchase_Order.FLAG_DATA: model.convert_list_objects_to_json(model.manufacturing_purchase_orders)
-        })
-    except Exception as e:
-        return jsonify({
-            Model_View_Store_Manufacturing_Purchase_Order.FLAG_STATUS: Model_View_Store_Manufacturing_Purchase_Order.FLAG_FAILURE, 
-            Model_View_Store_Manufacturing_Purchase_Order.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
-        })
 
 @routes_store_manufacturing_purchase_order.route(Model_View_Store_Manufacturing_Purchase_Order.HASH_SAVE_STORE_MANUFACTURING_PURCHASE_ORDER, methods=['POST'])
 def save_manufacturing_purchase_order():

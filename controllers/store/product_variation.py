@@ -44,28 +44,6 @@ def product_variations():
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_variations.html', model = model)
 
-@routes_store_product_variation.route(Model_View_Store_Product_Variation.HASH_GET_STORE_PRODUCT_VARIATION, methods=['POST'])
-def filter_product_variation():
-    data = Helper_App.get_request_data(request)
-    try:
-        form_filters = Filters_Product_Variation.from_json(data)
-        if not form_filters.validate_on_submit():
-            return jsonify({
-                Model_View_Store_Product_Variation.FLAG_STATUS: Model_View_Store_Product_Variation.FLAG_FAILURE, 
-                Model_View_Store_Product_Variation.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
-            })
-        model = Model_View_Store_Product_Variation(form_filters_old = form_filters)
-        if not model.is_user_logged_in:
-            raise Exception('User not logged in')
-        return jsonify({
-            Model_View_Store_Product_Variation.FLAG_STATUS: Model_View_Store_Product_Variation.FLAG_SUCCESS, 
-            Model_View_Store_Product_Variation.FLAG_DATA: model.convert_list_objects_to_json(model.variation_types)
-        })
-    except Exception as e:
-        return jsonify({
-            Model_View_Store_Product_Variation.FLAG_STATUS: Model_View_Store_Product_Variation.FLAG_FAILURE, 
-            Model_View_Store_Product_Variation.FLAG_MESSAGE: f'Bad data received by controller.\n{e}'
-        })
 
 @routes_store_product_variation.route(Model_View_Store_Product_Variation.HASH_SAVE_STORE_PRODUCT_VARIATION, methods=['POST'])
 def save_product_variation():
