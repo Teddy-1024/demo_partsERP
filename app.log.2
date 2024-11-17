@@ -1,99 +1,62 @@
-DataStore_Base.db_procedure_execute
-proc_string: CALL p_shop_get_many_product(:a_id_user, :a_get_all_product_category, :a_get_inactive_product_category, :a_ids_product_category, :a_get_all_product, :a_get_inactive_product, :a_ids_product, :a_get_all_permutation, :a_get_inactive_permutation, :a_ids_permutation, :a_get_all_image, :a_get_inactive_image, :a_ids_image, :a_get_products_quantity_stock_below_min, :a_debug)
-args: {'a_id_user': 1, 'a_get_all_product_category': True, 'a_get_inactive_product_category': True, 'a_ids_product_category': '', 'a_get_all_product': True, 'a_get_inactive_product': False, 'a_ids_product': '', 'a_get_all_permutation': True, 'a_get_inactive_permutation': False, 'a_ids_permutation': '', 'a_get_all_image': False, 'a_get_inactive_image': False, 'a_ids_image': '', 'a_get_products_quantity_stock_below_min': False, 'a_debug': 0}
-result: <sqlalchemy.engine.cursor.CursorResult object at 0x000002EF7793FC40>
-data received
-initial category_list: categories: []
-raw categories: ((1, 'ASS', 'Assistive Devices', 'Braille product line and other assistive devices', 1, 'View', 1, b'\x01', None, None, None), (3, 'TECH', 'Technology', 'Technological devices', 1, 'View', 2, b'\x01', None, None, None), (2, 'MISC', 'Miscellaneous', 'Not category allocated products', 1, 'View', 99, b'\x01', None, None, None))
-new_category: 
-            id: 1
-            code: ASS
-            name: Assistive Devices
-            description: Braille product line and other assistive devices
-            access_level: View
-            display_order: 1
-            active: True
-            products: []
-            
-new_category: 
-            id: 3
-            code: TECH
-            name: Technology
-            description: Technological devices
-            access_level: View
-            display_order: 2
-            active: True
-            products: []
-            
-new_category: 
-            id: 2
-            code: MISC
-            name: Miscellaneous
-            description: Not category allocated products
-            access_level: View
-            display_order: 99
-            active: True
-            products: []
-            
-category-loaded category_list: categories: [
-            id: 1
-            code: ASS
-            name: Assistive Devices
-            description: Braille product line and other assistive devices
-            access_level: View
-            display_order: 1
-            active: True
-            products: []
-            , 
-            id: 3
-            code: TECH
-            name: Technology
-            description: Technological devices
-            access_level: View
-            display_order: 2
-            active: True
-            products: []
-            , 
-            id: 2
-            code: MISC
-            name: Miscellaneous
-            description: Not category allocated products
-            access_level: View
-            display_order: 99
-            active: True
-            products: []
-            ]
-raw products: ()
-raw errors: ()
-new result set: ()
-get many category_list: categories: [
-            id: 1
-            code: ASS
-            name: Assistive Devices
-            description: Braille product line and other assistive devices
-            access_level: View
-            display_order: 1
-            active: True
-            products: []
-            , 
-            id: 3
-            code: TECH
-            name: Technology
-            description: Technological devices
-            access_level: View
-            display_order: 2
-            active: True
-            products: []
-            , 
-            id: 2
-            code: MISC
-            name: Miscellaneous
-            description: Not category allocated products
-            access_level: View
-            display_order: 99
-            active: True
-            products: []
-            ]
+Request: 127.0.0.1 GET http /store/categories?is_not_empty=false&active=true Host: 127.0.0.1:5000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-GB,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Referer: http://127.0.0.1:5000/store/categories
+Dnt: 1
+Connection: keep-alive
+Cookie: session=.eJytVmnPozgS_iujSDOfOmnOBF6pNZuTIwHCEa4vyGAIN4QjCcz2f1-T9DErzV7SSjjBLlP1lOupcv0x8-qwKUAZlt3so2v68NMM9F1cNUkbwksbNrOPP2YBKD0Ai6T02q5qwu8bfy73r43v1bAAST77mIXwARq4KBII87CryrZIuvhv10m6CKpi9mkWJU3blaBACmdGCOGA1hLoBX3ThGUweDCMQJ8jXGWf5y9RE16TqvwLwRsA_uPdm5zAkN7X_9-XNEP4LB0wLA0xFqwwH-BYFEaTwdZ7IfbuYZNESQhnHxHI2_AlScog72EIPXNt_LT69hOJ2x4d3j853_bNN4ek737P9cnx2Vd0Xm0TeV2VhSWSLwmwIvyIYfBgSWE0pEkGkCHBRgxOUGxA-RjtMzjJIoj9tzCAIAjb9oeGcBBjnwsSJREzYAvJaSvmfiFN842UXggNk2UheSTAlkchrRLAa1jAS8vTwGau7XR-CWMwCg85dXM3dSuFyyk_ofFgoGNoa5W0pVOfwO5CiS0WF3q47oLoVoUVZ5yu68VWrzfK0x4e3SMtOM5UeTYmpF3g9KEYbyo_jxVM2jhShhMYKIcimxdJNejXjBM3iaBxluStztR8LUXzlf_MFbyQ1A3HUHMIPHtMhitvGnznwoSOd1hXr6oWLDU5vdQ8R23XpUveMD719kCXzsZIzu3YajU6GW_K-rRrN_WSzfLEHlOf32T3chS58zVU3eCMzw-ZnRuqk22L-ZqtlBFubwJb-BxQzfH-3FmRE-qlRW_W3T6L7e3ghdJeKY8ONrBF7rTzrBLiwxwahLX2Au_INKFyw-VUcDepeFqLDPNsVmsT0mm7l9pzMwd7wVo9-OCihOAByGNUxqwcyZIL-GqTHtb35ZUCZ3Jg_cyX6uOCnEtBUxxXgnFNa_mci2F0klVEg_BZJ03YegBREF-ROEuQJIP_XE8QKRjEJeyVBX_BEv0yCricCK1QanSwFZZCVtvmFs2LrnaneWneQ9u9aBlF-al4d_krbmaHk3SIcW0Q2QVS1gNLbvzi0Lk6-qAwM0gcBndLd8DSMp8zMZ-gR9_KMfBSTMe-dZmM5y4P46BQeyTLXO6ZQ47tAwKvIRevXQKPgfXoHYLtJsoGXJ5C3hzeNmIM8ptRSZg7omYZFAfCsbU4SN70dGw3htxhOI2X0d3JhZSqmLSDmWwgZwmHkjlnkAk5Rtyk5FFL3J2DnUmJlXfXh1gKbMAFhbvDK8hrj2C4jKp-GbQEjULOUDr8ORVyKUO2igPm2OIoGiLnWmofcHQ5YYb2JkO4cvfAxnA6zFR4ICydZOzRgBdply3l19j3KCEHawpEYXaOlbdTerqWRiK92anAa5fTWtfW7n4pdwDZVzn42ncq5Luv__zOJt08KPICWGYmpHXhWM_R1f8PKY_8cexJJ8KFwVtoa08jw22ViA1gx09jRCeVH5YmyhDVOuR6Vi8vRTaVoNqx1URJ96Q07ilpdGhl98JLTYSTjGCUjCsppRklTXEmzWSygWxhYLdhUH5TUiHQsiVRimFm0i6P5XGTOMb-4RZm8eIGkb9wGfYm9w97Kth3umLFimJeMf-St24mPiVcBBpZU9b-uQm5F64e8TJ98-kpXkxZ0PF8dC22lVIzlkn5YBw256nUVZsls8rao9Zxvqs6tkJxOs21mXjD9OJYRcp8A9Soe1YI0U1wpMd46AuOKcyooPLV3BFwtguYJFuldiJz17VA2rWt8rQQ9pCJPYNrYzKVo8IUampMnwpFOySbAZl31Wt5IeRlkB13uIXVipw0j-NpR-wamLKjeYeBMzxU_lzEZ96uRmx5ZjLqcs9gqhvemrt2c20d1cY8peXSj8n7DcA7S7vcKJ75gfRuWH7Q8bN2yVqHYx1OkPRGr8P71mvN645U-8Lbk3ThDmL3EKVBPoxaSmYiH9TSUeTpG8rSrSH53CmmE765rFnveFUGSeNcI6gqXlfLR1jcPD0mc9kW91h0sceIZQ9SBDYPVL_aoKqnmxH9lgn8pW6qKMnDX979wqfZq2B53fDaswlBgy69992XlFH1uv96dDnPrlw6dDdZsraxnjxvyorQ1NHkrTUIRRHl9-x_aUH-xdWPSuq7xjIrgmUIVFC_F12GXL4X2hYZiLuubj8-f4bhfV4-QEZgy2UYLWMmeZaLvl28uo_J1Gdk61tj8J9BlUmQ_bvN05aqDCZ5Lqg6f3TasMoJGqza_emsIHGdBF0_NWo_ELaLawPuoAPNC8779TNNQjIiKApbQZqgVxFDRcQqANiKWVE-XFK_t18oBvut-VJff4NfXrp-Jde_Egf0BLD86R-av1W26C2Ei7q8ThFPpoBJdZirTH3U2FhmbaoQ8mhzIzXEy6d9Wj-ngLW9_9_0an0NQYe6sSkYMwIjqDmOz_GVgbEfFHrwxYog3NnXr1__Ach1prI.ZzoIQw.xndonm9ds59sRFhipIbusmAFFXM
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Sec-Gpc: 1
+Priority: u=0, i
+
+
+Request data: b''
+Traceback: Traceback (most recent call last):
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\controllers\store\product_category.py", line 60, in categories
+    return render_template('pages/store/_product_categories.html', model = model)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1304, in render
+    self.environment.handle_exception()
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 939, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_categories.html", line 1, in top-level template code
+    {% extends 'layouts/layout.html' %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\layouts\layout.html", line 357, in top-level template code
+    {% block page_body %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\templates\pages\store\_product_categories.html", line 10, in block 'page_body'
+    <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}" action="{{ url_for('routes_store_product_category.filter_category') }}" method="POST"> <!-- {{ model.FLAG_CONTAINER }} -->
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1084, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1073, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\edwar\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\routing\map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'routes_store_product_category.filter_category'. Did you mean 'routes_store_product_category.save_category' instead?
+
+config_env: development
 categories
 form_filters=Filters_Product_Category(is_not_empty=False, active=True)
 Model_View_Store_Product_Category.__init__
@@ -102,45 +65,3 @@ Model_View_Store.__init__
 starting
 session: <SecureCookieSession {'_permanent': True, 'authorisedUser': {'can_admin_store': True, 'can_admin_user': True, 'email': 'edward.middletonsmith@gmail.com', 'firstname': 'Teddy', 'id_currency_default': None, 'id_region_default': None, 'id_user': 1, 'id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'is_email_verified': False, 'is_included_VAT_default': True, 'is_super_user': True, 'surname': 'Middleton-Smith'}, 'csrf_token': '62a72bf881c6405d538a3e29f81249c4b05b8139', 'user': {'access_token': 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiaXNzIjoiaHR0cHM6Ly9kZXYtbndhazIwNjZlZjZoOGl4bi51cy5hdXRoMC5jb20vIn0..U5ygDcfqoeoGTLgA.CSpBOxXywtwjmGGVQH9h2MDcYueJhBoblhO0MBYMk120anymk-mioySgkGJBiIRGWM_7P4-AMf-7bxlO1mMQBG84-da_XziygHVTHtZdi5hD0tp7osa6RNjUpHG4CAnZ3q0Hj_EaSMPTz3-XhWsR5izqOALDsBp69kliXzjbHBkvnzJGPgeQZcP1-FkXlTQYkCm-A9oOzdCqI9mbGaQVzvxDWfYeSnW5BAtEkhXCy_eMEOnKY0y9mlYs-koIhF-dT2WA_c_K8reOq1NjIZBjJLAJ88xr7AVd5jsEMsPr-aEIW7wHcUOeawa3Kfnh9NfNMZaHoBjFAv6g4aP3y9bkbMpK.3-McrmK7ITgjpNPlJefLNQ', 'expires_at': 1731923381, 'expires_in': 86400, 'id_token': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InVveXZURk44bjJvZHg1VkFLMFh1RyJ9.eyJuaWNrbmFtZSI6ImVkd2FyZC5taWRkbGV0b25zbWl0aCIsIm5hbWUiOiJlZHdhcmQubWlkZGxldG9uc21pdGhAZ21haWwuY29tIiwicGljdHVyZSI6Imh0dHBzOi8vcy5ncmF2YXRhci5jb20vYXZhdGFyLzUzZDNmMjQ0MDdkNTI1N2Y4NGYyN2NhMDc4NzRiZDY0P3M9NDgwJnI9cGcmZD1odHRwcyUzQSUyRiUyRmNkbi5hdXRoMC5jb20lMkZhdmF0YXJzJTJGZWQucG5nIiwidXBkYXRlZF9hdCI6IjIwMjQtMTEtMTdUMDk6NDk6NDEuNzIyWiIsImVtYWlsIjoiZWR3YXJkLm1pZGRsZXRvbnNtaXRoQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiaXNzIjoiaHR0cHM6Ly9kZXYtbndhazIwNjZlZjZoOGl4bi51cy5hdXRoMC5jb20vIiwiYXVkIjoiZ0dqeXRxTk1XQ2hTaXhxTzcyUlF6VkhXQWFlSkp6UmkiLCJpYXQiOjE3MzE4MzY5ODIsImV4cCI6MTczMTg3Mjk4Miwic3ViIjoiYXV0aDB8NjU4MmI5NWM4OTVkMDlhNzBiYTEwZmVmIiwic2lkIjoiTXBlbFE4cEtSOWhOOVg0bUlsZkJxM1JaR3p4WExBeGkiLCJub25jZSI6ImxJUVNIS1lzZW9sMjVhN3NFTFBPIn0.oB687ksKRtGbZQYXO4GS5GskJq0SmKofO-BaQftxowZmqIYMwzFumG8mVfm4l7-YI19tc8ik7jXiNGgAI3XpXQH5Ieud8h_TGsh3jNfmVIp4zjxO45Y39kaNHZQgnU2N6ckKD1W0pONirwKLD2Drdj9zVvdcYywQHPmhPHXoz06P8k4UvkdjST_AGgt-RAfpT-j5Nnbh3vqadv95ZGzJPHy3_q0lFS1PRUksYG9YGIMSrSpevC_sVgD3Qum_E35mZyJtwJMyNFzRj3kJHcpMKJH5qAZ2CTMbGLh5iHrUA9_KgOyMRGZTcooHSQnwemq_Sh3lNXJE0fUXzf99FMfaBw', 'scope': 'openid profile email', 'token_type': 'Bearer', 'userinfo': {'aud': 'gGjytqNMWChSixqO72RQzVHWAaeJJzRi', 'email': 'edward.middletonsmith@gmail.com', 'email_verified': False, 'exp': 1731872982, 'iat': 1731836982, 'iss': 'https://dev-nwak2066ef6h8ixn.us.auth0.com/', 'name': 'edward.middletonsmith@gmail.com', 'nickname': 'edward.middletonsmith', 'nonce': 'lIQSHKYseol25a7sELPO', 'picture': 'https://s.gravatar.com/avatar/53d3f24407d5257f84f27ca07874bd64?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fed.png', 'sid': 'MpelQ8pKR9hN9X4mIlfBq3RZGzxXLAxi', 'sub': 'auth0|6582b95c895d09a70ba10fef', 'updated_at': '2024-11-17T09:49:41.722Z'}}}>
 DataStore_Base.get_user_session
-User.from_json
-json: {'can_admin_store': True, 'can_admin_user': True, 'email': 'edward.middletonsmith@gmail.com', 'firstname': 'Teddy', 'id_currency_default': None, 'id_region_default': None, 'id_user': 1, 'id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'is_email_verified': False, 'is_included_VAT_default': True, 'is_super_user': True, 'surname': 'Middleton-Smith'}
-user: 
-            id_user: 1
-            id_user_auth0: auth0|6582b95c895d09a70ba10fef
-            firstname: Teddy
-            surname: Middleton-Smith
-            email: edward.middletonsmith@gmail.com
-            is_email_verified: False
-            is_super_user: True
-            id_currency_default: None
-            id_region_default: None
-            is_included_VAT_default: True
-            can_admin_store: True
-            can_admin_user: True
-            
-User.from_json
-json: {'can_admin_store': True, 'can_admin_user': True, 'email': 'edward.middletonsmith@gmail.com', 'firstname': 'Teddy', 'id_currency_default': None, 'id_region_default': None, 'id_user': 1, 'id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'is_email_verified': False, 'is_included_VAT_default': True, 'is_super_user': True, 'surname': 'Middleton-Smith'}
-user: 
-            id_user: 1
-            id_user_auth0: auth0|6582b95c895d09a70ba10fef
-            firstname: Teddy
-            surname: Middleton-Smith
-            email: edward.middletonsmith@gmail.com
-            is_email_verified: False
-            is_super_user: True
-            id_currency_default: None
-            id_region_default: None
-            is_included_VAT_default: True
-            can_admin_store: True
-            can_admin_user: True
-            
-argument_dict: {'a_id_user': 1, 'a_id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'get_all_user': False, 'get_inactive_user': False, 'ids_user': 1, 'ids_user_auth0': '', 'a_debug': 0}
-executing p_get_many_user
-DataStore_Base.db_procedure_execute
-proc_string: CALL p_get_many_user(:a_id_user, :a_id_user_auth0, :get_all_user, :get_inactive_user, :ids_user, :ids_user_auth0, :a_debug)
-args: {'a_id_user': 1, 'a_id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'get_all_user': False, 'get_inactive_user': False, 'ids_user': 1, 'ids_user_auth0': '', 'a_debug': 0}
-result: <sqlalchemy.engine.cursor.CursorResult object at 0x000002EF7793FCB0>
-data received
-raw users: ((1, 'auth0|6582b95c895d09a70ba10fef', 'Teddy', 'Middleton-Smith', 'edward.middletonsmith@gmail.com', b'\x00', None, None, b'\x01', b'\x01', b'\x01', b'\x01', b'\x00'),)
-raw errors: ()
-new result set: ()
