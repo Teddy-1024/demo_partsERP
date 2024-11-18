@@ -920,19 +920,23 @@ BEGIN
 				, MPOPL.price_unit_local_VAT_incl = t_MPOPL.price_unit_local_VAT_incl
 				, MPOPL.id_change_set = v_id_change_set
 			;
-		
-			DELETE MPO_T
-			FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp MPO_T
-			WHERE MPO_T.GUID = a_guid
-			;
-			DELETE MPOPL_T
-			FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
-			WHERE MPOPL_T.GUID = a_guid
-			;
 			
 		COMMIT;
     END IF;
     
+    START TRANSACTION;
+	
+		DELETE MPO_T
+		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp MPO_T
+		WHERE MPO_T.GUID = a_guid
+		;
+		DELETE MPOPL_T
+		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
+		WHERE MPOPL_T.GUID = a_guid
+		;
+		
+	COMMIT;
+	
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME

@@ -604,8 +604,11 @@ BEGIN
                 , PPVL.active = t_PPVL.active
                 , PPVL.id_change_set = v_id_change_set
             ;
-		END IF;
 		
+		COMMIT;
+	END IF;
+		
+    START TRANSACTION;
     
 		DELETE FROM Shop_Product_Permutation_Temp
 		WHERE GUID = a_guid

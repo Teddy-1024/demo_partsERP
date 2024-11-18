@@ -558,6 +558,13 @@ BEGIN
 		COMMIT;
     END IF;
     
+    START TRANSACTION;
+		DELETE FROM partsltd_prod.Shop_Supplier_Temp
+        WHERE GUID = a_guid;
+		DELETE FROM partsltd_prod.Shop_Supplier_Address_Temp
+        WHERE GUID = a_guid;
+    COMMIT;
+    
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME

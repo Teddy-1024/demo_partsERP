@@ -45,6 +45,8 @@ from flask import Flask, session, current_app
 from pydantic import BaseModel, ConfigDict
 from typing import ClassVar
 from datetime import datetime
+import time
+from sqlalchemy.exc import OperationalError
 
 # db = SQLAlchemy()
 
@@ -206,6 +208,7 @@ class DataStore_Base(BaseModel):
         cursor.close()
 
         return users, errors
+    
     @staticmethod
     def upload_bulk(permanent_table_name, records, batch_size):
         _m = 'DataStore_Base.upload_bulk'
@@ -222,12 +225,15 @@ class DataStore_Base(BaseModel):
         else:
             expected_columns = set(column.name for column in db.inspect(table_object).columns)
             Helper_App.console_log(f'expected_columns: {expected_columns}')
+        """ v1, v2
         try:
             for i in range(0, len(records), batch_size):
+                "" v1
                 batch = records[i:i+batch_size]
                 Helper_App.console_log(f'batch: {batch}')
                 db.session.bulk_save_objects(batch)
-                """
+                ""
+                ""
                 data = [object.to_json() for object in batch]
                 Helper_App.console_log(f'data: {data}')
                 for row in data:
@@ -237,12 +243,38 @@ class DataStore_Base(BaseModel):
                         Helper_App.console_log(f'missing columns: {expected_columns - row_keys}')
                         Helper_App.console_log(f'extra columns: {row_keys - expected_columns}')
                 # db.session.bulk_insert_mappings(permanent_table_name, data)
-                """
-            db.session.commit()
+                ""    
         except Exception as e:
             Helper_App.console_log(f'{_m}\n{e}')
             db.session.rollback()
             raise e
+        """
+        max_retries = 3
+        initial_backoff = 1
+        for i in range(0, len(records), batch_size):
+            batch = records[i:i + batch_size]
+            try:
+                retries = 0
+                while retries < max_retries:
+                    try:
+                        db.session.bulk_save_objects(batch)
+                        db.session.commit()
+                        break
+                    except OperationalError as e:
+                        if "Lock wait timeout exceeded" not in str(e) or retries == max_retries - 1:
+                            raise
+                        
+                        wait_time = initial_backoff * (2 ** retries)
+                        current_app.logger.warning(f"Lock timeout encountered. Retrying in {wait_time} seconds... (Attempt {retries + 1}/{max_retries})")
+                        time.sleep(wait_time)
+                        retries += 1
+                        
+                        # Ensure the session is clean for the retry
+                        db.session.rollback()
+            except Exception as e:
+                db.session.rollback()
+                raise e
+
     @classmethod
     def get_many_access_level(cls, filters=None):
         _m = 'DataStore_Store_Base.get_many_access_level'

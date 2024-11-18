@@ -82,11 +82,16 @@ def save_category():
             objsCategory.append(Product_Category.from_json(category))
         # model_save = Model_View_Store_Product_Category() # filters_product=filters_form)
         Helper_App.console_log(f'objsCategory={objsCategory}')
-        Model_View_Store_Product_Category.save_categories(data.get('comment', 'No comment'), objsCategory)
+        errors = Model_View_Store_Product_Category.save_categories(data.get('comment', 'No comment'), objsCategory)
 
         model_return = Model_View_Store_Product_Category(form_filters_old=form_filters)
         if not model_return.is_user_logged_in:
             raise Exception('User not logged in')
+        if (len(errors) > 0):
+            return jsonify({
+                Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_FAILURE, 
+                Model_View_Store_Product_Category.FLAG_MESSAGE: f'Error saving categories.\n{model_return.convert_list_objects_to_json(errors)}'
+            })
         return jsonify({
             Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_SUCCESS, 
             Model_View_Store_Product_Category.FLAG_DATA: model_return.category_list.to_json()

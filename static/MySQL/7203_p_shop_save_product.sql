@@ -291,11 +291,16 @@ BEGIN
             FROM tmp_Product t_P
             WHERE is_new = 1
             ;
-        
-            DELETE FROM partsltd_prod.Shop_Product_Category_Temp
-            WHERE GUID = a_guid;
+            
 		COMMIT;
     END IF;
+        
+	START TRANSACTION;
+
+		DELETE FROM partsltd_prod.Shop_Product_Category_Temp
+		WHERE GUID = a_guid;
+
+	COMMIT;
     
     SELECT * 
     FROM tmp_Msg_Error t_ME

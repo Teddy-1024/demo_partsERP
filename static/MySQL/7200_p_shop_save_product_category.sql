@@ -100,7 +100,7 @@ BEGIN
         , is_new
 	)
     SELECT 
-		IFNULL(PC_T.id_category, PC.id_category) AS id_category
+		PC_T.id_category AS id_category
         , IFNULL(PC_T.code, PC.code) AS code
         , IFNULL(PC_T.name, PC.code) AS name
         , IFNULL(PC_T.description, PC.description) AS description
@@ -109,8 +109,8 @@ BEGIN
         , IFNULL(PC_T.display_order, PC.display_order) AS display_order
         , IFNULL(PC_T.name, IFNULL(PC.name, IFNULL(PC_T.code, IFNULL(PC.code, IFNULL(PC_T.id_category, '(No Product Category)'))))) AS name_error
         , CASE WHEN IFNULL(PC_T.id_category, 0) < 1 THEN 1 ELSE 0 END AS is_new
-	FROM Shop_Product_Category_Temp PC_T
-    LEFT JOIN Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+	FROM partsltd_prod.Shop_Product_Category_Temp PC_T
+    LEFT JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
     WHERE PC_T.guid = a_guid
     ;
     
@@ -163,59 +163,79 @@ BEGIN
     END IF;
     
     -- Permissions
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN -- (SELECT * FROM tmp_Product WHERE is_new = 0 LIMIT 1) THEN
-        SET v_ids_product_permission := (
-			SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') 
-            FROM Shop_Product P 
-            INNER JOIN tmp_Category t_C
-				ON P.id_category = t_C.id_category 
-                AND t_C.is_new = 0
-		);
-        IF NOT ISNULL(v_ids_product_permission) THEN
-			SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
-			
-			CALL p_shop_calc_user(a_guid, a_id_user, FALSE, v_id_permission_product, v_id_access_level_edit, v_ids_product_permission);
-			
-			UPDATE tmp_Category t_C
-            INNER JOIN Shop_Product P ON t_C.id_category = P.id_product
-			INNER JOIN Shop_Calc_User_Temp UE_T
-				ON P.id_product = UE_T.id_product
-				AND UE_T.GUID = a_guid
-			SET 
-				t_C.can_view = UE_T.can_view
-				, t_C.can_edit = UE_T.can_edit
-				, t_C.can_admin = UE_T.can_admin
-			;
-			
-			CALL p_shop_clear_calc_user(a_guid);
-		END IF;
+	SET v_ids_product_permission := (
+		SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') 
+		FROM Shop_Product P 
+		INNER JOIN tmp_Category t_C
+			ON P.id_category = t_C.id_category 
+			AND t_C.is_new = 0
+		WHERE P.active = 1
+	);
+	SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
+	
+    IF a_debug = 1 THEN
+		SELECT 
+			a_guid
+			, a_id_user
+			, FALSE -- a_get_inactive_user
+			, v_id_permission_product
+			, v_id_access_level_edit
+			, v_ids_product_permission
+			, 0 -- a_debug
+        ;
     END IF;
+    
+	CALL p_shop_calc_user(
+		a_guid
+        , a_id_user
+        , FALSE -- a_get_inactive_user
+        , v_id_permission_product
+        , v_id_access_level_edit
+        , v_ids_product_permission
+		, 0 -- a_debug
+    );
+	
+	UPDATE tmp_Category t_C
+	INNER JOIN Shop_Product P ON t_C.id_category = P.id_product
+	INNER JOIN Shop_Calc_User_Temp UE_T
+		ON P.id_product = UE_T.id_product
+		AND UE_T.GUID = a_guid
+	SET 
+		t_C.can_view = UE_T.can_view
+		, t_C.can_edit = UE_T.can_edit
+		, t_C.can_admin = UE_T.can_admin
+	;
+	
+	CALL p_shop_clear_calc_user(
+		a_guid
+        , 0 -- a_debug
+	);
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
+		
+			INSERT INTO partsltd_prod.Shop_Product_Change_Set ( comment )
+			VALUES ( a_comment )
+			;
 			
-			IF NOT ISNULL(v_ids_product_permission) THEN
-				INSERT INTO Shop_Product_Change_Set ( comment )
-				VALUES ( a_comment )
-				;
-				
-				SET v_id_change_set := LAST_INSERT_ID();
-				
-				UPDATE Shop_Product_Category PC
-				INNER JOIN tmp_Category t_C ON PC.id_category = t_C.id_category
-				SET 
-					PC.id_category = t_C.id_category
-					, PC.code = t_C.code
-					, PC.name = t_C.name
-					, PC.description = t_C.description
-					, PC.id_access_level_required = t_C.id_access_level_required
-					, PC.active = t_C.active
-					, PC.display_order = t_C.display_order
-					, PC.id_change_set = v_id_change_set
-				;
-			END IF;
+			SET v_id_change_set := LAST_INSERT_ID();
 			
-			INSERT INTO Shop_Product_Category (
+			UPDATE partsltd_prod.Shop_Product_Category PC
+			INNER JOIN tmp_Category t_C 
+				ON PC.id_category = t_C.id_category
+				AND t_C.is_new = 0
+			SET 
+				PC.id_category = t_C.id_category
+				, PC.code = t_C.code
+				, PC.name = t_C.name
+				, PC.description = t_C.description
+				, PC.id_access_level_required = t_C.id_access_level_required
+				, PC.active = t_C.active
+				, PC.display_order = t_C.display_order
+				, PC.id_change_set = v_id_change_set
+			;
+			
+			INSERT INTO partsltd_prod.Shop_Product_Category (
 				code
 				, name
 				, description
@@ -236,15 +256,20 @@ BEGIN
 				, a_id_user AS created_by
 				, v_time_start AS created_on
 			FROM tmp_Category t_C
-			WHERE is_new = 1
-				AND active = 1
+			WHERE 
+				t_C.is_new = 1
+				AND t_C.active = 1
 			;
-		
-			DELETE FROM Shop_Product_Category_Temp
-			WHERE GUID = a_guid;
 			
 		COMMIT;
     END IF;
+	
+	START TRANSACTION;
+
+		DELETE FROM partsltd_prod.Shop_Product_Category_Temp
+		WHERE GUID = a_guid;
+		
+	COMMIT;
     
     # Errors
     SELECT *
@@ -253,10 +278,10 @@ BEGIN
 	;
     
 	IF a_debug = 1 THEN
-		SELECT * from tmp_Catgory;
+		SELECT * from tmp_Category;
 	END IF;
 
-    DROP TEMPORARY TABLE tmp_Catgory;
+    DROP TEMPORARY TABLE tmp_Category;
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
@@ -265,3 +290,27 @@ BEGIN
 END //
 DELIMITER ;;
 
+/*
+select 
+	*
+    -- COUNT(*)
+-- delete
+from partsltd_prod.Shop_Product_Category_Temp
+;
+
+
+CALL partsltd_prod.p_shop_save_product_category (
+	'nipples'
+    , (SELECT GUID FROM partsltd_prod.Shop_Product_Category_Temp ORDER BY id_temp DESC LIMIT 1)
+    , 1
+    , 1
+);
+
+select 
+	*
+    -- COUNT(*)
+-- delete
+from partsltd_prod.Shop_Product_Category_Temp
+;
+
+*/
