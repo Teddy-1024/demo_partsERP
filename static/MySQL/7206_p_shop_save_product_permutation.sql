@@ -440,11 +440,6 @@ BEGIN
         LEFT JOIN Shop_Product P ON t_PP.id_product = P.id_product
         ;
     END IF;
-    
-	CALL p_shop_clear_calc_user(
-		a_guid
-        , 0 -- a_debug
-	);
 
 	IF EXISTS (SELECT * FROM tmp_Permutation t_P WHERE ISNULL(t_P.can_edit) LIMIT 1) THEN
 		INSERT INTO tmp_Msg_Error (
@@ -461,13 +456,36 @@ BEGIN
 			ISNULL(t_P.can_edit)
 		;
 	END IF;
+
+	IF EXISTS (SELECT * FROM partsltd_prod.Shop_User_Eval_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
+		DELETE FROM tmp_Msg_Error
+        WHERE id_type <> v_id_type_error_no_permission
+        ;
         
-        IF a_debug = 1 THEN
-			SELECT *
-            FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
-			WHERE GUID = a_guid
-            ;
-        END IF;
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		VALUES (
+			v_id_type_error_bad_data
+			, v_code_type_error_bad_data
+			, 'You do not have permission to edit Product Permutations'
+		)
+		;
+	END IF;
+    
+	CALL p_shop_clear_calc_user(
+		a_guid
+        , 0 -- a_debug
+	);
+	
+	IF a_debug = 1 THEN
+		SELECT *
+		FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+		WHERE GUID = a_guid
+		;
+	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;

@@ -65,10 +65,9 @@ BEGIN
     
 	-- Clear previous proc results
 	DROP TABLE IF EXISTS tmp_Calc_User;
-	DROP TABLE IF EXISTS tmp_Shop_Calc_User;
+	DROP TABLE IF EXISTS tmp_User_Calc_User;
 	DROP TABLE IF EXISTS tmp_Product_Calc_User;
-	DROP TABLE IF EXISTS tmp_Product_p_Shop_User_Eval_Temp;
-	-- DROP TABLE IF EXISTS tmp_Split;
+	DROP TABLE IF EXISTS tmp_Split;
     
     -- Permanent Table
 	CREATE TEMPORARY TABLE tmp_Calc_User (
@@ -92,7 +91,14 @@ BEGIN
 		-- guid BINARY(36) NOT NULL,
         -- rank_product INT NOT NULL
 	);
-		
+
+	CREATE TEMPORARY TABLE tmp_User_Calc_User (
+		id_user INT NOT NULL
+        , is_super_user BIT NOT NULL
+        -- , id_access_level INT
+        , priority_access_level INT NOT NULL
+	);
+    
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
 		display_order INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         -- guid BINARY(36) NOT NULL,
@@ -131,122 +137,314 @@ BEGIN
 		;
     END IF;
     
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF v_has_filter_access_level THEN
-			CALL partsltd_prod.p_split(a_guid, a_ids_access_level, ',', a_debug);
-            
-            INSERT INTO tmp_Split (
-				substring
-                , as_int
+    # Access levels
+	IF v_has_filter_access_level THEN
+		CALL partsltd_prod.p_split(a_guid, a_ids_access_level, ',', a_debug);
+		
+		INSERT INTO tmp_Split (
+			substring
+			, as_int
+		)
+		SELECT 
+			substring
+			, CONVERT(substring, DECIMAL(10,0)) -- AS as_int
+		FROM Split_Temp
+		WHERE 1=1
+			AND GUID = a_guid
+			AND NOT ISNULL(substring)
+			AND substring != ''
+		;
+		
+		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		
+		# Invalid IDs
+		IF EXISTS (
+			SELECT t_S.substring 
+			FROM tmp_Split t_S
+			LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_S.as_int = AL.id_access_level
+			WHERE 
+				ISNULL(t_S.as_int)
+				OR ISNULL(AL.id_access_level)
+				OR AL.active = 0
+		) THEN
+			INSERT INTO tmp_Msg_Error (
+				-- guid,
+				id_type,
+				code,
+				msg
 			)
-            SELECT 
-				substring
-                , CONVERT(substring, DECIMAL(10,0)) -- AS as_int
-            FROM Split_Temp
-            WHERE 1=1
-				AND GUID = a_guid
-                AND NOT ISNULL(substring)
-                AND substring != ''
-            ;
-			
-            CALL partsltd_prod.p_clear_split_temp( a_guid );
-            
-            # Invalid IDs
-            IF EXISTS (
-				SELECT t_S.substring 
-                FROM tmp_Split t_S
-                LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_S.as_int = AL.id_access_level
-                WHERE 
-					ISNULL(t_S.as_int)
-                    OR ISNULL(AL.id_access_level)
-                    OR AL.active = 0
-			) THEN
-                INSERT INTO tmp_Msg_Error (
-					-- guid,
-                    id_type,
-					code,
-					msg
-				)
-				SELECT
-					-- a_guid,
-					v_id_type_error_bad_data,
-					v_code_type_error_bad_data, 
-					CONCAT('Invalid or inactive access level IDs: ', GROUP_CONCAT(t_S.substring SEPARATOR ', '))
-				FROM tmp_Split t_S 
-				LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_S.as_int = AL.id_access_level
-                WHERE 
-					ISNULL(t_S.as_int)
-                    OR ISNULL(AL.id_access_level)
-                    OR AL.active = 0
-				;
+			SELECT
+				-- a_guid,
+				v_id_type_error_bad_data,
+				v_code_type_error_bad_data, 
+				CONCAT('Invalid or inactive access level IDs: ', GROUP_CONCAT(t_S.substring SEPARATOR ', '))
+			FROM tmp_Split t_S 
+			LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_S.as_int = AL.id_access_level
+			WHERE 
+				ISNULL(t_S.as_int)
+				OR ISNULL(AL.id_access_level)
+				OR AL.active = 0
+			;
+		ELSE
+			IF v_has_filter_access_level THEN
+				SET v_id_access_level := (
+					SELECT AL.id_access_level 
+					FROM tmp_Split t_S
+					INNER JOIN partsltd_prod.Shop_Access_Level AL 
+						ON t_S.as_int = AL.id_access_level
+						AND AL.active 
+					ORDER BY AL.priority ASC 
+					LIMIT 1
+				);
+			ELSE
+				SET v_id_access_level = v_id_access_level_view;
 			END IF;
+			SET v_priority_access_level := (SELECT priority FROM partsltd_prod.Shop_Access_Level WHERE id_access_level = v_id_access_level LIMIT 1);
 		END IF;
 	END IF;
-    
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF v_has_filter_access_level THEN
-			SET v_id_access_level := (
-				SELECT AL.id_access_level 
-				FROM tmp_Split t_S
-				INNER JOIN partsltd_prod.Shop_Access_Level AL 
-					ON t_S.as_int = AL.id_access_level
-					AND AL.active 
-				ORDER BY AL.priority ASC 
-				LIMIT 1
-			);
-        ELSE
-			SET v_id_access_level = v_id_access_level_view;
-		END IF;
-        SET v_priority_access_level := (SELECT priority FROM partsltd_prod.Shop_Access_Level WHERE id_access_level = v_id_access_level LIMIT 1);
-	END IF;
-            
 	DELETE FROM tmp_Split;
     
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF v_has_filter_product = 1 THEN
-			CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
-            
-            INSERT INTO tmp_Split (
-				substring
-                , as_int
+    -- Permission IDs
+	IF v_has_filter_permission THEN
+		CALL partsltd_prod.p_split(a_guid, a_ids_permission, ',', a_debug);
+		
+		INSERT INTO tmp_Split (
+			substring
+			, as_int
+		)
+		SELECT 
+			substring
+			, CONVERT(substring, DECIMAL(10,0)) AS as_int
+		FROM Split_Temp
+		WHERE 1=1
+			AND GUID = a_guid
+			AND NOT ISNULL(substring)
+			AND substring != ''
+		;
+		
+		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		
+		# Invalid or inactive
+		IF EXISTS (SELECT PERM.id_permission FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_Permission PERM ON t_S.as_int = PERM.id_permission WHERE ISNULL(t_S.as_int) OR ISNULL(PERM.id_permission) OR PERM.active = 0) THEN
+			INSERT INTO tmp_Msg_Error (
+				-- guid,
+				id_type,
+				code,
+				msg
 			)
-            SELECT 
-				substring
-                , CONVERT(substring, DECIMAL(10,0)) AS as_int
-            FROM Split_Temp
-            WHERE 1=1
-				AND GUID = a_guid
-                AND NOT ISNULL(substring)
-                AND substring != ''
-            ;
-			
-            CALL partsltd_prod.p_clear_split_temp( a_guid );
-                        
-			# Invalid product IDs
-            IF EXISTS (SELECT * FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product WHERE ISNULL(t_S.as_int) OR ISNULL(P.id_product) OR P.active = 0) THEN 
-				INSERT INTO tmp_Msg_Error (
-					-- guid,
-                    id_type,
-					code,
-					msg
-				)
-				SELECT
-					-- a_guid,
-					v_id_type_error_bad_data,
-					v_code_type_error_bad_data, 
-					CONCAT('Invalid or inactive product IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
-				FROM tmp_Split t_S
-                LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product 
-                WHERE 
-					ISNULL(t_S.as_int)
-                    OR ISNULL(P.id_product) 
-                    OR P.active = 0
-				;
-            END IF;
+			SELECT
+				-- a_guid,
+				v_id_type_error_bad_data,
+				v_code_type_error_bad_data, 
+				CONCAT('Invalid or inactive permission IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
+			FROM tmp_Split t_S
+			LEFT JOIN partsltd_prod.Shop_Permission PERM ON t_S.as_int = PERM.id_permission 
+			WHERE 
+				ISNULL(t_S.as_int)
+				OR ISNULL(PERM.id_permission)
+				OR PERM.active = 0
+			;
+		ELSE 
+			SET v_id_permission_required := (
+				SELECT PERM.id_permission
+				FROM partsltd_prod.Shop_Permission PERM
+				INNER JOIN partsltd_prod.Shop_Access_Level AL ON PERM.id_access_level_required = AL.id_access_level
+				ORDER BY AL.priority ASC
+				LIMIT 1
+			);
 		END IF;
 	END IF;
-	IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF (v_has_filter_product = 1 AND EXISTS (SELECT * FROM tmp_Split)) THEN
+    DELETE FROM tmp_Split;
+    
+	# Users
+	CALL partsltd_prod.p_split(a_guid, a_ids_user, ',', a_debug);
+	
+	INSERT INTO tmp_Split (
+		substring
+		, as_int
+	)
+	SELECT 
+		substring
+		, CONVERT(substring, DECIMAL(10,0)) AS as_int
+	FROM Split_Temp
+	WHERE 1=1
+		AND GUID = a_guid
+		AND NOT ISNULL(substring)
+		AND substring != ''
+	;
+	
+	CALL partsltd_prod.p_clear_split_temp( a_guid );
+	
+	# Invalid or inactive
+	IF EXISTS (SELECT U.id_user FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user WHERE ISNULL(t_S.as_int) OR ISNULL(U.id_user) OR (a_get_inactive_user = 0 AND U.active = 0)) THEN
+		INSERT INTO tmp_Msg_Error (
+			-- guid,
+			id_type,
+			code,
+			msg
+		)
+		SELECT
+			-- a_guid,
+			v_id_type_error_bad_data,
+			v_code_type_error_bad_data, 
+			CONCAT('Invalid or inactive user IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
+		FROM tmp_Split t_S
+		LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user 
+		WHERE 
+			ISNULL(t_S.as_int) 
+			OR ISNULL(U.id_user)
+			OR (
+				a_get_inactive_user = 0
+                AND U.active = 0
+			)
+		;
+	ELSE
+		/*
+		SET a_ids_user = (
+			SELECT U.id_user 
+			FROM tmp_Split t_S
+			INNER JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+		);
+		SET v_has_filter_user = ISNULL(a_ids_user);
+		*/
+		IF NOT EXISTS (SELECT * FROM tmp_Split) THEN
+			INSERT INTO tmp_Split (substring, as_int)
+			VALUES ( '', NULL );
+		END IF;
+		
+		IF a_debug = 1 THEN
+			SELECT *
+			FROM tmp_Split;
+		END IF;
+		
+        INSERT INTO tmp_User_Calc_User (
+			id_user
+            -- , id_access_level
+            , is_super_user
+            , priority_access_level
+		)
+        SELECT
+			U.id_user
+            , U.is_super_user
+            -- , IFNULL(AL_U.id_access_level, v_id_access_level_view) AS id_access_level
+            , IFNULL(MIN(AL_U.priority), v_priority_access_level_view) AS priority_access_level
+		FROM tmp_Split t_S
+        INNER JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+		LEFT JOIN partsltd_prod.Shop_User_Role_Link URL
+			ON U.id_user = URL.id_user
+			AND URL.active
+		LEFT JOIN partsltd_prod.Shop_Role_Permission_Link RPL
+			ON URL.id_role = RPL.id_role
+			AND RPL.active
+		LEFT JOIN partsltd_prod.Shop_Access_Level AL_U
+			ON RPL.id_access_level = AL_U.id_access_level
+			AND AL_U.active
+		GROUP BY U.id_user
+        ;
+        			
+		INSERT INTO tmp_Calc_User (
+			id_user
+			, id_permission_required
+			, priority_access_level_required
+			, id_product
+			, is_super_user
+			, priority_access_level_user
+		)
+		SELECT 
+			t_UCU.id_user
+			, v_id_permission_required
+			, v_priority_access_level AS priority_access_level_required
+			, NULL
+			, t_UCU.priority_access_level AS priority_access_level_user
+			, t_UCU.is_super_user AS is_super_user
+		FROM tmp_User_Calc_User t_UCU
+        ;
+        
+        /*
+		INSERT INTO tmp_Calc_User (
+			id_user
+			, id_permission_required
+			, priority_access_level_required
+			-- , id_product
+			, priority_access_level_user
+			, is_super_user
+		)
+		SELECT 
+			U.id_user
+			, v_id_permission_required
+			, v_priority_access_level AS priority_access_level_required
+			-- , t_P.id_product
+			, CASE WHEN MIN(IFNULL(AL_U.priority, 0)) = 0 THEN v_priority_access_level_view ELSE MIN(IFNULL(AL_U.priority, 0)) END AS priority_access_level_user
+			, IFNULL(U.is_super_user, 0) AS is_super_user
+		FROM tmp_Split t_S
+		LEFT JOIN partsltd_prod.Shop_User U
+			ON t_S.as_int = U.id_user
+			AND U.active
+		LEFT JOIN partsltd_prod.Shop_User_Role_Link URL
+			ON U.id_user = URL.id_user
+			AND URL.active
+		LEFT JOIN partsltd_prod.Shop_Role_Permission_Link RPL
+			ON URL.id_role = RPL.id_role
+			AND RPL.active
+		LEFT JOIN partsltd_prod.Shop_Access_Level AL_U
+			ON RPL.id_access_level = AL_U.id_access_level
+			AND AL_U.active
+		*
+		CROSS JOIN tmp_Product_Calc_User t_P
+		LEFT JOIN partsltd_prod.Shop_Access_Level AL_P
+			ON t_P.id_access_level_required = AL_P.id_access_level
+			AND AL_P.active
+		*
+		GROUP BY t_S.as_int, U.id_user
+		;
+        */
+	
+		# SET v_has_filter_user = EXISTS ( SELECT * FROM tmp_User_Calc_User LIMIT 1 );
+	END IF;    
+    DELETE FROM tmp_Split;
+    
+    # Products
+	IF v_has_filter_product = 1 THEN
+		CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
+		
+		INSERT INTO tmp_Split (
+			substring
+			, as_int
+		)
+		SELECT 
+			substring
+			, CONVERT(substring, DECIMAL(10,0)) AS as_int
+		FROM Split_Temp
+		WHERE 1=1
+			AND GUID = a_guid
+			AND NOT ISNULL(substring)
+			AND substring != ''
+		;
+		
+		CALL partsltd_prod.p_clear_split_temp( a_guid );
+					
+		# Invalid product IDs
+		IF EXISTS (SELECT * FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product WHERE ISNULL(t_S.as_int) OR ISNULL(P.id_product)) THEN 
+			INSERT INTO tmp_Msg_Error (
+				-- guid,
+				id_type,
+				code,
+				msg
+			)
+			SELECT
+				-- a_guid,
+				v_id_type_error_bad_data,
+				v_code_type_error_bad_data, 
+				CONCAT('Invalid Product IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
+			FROM tmp_Split t_S
+			LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product 
+			WHERE 
+				ISNULL(t_S.as_int)
+				OR ISNULL(P.id_product) 
+				OR P.active = 0
+			;
+		END IF;
+		IF (EXISTS (SELECT * FROM tmp_Split)) THEN
 			INSERT INTO tmp_Product_Calc_User (
 				id_product,
 				-- id_permutation,
@@ -294,177 +492,35 @@ BEGIN
 			);
 		END IF;
 	END IF;
-    
     DELETE FROM tmp_Split;
     
-    -- Permission IDs
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		IF v_has_filter_permission THEN
-			CALL partsltd_prod.p_split(a_guid, a_ids_permission, ',', a_debug);
-            
-            INSERT INTO tmp_Split (
-				substring
-                , as_int
-			)
-            SELECT 
-				substring
-                , CONVERT(substring, DECIMAL(10,0)) AS as_int
-            FROM Split_Temp
-            WHERE 1=1
-				AND GUID = a_guid
-                AND NOT ISNULL(substring)
-                AND substring != ''
-            ;
-			
-            CALL partsltd_prod.p_clear_split_temp( a_guid );
-            
-            # Invalid or inactive
-            IF EXISTS (SELECT PERM.id_permission FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_Permission PERM ON t_S.as_int = PERM.id_permission WHERE ISNULL(t_S.as_int) OR ISNULL(PERM.id_permission) OR PERM.active = 0) THEN
-				INSERT INTO tmp_Msg_Error (
-					-- guid,
-                    id_type,
-					code,
-					msg
-				)
-				SELECT
-					-- a_guid,
-					v_id_type_error_bad_data,
-					v_code_type_error_bad_data, 
-					CONCAT('Invalid or inactive permission IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
-				FROM tmp_Split t_S
-				LEFT JOIN partsltd_prod.Shop_Permission PERM ON t_S.as_int = PERM.id_permission 
-				WHERE 
-					ISNULL(t_S.as_int)
-                    OR ISNULL(PERM.id_permission)
-                    OR PERM.active = 0
-				;
-			ELSE 
-				SET v_id_permission_required := (
-					SELECT PERM.id_permission
-                    FROM partsltd_prod.Shop_Permission PERM
-                    INNER JOIN partsltd_prod.Shop_Access_Level AL ON PERM.id_access_level_required = AL.id_access_level
-                    ORDER BY AL.priority ASC
-                    LIMIT 1
-				);
-            END IF;
-		END IF;
-	END IF;
-    
-    DELETE FROM tmp_Split;
-    
-    IF a_debug = 1 THEN
-		SELECT * FROM tmp_Product_Calc_User;
-    END IF;
-    
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-    -- Invalid user ID
-		CALL partsltd_prod.p_split(a_guid, a_ids_user, ',', a_debug);
-		
-		INSERT INTO tmp_Split (
-			substring
-			, as_int
-		)
-		SELECT 
-			substring
-			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM Split_Temp
-		WHERE 1=1
-			AND GUID = a_guid
-			AND NOT ISNULL(substring)
-			AND substring != ''
-		;
-		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
-		
-		# Invalid or inactive
-		IF EXISTS (SELECT U.id_user FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user WHERE ISNULL(t_S.as_int) OR ISNULL(U.id_user) OR U.active = 0) THEN
-			INSERT INTO tmp_Msg_Error (
-				-- guid,
-				id_type,
-				code,
-				msg
-			)
-			SELECT
-				-- a_guid,
-				v_id_type_error_bad_data,
-				v_code_type_error_bad_data, 
-				CONCAT('Invalid or inactive user IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
-			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user 
-			WHERE 
-				ISNULL(t_S.as_int) 
-				OR ISNULL(U.id_user)
-				OR U.active = 0
-			;
-		ELSE
-			/*
-			SET a_ids_user = (
-				SELECT U.id_user 
-				FROM tmp_Split t_S
-				INNER JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
-			);
-			SET v_has_filter_user = ISNULL(a_ids_user);
-			*/
-			IF NOT EXISTS (SELECT * FROM tmp_Split) THEN
-				INSERT INTO tmp_Split (substring, as_int)
-				VALUES ( '', NULL );
-			END IF;
-			
-			IF a_debug = 1 THEN
-				SELECT *
-				FROM tmp_Split;
-			END IF;
-            
-			INSERT INTO tmp_Calc_User (
-				id_user
-				, id_permission_required
-				, priority_access_level_required
-				, id_product
-                , priority_access_level_user
-                , is_super_user
-			)
-			SELECT 
-				U.id_user
-				, v_id_permission_required
-				, CASE WHEN v_priority_access_level < AL_P.priority THEN v_priority_access_level ELSE AL_P.priority END AS priority_access_level_required
-				, t_P.id_product
-				, CASE WHEN MIN(IFNULL(AL_U.priority, 0)) = 0 THEN v_priority_access_level_view ELSE MIN(IFNULL(AL_U.priority, 0)) END AS priority_access_level_user
-				, IFNULL(U.is_super_user, 0) AS is_super_user
-			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_User U
-				ON t_S.as_int = U.id_user
-				AND U.active
-			LEFT JOIN partsltd_prod.Shop_User_Role_Link URL
-				ON U.id_user = URL.id_user
-				AND URL.active
-			LEFT JOIN partsltd_prod.Shop_Role_Permission_Link RPL
-				ON URL.id_role = RPL.id_role
-				AND RPL.active
-			LEFT JOIN partsltd_prod.Shop_Access_Level AL_U
-				ON RPL.id_access_level = AL_U.id_access_level
-				AND AL_U.active
-			CROSS JOIN tmp_Product_Calc_User t_P
-			LEFT JOIN partsltd_prod.Shop_Access_Level AL_P
-				ON t_P.id_access_level_required = AL_P.id_access_level
-				AND AL_P.active
-            GROUP BY t_S.as_int, U.id_user, t_P.id_product, AL_P.priority
-			;
-		
-			SET v_has_filter_user = EXISTS ( SELECT * FROM tmp_Calc_User LIMIT 1 );
-		END IF;
-	END IF;
-    
-    DELETE FROM tmp_Split;
+    INSERT INTO tmp_Calc_User (
+		id_user
+		, id_permission_required
+		, priority_access_level_required
+		, id_product
+		, is_super_user
+		, priority_access_level_user
+	)
+	SELECT 
+		t_U.id_user
+		, v_id_permission_required
+		, CASE WHEN AL.priority < v_priority_access_level THEN AL.priority ELSE v_priority_access_level END AS priority_access_level_required
+		, t_P.id_product 
+		, t_U.priority_access_level AS priority_access_level_user
+		, t_U.is_super_user AS is_super_user
+	FROM tmp_User_Calc_User t_U
+	CROSS JOIN tmp_Product_Calc_User t_P
+    LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_P.id_access_level_required = AL.id_access_level
+	;
     
     -- Calculated fields
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
-		UPDATE tmp_Calc_User t_U
-        SET
-            t_U.can_view = t_U.is_super_user = 1 OR (t_U.priority_access_level_user <= v_priority_access_level_view AND t_U.priority_access_level_user <= t_U.priority_access_level_required)
-			, t_U.can_edit = t_U.is_super_user = 1 OR (t_U.priority_access_level_user <= v_priority_access_level_edit AND t_U.priority_access_level_user <= t_U.priority_access_level_required)
-			, t_U.can_admin = t_U.is_super_user = 1 OR (t_U.priority_access_level_user <= v_priority_access_level_admin AND t_U.priority_access_level_user <= t_U.priority_access_level_required)
-		;
-    END IF;
+	UPDATE tmp_Calc_User t_CU
+	SET
+		t_CU.can_view = t_CU.is_super_user = 1 OR (t_CU.priority_access_level_user <= v_priority_access_level_view AND t_CU.priority_access_level_user <= t_CU.priority_access_level_required)
+		, t_CU.can_edit = t_CU.is_super_user = 1 OR (t_CU.priority_access_level_user <= v_priority_access_level_edit AND t_CU.priority_access_level_user <= t_CU.priority_access_level_required)
+		, t_CU.can_admin = t_CU.is_super_user = 1 OR (t_CU.priority_access_level_user <= v_priority_access_level_admin AND t_CU.priority_access_level_user <= t_CU.priority_access_level_required)
+	;
     
     -- Export data to staging table
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
@@ -500,6 +556,7 @@ BEGIN
     IF a_debug = 1 THEN
 		SELECT * FROM tmp_Msg_Error;
 		SELECT * FROM tmp_Calc_User;
+        SELECT * FROM tmp_User_Calc_User;
 		SELECT * FROM tmp_Product_Calc_User;
 		SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
 		CALL partsltd_prod.p_shop_clear_calc_user ( a_guid, a_debug );
@@ -507,10 +564,11 @@ BEGIN
     
     -- Clean up
 	DROP TABLE IF EXISTS tmp_Calc_User;
-	DROP TABLE IF EXISTS tmp_Shop_Calc_User;
+	DROP TABLE IF EXISTS tmp_User_Calc_User;
 	DROP TABLE IF EXISTS tmp_Product_Calc_User;
-	DROP TABLE IF EXISTS tmp_Product_p_Shop_User_Eval_Temp;
-	-- DROP TABLE IF EXISTS tmp_Split;
+	# Don't destroy common tables in nested Stored Procedures!
+    -- DROP TABLE IF EXISTS tmp_Split;
+    DELETE FROM tmp_Split;
     
     IF a_debug = 1 THEN
         CALL partsltd_prod.p_debug_timing_reporting( v_time_start );
@@ -518,19 +576,20 @@ BEGIN
 END //
 DELIMITER ;;
 
-/*	
+/*
 
 CALL partsltd_prod.p_shop_calc_user (
 	'chips                               '
-	, NULL
+	, 1
 	, 0
 	, '2'
 	, '1'
 	, '1,2,3,4,5'
     , 0
 );
-        
-        
+SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
+DELETE FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
+
         
 -- SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
 SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';

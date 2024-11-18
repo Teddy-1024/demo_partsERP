@@ -216,60 +216,90 @@ BEGIN
     
     
     -- Permissions
-    IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN -- (SELECT * FROM tmp_Product WHERE is_new = 0 LIMIT 1) THEN
-        SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Product WHERE is_new = 0);
-        IF NOT ISNULL(v_ids_product_permission) THEN
-			SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
-			
-			CALL partsltd_prod.p_shop_calc_user(
-				a_guid
-                , a_id_user
-                , FALSE -- get_inactive_users
-                , v_id_permission_product
-                , v_id_access_level_edit
-                , v_ids_product_permission
-                , 0 -- debug
-			);
-			
-			UPDATE tmp_Product t_P
-			INNER JOIN Shop_Calc_User_Temp UE_T
-				ON t_P.id_product = UE_T.id_product
-				AND UE_T.GUID = a_guid
-			SET 
-				t_P.can_view = UE_T.can_view
-				, t_P.can_edit = UE_T.can_edit
-				, t_P.can_admin = UE_T.can_admin
-			;
-			
-			CALL partsltd_prod.p_shop_clear_calc_user(
-				a_guid
-                , 0 -- debug
-			);
-		END IF;
+	SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Product WHERE is_new = 0);
+
+	SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
+	
+	CALL partsltd_prod.p_shop_calc_user(
+		a_guid
+		, a_id_user
+		, FALSE -- get_inactive_users
+		, v_id_permission_product
+		, v_id_access_level_edit
+		, v_ids_product_permission
+		, 0 -- debug
+	);
+	
+	UPDATE tmp_Product t_P
+	INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+		ON t_P.id_product = UE_T.id_product
+		AND UE_T.GUID = a_guid
+	SET 
+		t_P.can_view = UE_T.can_view
+		, t_P.can_edit = UE_T.can_edit
+		, t_P.can_admin = UE_T.can_admin
+	;
+    
+    IF EXISTS (SELECT * FROM tmp_Product WHERE IFNULL(can_edit, 0) = 0 AND is_new = 0 LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_no_permission
+			, v_code_type_error_no_permission
+			, CONCAT('You do not have permission to edit the following Product(s): ', IFNULL(GROUP_CONCAT(IFNULL(t_P.name_error, 'NULL') SEPARATOR ', '), 'NULL'))
+		FROM tmp_Product t_P
+		WHERE 
+			IFNULL(can_edit, 0) = 0 
+            AND is_new = 0
+		;
     END IF;
     
+    IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
+		DELETE t_ME
+        FROM tmp_Msg_Error t_ME
+        WHERE t_ME.id_type <> v_id_type_error_no_permission
+        ;
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		VALUES (
+			v_id_type_error_no_permission
+			, v_code_type_error_no_permission
+			, 'You do not have permission to edit Products'
+		)
+		;
+    END IF;
+	
+	CALL partsltd_prod.p_shop_clear_calc_user(
+		a_guid
+		, 0 -- debug
+	);
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
-            IF NOT ISNULL(v_ids_product_permission) THEN
-                INSERT INTO partsltd_prod.Shop_Product_Change_Set ( comment )
-                VALUES ( a_comment )
-                ;
-                
-                SET v_id_change_set := LAST_INSERT_ID();
-                
-                UPDATE partsltd_prod.Shop_Product P
-                INNER JOIN tmp_Product t_P ON P.id_product = t_P.id_product
-                SET 
-                    P.id_category = t_P.id_category
-                    , P.name = t_P.name
-                    , P.has_variations = t_P.has_variations
-                    , P.id_access_level_required = t_P.id_access_level_required
-                    , P.display_order = t_P.display_order
-                    , P.active = t_P.active
-                    , P.id_change_set = v_id_change_set
-                ;
-            END IF;
+	
+			INSERT INTO partsltd_prod.Shop_Product_Change_Set ( comment )
+			VALUES ( a_comment )
+			;
+			
+			SET v_id_change_set := LAST_INSERT_ID();
+			
+			UPDATE partsltd_prod.Shop_Product P
+			INNER JOIN tmp_Product t_P ON P.id_product = t_P.id_product
+			SET 
+				P.id_category = t_P.id_category
+				, P.name = t_P.name
+				, P.has_variations = t_P.has_variations
+				, P.id_access_level_required = t_P.id_access_level_required
+				, P.display_order = t_P.display_order
+				, P.active = t_P.active
+				, P.id_change_set = v_id_change_set
+			;
             
             INSERT INTO partsltd_prod.Shop_Product (
                 id_category
@@ -297,7 +327,7 @@ BEGIN
         
 	START TRANSACTION;
 
-		DELETE FROM partsltd_prod.Shop_Product_Category_Temp
+		DELETE FROM partsltd_prod.Shop_Product_Temp
 		WHERE GUID = a_guid;
 
 	COMMIT;

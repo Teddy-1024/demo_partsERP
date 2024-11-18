@@ -126,7 +126,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a code: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
+			, CONCAT('The following Product Category(s) do not have a code: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.code)
 		;
@@ -141,7 +141,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a name: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
+			, CONCAT('The following Product Category(s) do not have a name: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.name)
 		;
@@ -156,7 +156,7 @@ BEGIN
 		SELECT
 			v_id_type_error_bad_data
 			, v_code_type_error_bad_data
-			, CONCAT('The following category(s) do not have a display order: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
+			, CONCAT('The following Product Category(s) do not have a display order: ', GROUP_CONCAT(t_C.name_error SEPARATOR ', ')) AS msg
 		FROM tmp_Category t_C
 		WHERE ISNULL(t_C.display_order)
 		;
@@ -165,7 +165,7 @@ BEGIN
     -- Permissions
 	SET v_ids_product_permission := (
 		SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') 
-		FROM Shop_Product P 
+		FROM partsltd_prod.Shop_Product P 
 		INNER JOIN tmp_Category t_C
 			ON P.id_category = t_C.id_category 
 			AND t_C.is_new = 0
@@ -185,7 +185,7 @@ BEGIN
         ;
     END IF;
     
-	CALL p_shop_calc_user(
+	CALL partsltd_prod.p_shop_calc_user(
 		a_guid
         , a_id_user
         , FALSE -- a_get_inactive_user
@@ -196,8 +196,8 @@ BEGIN
     );
 	
 	UPDATE tmp_Category t_C
-	INNER JOIN Shop_Product P ON t_C.id_category = P.id_product
-	INNER JOIN Shop_Calc_User_Temp UE_T
+	INNER JOIN partsltd_prod.Shop_Product P ON t_C.id_category = P.id_product
+	INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
 		ON P.id_product = UE_T.id_product
 		AND UE_T.GUID = a_guid
 	SET 
@@ -205,8 +205,43 @@ BEGIN
 		, t_C.can_edit = UE_T.can_edit
 		, t_C.can_admin = UE_T.can_admin
 	;
+    
+    IF EXISTS (SELECT * FROM tmp_Category WHERE IFNULL(can_edit, 0) = 0 AND is_new = 0 LIMIT 1) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_no_permission
+			, v_code_type_error_no_permission
+			, CONCAT('You do not have permission to edit the following Product Catogory(s): ', IFNULL(GROUP_CONCAT(IFNULL(t_C.name_error, 'NULL') SEPARATOR ', '), 'NULL'))
+		FROM tmp_Category t_C
+		WHERE 
+			IFNULL(can_edit, 0) = 0 
+            AND is_new = 0
+		;
+    END IF;
+    
+    IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0 LIMIT 1) THEN
+		DELETE t_ME
+        FROM tmp_Msg_Error t_ME
+        WHERE t_ME.id_type <> v_id_type_error_no_permission
+        ;
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		VALUES (
+			v_id_type_error_no_permission
+			, v_code_type_error_no_permission
+			, 'You do not have permission to edit Product Catogories.'
+		)
+        ;
+    END IF;
 	
-	CALL p_shop_clear_calc_user(
+	CALL partsltd_prod.p_shop_clear_calc_user(
 		a_guid
         , 0 -- a_debug
 	);

@@ -500,19 +500,20 @@ class Parameters_Product(Get_Many_Parameters_Base):
         # av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product_Permutation)
         has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '' or form.id_category.data is None)
         has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '' or form.id_product.data is None)
-        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form")
-        Helper_App.console_log(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\ntype form: {type(form)}')
+        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form_filters_product_permutation")
+        get_inactive = not av.input_bool(form.active.data, "active", "Parameters_Product.from_form_filters_product_permutation")
+        Helper_App.console_log(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\nform question: {type(form.active)}\nget_inactive:{get_inactive}\ntype form: {type(form)}')
         return Parameters_Product(
             get_all_product_category = not has_category_filter,
-            get_inactive_product_category = False,
+            get_inactive_product_category = get_inactive,
             # get_first_product_category_only = False,
             ids_product_category = form.id_category.data if form.id_category.data is not None else '',
             get_all_product = not has_product_filter,
-            get_inactive_product = False,
+            get_inactive_product = get_inactive,
             # get_first_product_only = False,
             ids_product = form.id_product.data if form.id_product.data is not None else '',
             get_all_permutation = not get_permutations_stock_below_min,
-            get_inactive_permutation = False,
+            get_inactive_permutation = get_inactive,
             # get_first_permutation_only = False,
             ids_permutation = '',
             get_all_image = False,

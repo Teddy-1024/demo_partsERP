@@ -33,7 +33,8 @@ routes_store_product_permutation = Blueprint('routes_store_product_permutation',
 @routes_store_product_permutation.route(Model_View_Store_Product_Permutation.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS, methods=['GET'])
 def permutations():
     Helper_App.console_log('permutations')
-    data = Helper_App.get_request_data(request)
+    data = request.args
+    # Helper_App.console_log(f'data={data}\nrequest.args={request.args}\nrequest.form={request.form}\nrequest.data={request.data}\nrequest.values={request.values}\nrequest.headers={request.headers}')
     try:
         form_filters = Filters_Product_Permutation.from_json(data)
     except Exception as e:
