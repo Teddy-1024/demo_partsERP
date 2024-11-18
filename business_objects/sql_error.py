@@ -10,13 +10,8 @@ Description:
 Business object for SQL errors
 """
 
-# IMPORTS
-# VARIABLE INSTANTIATION
-# CLASSES
-# METHODS
-
-# IMPORTS
 # internal
+from business_objects.base import Base
 import lib.argument_validation as av
 from lib import data_types
 from forms.forms import Form_Basket_Add, Form_Basket_Edit # Form_Product
@@ -65,3 +60,12 @@ class SQL_Error(db.Model):
         error.name = record[4]
         error.description = record[5]
         return error
+    def to_json(self):
+        return {
+            Base.FLAG_DISPLAY_ORDER: self.display_order,
+            Base.ATTR_ID_MSG_ERROR_TYPE: self.id_type,
+            Base.FLAG_CODE: self.code,
+            Base.FLAG_MESSAGE: self.msg,
+            Base.FLAG_NAME: self.name,
+            Base.FLAG_DESCRIPTION: self.description,
+        }

@@ -85,6 +85,19 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
             'a_debug': 0,
         }
         save_result = cls.db_procedure_execute('p_shop_save_product_category', argument_dict_list)
+
+        # Errors
+        cursor = save_result.cursor
+        result_set_e = cursor.fetchall()
+        Helper_App.console_log(f'raw errors: {result_set_e}')
+        errors = []
+        if len(result_set_e) > 0:
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            for error in errors:
+                Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
+        
+        DataStore_Store_Product_Category.db_cursor_clear(cursor)
+
         save_result.close()
         Helper_App.console_log('save procedure executed')
-
+        return errors

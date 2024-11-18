@@ -125,3 +125,5 @@ class Store_Base(Base):
     FLAG_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = 'unit_measurement_quantity'
     FLAG_VALUE_TEXT: ClassVar[str] = 'value_text'
     
+    def __repr__(self):
+        return str(self.__dict__)

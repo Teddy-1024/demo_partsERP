@@ -603,7 +603,7 @@ class Parameters_Product(Get_Many_Parameters_Base):
     def from_filters_product_category(cls, filters_category):
         return cls(
             get_all_product_category = True,
-            get_inactive_product_category = filters_category.active.data,
+            get_inactive_product_category = not filters_category.active.data,
             ids_product_category = '',
             get_all_product = True,
             get_inactive_product = False,

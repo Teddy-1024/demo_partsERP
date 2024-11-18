@@ -55,4 +55,4 @@ class Model_View_Store_Product_Category(Model_View_Store):
     @classmethod
     def save_categories(cls, comment, list_categories):
         _m = f'{cls.__name__}.save_categories'
-        DataStore_Store_Product_Category().save_categories(comment, list_categories)
+        return DataStore_Store_Product_Category().save_categories(comment, list_categories)

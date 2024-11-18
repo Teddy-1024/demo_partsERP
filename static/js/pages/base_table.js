@@ -25,7 +25,6 @@ export default class TableBasePage extends BasePage {
         this.dragSrcRow = null;
 
         this.hookupTableCellDdls = this.hookupTableCellDdls.bind(this);
-        this.getAndLoadFilteredTableContent = this.getAndLoadFilteredTableContent.bind(this);
     }
     
     initialize(isPopState = false) {
@@ -85,13 +84,15 @@ export default class TableBasePage extends BasePage {
     hookupButtonApplyFilters() {
         this.hookupEventHandler("click", idButtonApplyFilters, (event, button) => {
             event.stopPropagation();
-            this.getAndLoadFilteredTableContent();
+            this.callFilterTableContent();
         });
     }
+    /*
     getAndLoadFilteredTableContent = () => {
         this.callFilterTableContent()
             .catch(error => console.error('Error:', error));
     }
+    */
     getFormFilters() {
         return document.querySelector(idFormFilters);
     }
@@ -146,7 +147,7 @@ export default class TableBasePage extends BasePage {
                         console.log('Records saved!');
                         console.log('Data received:', data);
                     }
-                    this.getAndLoadFilteredTableContent();
+                    this.callFilterTableContent();
                 }
                 else {
                     if (_verbose) { console.log("error: ", data[flagMessage]); }
@@ -193,10 +194,10 @@ export default class TableBasePage extends BasePage {
             .catch(error => console.error('Error:', error));
     }
     hookupButtonCancel() {
-        Events.initialiseEventHandler(idFormFilters + ' button.' + flagCancel, flagInitialised, function(button) {
-            button.addEventListener("click", function(event) {
+        Events.initialiseEventHandler(idFormFilters + ' button.' + flagCancel, flagInitialised, (button) => {
+            button.addEventListener("click", (event) => {
                 event.stopPropagation();
-                this.getAndLoadFilteredTableContent();
+                this.callFilterTableContent();
             });
             button.classList.add(flagCollapsed);
         });

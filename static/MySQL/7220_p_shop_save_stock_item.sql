@@ -590,11 +590,15 @@ BEGIN
 				AND active = 1
 			;
 		
-			DELETE FROM partsltd_prod.Shop_Stock_Item_Temp
-			WHERE GUID = a_guid;
-			
 		COMMIT;
     END IF;
+    
+    START TRANSACTION;
+		
+		DELETE FROM partsltd_prod.Shop_Stock_Item_Temp
+		WHERE GUID = a_guid;
+		
+	COMMIT;
     
     # Errors
     SELECT *

@@ -755,18 +755,22 @@ BEGIN
 				, SPOPL.cost_unit_local_VAT_incl = t_SPOPL.cost_unit_local_VAT_incl
 				, SPOPL.id_change_set = v_id_change_set
 			;
-		
-			DELETE SPO_T
-			FROM Shop_Supplier_Purchase_Order_Temp SPO_T
-			WHERE SPO_T.GUID = a_guid
-			;
-			DELETE SPOPL_T
-			FROM Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
-			WHERE SPOPL_T.GUID = a_guid
-			;
-			
+            
 		COMMIT;
     END IF;
+    
+    START TRANSACTION;
+		
+		DELETE SPO_T
+		FROM Shop_Supplier_Purchase_Order_Temp SPO_T
+		WHERE SPO_T.GUID = a_guid
+		;
+		DELETE SPOPL_T
+		FROM Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
+		WHERE SPOPL_T.GUID = a_guid
+		;
+		
+	COMMIT;
     
     # Errors
     SELECT *

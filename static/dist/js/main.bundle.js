@@ -2018,9 +2018,12 @@ var OverlayError = /*#__PURE__*/function () {
 
 ;// CONCATENATED MODULE: ./static/js/pages/base_table.js
 function base_table_typeof(o) { "@babel/helpers - typeof"; return base_table_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, base_table_typeof(o); }
+function base_table_defineProperty(e, r, t) { return (r = base_table_toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function base_table_classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function base_table_defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, base_table_toPropertyKey(o.key), o); } }
 function base_table_createClass(e, r, t) { return r && base_table_defineProperties(e.prototype, r), t && base_table_defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function base_table_toPropertyKey(t) { var i = base_table_toPrimitive(t, "string"); return "symbol" == base_table_typeof(i) ? i : i + ""; }
+function base_table_toPrimitive(t, r) { if ("object" != base_table_typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != base_table_typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function base_table_callSuper(t, o, e) { return o = base_table_getPrototypeOf(o), base_table_possibleConstructorReturn(t, base_table_isNativeReflectConstruct() ? Reflect.construct(o, e || [], base_table_getPrototypeOf(t).constructor) : o.apply(t, e)); }
 function base_table_possibleConstructorReturn(t, e) { if (e && ("object" == base_table_typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return base_table_assertThisInitialized(t); }
 function base_table_assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
@@ -2031,9 +2034,6 @@ function base_table_superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) &
 function base_table_getPrototypeOf(t) { return base_table_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, base_table_getPrototypeOf(t); }
 function base_table_inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && base_table_setPrototypeOf(t, e); }
 function base_table_setPrototypeOf(t, e) { return base_table_setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, base_table_setPrototypeOf(t, e); }
-function base_table_defineProperty(e, r, t) { return (r = base_table_toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function base_table_toPropertyKey(t) { var i = base_table_toPrimitive(t, "string"); return "symbol" == base_table_typeof(i) ? i : i + ""; }
-function base_table_toPrimitive(t, r) { if ("object" != base_table_typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != base_table_typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
 
 
@@ -2053,18 +2053,12 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
     var _this;
     base_table_classCallCheck(this, TableBasePage);
     _this = base_table_callSuper(this, TableBasePage, [router]);
-    base_table_defineProperty(_this, "getAndLoadFilteredTableContent", function () {
-      _this.callFilterTableContent()["catch"](function (error) {
-        return console.error('Error:', error);
-      });
-    });
     _this.cursorYInitial = null;
     _this.rowInitial = null;
     _this.placeholder = null;
     _this.dragSrcEl = null;
     _this.dragSrcRow = null;
     _this.hookupTableCellDdls = _this.hookupTableCellDdls.bind(_this);
-    _this.getAndLoadFilteredTableContent = _this.getAndLoadFilteredTableContent.bind(_this);
     return _this;
   }
   base_table_inherits(TableBasePage, _BasePage);
@@ -2139,9 +2133,15 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       var _this3 = this;
       this.hookupEventHandler("click", idButtonApplyFilters, function (event, button) {
         event.stopPropagation();
-        _this3.getAndLoadFilteredTableContent();
+        _this3.callFilterTableContent();
       });
     }
+    /*
+    getAndLoadFilteredTableContent = () => {
+        this.callFilterTableContent()
+            .catch(error => console.error('Error:', error));
+    }
+    */
   }, {
     key: "getFormFilters",
     value: function getFormFilters() {
@@ -2216,7 +2216,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
             console.log('Records saved!');
             console.log('Data received:', data);
           }
-          _this5.getAndLoadFilteredTableContent();
+          _this5.callFilterTableContent();
         } else {
           if (_verbose) {
             console.log("error: ", data[flagMessage]);
@@ -2277,10 +2277,11 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonCancel",
     value: function hookupButtonCancel() {
+      var _this8 = this;
       Events.initialiseEventHandler(idFormFilters + ' button.' + flagCancel, flagInitialised, function (button) {
         button.addEventListener("click", function (event) {
           event.stopPropagation();
-          this.getAndLoadFilteredTableContent();
+          _this8.callFilterTableContent();
         });
         button.classList.add(flagCollapsed);
       });
@@ -2313,14 +2314,14 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableMain",
     value: function hookupTableMain() {
-      var _this8 = this;
+      var _this9 = this;
       if (this.constructor === TableBasePage) {
         throw new Error("Must implement hookupTableMain() method.");
       }
       if (true) {
         // _rowBlank == null) {
         Events.initialiseEventHandler(idTableMain, flagInitialised, function (table) {
-          _this8.cacheRowBlank();
+          _this9.cacheRowBlank();
         });
       }
     }
@@ -2378,9 +2379,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupChangeHandlerTableCells",
     value: function hookupChangeHandlerTableCells(inputSelector) {
-      var _this9 = this;
+      var _this10 = this;
       var handler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        _this9.handleChangeNestedElementCellTable(event, element);
+        _this10.handleChangeNestedElementCellTable(event, element);
       };
       Events.initialiseEventHandler(inputSelector, flagInitialised, function (input) {
         input.addEventListener("change", function (event) {
@@ -2524,9 +2525,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupChangeHandlerTableCellsWhenNotCollapsed",
     value: function hookupChangeHandlerTableCellsWhenNotCollapsed(inputSelector) {
-      var _this10 = this;
+      var _this11 = this;
       var handler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        if (!element.classList.contains(flagCollapsed)) _this10.handleChangeNestedElementCellTable(event, element);
+        if (!element.classList.contains(flagCollapsed)) _this11.handleChangeNestedElementCellTable(event, element);
       };
       this.hookupEventHandler("change", inputSelector, handler);
     }
@@ -2606,10 +2607,10 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupFieldsActive",
     value: function hookupFieldsActive() {
-      var _this11 = this;
+      var _this12 = this;
       var flagTable = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       var handleClickRowNew = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        _this11.handleClickAddRowTable(event, element);
+        _this12.handleClickAddRowTable(event, element);
       };
       var selectorButton = 'table' + (validation_Validation.isEmpty(flagTable) ? '' : '.' + flagTable) + ' > tbody > tr > td.' + flagActive + ' button';
       var selectorButtonDelete = selectorButton + '.' + flagDelete;
@@ -2624,9 +2625,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonsRowDelete",
     value: function hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete) {
-      var _this12 = this;
+      var _this13 = this;
       this.hookupEventHandler("click", selectorButtonDelete, function (event, element) {
-        _this12.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+        _this13.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete);
       });
     }
   }, {
@@ -2651,9 +2652,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonsRowUndelete",
     value: function hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete) {
-      var _this13 = this;
+      var _this14 = this;
       this.hookupEventHandler("click", selectorButtonUndelete, function (event, element) {
-        _this13.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+        _this14.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete);
       });
     }
   }, {
@@ -2681,15 +2682,15 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDdlPreviews",
     value: function hookupTableCellDdlPreviews(cellSelector, optionList) {
-      var _this14 = this;
+      var _this15 = this;
       var ddlHookup = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (cellSelector) {
-        _this14.hookupTableCellDdls(cellSelector);
+        _this15.hookupTableCellDdls(cellSelector);
       };
       var changeHandler = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function (event, element) {
-        _this14.handleChangeNestedElementCellTable(event, element);
+        _this15.handleChangeNestedElementCellTable(event, element);
       };
       this.hookupEventHandler("click", cellSelector, function (event, td) {
-        _this14.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (cellSelector) {
+        _this15.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (cellSelector) {
           ddlHookup(cellSelector, function (event, element) {
             changeHandler(event, element);
           });
@@ -2700,9 +2701,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDdls",
     value: function hookupTableCellDdls(ddlSelector) {
-      var _this15 = this;
+      var _this16 = this;
       var changeHandler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        _this15.handleChangeNestedElementCellTable(event, element);
+        _this16.handleChangeNestedElementCellTable(event, element);
       };
       this.hookupEventHandler("change", ddlSelector, function (event, element) {
         changeHandler(event, element);
@@ -2711,9 +2712,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "handleClickTableCellDdlPreview",
     value: function handleClickTableCellDdlPreview(event, td, optionObjectList, cellSelector) {
-      var _this16 = this;
+      var _this17 = this;
       var ddlHookup = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function (cellSelector) {
-        _this16.hookupTableCellDdls(cellSelector);
+        _this17.hookupTableCellDdls(cellSelector);
       };
       if (td.querySelector('select')) return;
       // td.removeEventListener("click", ddlHookup);
@@ -2773,14 +2774,14 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDDlPreviewsWhenNotCollapsed",
     value: function hookupTableCellDDlPreviewsWhenNotCollapsed(cellSelector, optionList) {
-      var _this17 = this;
+      var _this18 = this;
       var ddlHookup = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (event, element) {
-        _this17.hookupTableCellDdls(event, element);
+        _this18.hookupTableCellDdls(event, element);
       };
       this.hookupEventHandler("click", cellSelector, function (event, td) {
         var div = td.querySelector('div');
         if (!div || div.classList.contains(flagCollapsed)) return;
-        _this17.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (event, element) {
+        _this18.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (event, element) {
           ddlHookup(event, element);
         });
       });
@@ -2788,9 +2789,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupProductCategoryDdls",
     value: function hookupProductCategoryDdls(ddlSelector) {
-      var _this18 = this;
+      var _this19 = this;
       this.hookupChangeHandlerTableCells(ddlSelector, function (event, element) {
-        _this18.handleChangeProductCategoryDdl(event, element);
+        _this19.handleChangeProductCategoryDdl(event, element);
       });
     }
   }, {
@@ -2824,15 +2825,15 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupPreviewsProductPermutationVariation",
     value: function hookupPreviewsProductPermutationVariation() {
-      var _this19 = this;
+      var _this20 = this;
       this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations, function (event, element) {
-        return _this19.handleClickProductPermutationVariationsPreview(event, element);
+        return _this20.handleClickProductPermutationVariationsPreview(event, element);
       });
     }
   }, {
     key: "handleClickProductPermutationVariationsPreview",
     value: function handleClickProductPermutationVariationsPreview(event, element) {
-      var _this20 = this;
+      var _this21 = this;
       var tblVariations = element.querySelector('table.' + flagProductVariations);
       if (!validation_Validation.isEmpty(tblVariations)) return;
       this.toggleColumnCollapsed(flagProductVariations, false);
@@ -2861,7 +2862,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       var tbody = document.createElement("tbody");
       if (!validation_Validation.isEmpty(permutationVariations)) {
         permutationVariations.forEach(function (permutationVariation, index) {
-          _this20.addProductPermutationVariationRow(tbody, permutationVariation);
+          _this21.addProductPermutationVariationRow(tbody, permutationVariation);
         });
       }
       tblVariations.appendChild(tbody);
@@ -3007,9 +3008,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupDdlsProductPermutationVariationType",
     value: function hookupDdlsProductPermutationVariationType() {
-      var _this21 = this;
+      var _this22 = this;
       this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariationType + ' select', function (event, ddlVariationType) {
-        _this21.handleChangeDdlProductVariationOrVariationType(event, ddlVariationType);
+        _this22.handleChangeDdlProductVariationOrVariationType(event, ddlVariationType);
         var idVariationTypeSelected = DOM.getElementValueCurrent(ddlVariationType);
         var row = DOM.getRowFromElement(ddlVariationType);
         var tdVariation = row.querySelector('td.' + flagProductVariation);
@@ -3025,7 +3026,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
           option = DOM.createOption(optionJson);
           ddlVariation.appendChild(option);
         });
-        _this21.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
+        _this22.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
       });
     }
   }, {
@@ -3037,21 +3038,21 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupDdlsProductPermutationVariation",
     value: function hookupDdlsProductPermutationVariation() {
-      var _this22 = this;
+      var _this23 = this;
       this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation + ' select', function (event, ddlVariation) {
-        _this22.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
+        _this23.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
       });
     }
   }, {
     key: "hookupButtonsProductPermutationVariationAddDelete",
     value: function hookupButtonsProductPermutationVariationAddDelete() {
-      var _this23 = this;
+      var _this24 = this;
       var selectorButton = idTableMain + ' td.' + flagProductVariations + ' tr.' + flagProductVariation + ' button';
       var selectorButtonDelete = selectorButton + '.' + flagDelete;
       var selectorButtonUndelete = selectorButton + '.' + flagAdd;
       this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, function (event, element) {
-        _this23.handleClickButtonRowDelete(event, element);
-        _this23.updateProductPermutationVariations(element);
+        _this24.handleClickButtonRowDelete(event, element);
+        _this24.updateProductPermutationVariations(element);
       });
       this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
       this.hookupButtonsProductPermutationVariationAdd();
@@ -3059,9 +3060,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupButtonsProductPermutationVariationAdd",
     value: function hookupButtonsProductPermutationVariationAdd() {
-      var _this24 = this;
+      var _this25 = this;
       this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations + ' button.' + flagAdd, function (event, element) {
-        _this24.handleClickButtonProductPermutationVariationAdd(event, element);
+        _this25.handleClickButtonProductPermutationVariationAdd(event, element);
       });
     }
   }, {

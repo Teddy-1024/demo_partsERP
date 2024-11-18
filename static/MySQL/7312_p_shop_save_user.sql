@@ -247,13 +247,17 @@ BEGIN
                 , U.active = t_U.active
                 , U.id_change_set = v_id_change_set
             ;
-		
-			DELETE FROM Shop_User_Temp
-			WHERE GUID = a_guid;
-			
+            
 		COMMIT;
     END IF;
     
+    START TRANSACTION;
+		
+		DELETE FROM Shop_User_Temp
+		WHERE GUID = a_guid;
+		
+	COMMIT;
+	
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME

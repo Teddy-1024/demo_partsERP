@@ -511,17 +511,21 @@ BEGIN
                 , V.id_change_set = v_id_change_set
 			;
 		
-			DELETE VT_T
-			FROM partsltd_prod.Shop_Variation_Type_Temp VT_T
-			WHERE VT_T.GUID = a_guid
-			;
-			DELETE V_T
-			FROM partsltd_prod.Shop_Variation_Temp V_T
-			WHERE V_T.GUID = a_guid
-			;
-			
 		COMMIT;
     END IF;
+    
+    START TRANSACTION;
+		
+        DELETE VT_T
+		FROM partsltd_prod.Shop_Variation_Type_Temp VT_T
+		WHERE VT_T.GUID = a_guid
+		;
+		DELETE V_T
+		FROM partsltd_prod.Shop_Variation_Temp V_T
+		WHERE V_T.GUID = a_guid
+		;
+		
+	COMMIT;
     
     # Errors
     SELECT *

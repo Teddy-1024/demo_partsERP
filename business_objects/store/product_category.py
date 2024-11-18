@@ -524,3 +524,6 @@ class Product_Category_Temp(db.Model, Store_Base):
         'created_on': self.created_on,
         'created_by': self.created_by
         """
+
+    def __repr__(self):
+        return str(self.__dict__)
