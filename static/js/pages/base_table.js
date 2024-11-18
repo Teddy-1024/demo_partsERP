@@ -484,45 +484,40 @@ export default class TableBasePage extends BasePage {
             , (event, button) => { handleClickRowNew(event, button); }
         );
     }
-    hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete) {
+    hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, changeHandler = (event, element) => { this.handleChangeNestedElementCellTable(event, element); }) {
         this.hookupEventHandler("click", selectorButtonDelete, (event, element) => {
-            this.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+            this.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete, (changeEvent, changeElement) => { changeHandler(changeEvent, changeElement); });
         });
     }
-    handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
+    handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete, changeHandler = (event, element) => { this.handleChangeNestedElementCellTable(event, element); }) {
         let row = DOM.getRowFromElement(element);
-        // row.classList.add(flagDelete);
         if (row.classList.contains(flagRowNew) && !DOM.hasDirtyChildrenContainer(row)) {
             row.parentNode.removeChild(row);
         }
-        let buttonAdd = element.cloneNode(false); // document.createElement("button");
+        let buttonAdd = element.cloneNode(false);
         buttonAdd.classList.remove(flagInitialised);
         buttonAdd.classList.remove(flagDelete);
         buttonAdd.classList.add(flagAdd);
         buttonAdd.textContent = '+';
-        // DOM.setElementAttributeValueCurrent(buttonAdd, false);
         element.replaceWith(buttonAdd);
-        this.handleChangeNestedElementCellTable(null, buttonAdd);
-        this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
+        changeHandler(null, buttonAdd);
+        this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete, (changeEvent, changeElement) => { changeHandler(changeEvent, changeElement); });
         this.updateAndToggleShowButtonsSaveCancel();
     }
-    hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete) {
+    hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete, changeHandler = (event, element) => { this.handleChangeNestedElementCellTable(event, element); }) {
         this.hookupEventHandler("click", selectorButtonUndelete, (event, element) => {
-            this.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+            this.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete, (changeEvent, changeElement) => { changeHandler(changeEvent, changeElement); });
         });
     }
-    handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
-        // let row = DOM.getRowFromElement(element);
-        // row.classList.remove(flagDelete);
-        let buttonDelete = element.cloneNode(false); // document.createElement("button");
+    handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete, changeHandler = (event, element) => { this.handleChangeNestedElementCellTable(event, element); }) {
+        let buttonDelete = element.cloneNode(false);
         buttonDelete.classList.remove(flagInitialised);
         buttonDelete.classList.remove(flagAdd);
         buttonDelete.classList.add(flagDelete);
         buttonDelete.textContent = 'x';
-        // DOM.setElementAttributeValueCurrent(buttonDelete, true);
         element.replaceWith(buttonDelete);
-        this.handleChangeNestedElementCellTable(null, buttonDelete);
-        this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete);
+        changeHandler(null, buttonDelete);
+        this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, (changeEvent, changeElement) => { changeHandler(changeEvent, changeElement); });
         this.updateAndToggleShowButtonsSaveCancel();
     }
     hookupTdsAccessLevel() {
@@ -810,8 +805,10 @@ export default class TableBasePage extends BasePage {
         tdDelete.classList.add(flagDelete);
         
         let buttonDelete = document.createElement("button");
+        buttonDelete.classList.add(flagActive);
         buttonDelete.classList.add(flagDelete);
         buttonDelete.textContent = 'x';
+        DOM.setElementAttributesValuesCurrentAndPrevious(buttonDelete, true);
 
         let tr = document.createElement("tr");
         tr.classList.add(flagProductVariation);
@@ -827,7 +824,7 @@ export default class TableBasePage extends BasePage {
         this.hookupTableCellDdls(
             idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariationType + ' select'
             , (event, ddlVariationType) => { 
-                this.handleChangeDdlProductVariationOrVariationType(event, ddlVariationType);
+                this.handleChangeProductVariationInput(event, ddlVariationType);
                 let idVariationTypeSelected = DOM.getElementValueCurrent(ddlVariationType);
                 let row = DOM.getRowFromElement(ddlVariationType);
                 let tdVariation = row.querySelector('td.' + flagProductVariation);
@@ -845,26 +842,23 @@ export default class TableBasePage extends BasePage {
                     option = DOM.createOption(optionJson);
                     ddlVariation.appendChild(option);
                 });
-                this.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
+                this.handleChangeProductVariationInput(event, ddlVariation);
             }
         );
     }
-    handleChangeDdlProductVariationOrVariationType(event, element) {
+    handleChangeProductVariationInput(event, element) {
         this.handleChangeNestedElementCellTable(event, element);
         this.updateProductPermutationVariations(element);
     }
     hookupDdlsProductPermutationVariation() {
-        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation + ' select', (event, ddlVariation) => { this.handleChangeDdlProductVariationOrVariationType(event, ddlVariation); });
+        this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation + ' select', (event, ddlVariation) => { this.handleChangeProductVariationInput(event, ddlVariation); });
     }
     hookupButtonsProductPermutationVariationAddDelete() {
         let selectorButton = idTableMain + ' td.' + flagProductVariations + ' tr.' + flagProductVariation + ' button';
         let selectorButtonDelete = selectorButton + '.' + flagDelete;
         let selectorButtonUndelete = selectorButton + '.' + flagAdd;
-        this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, (event, element) => {
-            this.handleClickButtonRowDelete(event, element);
-            this.updateProductPermutationVariations(element);
-        });
-        this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
+        this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, (event, element) => { this.handleChangeProductVariationInput(event, element); });
+        this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete, (event, element) => { this.handleChangeProductVariationInput(event, element); });
         this.hookupButtonsProductPermutationVariationAdd();
     }
     hookupButtonsProductPermutationVariationAdd() {
@@ -888,7 +882,7 @@ export default class TableBasePage extends BasePage {
         this.handleChangeNestedElementCellTable(null, variationsCell);
     }
     getProductPermutationVariationsText(variationsTd) {
-        let rows = variationsTd.querySelectorAll(':scope tbody tr');
+        let rows = variationsTd.querySelectorAll(':scope tbody tr:has(button.' + flagDelete + ')');
         let variationPairsString = '';
         let ddlVariationType, ddlVariation, idVariationType, idVariation;
         rows.forEach((row, index) => {

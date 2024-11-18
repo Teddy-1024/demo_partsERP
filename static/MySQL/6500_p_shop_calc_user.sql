@@ -587,6 +587,15 @@ CALL partsltd_prod.p_shop_calc_user (
 	, '1,2,3,4,5'
     , 0
 );
+CALL partsltd_prod.p_shop_calc_user (
+	'chips                               '
+	, 1
+	, 0
+	, '2'
+	, '1'
+	, NULL
+    , 0
+);
 SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
 DELETE FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
 

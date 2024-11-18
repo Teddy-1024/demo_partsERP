@@ -2626,13 +2626,23 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
     key: "hookupButtonsRowDelete",
     value: function hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete) {
       var _this13 = this;
+      var changeHandler = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (event, element) {
+        _this13.handleChangeNestedElementCellTable(event, element);
+      };
       this.hookupEventHandler("click", selectorButtonDelete, function (event, element) {
-        _this13.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+        _this13.handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete, function (changeEvent, changeElement) {
+          changeHandler(changeEvent, changeElement);
+        });
       });
     }
   }, {
     key: "handleClickButtonRowDelete",
     value: function handleClickButtonRowDelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
+      var _this14 = this;
+      var changeHandler = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function (event, element) {
+        _this14.handleChangeNestedElementCellTable(event, element);
+      };
+      debugger;
       var row = DOM.getRowFromElement(element);
       // row.classList.add(flagDelete);
       if (row.classList.contains(flagRowNew) && !DOM.hasDirtyChildrenContainer(row)) {
@@ -2645,21 +2655,33 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       buttonAdd.textContent = '+';
       // DOM.setElementAttributeValueCurrent(buttonAdd, false);
       element.replaceWith(buttonAdd);
-      this.handleChangeNestedElementCellTable(null, buttonAdd);
-      this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
+      changeHandler(null, buttonAdd);
+      this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete, function (changeEvent, changeElement) {
+        changeHandler(changeEvent, changeElement);
+      });
       this.updateAndToggleShowButtonsSaveCancel();
     }
   }, {
     key: "hookupButtonsRowUndelete",
     value: function hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete) {
-      var _this14 = this;
+      var _this15 = this;
+      var changeHandler = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (event, element) {
+        _this15.handleChangeNestedElementCellTable(event, element);
+      };
       this.hookupEventHandler("click", selectorButtonUndelete, function (event, element) {
-        _this14.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete);
+        _this15.handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete, function (changeEvent, changeElement) {
+          changeHandler(changeEvent, changeElement);
+        });
       });
     }
   }, {
     key: "handleClickButtonRowUndelete",
     value: function handleClickButtonRowUndelete(event, element, selectorButtonDelete, selectorButtonUndelete) {
+      var _this16 = this;
+      var changeHandler = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function (event, element) {
+        _this16.handleChangeNestedElementCellTable(event, element);
+      };
+      debugger;
       // let row = DOM.getRowFromElement(element);
       // row.classList.remove(flagDelete);
       var buttonDelete = element.cloneNode(false); // document.createElement("button");
@@ -2669,8 +2691,10 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       buttonDelete.textContent = 'x';
       // DOM.setElementAttributeValueCurrent(buttonDelete, true);
       element.replaceWith(buttonDelete);
-      this.handleChangeNestedElementCellTable(null, buttonDelete);
-      this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete);
+      changeHandler(null, buttonDelete);
+      this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, function (changeEvent, changeElement) {
+        changeHandler(changeEvent, changeElement);
+      });
       this.updateAndToggleShowButtonsSaveCancel();
     }
   }, {
@@ -2682,15 +2706,15 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDdlPreviews",
     value: function hookupTableCellDdlPreviews(cellSelector, optionList) {
-      var _this15 = this;
+      var _this17 = this;
       var ddlHookup = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (cellSelector) {
-        _this15.hookupTableCellDdls(cellSelector);
+        _this17.hookupTableCellDdls(cellSelector);
       };
       var changeHandler = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function (event, element) {
-        _this15.handleChangeNestedElementCellTable(event, element);
+        _this17.handleChangeNestedElementCellTable(event, element);
       };
       this.hookupEventHandler("click", cellSelector, function (event, td) {
-        _this15.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (cellSelector) {
+        _this17.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (cellSelector) {
           ddlHookup(cellSelector, function (event, element) {
             changeHandler(event, element);
           });
@@ -2701,9 +2725,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDdls",
     value: function hookupTableCellDdls(ddlSelector) {
-      var _this16 = this;
+      var _this18 = this;
       var changeHandler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (event, element) {
-        _this16.handleChangeNestedElementCellTable(event, element);
+        _this18.handleChangeNestedElementCellTable(event, element);
       };
       this.hookupEventHandler("change", ddlSelector, function (event, element) {
         changeHandler(event, element);
@@ -2712,9 +2736,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "handleClickTableCellDdlPreview",
     value: function handleClickTableCellDdlPreview(event, td, optionObjectList, cellSelector) {
-      var _this17 = this;
+      var _this19 = this;
       var ddlHookup = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function (cellSelector) {
-        _this17.hookupTableCellDdls(cellSelector);
+        _this19.hookupTableCellDdls(cellSelector);
       };
       if (td.querySelector('select')) return;
       // td.removeEventListener("click", ddlHookup);
@@ -2774,14 +2798,14 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupTableCellDDlPreviewsWhenNotCollapsed",
     value: function hookupTableCellDDlPreviewsWhenNotCollapsed(cellSelector, optionList) {
-      var _this18 = this;
+      var _this20 = this;
       var ddlHookup = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (event, element) {
-        _this18.hookupTableCellDdls(event, element);
+        _this20.hookupTableCellDdls(event, element);
       };
       this.hookupEventHandler("click", cellSelector, function (event, td) {
         var div = td.querySelector('div');
         if (!div || div.classList.contains(flagCollapsed)) return;
-        _this18.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (event, element) {
+        _this20.handleClickTableCellDdlPreview(event, td, optionList, cellSelector, function (event, element) {
           ddlHookup(event, element);
         });
       });
@@ -2789,9 +2813,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupProductCategoryDdls",
     value: function hookupProductCategoryDdls(ddlSelector) {
-      var _this19 = this;
+      var _this21 = this;
       this.hookupChangeHandlerTableCells(ddlSelector, function (event, element) {
-        _this19.handleChangeProductCategoryDdl(event, element);
+        _this21.handleChangeProductCategoryDdl(event, element);
       });
     }
   }, {
@@ -2825,15 +2849,15 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupPreviewsProductPermutationVariation",
     value: function hookupPreviewsProductPermutationVariation() {
-      var _this20 = this;
+      var _this22 = this;
       this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations, function (event, element) {
-        return _this20.handleClickProductPermutationVariationsPreview(event, element);
+        return _this22.handleClickProductPermutationVariationsPreview(event, element);
       });
     }
   }, {
     key: "handleClickProductPermutationVariationsPreview",
     value: function handleClickProductPermutationVariationsPreview(event, element) {
-      var _this21 = this;
+      var _this23 = this;
       var tblVariations = element.querySelector('table.' + flagProductVariations);
       if (!validation_Validation.isEmpty(tblVariations)) return;
       this.toggleColumnCollapsed(flagProductVariations, false);
@@ -2862,7 +2886,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       var tbody = document.createElement("tbody");
       if (!validation_Validation.isEmpty(permutationVariations)) {
         permutationVariations.forEach(function (permutationVariation, index) {
-          _this21.addProductPermutationVariationRow(tbody, permutationVariation);
+          _this23.addProductPermutationVariationRow(tbody, permutationVariation);
         });
       }
       tblVariations.appendChild(tbody);
@@ -2993,8 +3017,10 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       var tdDelete = document.createElement("td");
       tdDelete.classList.add(flagDelete);
       var buttonDelete = document.createElement("button");
+      buttonDelete.classList.add(flagActive);
       buttonDelete.classList.add(flagDelete);
       buttonDelete.textContent = 'x';
+      DOM.setElementAttributesValuesCurrentAndPrevious(buttonDelete, true);
       var tr = document.createElement("tr");
       tr.classList.add(flagProductVariation);
       tdVariationType.appendChild(ddlVariationType);
@@ -3008,9 +3034,9 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "hookupDdlsProductPermutationVariationType",
     value: function hookupDdlsProductPermutationVariationType() {
-      var _this22 = this;
+      var _this24 = this;
       this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariationType + ' select', function (event, ddlVariationType) {
-        _this22.handleChangeDdlProductVariationOrVariationType(event, ddlVariationType);
+        _this24.handleChangeProductVariationInput(event, ddlVariationType);
         var idVariationTypeSelected = DOM.getElementValueCurrent(ddlVariationType);
         var row = DOM.getRowFromElement(ddlVariationType);
         var tdVariation = row.querySelector('td.' + flagProductVariation);
@@ -3026,43 +3052,44 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
           option = DOM.createOption(optionJson);
           ddlVariation.appendChild(option);
         });
-        _this22.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
+        _this24.handleChangeProductVariationInput(event, ddlVariation);
       });
     }
   }, {
-    key: "handleChangeDdlProductVariationOrVariationType",
-    value: function handleChangeDdlProductVariationOrVariationType(event, element) {
+    key: "handleChangeProductVariationInput",
+    value: function handleChangeProductVariationInput(event, element) {
       this.handleChangeNestedElementCellTable(event, element);
       this.updateProductPermutationVariations(element);
     }
   }, {
     key: "hookupDdlsProductPermutationVariation",
     value: function hookupDdlsProductPermutationVariation() {
-      var _this23 = this;
+      var _this25 = this;
       this.hookupTableCellDdls(idTableMain + ' td.' + flagProductVariations + ' td.' + flagProductVariation + ' select', function (event, ddlVariation) {
-        _this23.handleChangeDdlProductVariationOrVariationType(event, ddlVariation);
+        _this25.handleChangeProductVariationInput(event, ddlVariation);
       });
     }
   }, {
     key: "hookupButtonsProductPermutationVariationAddDelete",
     value: function hookupButtonsProductPermutationVariationAddDelete() {
-      var _this24 = this;
+      var _this26 = this;
       var selectorButton = idTableMain + ' td.' + flagProductVariations + ' tr.' + flagProductVariation + ' button';
       var selectorButtonDelete = selectorButton + '.' + flagDelete;
       var selectorButtonUndelete = selectorButton + '.' + flagAdd;
       this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, function (event, element) {
-        _this24.handleClickButtonRowDelete(event, element);
-        _this24.updateProductPermutationVariations(element);
+        _this26.handleChangeProductVariationInput(event, element);
       });
-      this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete);
+      this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete, function (event, element) {
+        _this26.handleChangeProductVariationInput(event, element);
+      });
       this.hookupButtonsProductPermutationVariationAdd();
     }
   }, {
     key: "hookupButtonsProductPermutationVariationAdd",
     value: function hookupButtonsProductPermutationVariationAdd() {
-      var _this25 = this;
+      var _this27 = this;
       this.hookupEventHandler("click", idTableMain + ' td.' + flagProductVariations + ' button.' + flagAdd, function (event, element) {
-        _this25.handleClickButtonProductPermutationVariationAdd(event, element);
+        _this27.handleClickButtonProductPermutationVariationAdd(event, element);
       });
     }
   }, {
@@ -3085,7 +3112,7 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
   }, {
     key: "getProductPermutationVariationsText",
     value: function getProductPermutationVariationsText(variationsTd) {
-      var rows = variationsTd.querySelectorAll(':scope tbody tr');
+      var rows = variationsTd.querySelectorAll(':scope tbody tr:has(button.' + flagDelete + ')');
       var variationPairsString = '';
       var ddlVariationType, ddlVariation, idVariationType, idVariation;
       rows.forEach(function (row, index) {

@@ -1,3 +1,20 @@
+DataStore_Base.get_user_session
+User.from_json
+json: {'can_admin_store': True, 'can_admin_user': True, 'email': 'edward.middletonsmith@gmail.com', 'firstname': 'Teddy', 'id_currency_default': None, 'id_region_default': None, 'id_user': 1, 'id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'is_email_verified': False, 'is_included_VAT_default': True, 'is_super_user': True, 'surname': 'Middleton-Smith'}
+user: 
+            id_user: 1
+            id_user_auth0: auth0|6582b95c895d09a70ba10fef
+            firstname: Teddy
+            surname: Middleton-Smith
+            email: edward.middletonsmith@gmail.com
+            is_email_verified: False
+            is_super_user: True
+            id_currency_default: None
+            id_region_default: None
+            is_included_VAT_default: True
+            can_admin_store: True
+            can_admin_user: True
+            
 User.from_json
 json: {'can_admin_store': True, 'can_admin_user': True, 'email': 'edward.middletonsmith@gmail.com', 'firstname': 'Teddy', 'id_currency_default': None, 'id_region_default': None, 'id_user': 1, 'id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'is_email_verified': False, 'is_included_VAT_default': True, 'is_super_user': True, 'surname': 'Middleton-Smith'}
 user: 
@@ -19,7 +36,7 @@ executing p_get_many_user
 DataStore_Base.db_procedure_execute
 proc_string: CALL p_get_many_user(:a_id_user, :a_id_user_auth0, :get_all_user, :get_inactive_user, :ids_user, :ids_user_auth0, :a_debug)
 args: {'a_id_user': 1, 'a_id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'get_all_user': False, 'get_inactive_user': False, 'ids_user': 1, 'ids_user_auth0': '', 'a_debug': 0}
-result: <sqlalchemy.engine.cursor.CursorResult object at 0x0000026B6897A660>
+result: <sqlalchemy.engine.cursor.CursorResult object at 0x000001E40EB4E4A0>
 data received
 raw users: ((1, 'auth0|6582b95c895d09a70ba10fef', 'Teddy', 'Middleton-Smith', 'edward.middletonsmith@gmail.com', b'\x00', None, None, b'\x01', b'\x01', b'\x01', b'\x01', b'\x00'),)
 raw errors: ()
@@ -29,7 +46,7 @@ executing p_shop_get_many_product
 DataStore_Base.db_procedure_execute
 proc_string: CALL p_shop_get_many_product(:a_id_user, :a_get_all_product_category, :a_get_inactive_product_category, :a_ids_product_category, :a_get_all_product, :a_get_inactive_product, :a_ids_product, :a_get_all_permutation, :a_get_inactive_permutation, :a_ids_permutation, :a_get_all_image, :a_get_inactive_image, :a_ids_image, :a_get_products_quantity_stock_below_min, :a_debug)
 args: {'a_id_user': 1, 'a_get_all_product_category': True, 'a_get_inactive_product_category': False, 'a_ids_product_category': '', 'a_get_all_product': True, 'a_get_inactive_product': False, 'a_ids_product': '', 'a_get_all_permutation': True, 'a_get_inactive_permutation': False, 'a_ids_permutation': '', 'a_get_all_image': False, 'a_get_inactive_image': False, 'a_ids_image': '', 'a_get_products_quantity_stock_below_min': False, 'a_debug': 0}
-result: <sqlalchemy.engine.cursor.CursorResult object at 0x0000026B6897A660>
+result: <sqlalchemy.engine.cursor.CursorResult object at 0x000001E40EB4E4A0>
 data received
 initial category_list: categories: []
 raw categories: ((4, 'CHOCOLATE', 'Chocolates and sweets', 'Confectionery', 1, 'View', 1, b'\x01', None, None, None),)
@@ -156,7 +173,7 @@ executing p_get_many_user
 DataStore_Base.db_procedure_execute
 proc_string: CALL p_get_many_user(:a_id_user, :a_id_user_auth0, :get_all_user, :get_inactive_user, :ids_user, :ids_user_auth0, :a_debug)
 args: {'a_id_user': 1, 'a_id_user_auth0': 'auth0|6582b95c895d09a70ba10fef', 'get_all_user': False, 'get_inactive_user': False, 'ids_user': 1, 'ids_user_auth0': '', 'a_debug': 0}
-result: <sqlalchemy.engine.cursor.CursorResult object at 0x0000026B6897A900>
+result: <sqlalchemy.engine.cursor.CursorResult object at 0x000001E40EB4E580>
 data received
 raw users: ((1, 'auth0|6582b95c895d09a70ba10fef', 'Teddy', 'Middleton-Smith', 'edward.middletonsmith@gmail.com', b'\x00', None, None, b'\x01', b'\x01', b'\x01', b'\x01', b'\x00'),)
 raw errors: ()
@@ -164,14 +181,3 @@ new result set: ()
 DataStore_Base.db_procedure_execute
 proc_string: CALL p_shop_get_many_product_variation(:a_id_user, :a_get_all_variation_type, :a_get_inactive_variation_type, :a_ids_variation_type, :a_get_all_variation, :a_get_inactive_variation, :a_ids_variation, :a_debug)
 args: {'a_id_user': 1, 'a_get_all_variation_type': True, 'a_get_inactive_variation_type': False, 'a_ids_variation_type': '', 'a_get_all_variation': True, 'a_get_inactive_variation': False, 'a_ids_variation': '', 'a_debug': 0}
-result: <sqlalchemy.engine.cursor.CursorResult object at 0x0000026B6897A900>
-index_variation_type: {1: 0, 2: 1}
-raw errors: ()
-new result set: ()
-argument_dict: {'active': True}
-executing p_shop_get_many_unit_measurement
-DataStore_Base.db_procedure_execute
-proc_string: CALL p_shop_get_many_unit_measurement(:active)
-args: {'active': True}
-result: <sqlalchemy.engine.cursor.CursorResult object at 0x0000026B689D1710>
-data received
