@@ -269,7 +269,7 @@ li {
 }
 
 
-:not(input,textarea,select).dirty {
+:not(input,textarea,select,button).dirty {
     background-color: var(--c_purple_dark);
 }
 input.dirty, textarea.dirty, select.dirty {

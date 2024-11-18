@@ -96,7 +96,7 @@ BEGIN
 			-1 -- id_permutation
 			, 1 -- id_product
             , '1:3' -- csv_id_pairs_variation
-            , 'Test with variations' -- description
+            , 'Good Green' -- description
             , NULL -- cost_local_VAT_excl
             , NULL -- cost_local_VAT_incl
             , 1 -- id_currency_cost
@@ -147,7 +147,6 @@ BEGIN
 END //
 DELIMITER ;;
 
-/*
 CALL partsltd_prod.p_shop_save_product_permutation_test ();
 
 DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
@@ -155,6 +154,7 @@ DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 
+/*
 DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
 WHERE id_link >= 3
 ;

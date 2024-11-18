@@ -457,7 +457,7 @@ BEGIN
 		;
 	END IF;
 
-	IF EXISTS (SELECT * FROM partsltd_prod.Shop_User_Eval_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
+	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
 		DELETE FROM tmp_Msg_Error
         WHERE id_type <> v_id_type_error_no_permission
         ;
