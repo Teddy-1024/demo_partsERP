@@ -29,6 +29,7 @@ class Filters_Product_Permutation(Form_Base):
     id_category = SelectField('Category', validators=[Optional()], choices=[('', 'All')], default='')
     id_product = SelectField('Product', validators=[Optional()], choices=[('', 'All')], default='')
     is_out_of_stock = BooleanField('Out of stock only?')
+    active = BooleanField('Active only?', default=True)
     quantity_min = FloatField('Min stock')
     quantity_max = FloatField('Max stock')
     # submit = SubmitField('Submit')
@@ -49,6 +50,7 @@ class Filters_Product_Permutation(Form_Base):
                 id_category={self.id_category.data}, 
                 id_product={self.id_product.data}, 
                 is_out_of_stock={self.is_out_of_stock.data}, 
+                active={self.active.data},
                 quantity_min={self.quantity_min.data}, 
                 quantity_max={self.quantity_max.data})
         '''
@@ -60,6 +62,7 @@ class Filters_Product_Permutation(Form_Base):
         form.id_product.choices = [(json[Store_Base.ATTR_ID_PRODUCT], json[Store_Base.ATTR_ID_PRODUCT])]
         form.id_product.data = json[Store_Base.ATTR_ID_PRODUCT]
         form.is_out_of_stock.data = av.input_bool(json[Store_Base.FLAG_IS_OUT_OF_STOCK], Store_Base.FLAG_IS_OUT_OF_STOCK, f'{cls.__name__}.from_json')
+        form.active.data = av.input_bool(json[Store_Base.FLAG_ACTIVE], Store_Base.FLAG_ACTIVE, f'{cls.__name__}.from_json')
         form.quantity_min.data = json[Store_Base.FLAG_QUANTITY_MIN]
         form.quantity_max.data = json[Store_Base.FLAG_QUANTITY_MAX]
         return form

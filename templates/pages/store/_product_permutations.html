@@ -42,6 +42,15 @@
         </div>
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
             <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
+                {{ model.form_filters.active.label }}
+                {{ model.form_filters.active() }}
+                {% for error in model.form_filters.active.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
+            <div class="{{ model.FLAG_CONTAINER_INPUT }} {{ model.FLAG_ROW }} {{ model.FLAG_FILTER }}">
                 {{ model.form_filters.quantity_min.label }}
                 {{ model.form_filters.quantity_min() }}
                 {% for error in model.form_filters.quantity_min.errors %}
