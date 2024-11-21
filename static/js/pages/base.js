@@ -114,18 +114,12 @@ export default class BasePage {
     hookupButtonsNavUserLogin() {
         this.hookupEventHandler("click", '.' + flagNavUserLogin, (event, navigator) => { 
             event.stopPropagation();
-            // this.router.navigateToHash(hashPageUserLogin);
-            /*
-            let dataRequest = {};
-            dataRequest[flagCallback] = hashPageCurrent;
-            console.log('sending data to user login controller: '); 
-            console.log(dataRequest);
-            */
-            // let page = this;
+            this.leave();
             API.loginUser()
                 .then((response) => {
                 if (response.Success) {
-                    this.router.navigateToUrl(response[flagCallback], null, false); // window.app.
+                    // this.router.navigateToUrl(response[flagCallback], null, false); // window.app.
+                    window.location.href = response[flagCallback];
                 } else {
                     DOM.alertError("Error", response.Message);
                 }

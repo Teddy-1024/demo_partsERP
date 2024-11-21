@@ -1094,17 +1094,11 @@ var BasePage = /*#__PURE__*/function () {
       var _this2 = this;
       this.hookupEventHandler("click", '.' + flagNavUserLogin, function (event, navigator) {
         event.stopPropagation();
-        // this.router.navigateToHash(hashPageUserLogin);
-        /*
-        let dataRequest = {};
-        dataRequest[flagCallback] = hashPageCurrent;
-        console.log('sending data to user login controller: '); 
-        console.log(dataRequest);
-        */
-        // let page = this;
+        _this2.leave();
         api_API.loginUser().then(function (response) {
           if (response.Success) {
-            _this2.router.navigateToUrl(response[flagCallback], null, false); // window.app.
+            // this.router.navigateToUrl(response[flagCallback], null, false); // window.app.
+            window.location.href = response[flagCallback];
           } else {
             DOM.alertError("Error", response.Message);
           }
@@ -2642,18 +2636,15 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       var changeHandler = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function (event, element) {
         _this14.handleChangeNestedElementCellTable(event, element);
       };
-      debugger;
       var row = DOM.getRowFromElement(element);
-      // row.classList.add(flagDelete);
       if (row.classList.contains(flagRowNew) && !DOM.hasDirtyChildrenContainer(row)) {
         row.parentNode.removeChild(row);
       }
-      var buttonAdd = element.cloneNode(false); // document.createElement("button");
+      var buttonAdd = element.cloneNode(false);
       buttonAdd.classList.remove(flagInitialised);
       buttonAdd.classList.remove(flagDelete);
       buttonAdd.classList.add(flagAdd);
       buttonAdd.textContent = '+';
-      // DOM.setElementAttributeValueCurrent(buttonAdd, false);
       element.replaceWith(buttonAdd);
       changeHandler(null, buttonAdd);
       this.hookupButtonsRowUndelete(selectorButtonDelete, selectorButtonUndelete, function (changeEvent, changeElement) {
@@ -2681,15 +2672,11 @@ var TableBasePage = /*#__PURE__*/function (_BasePage) {
       var changeHandler = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function (event, element) {
         _this16.handleChangeNestedElementCellTable(event, element);
       };
-      debugger;
-      // let row = DOM.getRowFromElement(element);
-      // row.classList.remove(flagDelete);
-      var buttonDelete = element.cloneNode(false); // document.createElement("button");
+      var buttonDelete = element.cloneNode(false);
       buttonDelete.classList.remove(flagInitialised);
       buttonDelete.classList.remove(flagAdd);
       buttonDelete.classList.add(flagDelete);
       buttonDelete.textContent = 'x';
-      // DOM.setElementAttributeValueCurrent(buttonDelete, true);
       element.replaceWith(buttonDelete);
       changeHandler(null, buttonDelete);
       this.hookupButtonsRowDelete(selectorButtonDelete, selectorButtonUndelete, function (changeEvent, changeElement) {
