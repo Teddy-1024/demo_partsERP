@@ -95,6 +95,7 @@ BEGIN
 		id_link INT NOT NULL PRIMARY KEY
 		, id_order INT NOT NULL
         , id_permutation INT NOT NULL
+        , id_product INT
 		-- , id_currency_cost INT NOT NULL
 		, quantity_ordered FLOAT NOT NULL
 		, id_unit_quantity INT NOT NULL
@@ -109,6 +110,7 @@ BEGIN
 		, has_order BIT NULL
 		, is_new BIT NOT NULL
 		, name_error VARCHAR(1000) NULL
+        , can_edit BIT
     );
     
 	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Msg_Error (
@@ -191,9 +193,11 @@ BEGIN
 		, RANK() OVER (PARTITION BY IFNULL(IFNULL(SPOPL_T.id_order, SPOPL.id_order), 0) ORDER BY IFNULL(IFNULL(SPOPL_T.display_order, SPOPL.display_order), 0)) AS display_order
 		, IFNULL(IFNULL(SPOPL_T.cost_total_local_VAT_excl, SPOPL.cost_total_local_VAT_excl), 0) AS cost_total_local_VAT_excl
 		, IFNULL(IFNULL(SPOPL_T.cost_total_local_VAT_incl, SPOPL.cost_total_local_VAT_incl), 0) AS cost_total_local_VAT_incl
-		, IFNULL(SPOPL_T.cost_total_local_VAT_excl / SPOPL_T.quantity_ordered, SPOPL.cost_unit_local_VAT_excl) AS cost_unit_local_VAT_excl
+		/*
+        , IFNULL(SPOPL_T.cost_total_local_VAT_excl / SPOPL_T.quantity_ordered, SPOPL.cost_unit_local_VAT_excl) AS cost_unit_local_VAT_excl
 		, IFNULL(SPOPL_T.cost_total_local_VAT_incl / SPOPL_T.quantity_ordered, SPOPL.cost_unit_local_VAT_incl) AS cost_unit_local_VAT_incl
-		, IFNULL(IFNULL(SPOPL_T.active, SPOPL.active), 1) AS active
+		*/
+        , IFNULL(IFNULL(SPOPL_T.active, SPOPL.active), 1) AS active
 		, NOT ISNULL(t_SPO.id_order) AS has_order
 	    , IFNULL(SPOPL_T.id_link, 0) < 1 AS is_new
 	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
@@ -203,13 +207,18 @@ BEGIN
 	;
     
     UPDATE tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-	INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T ON t_SPOPL.id_order = SPOPL_T.id_order
+	LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T 
+		ON t_SPOPL.id_link = SPOPL_T.id_link
+        AND t_SPOPL.GUID = a_guid
+	LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPOPL.id_link = SPOPL.id_link
+    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SPOPL.id_permutation = PP.id_permutation
     LEFT JOIN partsltd_prod.Shop_Product P ON SPOPL_T.id_product = P.id_product
     LEFT JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
 	SET 
-		name_error = CONCAT(
+		t_SPOPL.id_product = IFNULL(P.id_product, SPOPL_T.id_product)
+		, t_SPOPL.name_error = CONCAT(
 			CASE WHEN ISNULL(t_SPOPL.id_permutation) THEN
-				CASE WHEN ISNULL(SPOPL_T.id_product) THEN
+				CASE WHEN ISNULL(P.id_product) THEN
 					'(No Product Permutation)'
 				ELSE
 					CONCAT(
@@ -224,6 +233,10 @@ BEGIN
 			, ' - x'
 			, IFNULL(t_SPOPL.quantity_ordered, '(No Quantity)')
 		)
+        , t_SPOPL.cost_unit_local_VAT_excl = t_SPOPL.cost_total_local_VAT_excl / t_SPOPL.quantity_ordered
+		, t_SPOPL.cost_unit_local_VAT_incl = t_SPOPL.cost_total_local_VAT_incl / t_SPOPL.quantity_ordered
+        , t_SPOPL.delta_quantity_ordered = t_SPOPL.quantity_ordered - IFNULL(SPOPL.quantity_ordered, 0)
+        , t_SPOPL.delta_quantity_received = t_SPOPL.quantity_received - IFNULL(SPOPL.quantity_received, 0)
 	;
 	
 	INSERT INTO tmp_Supplier_Purchase_Order (
@@ -558,8 +571,37 @@ BEGIN
 	IF a_debug = 1 THEN
 		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
+    
+    UPDATE tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
+    INNER JOIN partsltd_prod.Shop_Calc_User_Temp CUT 
+		ON t_SPOPL.id_product = t_SPOPL.id_product
+        AND CUT.GUID = a_guid
+	SET
+		t_SPOPL.can_edit = CUT.can_edit
+	;
 	
-	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
+	IF EXISTS (SELECT * FROM tmp_Supplier_Purchase_Order_Product_Link WHERE can_edit = 0) THEN
+		INSERT INTO tmp_Msg_Error (
+			id_type
+			, code
+			, msg
+		)
+		SELECT
+			v_id_type_error_no_permission
+			, v_code_type_error_no_permission
+			, CONCAT(
+				'You do not permissions to edit the following Product(s): '
+				, GROUP_CONCAT(P.name SEPARATOR ', ') 
+			) AS msg
+		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
+        INNER JOIN partsltd_prod.Shop_Product P ON t_SPOPL.id_product = P.id_product
+        WHERE 
+			t_SPOPL.is_new = 0 
+            AND t_SPOPL.can_view = 0
+		;
+	END IF;
+	
+	IF EXISTS (SELECT * FROM tmp_Supplier_Purchase_Order_Product_Link WHERE is_new = 0 AND can_edit = 0 LIMIT 1) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -571,14 +613,16 @@ BEGIN
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
 			, CONCAT(
-				'You do not have view permissions for '
-				, GROUP_CONCAT(name SEPARATOR ', ') 
+				'You are missing the following permissions with access level '
+                , AL.name
+                , ': '
+				, GROUP_CONCAT(PERM.name SEPARATOR ', ') 
 			) AS msg
-		FROM partsltd_prod.Shop_Permission PERM
-		INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T 
-			ON PERM.id_permission = UE_T.id_permission
-			AND UE_T.GUID = a_guid
-			AND IFNULL(UE_T.can_view, 0) = 0
+		FROM partsltd_prod.Shop_Access_Level AL
+        CROSS JOIN partsltd_prod.Shop_Calc_User_Temp CU_T 
+			ON CU_T.GUID = a_guid
+            AND ISNULL(CU_T.id_product)
+			AND IFNULL(CU_T.can_edit, 0) = 0
 		;
 	END IF;
 
