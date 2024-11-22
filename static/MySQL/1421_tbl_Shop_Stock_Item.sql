@@ -1,6 +1,7 @@
 
 # Stock Stock Item
 
+-- DROP TABLE IF EXISTS Shop_Stock_Item_Audit;
 -- DROP TABLE IF EXISTS Shop_Stock_Item;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Stock_Item';
@@ -11,15 +12,15 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item (
 	, CONSTRAINT FK_Shop_Stock_Item_id_permutation
 		FOREIGN KEY (id_permutation)
 		REFERENCES partsltd_prod.Shop_Product_Permutation(id_permutation)
-	, id_supplier_purchase_order INT
+	, id_supplier_purchase_order INT NULL
 	, CONSTRAINT FK_Shop_Stock_Item_id_supplier_purchase_order
 		FOREIGN KEY (id_supplier_purchase_order)
 		REFERENCES partsltd_prod.Shop_Supplier_Purchase_Order(id_order)
-	, id_manufacturing_purchase_order INT
+	, id_manufacturing_purchase_order INT NULL
 	, CONSTRAINT FK_Shop_Stock_Item_id_manufacturing_purchase_order
 		FOREIGN KEY (id_manufacturing_purchase_order)
 		REFERENCES partsltd_prod.Shop_Manufacturing_Purchase_Order(id_order)
-	, id_customer_sales_order INT
+	, id_customer_sales_order INT NULL
 	, CONSTRAINT FK_Shop_Stock_Item_id_customer_sales_order
 		FOREIGN KEY (id_customer_sales_order)
 		REFERENCES partsltd_prod.Shop_Customer_Sales_Order(id_order)

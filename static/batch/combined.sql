@@ -1,6 +1,0 @@
-
-
--- File: combined.sql
-
-GO
-
