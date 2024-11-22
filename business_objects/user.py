@@ -159,9 +159,9 @@ class Parameters_User(Get_Many_Parameters_Base):
     def from_form(form):
         av.val_instance(form, 'form', 'Parameters_User.from_form', Form_Filters_User)
         get_inactive = av.input_bool(form.active.data, "active", "Parameters_User.from_form")
-        id_user = form.id_user.data
+        id_user = '' if form.id_user.data is None else form.id_user.data
         return Parameters_User(
-            get_all_user = (id_user is None),
+            get_all_user = (id_user == ''),
             get_inactive_user = get_inactive,
             ids_user = id_user,
             ids_user_auth0 = '',
@@ -173,7 +173,7 @@ class Parameters_User(Get_Many_Parameters_Base):
         return Parameters_User(
             get_all_user = ((user.id_user is None or user.id_user == 0) and user.id_user_auth0 is None),
             get_inactive_user = False,
-            ids_user = user.id_user,
+            ids_user = '' if user.id_user is None else str(user.id_user),
             ids_user_auth0 = user.id_user_auth0,
         )
     

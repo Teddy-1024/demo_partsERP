@@ -27,6 +27,7 @@ $output = New-Object System.Text.StringBuilder
 Get-ChildItem -Path $sourceFolder -Filter $filePattern -File | 
     Where-Object { $_.Name -notin $excludeFiles -and $_.Name -ne $outputFileName } | 
     ForEach-Object {
+        Write-Host "Processing file: $($_.Name)"
         [void]$output.AppendLine("-- File: $($_.Name)")
         # Read file content and remove BOM if present
         $content = [System.IO.File]::ReadAllBytes($_.FullName)

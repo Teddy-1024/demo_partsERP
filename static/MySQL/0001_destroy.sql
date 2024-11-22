@@ -67,6 +67,18 @@ DROP TABLE IF EXISTS Shop_Customer_Sales_Order_Product_Link_Temp;
 DROP TABLE IF EXISTS Shop_Customer_Sales_Order_Product_Link_Audit;
 DROP TABLE IF EXISTS Shop_Customer_Sales_Order_Product_Link;
 
+DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
+DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Audit;
+DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link;
+
+DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link_Temp;
+DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link_Audit;
+DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link;
+
+DROP TABLE IF EXISTS Shop_Stock_Item_Temp;
+DROP TABLE IF EXISTS Shop_Stock_Item_Audit;
+DROP TABLE IF EXISTS Shop_Stock_Item;
+
 DROP TABLE IF EXISTS Shop_Customer_Sales_Order_Audit;
 DROP TABLE IF EXISTS Shop_Customer_Sales_Order;
 
@@ -74,17 +86,9 @@ DROP TABLE IF EXISTS Shop_Customer_Temp;
 DROP TABLE IF EXISTS Shop_Customer_Audit;
 DROP TABLE IF EXISTS Shop_Customer;
 
-DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
-DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Audit;
-DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Product_Link;
-
 DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Temp;
 DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order_Audit;
 DROP TABLE IF EXISTS Shop_Manufacturing_Purchase_Order;
-
-DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link_Temp;
-DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link_Audit;
-DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Product_Link;
 
 DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Temp;
 DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Audit;
@@ -156,10 +160,6 @@ DROP TABLE IF EXISTS Shop_Image;
 DROP TABLE IF EXISTS Shop_Product_Price_Temp;
 DROP TABLE IF EXISTS Shop_Product_Price_Audit;
 DROP TABLE IF EXISTS Shop_Product_Price;
-
-DROP TABLE IF EXISTS Shop_Stock_Item_Temp;
-DROP TABLE IF EXISTS Shop_Stock_Item_Audit;
-DROP TABLE IF EXISTS Shop_Stock_Item;
 
 DROP TABLE IF EXISTS Shop_Product_Currency_Region_Link_Audit;
 DROP TABLE IF EXISTS Shop_Product_Currency_Region_Link;

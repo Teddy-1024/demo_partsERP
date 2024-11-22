@@ -56,14 +56,6 @@ def login():
     try:
         Helper_App.console_log('login')
         Helper_App.console_log(f'method={request.method}')
-        """
-        if request.method == 'OPTIONS':
-            # Handle preflight request
-            response = current_app.make_default_options_response()
-            response.headers['Access-Control-Allow-Headers'] = f'Content-Type, {Model_View_Base.FLAG_CSRF_TOKEN}'
-            response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-            return response
-        """
         try:
             data = request.json
             try:
@@ -127,6 +119,7 @@ def login():
 @routes_user.route("/login_callback") # <path:subpath>/<code>
 @handle_db_disconnect
 def login_callback():
+    Helper_App.console_log('login_callback')
     try:
         error_state = request.args.get(Model_View_User.FLAG_ERROR_OAUTH)
         has_error = error_state is not None
@@ -154,6 +147,7 @@ def login_callback():
         Helper_App.console_log(f'user ID: {id_user}')
         """
         user = User.from_json_auth0(token) # datastore_user.get_user_auth0()
+        Helper_App.console_log(f'user: {user}')
         filters = Parameters_User.from_user(user)
         datastore_user = DataStore_User()
         users, errors = datastore_user.get_many_user(filters, user)
@@ -197,7 +191,6 @@ def logout():
         }# ,
         # quote_via=quote_plus,
     )
-    current_app.logger.debug(f"Redirecting to {url_logout}")
     Helper_App.console_log(f"Redirecting to {url_logout}")
     return redirect(url_logout)
 
