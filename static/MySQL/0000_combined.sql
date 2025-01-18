@@ -8664,6 +8664,84 @@ from shop_unit_measurement
 */
 
 
+-- File: 7200_p_shop_save_product_category_test.sql
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_category_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_product_category_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Category
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Category_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO partsltd_prod.Shop_Product_Category_Temp (
+			id_category
+            , name
+            , code
+            , description
+            , id_access_level_required
+            , display_order
+            , guid
+		)
+		VALUES (
+			-5 -- id_category
+			, 'Nips' -- name
+			, 'Lips' -- code
+			, 'Chips' -- description
+			, 2 -- id_access_level_required
+			, 25 -- display_order
+			, v_guid
+		);
+		
+	COMMIT;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Category_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL partsltd_prod.p_shop_save_product_category ( 
+		'Test save product category' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Category
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Category_Temp
+	;
+    
+	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;;
+
+/*
+CALL partsltd_prod.p_shop_save_product_category_test ();
+
+DELETE FROM partsltd_prod.Shop_Product_Category_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+*/
+
+
 -- File: 7200_p_shop_save_product_category.sql
 
 
@@ -9018,84 +9096,6 @@ from partsltd_prod.Shop_Product_Category_Temp
 */
 
 
--- File: 7200_p_shop_save_product_category_test.sql
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_category_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_product_category_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Product_Category_Temp (
-			id_category
-            , name
-            , code
-            , description
-            , id_access_level_required
-            , display_order
-            , guid
-		)
-		VALUES (
-			-5 -- id_category
-			, 'Nips' -- name
-			, 'Lips' -- code
-			, 'Chips' -- description
-			, 2 -- id_access_level_required
-			, 25 -- display_order
-			, v_guid
-		);
-		
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_product_category ( 
-		'Test save product category' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category_Temp
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;;
-
-/*
-CALL partsltd_prod.p_shop_save_product_category_test ();
-
-DELETE FROM partsltd_prod.Shop_Product_Category_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-*/
-
-
 -- File: 7202_p_shop_clear_calc_product_permutation.sql
 
 -- Clear previous proc
@@ -9150,6 +9150,101 @@ WHERE GUID = a_guid
 
 */
 
+
+-- File: 7203_p_shop_save_product_test.sql
+
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_product_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM partsltd_prod.Shop_Product
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO partsltd_prod.Shop_Product_Temp (
+			id_product
+			, id_category
+			, name
+			, has_variations
+			, id_access_level_required
+			, display_order
+			, active
+			, guid
+		)
+		VALUES 
+        /* Test 1 - Update
+        (
+			4 -- id_product
+			, 1 -- id_category
+			, 'Laptops' -- name
+			, 0 -- has_variations
+			, 2 -- id_access_level_required
+			, 2 -- display_order
+			, 1 -- active
+			, v_guid
+		)
+        */
+        /* Test 2 - Insert */
+        (
+			-14 -- id_product
+			, 5 -- id_category
+			, 'Clip' -- name
+			, 0 -- has_variations
+			, 1 -- id_access_level_required
+			, 1 -- display_order
+			, 1 -- active
+			, v_guid
+		)
+        ;
+		
+	COMMIT;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL partsltd_prod.p_shop_save_product ( 
+		'Test save product' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Product
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Temp
+	;
+    
+	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;;
+
+/*
+CALL partsltd_prod.p_shop_save_product_test ();
+
+DELETE FROM partsltd_prod.Shop_Product_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+*/
 
 -- File: 7203_p_shop_save_product.sql
 
@@ -9501,101 +9596,6 @@ END //
 DELIMITER ;;
 
 
-
--- File: 7203_p_shop_save_product_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_product_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Product
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Product_Temp (
-			id_product
-			, id_category
-			, name
-			, has_variations
-			, id_access_level_required
-			, display_order
-			, active
-			, guid
-		)
-		VALUES 
-        /* Test 1 - Update
-        (
-			4 -- id_product
-			, 1 -- id_category
-			, 'Laptops' -- name
-			, 0 -- has_variations
-			, 2 -- id_access_level_required
-			, 2 -- display_order
-			, 1 -- active
-			, v_guid
-		)
-        */
-        /* Test 2 - Insert */
-        (
-			-14 -- id_product
-			, 5 -- id_category
-			, 'Clip' -- name
-			, 0 -- has_variations
-			, 1 -- id_access_level_required
-			, 1 -- display_order
-			, 1 -- active
-			, v_guid
-		)
-        ;
-		
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_product ( 
-		'Test save product' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;;
-
-/*
-CALL partsltd_prod.p_shop_save_product_test ();
-
-DELETE FROM partsltd_prod.Shop_Product_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-*/
 
 -- File: 7204_p_shop_calc_product_permutation.sql
 -- USE partsltd_prod;
@@ -10681,7 +10681,7 @@ BEGIN
         PP.does_expire_faster_once_unsealed,
         PP.id_unit_measurement_interval_expiration_unsealed,
         UM_X.symbol AS symbol_unit_measurement_interval_expiration_unsealed,
-        UM_X.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed,
+        UM_X.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_interval_expiration_unsealed,
         UM_X.name_singular AS name_singular_unit_measurement_interval_expiration_unsealed,
         UM_X.name_plural AS name_plural_unit_measurement_interval_expiration_unsealed,
         PP.count_interval_expiration_unsealed,
@@ -11148,6 +11148,179 @@ CALL p_shop_calc_user (
         
 */
 
+
+-- File: 7206_p_shop_save_product_permutation_test.sql
+
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_permutation_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_product_permutation_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO partsltd_prod.Shop_Product_Permutation_Temp (
+			id_permutation
+			, id_product
+            , csv_id_pairs_variation
+            , description
+			, cost_local_VAT_excl
+			, cost_local_VAT_incl
+			, id_currency_cost
+			, profit_local_min 
+			, latency_manufacture
+			, id_unit_measurement_quantity
+			, count_unit_measurement_per_quantity_step
+			, quantity_min
+			, quantity_max
+			, quantity_stock
+			, is_subscription
+			, id_unit_measurement_interval_recurrence
+			, count_interval_recurrence
+			, id_stripe_product
+			, does_expire_faster_once_unsealed
+			, id_unit_measurement_interval_expiration_unsealed
+			, count_interval_expiration_unsealed
+			, active
+			, guid
+		)
+		VALUES 
+        /* Test 1 - Insert 
+        (
+			-1 -- id_permutation
+			, 5 -- id_product
+            , '' -- csv_id_pairs_variation
+            , 'Hair clip' -- description
+            , NULL -- cost_local_VAT_excl
+            , NULL -- cost_local_VAT_incl
+            , 1 -- id_currency_cost
+            , NULL -- profit_local_min
+            , 1 -- latency_manufacture
+            , 3 -- id_unit_measurement_quantity
+            , 1 -- count_unit_measurement_per_quantity_step
+            , 0 -- quantity_min
+            , 0 -- quantity_max
+            , 2 -- quantity_stock
+            , FALSE -- is_subscription
+            , NULL -- id_unit_measurement_interval_recurrence
+            , NULL -- count_interval_recurrence
+            , NULL -- id_stripe_product
+            , FALSE -- does_expire_faster_once_unsealed
+            , NULL -- id_unit_measurement_interval_expiration_unsealed
+            , NULL -- count_interval_expiration_unsealed
+			, 1 -- active
+			, v_guid
+		)
+        */
+        /* Test 2 - Update
+        (
+			4 -- id_product
+			, 1 -- id_category
+			, 'Laptops' -- name
+			, 0 -- has_variations
+			, 2 -- id_access_level_required
+			, 2 -- display_order
+			, 1 -- active
+			, v_guid
+		)
+        */
+        /* Test 3 - Insert with Variations */
+        (
+			-1 -- id_permutation
+			, 1 -- id_product
+            , '1:3' -- csv_id_pairs_variation
+            , 'Good Green' -- description
+            , NULL -- cost_local_VAT_excl
+            , NULL -- cost_local_VAT_incl
+            , 1 -- id_currency_cost
+            , NULL -- profit_local_min
+            , 1 -- latency_manufacture
+            , 3 -- id_unit_measurement_quantity
+            , 1 -- count_unit_measurement_per_quantity_step
+            , 0 -- quantity_min
+            , 0 -- quantity_max
+            , 2 -- quantity_stock
+            , FALSE -- is_subscription
+            , NULL -- id_unit_measurement_interval_recurrence
+            , NULL -- count_interval_recurrence
+            , NULL -- id_stripe_product
+            , TRUE -- does_expire_faster_once_unsealed
+            , 8 -- id_unit_measurement_interval_expiration_unsealed
+            , 2 -- count_interval_expiration_unsealed
+			, 1 -- active
+			, v_guid
+		)
+        ;
+		
+	COMMIT;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL partsltd_prod.p_shop_save_product_permutation ( 
+		'Test save product' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Temp
+	;
+    
+	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;;
+
+CALL partsltd_prod.p_shop_save_product_permutation_test ();
+
+DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+
+/*
+DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
+WHERE id_link >= 3
+;
+DELETE FROM partsltd_prod.Shop_Product_Permutation
+WHERE id_permutation >= 7
+;
+
+	SELECT *
+	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Variation
+	;
+*/
 
 -- File: 7206_p_shop_save_product_permutation.sql
 
@@ -11896,179 +12069,6 @@ select * from shop_unit_measurement;
 
 
 
--- File: 7206_p_shop_save_product_permutation_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_permutation_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_product_permutation_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Product_Permutation_Temp (
-			id_permutation
-			, id_product
-            , csv_id_pairs_variation
-            , description
-			, cost_local_VAT_excl
-			, cost_local_VAT_incl
-			, id_currency_cost
-			, profit_local_min 
-			, latency_manufacture
-			, id_unit_measurement_quantity
-			, count_unit_measurement_per_quantity_step
-			, quantity_min
-			, quantity_max
-			, quantity_stock
-			, is_subscription
-			, id_unit_measurement_interval_recurrence
-			, count_interval_recurrence
-			, id_stripe_product
-			, does_expire_faster_once_unsealed
-			, id_unit_measurement_interval_expiration_unsealed
-			, count_interval_expiration_unsealed
-			, active
-			, guid
-		)
-		VALUES 
-        /* Test 1 - Insert 
-        (
-			-1 -- id_permutation
-			, 5 -- id_product
-            , '' -- csv_id_pairs_variation
-            , 'Hair clip' -- description
-            , NULL -- cost_local_VAT_excl
-            , NULL -- cost_local_VAT_incl
-            , 1 -- id_currency_cost
-            , NULL -- profit_local_min
-            , 1 -- latency_manufacture
-            , 3 -- id_unit_measurement_quantity
-            , 1 -- count_unit_measurement_per_quantity_step
-            , 0 -- quantity_min
-            , 0 -- quantity_max
-            , 2 -- quantity_stock
-            , FALSE -- is_subscription
-            , NULL -- id_unit_measurement_interval_recurrence
-            , NULL -- count_interval_recurrence
-            , NULL -- id_stripe_product
-            , FALSE -- does_expire_faster_once_unsealed
-            , NULL -- id_unit_measurement_interval_expiration_unsealed
-            , NULL -- count_interval_expiration_unsealed
-			, 1 -- active
-			, v_guid
-		)
-        */
-        /* Test 2 - Update
-        (
-			4 -- id_product
-			, 1 -- id_category
-			, 'Laptops' -- name
-			, 0 -- has_variations
-			, 2 -- id_access_level_required
-			, 2 -- display_order
-			, 1 -- active
-			, v_guid
-		)
-        */
-        /* Test 3 - Insert with Variations */
-        (
-			-1 -- id_permutation
-			, 1 -- id_product
-            , '1:3' -- csv_id_pairs_variation
-            , 'Good Green' -- description
-            , NULL -- cost_local_VAT_excl
-            , NULL -- cost_local_VAT_incl
-            , 1 -- id_currency_cost
-            , NULL -- profit_local_min
-            , 1 -- latency_manufacture
-            , 3 -- id_unit_measurement_quantity
-            , 1 -- count_unit_measurement_per_quantity_step
-            , 0 -- quantity_min
-            , 0 -- quantity_max
-            , 2 -- quantity_stock
-            , FALSE -- is_subscription
-            , NULL -- id_unit_measurement_interval_recurrence
-            , NULL -- count_interval_recurrence
-            , NULL -- id_stripe_product
-            , TRUE -- does_expire_faster_once_unsealed
-            , 8 -- id_unit_measurement_interval_expiration_unsealed
-            , 2 -- count_interval_expiration_unsealed
-			, 1 -- active
-			, v_guid
-		)
-        ;
-		
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_product_permutation ( 
-		'Test save product' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;;
-
-CALL partsltd_prod.p_shop_save_product_permutation_test ();
-
-DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-
-/*
-DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
-WHERE id_link >= 3
-;
-DELETE FROM partsltd_prod.Shop_Product_Permutation
-WHERE id_permutation >= 7
-;
-
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation
-	;
-*/
-
 -- File: 7210_p_shop_get_many_product_variation.sql
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
@@ -12486,6 +12486,194 @@ insert into shop_product_change_set (comment)
 			WHERE t_VT.rank_type > 1
 			;
 		END IF;
+*/
+
+-- File: 7212_p_shop_save_product_variation_test.sql
+
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_variation_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_product_variation_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM partsltd_prod.Shop_Variation_Type
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Variation_Type_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Variation
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Variation_Temp
+	;
+    
+	START TRANSACTION;
+    
+		DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
+		DELETE FROM partsltd_prod.Shop_Variation_Temp;
+
+		INSERT INTO partsltd_prod.Shop_Variation_Type_Temp (
+			id_type
+            -- , id_type_temp
+            , code
+            , name
+            , name_plural
+            , display_order
+            , active
+            , GUID
+		)
+        /* Test 1 - Insert 
+        VALUES (
+			-1
+            -- , -1
+            , 'SIZE'
+            , 'Size'
+            , 'Sizes'
+            , 2
+            , 1
+            , v_guid
+        )
+        */
+        /* Test 2: Alter */
+        SELECT
+			id_type
+            -- , id_type AS id_type_temp
+            , code
+            , name
+            , name_plural
+            , display_order
+            , active
+            , v_guid AS GUID
+		FROM partsltd_prod.Shop_Variation_Type
+        WHERE id_type = 1
+		;
+        
+		INSERT INTO partsltd_prod.Shop_Variation_Temp (
+			id_variation
+            , id_type
+            , code
+            , name
+            , display_order
+            , active
+            , GUID
+		)
+        /* Test 1 - Insert 
+        VALUES (
+			-1 -- id_variation
+            , -1 -- id_type
+            , '300 mL' -- code
+            , '300 millilitres' -- name
+            , 1 -- display_order
+            , 1 -- active
+            , v_guid -- 
+        )
+        */
+        /* Test 3 - Insert 
+        VALUES (
+			-1 -- id_variation
+            , 1 -- id_type
+            , 'SILVER' -- code
+            , 'Silver' -- name
+            , 10 -- display_order
+            , 1 -- active
+            , 'NIPS' -- v_guid -- 
+        );
+        */
+        /* Test 2: Alter */
+        SELECT
+			id_variation
+            , id_type
+            , code
+            , name
+            , display_order
+            , active
+            , v_guid AS GUID
+		FROM partsltd_prod.Shop_Variation
+        WHERE id_variation = 2
+        UNION
+        SELECT
+			-1 -- id_variation
+            , 1 -- id_type
+            , 'GREEN' -- code
+            , 'Green' -- name
+            , 3 -- display_order
+            , 1 -- active
+            , v_guid -- 
+        ;
+        
+	COMMIT;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Variation_Type_Temp
+	WHERE GUID = v_guid
+    ;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Variation_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL partsltd_prod.p_shop_save_product_variation ( 
+		'Test save Variations - add + edit' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Variation_Type_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Variation_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Variation_Type
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Variation
+	;
+    
+	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;;
+
+/*
+CALL partsltd_prod.p_shop_save_product_variation_test ();
+
+DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
+DELETE FROM partsltd_prod.Shop_Variation_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+
+delete from shop_variation_audit
+where id_variation = 3
+;
+delete from shop_variation_audit
+where id_variation = 3
+;
+delete from shop_variation_type_audit
+where id_type = -1
+;
+delete
+-- select *
+ from shop_variation_type
+where id_type = -1
+;
+
+Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_variation_type`, CONSTRAINT `FK_Shop_Variation_Type_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`))
+
 */
 
 -- File: 7212_p_shop_save_product_variation.sql
@@ -13041,194 +13229,6 @@ DELIMITER ;;
 
 
 
-
--- File: 7212_p_shop_save_product_variation_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_variation_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_product_variation_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
-	;
-    
-	START TRANSACTION;
-    
-		DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
-		DELETE FROM partsltd_prod.Shop_Variation_Temp;
-
-		INSERT INTO partsltd_prod.Shop_Variation_Type_Temp (
-			id_type
-            -- , id_type_temp
-            , code
-            , name
-            , name_plural
-            , display_order
-            , active
-            , GUID
-		)
-        /* Test 1 - Insert 
-        VALUES (
-			-1
-            -- , -1
-            , 'SIZE'
-            , 'Size'
-            , 'Sizes'
-            , 2
-            , 1
-            , v_guid
-        )
-        */
-        /* Test 2: Alter */
-        SELECT
-			id_type
-            -- , id_type AS id_type_temp
-            , code
-            , name
-            , name_plural
-            , display_order
-            , active
-            , v_guid AS GUID
-		FROM partsltd_prod.Shop_Variation_Type
-        WHERE id_type = 1
-		;
-        
-		INSERT INTO partsltd_prod.Shop_Variation_Temp (
-			id_variation
-            , id_type
-            , code
-            , name
-            , display_order
-            , active
-            , GUID
-		)
-        /* Test 1 - Insert 
-        VALUES (
-			-1 -- id_variation
-            , -1 -- id_type
-            , '300 mL' -- code
-            , '300 millilitres' -- name
-            , 1 -- display_order
-            , 1 -- active
-            , v_guid -- 
-        )
-        */
-        /* Test 3 - Insert 
-        VALUES (
-			-1 -- id_variation
-            , 1 -- id_type
-            , 'SILVER' -- code
-            , 'Silver' -- name
-            , 10 -- display_order
-            , 1 -- active
-            , 'NIPS' -- v_guid -- 
-        );
-        */
-        /* Test 2: Alter */
-        SELECT
-			id_variation
-            , id_type
-            , code
-            , name
-            , display_order
-            , active
-            , v_guid AS GUID
-		FROM partsltd_prod.Shop_Variation
-        WHERE id_variation = 2
-        UNION
-        SELECT
-			-1 -- id_variation
-            , 1 -- id_type
-            , 'GREEN' -- code
-            , 'Green' -- name
-            , 3 -- display_order
-            , 1 -- active
-            , v_guid -- 
-        ;
-        
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
-	WHERE GUID = v_guid
-    ;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_product_variation ( 
-		'Test save Variations - add + edit' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;;
-
-/*
-CALL partsltd_prod.p_shop_save_product_variation_test ();
-
-DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
-DELETE FROM partsltd_prod.Shop_Variation_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-
-delete from shop_variation_audit
-where id_variation = 3
-;
-delete from shop_variation_audit
-where id_variation = 3
-;
-delete from shop_variation_type_audit
-where id_type = -1
-;
-delete
--- select *
- from shop_variation_type
-where id_type = -1
-;
-
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_variation_type`, CONSTRAINT `FK_Shop_Variation_Type_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`))
-
-*/
 
 -- File: 7219_p_shop_get_many_stock_item.sql
 
@@ -14008,6 +14008,109 @@ insert into shop_product_change_set (comment)
 */
 
 
+-- File: 7220_p_shop_save_stock_item_test.sql
+
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_stock_item_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_stock_item_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM partsltd_prod.Shop_Stock_Item
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Stock_Item_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO partsltd_prod.Shop_Stock_Item_Temp (
+			id_stock
+			-- id_category
+			, id_product
+			, id_permutation
+			, id_pairs_variations
+			-- , has_variations
+			, date_purchased
+			, date_received
+			, id_location_storage
+			, id_currency_cost
+			, cost_local_VAT_excl
+			, cost_local_VAT_incl
+			, is_sealed
+			, date_unsealed
+			, date_expiration
+			, is_consumed
+			, date_consumed
+			, active
+			, guid
+		)
+		VALUES (
+			-1 -- id_stock
+			-- 1 -- id_category
+			, 4 -- id_product
+            , NULL -- id_permutation
+            , NULL -- id_pairs_variations
+            -- , FALSE -- 0 -- has_variations
+			, '2025-09-05 00:00' -- date_purchased
+			, NULL -- date_received
+			, 1 -- id_location_storage
+			, 1 -- id_currency_cost
+			, 10 -- cost_local_VAT_excl
+			, 12  -- cost_local_VAT_incl
+			, 1 -- is_sealed
+			, NULL -- date_unsealed
+			, NULL -- date_expiration
+			, FALSE -- 0 -- is_consumed
+			, NULL -- date_consumed
+			, 1 -- active
+			, v_guid
+		);
+		
+	COMMIT;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Stock_Item_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL partsltd_prod.p_shop_save_Stock_Item ( 
+		'Test save Stock_Item' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 0 -- debug
+    );
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Stock_Item
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Stock_Item_Temp
+	;
+    
+	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;;
+
+CALL partsltd_prod.p_shop_save_stock_item_test ();
+
+DELETE FROM partsltd_prod.Shop_Stock_Item_Temp;
+
+/*
+update shop_product p set p.has_variations = 0 where id_product = 4
+DROP TABLE IF EXISTS tmp_Msg_Error;
+*/
+
 -- File: 7220_p_shop_save_stock_item.sql
 
 
@@ -14712,109 +14815,6 @@ WHERE id_permutation = 1;
 */
 
 
-
--- File: 7220_p_shop_save_stock_item_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_stock_item_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_stock_item_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Stock_Item_Temp (
-			id_stock
-			-- id_category
-			, id_product
-			, id_permutation
-			, id_pairs_variations
-			-- , has_variations
-			, date_purchased
-			, date_received
-			, id_location_storage
-			, id_currency_cost
-			, cost_local_VAT_excl
-			, cost_local_VAT_incl
-			, is_sealed
-			, date_unsealed
-			, date_expiration
-			, is_consumed
-			, date_consumed
-			, active
-			, guid
-		)
-		VALUES (
-			-1 -- id_stock
-			-- 1 -- id_category
-			, 4 -- id_product
-            , NULL -- id_permutation
-            , NULL -- id_pairs_variations
-            -- , FALSE -- 0 -- has_variations
-			, '2025-09-05 00:00' -- date_purchased
-			, NULL -- date_received
-			, 1 -- id_location_storage
-			, 1 -- id_currency_cost
-			, 10 -- cost_local_VAT_excl
-			, 12  -- cost_local_VAT_incl
-			, 1 -- is_sealed
-			, NULL -- date_unsealed
-			, NULL -- date_expiration
-			, FALSE -- 0 -- is_consumed
-			, NULL -- date_consumed
-			, 1 -- active
-			, v_guid
-		);
-		
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_Stock_Item ( 
-		'Test save Stock_Item' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 0 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item_Temp
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;;
-
-CALL partsltd_prod.p_shop_save_stock_item_test ();
-
-DELETE FROM partsltd_prod.Shop_Stock_Item_Temp;
-
-/*
-update shop_product p set p.has_variations = 0 where id_product = 4
-DROP TABLE IF EXISTS tmp_Msg_Error;
-*/
 
 -- File: 7221_p_get_many_shop_product_price_and_discount_and_delivery_option.sql
 -- USE partsltd_prod;
@@ -17727,6 +17727,175 @@ CALL p_shop_edit_user_basket (
 */
 
 
+-- File: 7400_p_shop_save_supplier_temp.sql
+
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_supplier_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_supplier_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Address
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Address_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO partsltd_prod.Shop_Supplier_Temp (
+			id_supplier
+			, id_currency
+			, name_company
+			, name_contact
+			, department_contact
+			, phone_number
+			, fax
+			, email
+			, website
+			, active
+			, guid
+		)
+        /* Test 1 - Insert 
+		VALUES (
+			-3
+            , 1
+            , 'Asda'
+            , ''
+            , NULL
+            , ''
+            , '123'
+            , 'test mail'
+            , 'test url'
+			, 1 -- active
+			, v_guid
+		)
+        */
+        /* Test 2 - Update */
+        SELECT
+			id_supplier
+			, id_currency
+			, name_company
+			, 'Nat' AS name_contact
+			, 'Butchery' AS department_contact
+			, phone_number
+			, fax
+			, email
+			, website
+			, active
+			, v_guid
+		FROM partsltd_prod.Shop_Supplier S
+        WHERE S.id_supplier = 2
+        ;
+		
+        /*
+		INSERT INTO partsltd_prod.Shop_Supplier_Address_Temp (
+			id_address
+            , id_supplier
+			, id_region
+			, postcode
+			, address_line_1
+			, address_line_2
+			, city
+			, county
+            , active
+            , GUID
+        )
+        / Test 1 - Insert 
+        VALUES (
+			-4
+			, -3
+            , 1
+            , 'test postcode'
+            , 'test'
+            , 'test'
+            , 'test'
+            , 'cunty'
+            , 1
+            , v_guid
+        )
+        /
+        / Test 2 - Update /
+        SELECT
+			id_address
+            , id_supplier
+			, id_region
+			, postcode
+			, address_line_1
+			, address_line_2
+			, city
+			, county
+            , active
+			, v_guid
+		FROM partsltd_prod.Shop_Supplier_Address SA
+        WHERE SA.id_supplier = 2
+        ;
+        */
+        
+	COMMIT;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Temp
+	WHERE GUID = v_guid
+    ;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Address_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL partsltd_prod.p_shop_save_supplier ( 
+		'Test save Supplier' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Address_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Address
+	;
+    
+	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;;
+
+/*
+CALL partsltd_prod.p_shop_save_supplier_test ();
+
+DELETE FROM partsltd_prod.Shop_Supplier_Temp;
+DELETE FROM partsltd_prod.Shop_Supplier_Address_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier`, CONSTRAINT `FK_Shop_Supplier_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_sales_and_purchasing_change_set` (`id_change_set`))
+
+*/
+
 -- File: 7400_p_shop_save_supplier.sql
 
 
@@ -18325,175 +18494,6 @@ delete from shop_supplier where id_supplier = 9;
 delete from shop_supplier_address_audit where id_address = -4;
 delete from shop_supplier_address where id_address = -4;
 
--- File: 7400_p_shop_save_supplier_temp.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_supplier_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_supplier_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Supplier_Temp (
-			id_supplier
-			, id_currency
-			, name_company
-			, name_contact
-			, department_contact
-			, phone_number
-			, fax
-			, email
-			, website
-			, active
-			, guid
-		)
-        /* Test 1 - Insert 
-		VALUES (
-			-3
-            , 1
-            , 'Asda'
-            , ''
-            , NULL
-            , ''
-            , '123'
-            , 'test mail'
-            , 'test url'
-			, 1 -- active
-			, v_guid
-		)
-        */
-        /* Test 2 - Update */
-        SELECT
-			id_supplier
-			, id_currency
-			, name_company
-			, 'Nat' AS name_contact
-			, 'Butchery' AS department_contact
-			, phone_number
-			, fax
-			, email
-			, website
-			, active
-			, v_guid
-		FROM partsltd_prod.Shop_Supplier S
-        WHERE S.id_supplier = 2
-        ;
-		
-        /*
-		INSERT INTO partsltd_prod.Shop_Supplier_Address_Temp (
-			id_address
-            , id_supplier
-			, id_region
-			, postcode
-			, address_line_1
-			, address_line_2
-			, city
-			, county
-            , active
-            , GUID
-        )
-        / Test 1 - Insert 
-        VALUES (
-			-4
-			, -3
-            , 1
-            , 'test postcode'
-            , 'test'
-            , 'test'
-            , 'test'
-            , 'cunty'
-            , 1
-            , v_guid
-        )
-        /
-        / Test 2 - Update /
-        SELECT
-			id_address
-            , id_supplier
-			, id_region
-			, postcode
-			, address_line_1
-			, address_line_2
-			, city
-			, county
-            , active
-			, v_guid
-		FROM partsltd_prod.Shop_Supplier_Address SA
-        WHERE SA.id_supplier = 2
-        ;
-        */
-        
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Temp
-	WHERE GUID = v_guid
-    ;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_supplier ( 
-		'Test save Supplier' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;;
-
-/*
-CALL partsltd_prod.p_shop_save_supplier_test ();
-
-DELETE FROM partsltd_prod.Shop_Supplier_Temp;
-DELETE FROM partsltd_prod.Shop_Supplier_Address_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier`, CONSTRAINT `FK_Shop_Supplier_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_sales_and_purchasing_change_set` (`id_change_set`))
-
-*/
-
 -- File: 7401_p_shop_get_many_supplier.sql
 
 
@@ -18756,6 +18756,163 @@ CALL p_shop_get_many_supplier (
 	, '' # a_ids_supplier
     , 0 # a_debug
 );
+
+*/
+
+-- File: 7403_p_shop_save_supplier_purchase_order_test.sql
+
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_supplier_purchase_order_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_supplier_purchase_order_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
+	;
+    
+	START TRANSACTION;
+    
+		DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp;
+		DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp;
+
+		INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order_Temp (
+			id_order
+			, id_supplier_ordered
+			, id_currency_cost
+            , active
+            , GUID
+		)
+        /* Test 1 - Insert */
+        VALUES (
+			-1
+            , 1
+            , 1
+            , 1
+            , v_guid
+        )
+        /* Test 2 - Update
+        SELECT 
+			id_order
+			, id_supplier_ordered
+			, id_currency_cost
+            , active
+            , v_guid
+		FROM partsltd_prod.Shop_Supplier_Purchase_Order
+        WHERE id_order = 6
+        */
+		;
+		INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp (
+			id_link
+			, id_order
+			, id_permutation
+			, id_unit_quantity
+			, quantity_ordered
+			, quantity_received
+			, latency_delivery_days
+			, display_order
+			, active
+			, cost_total_local_VAT_excl
+			, cost_total_local_VAT_incl
+            , GUID
+		)
+        /* Test 1 - Insert */
+        VALUES (
+			-1
+            , -1
+            , 3
+            , 3
+            , 3
+            , 1
+            , 7
+            , 1
+            , 1
+            , 5
+            , 6
+            , v_guid
+        )
+        /* Test 2 - Update
+        SELECT
+			id_link
+			, id_order
+			, id_permutation
+			, id_unit_quantity
+			, 5 AS quantity_ordered
+			, quantity_received
+			, latency_delivery_days
+			, display_order
+			, active
+			, cost_total_local_VAT_excl
+			, cost_total_local_VAT_incl
+            , v_guid
+		FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
+        WHERE id_order = 6
+        */
+        ;
+        
+	COMMIT;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
+	WHERE GUID = v_guid
+    ;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL partsltd_prod.p_shop_save_supplier_purchase_order ( 
+		'Test save Supplier Purchase Order' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
+	;
+    
+	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;;
+
+/*
+CALL partsltd_prod.p_shop_save_supplier_purchase_order_test ();
+
+DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp;
+DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier_address`, CONSTRAINT `FK_Shop_Supplier_Address_id_supplier` FOREIGN KEY (`id_supplier`) REFERENCES `shop_supplier` (`id_supplier`) ON UPDATE RESTRICT)
 
 */
 
@@ -19662,163 +19819,6 @@ DELETE FROM Shop_Supplier_Purchase_Order;
 
 
 
--- File: 7403_p_shop_save_supplier_purchase_order_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_supplier_purchase_order_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_supplier_purchase_order_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
-	;
-    
-	START TRANSACTION;
-    
-		DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp;
-		DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp;
-
-		INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order_Temp (
-			id_order
-			, id_supplier_ordered
-			, id_currency_cost
-            , active
-            , GUID
-		)
-        /* Test 1 - Insert */
-        VALUES (
-			-1
-            , 1
-            , 1
-            , 1
-            , v_guid
-        )
-        /* Test 2 - Update
-        SELECT 
-			id_order
-			, id_supplier_ordered
-			, id_currency_cost
-            , active
-            , v_guid
-		FROM partsltd_prod.Shop_Supplier_Purchase_Order
-        WHERE id_order = 6
-        */
-		;
-		INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp (
-			id_link
-			, id_order
-			, id_permutation
-			, id_unit_quantity
-			, quantity_ordered
-			, quantity_received
-			, latency_delivery_days
-			, display_order
-			, active
-			, cost_total_local_VAT_excl
-			, cost_total_local_VAT_incl
-            , GUID
-		)
-        /* Test 1 - Insert */
-        VALUES (
-			-1
-            , -1
-            , 3
-            , 3
-            , 3
-            , 1
-            , 7
-            , 1
-            , 1
-            , 5
-            , 6
-            , v_guid
-        )
-        /* Test 2 - Update
-        SELECT
-			id_link
-			, id_order
-			, id_permutation
-			, id_unit_quantity
-			, 5 AS quantity_ordered
-			, quantity_received
-			, latency_delivery_days
-			, display_order
-			, active
-			, cost_total_local_VAT_excl
-			, cost_total_local_VAT_incl
-            , v_guid
-		FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
-        WHERE id_order = 6
-        */
-        ;
-        
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
-	WHERE GUID = v_guid
-    ;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_supplier_purchase_order ( 
-		'Test save Supplier Purchase Order' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;;
-
-/*
-CALL partsltd_prod.p_shop_save_supplier_purchase_order_test ();
-
-DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp;
-DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier_address`, CONSTRAINT `FK_Shop_Supplier_Address_id_supplier` FOREIGN KEY (`id_supplier`) REFERENCES `shop_supplier` (`id_supplier`) ON UPDATE RESTRICT)
-
-*/
-
 -- File: 7404_p_shop_get_many_supplier_purchase_order.sql
 
 
@@ -20325,6 +20325,158 @@ CALL p_shop_get_many_supplier_purchase_order (
 
 */
 
+
+-- File: 7415_p_shop_save_Manufacturing_purchase_order_test.sql
+
+
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_Manufacturing_purchase_order_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_Manufacturing_purchase_order_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	;
+    
+	START TRANSACTION;
+    
+		DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp;
+		DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
+
+		INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp (
+			id_order
+			, id_currency
+            , active
+            , GUID
+		)
+        /* Test 1 - Insert */
+        VALUES (
+			-1
+            , 1
+            , 1
+            , v_guid
+        )
+        /* Test 2: Alter
+        SELECT 
+			id_order
+			, id_currency
+            , active
+            , v_guid
+		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
+        WHERE id_order = 6
+        */
+		;-- SELECT * FROM partsltd_prod.Shop_Unit_Measurement;
+        
+		INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
+			id_link
+			, id_order
+			, id_permutation
+			, id_unit_quantity
+			, quantity_used
+			, quantity_produced
+			, id_unit_latency_manufacture
+            , latency_manufacture
+			, display_order
+			, active
+            , GUID
+		)
+        /* Test 1 - Insert */
+        VALUES (
+			-1 -- id_link
+            , -1 -- id_order
+            , 3 -- id_permutation
+            , 3 -- id_unit_quantity
+            , 3 -- quantity_used
+            , 0 -- quantity_produced
+            , 4 -- id_unit_latency_manufacture
+            , 4 -- latency_manufacture
+            , 1 -- display_order
+            , 1 -- active
+            , v_guid -- 
+        )
+        /* Test 2: Alter
+        SELECT
+			id_link
+			, id_order
+			, id_permutation
+			, id_unit_quantity
+			, quantity_used
+			, quantity_produced
+			, id_unit_latency_manufacture
+			, latency_manufacture
+			, display_order
+			, active
+            , v_guid
+		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
+        WHERE id_order = 6
+        */
+        ;
+        
+	COMMIT;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
+	WHERE GUID = v_guid
+    ;
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order ( 
+		'Test save Manufacturing Purchase Order' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
+	;
+	SELECT *
+	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
+	;
+    
+	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;;
+
+/*
+CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order_test ();
+
+DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp;
+DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+select * from partsltd_prod.Shop_User;
+Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'partsltd_prod.t_MPOPL.name_error' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+*/
 
 -- File: 7415_p_shop_save_manufacturing_purchase_order.sql
 
@@ -21348,158 +21500,6 @@ DELETE FROM Shop_Manufacturing_Purchase_Order;
 */
 
 
-
--- File: 7415_p_shop_save_Manufacturing_purchase_order_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_Manufacturing_purchase_order_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_Manufacturing_purchase_order_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
-	;
-    
-	START TRANSACTION;
-    
-		DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp;
-		DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
-
-		INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp (
-			id_order
-			, id_currency
-            , active
-            , GUID
-		)
-        /* Test 1 - Insert */
-        VALUES (
-			-1
-            , 1
-            , 1
-            , v_guid
-        )
-        /* Test 2: Alter
-        SELECT 
-			id_order
-			, id_currency
-            , active
-            , v_guid
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
-        WHERE id_order = 6
-        */
-		;-- SELECT * FROM partsltd_prod.Shop_Unit_Measurement;
-        
-		INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
-			id_link
-			, id_order
-			, id_permutation
-			, id_unit_quantity
-			, quantity_used
-			, quantity_produced
-			, id_unit_latency_manufacture
-            , latency_manufacture
-			, display_order
-			, active
-            , GUID
-		)
-        /* Test 1 - Insert */
-        VALUES (
-			-1 -- id_link
-            , -1 -- id_order
-            , 3 -- id_permutation
-            , 3 -- id_unit_quantity
-            , 3 -- quantity_used
-            , 0 -- quantity_produced
-            , 4 -- id_unit_latency_manufacture
-            , 4 -- latency_manufacture
-            , 1 -- display_order
-            , 1 -- active
-            , v_guid -- 
-        )
-        /* Test 2: Alter
-        SELECT
-			id_link
-			, id_order
-			, id_permutation
-			, id_unit_quantity
-			, quantity_used
-			, quantity_produced
-			, id_unit_latency_manufacture
-			, latency_manufacture
-			, display_order
-			, active
-            , v_guid
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
-        WHERE id_order = 6
-        */
-        ;
-        
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
-	WHERE GUID = v_guid
-    ;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order ( 
-		'Test save Manufacturing Purchase Order' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;;
-
-/*
-CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order_test ();
-
-DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp;
-DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-select * from partsltd_prod.Shop_User;
-Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'partsltd_prod.t_MPOPL.name_error' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
-*/
 
 -- File: 7416_p_shop_get_many_manufacturing_purchase_order.sql
 

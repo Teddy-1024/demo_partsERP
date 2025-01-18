@@ -364,7 +364,7 @@ BEGIN
         PP.does_expire_faster_once_unsealed,
         PP.id_unit_measurement_interval_expiration_unsealed,
         UM_X.symbol AS symbol_unit_measurement_interval_expiration_unsealed,
-        UM_X.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed,
+        UM_X.symbol_is_suffix_not_prefix AS symbol_is_suffix_not_prefix_unit_interval_expiration_unsealed,
         UM_X.name_singular AS name_singular_unit_measurement_interval_expiration_unsealed,
         UM_X.name_plural AS name_plural_unit_measurement_interval_expiration_unsealed,
         PP.count_interval_expiration_unsealed,
