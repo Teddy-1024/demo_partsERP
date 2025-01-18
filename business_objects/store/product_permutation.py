@@ -103,7 +103,7 @@ class Product_Permutation(db.Model, Store_Base):
     does_expire_faster_once_unsealed = db.Column(db.Boolean)
     id_unit_measurement_interval_expiration_unsealed = db.Column(db.Integer)
     symbol_unit_measurement_interval_expiration_unsealed = db.Column(db.String(50))
-    symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed = db.Column(db.Boolean)
+    symbol_is_suffix_not_prefix_unit_interval_expiration_unsealed = db.Column(db.Boolean)
     name_singular_unit_measurement_interval_expiration_unsealed = db.Column(db.String(255))
     name_plural_unit_measurement_interval_expiration_unsealed = db.Column(db.String(256))
     count_interval_expiration_unsealed = db.Column(db.Integer)
@@ -174,7 +174,7 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.does_expire_faster_once_unsealed = av.input_bool(query_row[28], "does_expire_faster_once_unsealed", _m, v_arg_type=v_arg_type)
         permutation.id_unit_measurement_interval_expiration_unsealed = query_row[29]
         permutation.symbol_unit_measurement_interval_expiration_unsealed = query_row[30]
-        permutation.symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed = av.input_bool(query_row[31], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED, _m, v_arg_type=v_arg_type)
+        permutation.symbol_is_suffix_not_prefix_unit_interval_expiration_unsealed = av.input_bool(query_row[31], cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED, _m, v_arg_type=v_arg_type)
         permutation.name_singular_unit_measurement_interval_expiration_unsealed = query_row[32]
         permutation.name_plural_unit_measurement_interval_expiration_unsealed = query_row[33]
         permutation.count_interval_expiration_unsealed = query_row[34]
@@ -248,7 +248,7 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.does_expire_faster_once_unsealed = 1 if av.input_bool(json[cls.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED], cls.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED, _m) else 0
         permutation.id_unit_measurement_interval_expiration_unsealed = json[cls.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED] if json[cls.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED] != '' else None
         permutation.symbol_unit_measurement_interval_expiration_unsealed = json.get(cls.FLAG_SYMBOL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED)
-        permutation.symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed = json.get(cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED)
+        permutation.symbol_is_suffix_not_prefix_unit_interval_expiration_unsealed = json.get(cls.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED)
         permutation.name_singular_unit_measurement_interval_expiration_unsealed = json.get(cls.FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED)
         permutation.name_plural_unit_measurement_interval_expiration_unsealed = json.get(cls.FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED)
         permutation.count_interval_expiration_unsealed = json[cls.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED] if json[cls.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED] != '' else None
@@ -295,7 +295,7 @@ class Product_Permutation(db.Model, Store_Base):
             self.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED: self.does_expire_faster_once_unsealed,
             self.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: self.id_unit_measurement_interval_expiration_unsealed,
             self.FLAG_SYMBOL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: self.symbol_unit_measurement_interval_expiration_unsealed,
-            self.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: self.symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed,
+            self.FLAG_SYMBOL_IS_SUFFIX_NOT_PREFIX_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: self.symbol_is_suffix_not_prefix_unit_interval_expiration_unsealed,
             self.FLAG_NAME_SINGULAR_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: self.name_singular_unit_measurement_interval_expiration_unsealed,
             self.FLAG_NAME_PLURAL_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: self.name_plural_unit_measurement_interval_expiration_unsealed,
             self.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: self.count_interval_expiration_unsealed,
@@ -380,7 +380,7 @@ class Product_Permutation(db.Model, Store_Base):
             does_expire_faster_once_unsealed: {self.does_expire_faster_once_unsealed}
             id_unit_measurement_interval_expiration_unsealed: {self.id_unit_measurement_interval_expiration_unsealed}
             symbol_unit_measurement_interval_expiration_unsealed: {self.symbol_unit_measurement_interval_expiration_unsealed}
-            symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed: {self.symbol_is_suffix_not_prefix_unit_measurement_interval_expiration_unsealed}
+            symbol_is_suffix_not_prefix_unit_interval_expiration_unsealed: {self.symbol_is_suffix_not_prefix_unit_interval_expiration_unsealed}
             name_singular_unit_measurement_interval_expiration_unsealed: {self.name_singular_unit_measurement_interval_expiration_unsealed}
             name_plural_unit_measurement_interval_expiration_unsealed: {self.name_plural_unit_measurement_interval_expiration_unsealed}
             count_interval_expiration_unsealed: {self.count_interval_expiration_unsealed}

@@ -1,7 +1,7 @@
 
 # Combine-SqlFiles.ps1
 param(
-    [string]$sourceFolder = "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\",
+    [string]$sourceFolder = "\home\teddy\Documents\Programming\Web\demo_partsERP\static\MySQL\", # "C:\Users\edwar\OneDrive\Documents\Programming\Visual Studio 2022\PARTS_Web\app\static\MySQL\",
     [string]$outputFileName = "0000_combined.sql",
     [string]$filePattern = "*.sql",
     [string[]]$excludeFiles = @("920_edit_permissions.sql", "910_anal.sql", "701_p_shop_get_many_role_permission.sql", "600_p_shop_save_product.sql", "dump.sql") # Array of filenames to exclude
