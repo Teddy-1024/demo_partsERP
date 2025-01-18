@@ -1,3 +1,9 @@
+-- Combined SQL files
+
+DROP DATABASE IF EXISTS partsltd_prod;
+CREATE DATABASE partsltd_prod;
+USE partsltd_prod;
+
 -- File: 0001_destroy.sql
 
 /* Clear Store DataBase */
