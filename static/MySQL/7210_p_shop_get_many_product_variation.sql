@@ -351,7 +351,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 

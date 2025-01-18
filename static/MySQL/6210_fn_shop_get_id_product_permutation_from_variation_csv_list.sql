@@ -203,7 +203,7 @@ BEGIN
 		CALL p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 */
 
 /*

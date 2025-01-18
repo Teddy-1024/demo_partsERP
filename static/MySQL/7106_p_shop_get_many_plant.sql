@@ -26,7 +26,7 @@ BEGIN
 		OR P.active = 1
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

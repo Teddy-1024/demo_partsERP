@@ -35,7 +35,7 @@ BEGIN
 	ORDER BY AL.display_order
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

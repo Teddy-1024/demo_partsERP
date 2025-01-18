@@ -29,7 +29,7 @@ BEGIN
 	);
     */
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -90,4 +90,4 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;

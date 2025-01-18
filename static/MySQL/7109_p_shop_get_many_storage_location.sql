@@ -27,7 +27,7 @@ BEGIN
 		OR SL.active = 1
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

@@ -35,7 +35,7 @@ BEGIN
 	ORDER BY R.display_order
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

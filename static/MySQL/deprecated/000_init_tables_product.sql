@@ -72,7 +72,7 @@ BEGIN
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 SELECT * FROM Shop_Product_Change_Set;
 
@@ -98,7 +98,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE File_Type_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -124,7 +124,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_File_Type_Audit
@@ -134,7 +134,7 @@ BEGIN
     SET NEW.updated_last_on = NOW();
     SET NEW.updated_last_by = CURRENT_USER();
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_File_Type
@@ -160,7 +160,7 @@ BEGIN
 		WHERE NOT OLD.extension <=> NEW.extension
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO File_Type (
 	code, name, extension
@@ -197,7 +197,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_General_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -232,7 +232,7 @@ BEGIN
 		WHERE NOT OLD.quantity_max <=> NEW.quantity_max
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_General (
 	quantity_max
@@ -270,7 +270,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Product_Category_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -321,7 +321,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Product_Category (
 	display_order,
@@ -363,7 +363,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Interval_Recurrence_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -406,7 +406,7 @@ BEGIN
 		WHERE NOT OLD.name_plural <=> NEW.name_plural
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Interval_Recurrence (
 	code, name, name_plural
@@ -464,7 +464,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Product_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -559,7 +559,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Product (
     display_order,
@@ -613,7 +613,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Variation_Type_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -664,7 +664,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Variation_Type (
     display_order, code, name, name_plural
@@ -706,7 +706,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Variation_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -753,7 +753,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Variation (
     display_order, id_type, code, name
@@ -802,7 +802,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Product_Variation_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -850,7 +850,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Product_Variation_Link (
     display_order, id_product, id_variation
@@ -888,7 +888,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Image_Type_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -939,7 +939,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Image_Type (
     display_order, code, name, name_plural
@@ -985,7 +985,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Image_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1035,7 +1035,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Image (
     display_order, id_product, id_type, url
@@ -1083,7 +1083,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Product_Image_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1129,7 +1129,7 @@ BEGIN
         )
     );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Product_Image_Link (
     id_product, id_image
@@ -1170,7 +1170,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Delivery_Option_Type_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1233,7 +1233,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Delivery_Option_Type (
 	display_order, code, name, latency_delivery_min, latency_delivery_max, quantity_min, quantity_max
@@ -1283,7 +1283,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Delivery_Option_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1331,7 +1331,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Delivery_Option (
     id_product, id_delivery_type, price_GBP
@@ -1368,7 +1368,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Delivery_Region_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1415,7 +1415,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Delivery_Region (
 	display_order, code, name
@@ -1463,7 +1463,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Product_Delivery_Region_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -1507,7 +1507,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Product_Delivery_Region_Link (
     id_product, id_region

@@ -633,7 +633,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Variation;
     DROP TABLE IF EXISTS tmp_Shop_Product;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 

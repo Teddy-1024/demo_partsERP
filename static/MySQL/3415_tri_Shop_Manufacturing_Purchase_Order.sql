@@ -19,7 +19,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Valid created by User ID must be provided.';
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -68,4 +68,4 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;

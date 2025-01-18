@@ -271,7 +271,7 @@ BEGIN
     -- DROP TABLE tmp_Shop_Customer;
     DROP TABLE tmp_Msg_Error;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

@@ -14,7 +14,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_Shop_General
@@ -38,4 +38,4 @@ BEGIN
 		WHERE NOT OLD.quantity_max <=> NEW.quantity_max
 	;
 END //
-DELIMITER ;;
+DELIMITER ;

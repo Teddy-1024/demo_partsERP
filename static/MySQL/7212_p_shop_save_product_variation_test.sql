@@ -155,7 +155,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_shop_save_product_variation_test ();

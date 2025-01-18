@@ -3653,7 +3653,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -3694,7 +3694,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3000_tri_Shop_Product_Change_Set.sql
@@ -3717,7 +3717,7 @@ BEGIN
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3001_tri_Shop_User_Change_Set.sql
@@ -3741,7 +3741,7 @@ BEGIN
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3002_tri_Shop_Sales_And_Purchasing_Change_Set.sql
 
@@ -3763,7 +3763,7 @@ BEGIN
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3010_tri_File_Type.sql
@@ -3783,7 +3783,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_File_Type
@@ -3809,7 +3809,7 @@ BEGIN
 		WHERE NOT OLD.extension <=> NEW.extension
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3011_tri_File_Type_Audit.sql
@@ -3830,7 +3830,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_File_Type_Audit
@@ -3840,7 +3840,7 @@ BEGIN
     SET NEW.updated_last_on = NOW();
     SET NEW.updated_last_by = CURRENT_USER();
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3012_tri_Shop_General.sql
 
@@ -3859,7 +3859,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_Shop_General
@@ -3883,7 +3883,7 @@ BEGIN
 		WHERE NOT OLD.quantity_max <=> NEW.quantity_max
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3014_tri_Shop_Image_Type.sql
 
@@ -3903,7 +3903,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -3950,7 +3950,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3100_tri_Shop_Region.sql
 
@@ -3970,7 +3970,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4007,7 +4007,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3103_tri_Shop_Region_Branch.sql
@@ -4028,7 +4028,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4063,7 +4063,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3106_tri_Shop_Address.sql
@@ -4084,7 +4084,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4133,7 +4133,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3109_tri_Shop_Storage_Location.sql
 
@@ -4153,7 +4153,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4190,7 +4190,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3115_tri_Shop_Currency.sql
@@ -4211,7 +4211,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4256,7 +4256,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3118_tri_Shop_Tax_Or_Surcharge.sql
 
@@ -4276,7 +4276,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
   SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_Shop_Tax_Or_Surcharge
@@ -4332,7 +4332,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -4353,7 +4353,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_Shop_Product_Category
@@ -4397,7 +4397,7 @@ BEGIN
 		WHERE NOT OLD.id_access_level_required <=> NEW.id_access_level_required
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3203_tri_Shop_Product.sql
@@ -4419,7 +4419,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4570,7 +4570,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3206_tri_Shop_Product_Permutation.sql
@@ -4591,7 +4591,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4740,7 +4740,7 @@ BEGIN
     */
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3209_tri_Shop_Variation_Type.sql
@@ -4762,7 +4762,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4803,7 +4803,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3212_tri_Shop_Variation.sql
@@ -4824,7 +4824,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4869,7 +4869,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3215_tri_Shop_Product_Permutation_Variation_Link.sql
@@ -4890,7 +4890,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -4929,7 +4929,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3218_tri_Shop_Stock_Item.sql
 
@@ -4949,7 +4949,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5022,7 +5022,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3221_tri_Shop_Product_Price.sql
@@ -5053,7 +5053,7 @@ BEGIN
 	);
     */
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5112,7 +5112,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3224_tri_Shop_Product_Image.sql
@@ -5133,7 +5133,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5188,7 +5188,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3227_tri_Shop_Delivery_Option.sql
 
@@ -5208,7 +5208,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5263,7 +5263,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3230_tri_Shop_Product_Permutation_Delivery_Option_Link.sql
 
@@ -5283,7 +5283,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5344,7 +5344,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3233_tri_Shop_Discount.sql
 
@@ -5364,7 +5364,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 DELIMITER //
 CREATE TRIGGER before_update_Shop_Discount
@@ -5428,7 +5428,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -5450,7 +5450,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5485,7 +5485,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3300_tri_Shop_Permission_Group.sql
 
@@ -5505,7 +5505,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5542,7 +5542,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3303_tri_Shop_Permission.sql
 
@@ -5562,7 +5562,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5607,7 +5607,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3306_tri_Shop_Role.sql
 
@@ -5627,7 +5627,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5664,7 +5664,7 @@ BEGIN
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3309_tri_Shop_Role_Permission_Link.sql
@@ -5685,7 +5685,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5724,7 +5724,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3312_tri_Shop_User.sql
@@ -5745,7 +5745,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5806,7 +5806,7 @@ BEGIN
 		WHERE NOT (OLD.is_included_VAT_default <=> NEW.is_included_VAT_default)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3315_tri_Shop_User_Role_Link.sql
 
@@ -5826,7 +5826,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5851,7 +5851,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3318_tri_Shop_User_Address.sql
 
@@ -5871,7 +5871,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5928,7 +5928,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3321_tri_Shop_User_Basket.sql
 
@@ -5948,7 +5948,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -5985,7 +5985,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3324_tri_Shop_User_Order_Status.sql
 
@@ -6005,7 +6005,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6046,7 +6046,7 @@ BEGIN
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3400_tri_Shop_Supplier.sql
 
@@ -6066,7 +6066,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6129,7 +6129,7 @@ BEGIN
 		WHERE NOT OLD.id_supplier_temp <=> NEW.id_supplier_temp
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3403_tri_Shop_Supplier_Address.sql
@@ -6148,7 +6148,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6197,7 +6197,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 -- File: 3403_tri_Shop_Unit_Measurement.sql
 
@@ -6217,7 +6217,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6274,7 +6274,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -6296,7 +6296,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6341,7 +6341,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -6363,7 +6363,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6422,7 +6422,7 @@ BEGIN
 	*/
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -6444,7 +6444,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6519,7 +6519,7 @@ BEGIN
 		WHERE NOT OLD.cost_unit_local_VAT_incl <=> NEW.cost_unit_local_VAT_incl
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3415_tri_Shop_Manufacturing_Purchase_Order.sql
@@ -6544,7 +6544,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Valid created by User ID must be provided.';
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6593,7 +6593,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3418_tri_Shop_Manufacturing_Purchase_Order_Product_Link.sql
@@ -6614,7 +6614,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6687,7 +6687,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -6709,7 +6709,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6762,7 +6762,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -6784,7 +6784,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6821,7 +6821,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 3427_tri_Shop_Customer_Sales_Order_Product_Link.sql
@@ -6842,7 +6842,7 @@ BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -6903,7 +6903,7 @@ BEGIN
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- File: 6000_p_debug_timing_reporting.sql
@@ -6943,7 +6943,7 @@ BEGIN
 	;
 	
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_debug_timing_reporting (
@@ -7038,7 +7038,7 @@ BEGIN
 		CALL p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -7080,7 +7080,7 @@ BEGIN
 	
 	COMMIT;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 
@@ -7128,7 +7128,7 @@ BEGIN
         ;
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -7147,7 +7147,7 @@ BEGIN
     
     DROP TABLE tmp_Msg_Error;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CALL p_validate_guid_test();
 
@@ -7244,7 +7244,7 @@ BEGIN
 		CALL p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -7284,7 +7284,7 @@ BEGIN
 	
 	COMMIT;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 
@@ -7546,7 +7546,7 @@ BEGIN
 		CALL p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 */
 
 /*
@@ -8297,7 +8297,7 @@ BEGIN
         CALL partsltd_prod.p_debug_timing_reporting( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 
@@ -8378,7 +8378,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 
@@ -8433,7 +8433,7 @@ BEGIN
 	ORDER BY AL.display_order
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -8481,7 +8481,7 @@ BEGIN
 	ORDER BY R.display_order
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -8520,7 +8520,7 @@ BEGIN
 		OR P.active = 1
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -8560,7 +8560,7 @@ BEGIN
 		OR SL.active = 1
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -8610,7 +8610,7 @@ BEGIN
 	ORDER BY C.display_order
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -8651,7 +8651,7 @@ BEGIN
 		OR UM.active = 1
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -8731,7 +8731,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_shop_save_product_category_test ();
@@ -9068,7 +9068,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 select 
@@ -9130,7 +9130,7 @@ BEGIN
 	END IF;
     
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 
@@ -9236,7 +9236,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_shop_save_product_test ();
@@ -9593,7 +9593,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -10262,7 +10262,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -10784,7 +10784,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -11119,7 +11119,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Product;
     DROP TABLE IF EXISTS tmp_Shop_User;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -11297,7 +11297,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CALL partsltd_prod.p_shop_save_product_permutation_test ();
 
@@ -11982,7 +11982,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -12423,7 +12423,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 
@@ -12646,7 +12646,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_shop_save_product_variation_test ();
@@ -13225,7 +13225,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -13958,7 +13958,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -14100,7 +14100,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CALL partsltd_prod.p_shop_save_stock_item_test ();
 
@@ -14731,7 +14731,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -15773,7 +15773,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -16056,7 +16056,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Link;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -16349,7 +16349,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -16849,7 +16849,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 
@@ -17669,7 +17669,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Product;
     DROP TABLE IF EXISTS tmp_Shop_User;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -17882,7 +17882,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_shop_save_supplier_test ();
@@ -18484,7 +18484,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- SELECT * FROM Shop_Supplier;
@@ -18744,7 +18744,7 @@ BEGIN
 		CALL p_debug_timing_reporting( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -18902,7 +18902,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_shop_save_supplier_purchase_order_test ();
@@ -19754,7 +19754,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -20304,7 +20304,7 @@ BEGIN
 		CALL p_debug_timing_reporting( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -20464,7 +20464,7 @@ BEGIN
     
 	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order_test ();
@@ -21437,7 +21437,7 @@ BEGIN
 		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -21886,7 +21886,7 @@ BEGIN
 		CALL p_debug_timing_reporting( v_time_start );
     END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -22186,7 +22186,7 @@ BEGIN
     -- DROP TABLE tmp_Shop_Customer;
     DROP TABLE tmp_Msg_Error;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -22471,7 +22471,7 @@ BEGIN
 	WHERE GUID = v_guid
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -22982,7 +22982,7 @@ BEGIN
     DROP TABLE tmp_Shop_Customer_Sales_Order_Product_Link;
     DROP TABLE tmp_Msg_Error;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -23789,7 +23789,7 @@ BEGIN
 	WHERE GUID = v_guid
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
@@ -24957,7 +24957,7 @@ VALUES
 /* 
     -- Clean up
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- Call

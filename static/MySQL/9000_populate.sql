@@ -1126,7 +1126,7 @@ VALUES
 /* 
     -- Clean up
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 -- Call

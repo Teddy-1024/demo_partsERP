@@ -34,7 +34,7 @@ BEGIN
 	;
 	
 END //
-DELIMITER ;;
+DELIMITER ;
 
 /*
 CALL partsltd_prod.p_debug_timing_reporting (

@@ -737,7 +737,7 @@ BEGIN
 	WHERE GUID = v_guid
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

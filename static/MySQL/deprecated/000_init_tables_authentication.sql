@@ -54,7 +54,7 @@ BEGIN
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 SELECT * FROM Shop_User_Change_Set;
 
@@ -88,7 +88,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Access_Level_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -135,7 +135,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Access_Level (
 	display_order, code, name, priority
@@ -179,7 +179,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Permission_Group_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -223,7 +223,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Permission_Group (
 	display_order, code, name
@@ -273,7 +273,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Permission_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -325,7 +325,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Permission (
 	display_order, code, name, id_permission_group, required_access_level
@@ -368,7 +368,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Role_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -412,7 +412,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Role (
     display_order,
@@ -468,7 +468,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Role_Permission_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -516,7 +516,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Role_Permission_Link (
     id_role, id_permission, id_access_level
@@ -561,7 +561,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_User_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -605,7 +605,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_User (
     name,
@@ -655,7 +655,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_User_Role_Link_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -691,7 +691,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_User_Role_Link (
     id_user, id_role
@@ -742,7 +742,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CREATE TABLE Shop_Address_Audit (
 	id_audit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -810,7 +810,7 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 INSERT INTO Shop_Address (
     id_user, region, name_full, phone_number, postcode, address_line_1, address_line_2, city, county

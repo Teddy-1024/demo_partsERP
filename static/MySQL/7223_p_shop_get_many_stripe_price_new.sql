@@ -228,7 +228,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Link;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*
