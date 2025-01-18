@@ -28,7 +28,7 @@ BEGIN
 		OR UM.active = 1
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

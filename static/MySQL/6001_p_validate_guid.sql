@@ -35,7 +35,7 @@ BEGIN
         ;
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -54,6 +54,6 @@ BEGIN
     
     DROP TABLE tmp_Msg_Error;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 CALL p_validate_guid_test();

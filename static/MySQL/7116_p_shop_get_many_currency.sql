@@ -37,7 +37,7 @@ BEGIN
 	ORDER BY C.display_order
 	;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

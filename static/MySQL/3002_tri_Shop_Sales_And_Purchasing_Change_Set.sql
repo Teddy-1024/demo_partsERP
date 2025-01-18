@@ -17,4 +17,4 @@ BEGIN
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;

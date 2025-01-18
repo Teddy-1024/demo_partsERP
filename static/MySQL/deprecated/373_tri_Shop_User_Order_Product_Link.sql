@@ -19,7 +19,7 @@ BEGIN
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 DELIMITER //
@@ -52,4 +52,4 @@ BEGIN
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END //
-DELIMITER ;;
+DELIMITER ;

@@ -490,7 +490,7 @@ BEGIN
     DROP TABLE tmp_Shop_Customer_Sales_Order_Product_Link;
     DROP TABLE tmp_Msg_Error;
 END //
-DELIMITER ;;
+DELIMITER ;
 
 
 /*

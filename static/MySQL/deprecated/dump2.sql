@@ -54,12 +54,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_File_Type` BEFORE INSERT ON `file_type` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -72,7 +72,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_File_Type` BEFORE UPDATE ON `file_type` FOR EACH ROW BEGIN
     INSERT INTO File_Type_Audit (
 		id_type,
@@ -93,7 +93,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.extension <=> NEW.extension
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -138,12 +138,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_File_Type_Audit` BEFORE INSERT ON `file_type_audit` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -156,12 +156,12 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_File_Type_Audit` BEFORE UPDATE ON `file_type_audit` FOR EACH ROW BEGIN
     SET NEW.updated_last_on = NOW();
     SET NEW.updated_last_by = CURRENT_USER();
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -207,7 +207,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Access_Level` BEFORE INSERT ON `shop_access_level` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -216,7 +216,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -229,7 +229,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Access_Level` BEFORE UPDATE ON `shop_access_level` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -264,7 +264,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -348,7 +348,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Address` BEFORE INSERT ON `shop_address` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -357,7 +357,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -370,7 +370,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Address` BEFORE UPDATE ON `shop_address` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -421,7 +421,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -498,12 +498,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product_Category` BEFORE INSERT ON `shop_category` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -516,7 +516,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Product_Category` BEFORE UPDATE ON `shop_category` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -551,7 +551,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -629,7 +629,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Currency` BEFORE INSERT ON `shop_currency` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -638,7 +638,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -651,7 +651,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Currency` BEFORE UPDATE ON `shop_currency` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -690,7 +690,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -771,12 +771,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Delivery_Option` BEFORE INSERT ON `shop_delivery_option` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -789,7 +789,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Delivery_Option` BEFORE UPDATE ON `shop_delivery_option` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -836,7 +836,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -926,12 +926,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Discount` BEFORE INSERT ON `shop_discount` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -944,7 +944,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Discount` BEFORE UPDATE ON `shop_discount` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -1003,7 +1003,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1085,7 +1085,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Discount_Region_Currency_Link` BEFORE INSERT ON `shop_discount_region_currency_link` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -1094,7 +1094,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1107,7 +1107,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Discount_Region_Currency_Link` BEFORE UPDATE ON `shop_discount_region_currency_link` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -1136,7 +1136,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1209,12 +1209,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_General` BEFORE INSERT ON `shop_general` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1227,7 +1227,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_General` BEFORE UPDATE ON `shop_general` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -1246,7 +1246,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.quantity_max <=> NEW.quantity_max
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1333,12 +1333,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Image` BEFORE INSERT ON `shop_image` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1351,7 +1351,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Image` BEFORE UPDATE ON `shop_image` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -1398,7 +1398,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1475,12 +1475,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Image_Type` BEFORE INSERT ON `shop_image_type` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1493,7 +1493,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Image_Type` BEFORE UPDATE ON `shop_image_type` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -1528,7 +1528,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1636,7 +1636,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Permission` BEFORE INSERT ON `shop_permission` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -1645,7 +1645,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1658,7 +1658,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Permission` BEFORE UPDATE ON `shop_permission` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -1697,7 +1697,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1773,7 +1773,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Permission_Group` BEFORE INSERT ON `shop_permission_group` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -1782,7 +1782,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1795,7 +1795,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Permission_Group` BEFORE UPDATE ON `shop_permission_group` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -1826,7 +1826,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1906,12 +1906,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product` BEFORE INSERT ON `shop_product` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -1924,7 +1924,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Product` BEFORE UPDATE ON `shop_product` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -2069,7 +2069,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2138,7 +2138,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product_Change_Set` BEFORE INSERT ON `shop_product_change_set` FOR EACH ROW BEGIN
 	IF NEW.updated_last_on <=> NULL THEN
 		SET NEW.updated_last_on = NOW();
@@ -2147,7 +2147,7 @@ DELIMITER ;;;
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2203,7 +2203,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product_Currency_Link` BEFORE INSERT ON `shop_product_currency_link` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -2222,7 +2222,7 @@ DELIMITER ;;;
 	);
     */
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2235,7 +2235,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Product_Currency_Link` BEFORE UPDATE ON `shop_product_currency_link` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -2290,7 +2290,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2378,7 +2378,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product_Currency_Region_Link` BEFORE INSERT ON `shop_product_currency_region_link` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -2397,7 +2397,7 @@ DELIMITER ;;;
 	);
     */
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2410,7 +2410,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Product_Currency_Region_Link` BEFORE UPDATE ON `shop_product_currency_region_link` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -2465,7 +2465,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2555,7 +2555,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product_Delivery_Option_Link` BEFORE INSERT ON `shop_product_delivery_option_link` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -2564,7 +2564,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2577,7 +2577,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Product_Delivery_Option_Link` BEFORE UPDATE ON `shop_product_delivery_option_link` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -2622,7 +2622,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2718,7 +2718,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product_Permutation` BEFORE INSERT ON `shop_product_permutation` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -2727,7 +2727,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2740,7 +2740,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Product_Permutation` BEFORE UPDATE ON `shop_product_permutation` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -2839,7 +2839,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2919,7 +2919,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Product_Permutation_Variation_Link` BEFORE INSERT ON `shop_product_permutation_variation_link` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -2928,7 +2928,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -2941,7 +2941,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Product_Permutation_Variation_Link` BEFORE UPDATE ON `shop_product_permutation_variation_link` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -2974,7 +2974,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3050,12 +3050,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Interval_Recurrence` BEFORE INSERT ON `shop_interval_recurrence` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3068,7 +3068,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Interval_Recurrence` BEFORE UPDATE ON `shop_interval_recurrence` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -3099,7 +3099,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.active <=> NEW.active
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3175,12 +3175,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Region` BEFORE INSERT ON `shop_region` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3193,7 +3193,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Region` BEFORE UPDATE ON `shop_region` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -3224,7 +3224,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3303,12 +3303,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Region_Branch` BEFORE INSERT ON `shop_region_branch` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3321,7 +3321,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Region_Branch` BEFORE UPDATE ON `shop_region_branch` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -3350,7 +3350,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3426,7 +3426,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Role` BEFORE INSERT ON `shop_role` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -3435,7 +3435,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3448,7 +3448,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Role` BEFORE UPDATE ON `shop_role` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -3479,7 +3479,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.display_order <=> NEW.display_order
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3561,7 +3561,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Role_Permission_Link` BEFORE INSERT ON `shop_role_permission_link` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -3570,7 +3570,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3583,7 +3583,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Role_Permission_Link` BEFORE UPDATE ON `shop_role_permission_link` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -3616,7 +3616,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3707,12 +3707,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Tax_Or_Surcharge` BEFORE INSERT ON `shop_tax_or_surcharge` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3725,7 +3725,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Tax_Or_Surcharge` BEFORE UPDATE ON `shop_tax_or_surcharge` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -3776,7 +3776,7 @@ DELIMITER ;;;
 		WHERE NOT OLD.active <=> NEW.active
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3853,7 +3853,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_User` BEFORE INSERT ON `shop_user` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -3862,7 +3862,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3875,7 +3875,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_User` BEFORE UPDATE ON `shop_user` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -3902,7 +3902,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -3985,7 +3985,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_User_Basket` BEFORE INSERT ON `shop_user_basket` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -3994,7 +3994,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4007,7 +4007,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_User_Basket` BEFORE UPDATE ON `shop_user_basket` FOR EACH ROW BEGIN
 	IF NEW.id_change_set_user <=> OLD.id_change_set_user THEN
 		SIGNAL SQLSTATE '45000'
@@ -4038,7 +4038,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4107,7 +4107,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_User_Change_Set` BEFORE INSERT ON `shop_user_change_set` FOR EACH ROW BEGIN
 	IF NEW.updated_last_on <=> NULL THEN
 		SET NEW.updated_last_on = NOW();
@@ -4116,7 +4116,7 @@ DELIMITER ;;;
 		SET NEW.updated_last_by = CURRENT_USER();
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4169,7 +4169,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_User_Order` BEFORE INSERT ON `shop_user_order` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -4178,7 +4178,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4191,7 +4191,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_User_Order` BEFORE UPDATE ON `shop_user_order` FOR EACH ROW BEGIN
 	IF OLD.id_change_set_user <=> NEW.id_change_set_user THEN
 		SIGNAL SQLSTATE '45000'
@@ -4230,7 +4230,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4313,7 +4313,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_User_Order_Product_Link` BEFORE INSERT ON `shop_user_order_product_link` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -4322,7 +4322,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4335,7 +4335,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_User_Order_Product_Link` BEFORE UPDATE ON `shop_user_order_product_link` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -4362,7 +4362,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4439,12 +4439,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_User_Order_Status` BEFORE INSERT ON `shop_user_order_status` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4457,7 +4457,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_User_Order_Status` BEFORE UPDATE ON `shop_user_order_status` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -4492,7 +4492,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4571,7 +4571,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_User_Role_Link` BEFORE INSERT ON `shop_user_role_link` FOR EACH ROW BEGIN
 	IF NEW.created_on <=> NULL THEN
 		SET NEW.created_on := IFNULL(NEW.created_on, NOW());
@@ -4580,7 +4580,7 @@ DELIMITER ;;;
 		SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 	END IF;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4593,7 +4593,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_User_Role_Link` BEFORE UPDATE ON `shop_user_role_link` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -4612,7 +4612,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.active <=> NEW.active)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4691,12 +4691,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Variation` BEFORE INSERT ON `shop_variation` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4709,7 +4709,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Variation` BEFORE UPDATE ON `shop_variation` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -4740,7 +4740,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
     ;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4817,12 +4817,12 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_insert_Shop_Variation_Type` BEFORE INSERT ON `shop_variation_type` FOR EACH ROW BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
     SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4835,7 +4835,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_update_Shop_Variation_Type` BEFORE UPDATE ON `shop_variation_type` FOR EACH ROW BEGIN
 	IF OLD.id_change_set <=> NEW.id_change_set THEN
 		SIGNAL SQLSTATE '45000'
@@ -4870,7 +4870,7 @@ DELIMITER ;;;
 		WHERE NOT (OLD.display_order <=> NEW.display_order)
 	;
 END */;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -4950,7 +4950,7 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_edit_user`(
 	IN a_id_user INT,
     IN a_name VARCHAR(255),
@@ -5097,7 +5097,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Msg_Error;
     DROP TABLE IF EXISTS tmp_Shop_User;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -5111,7 +5111,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_edit_user_basket`(
 	IN a_id_user INT,
 	IN a_ids_permutation_basket VARCHAR(4000),
@@ -5862,7 +5862,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Product;
     DROP TABLE IF EXISTS tmp_Shop_User;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -5876,7 +5876,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_currency`(
 	IN a_get_inactive_currency BIT
 )
@@ -5898,7 +5898,7 @@ BEGIN
 	ORDER BY C.display_order
 	;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -5912,7 +5912,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_product`(
 	IN a_id_user INT,
     IN a_get_all_category BIT,
@@ -6976,7 +6976,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Product;
     DROP TABLE IF EXISTS tmp_Shop_Product_Category;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -6990,7 +6990,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_region`(
 	IN a_get_inactive_region BIT
 )
@@ -7011,7 +7011,7 @@ BEGIN
 	ORDER BY R.display_order
 	;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -7025,7 +7025,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_stripe_price_new`(
 	IN a_id_user INT
 )
@@ -7239,7 +7239,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     DROP TABLE IF EXISTS tmp_Shop_Product_Currency_Link;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -7253,7 +7253,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_stripe_product_new`(
 	IN a_id_user INT
 )
@@ -7516,7 +7516,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_Product;
     DROP TABLE IF EXISTS tmp_Shop_User;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -7530,7 +7530,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_get_many_user_order`(
 	IN a_id_user INT,
     IN a_ids_order VARCHAR(4000),
@@ -7768,7 +7768,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Shop_User;
     DROP TABLE IF EXISTS tmp_Shop_Order;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
@@ -7782,7 +7782,7 @@ DELIMITER ;;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;;
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `p_shop_user_eval`(
 	IN a_guid BINARY(36),
     IN a_id_user INT,
@@ -8217,7 +8217,7 @@ BEGIN
     # DROP TEMPORARY TABLE IF EXISTS tmp_User_Role_Link;
     # DROP TABLE IF EXISTS tmp_Msg_Error;
 END ;;
-DELIMITER ;;
+DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
