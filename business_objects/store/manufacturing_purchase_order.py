@@ -125,7 +125,7 @@ class Manufacturing_Purchase_Order_Product_Link(db.Model, Store_Base):
     id_permutation = db.Column(db.Integer)
     id_unit_quantity = db.Column(db.Integer)
     name_permutation = db.Column(db.String(255))
-    csv_id_pairs_variation = db.Column(db.String)
+    csv_id_pairs_variation = db.Column(db.String(4000))
     quantity_used = db.Column(db.Float)
     quantity_produced = db.Column(db.Float)
     id_unit_latency_manufacture = db.Column(db.Integer)

@@ -7155,7 +7155,7 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL p_validate_guid_test();
+-- CALL p_validate_guid_test();
 
 -- File: 6003_p_split_key_value_pair_csv.sql
 
@@ -11305,6 +11305,7 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
 CALL partsltd_prod.p_shop_save_product_permutation_test ();
 
 DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
@@ -11312,7 +11313,6 @@ DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 
-/*
 DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
 WHERE id_link >= 3
 ;
@@ -14108,11 +14108,11 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
 CALL partsltd_prod.p_shop_save_stock_item_test ();
 
 DELETE FROM partsltd_prod.Shop_Stock_Item_Temp;
 
-/*
 update shop_product p set p.has_variations = 0 where id_product = 4
 DROP TABLE IF EXISTS tmp_Msg_Error;
 */
@@ -18494,11 +18494,12 @@ DELIMITER ;
 
 
 -- SELECT * FROM Shop_Supplier;
-
+/*
 delete from shop_supplier_audit where id_supplier = 9;
 delete from shop_supplier where id_supplier = 9;
 delete from shop_supplier_address_audit where id_address = -4;
 delete from shop_supplier_address where id_address = -4;
+*/
 
 -- File: 7401_p_shop_get_many_supplier.sql
 

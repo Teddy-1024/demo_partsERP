@@ -589,8 +589,9 @@ DELIMITER ;
 
 
 -- SELECT * FROM Shop_Supplier;
-
+/*
 delete from shop_supplier_audit where id_supplier = 9;
 delete from shop_supplier where id_supplier = 9;
 delete from shop_supplier_address_audit where id_address = -4;
 delete from shop_supplier_address where id_address = -4;
+*/

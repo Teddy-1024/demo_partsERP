@@ -91,11 +91,11 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
 CALL partsltd_prod.p_shop_save_stock_item_test ();
 
 DELETE FROM partsltd_prod.Shop_Stock_Item_Temp;
 
-/*
 update shop_product p set p.has_variations = 0 where id_product = 4
 DROP TABLE IF EXISTS tmp_Msg_Error;
 */
