@@ -147,6 +147,7 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
 CALL partsltd_prod.p_shop_save_product_permutation_test ();
 
 DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
@@ -154,7 +155,6 @@ DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 
-/*
 DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
 WHERE id_link >= 3
 ;

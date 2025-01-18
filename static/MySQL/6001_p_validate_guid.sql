@@ -56,4 +56,4 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL p_validate_guid_test();
+-- CALL p_validate_guid_test();
