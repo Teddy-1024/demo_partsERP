@@ -27,43 +27,10 @@ import PageStoreSupplierPurchaseOrders from './pages/store/supplier_purchase_ord
 // import PageUserAccount from './pages/user/account.js';
 
 
-/*
-import "./lib/common.js";
-import "./lib/constants.js";
-import "./lib/events.js";
-import "./lib/extras.js";
-// import "./DEPRECATED/init.js";
-import "./lib/local_storage.js";
-import "./lib/utils.js";
-import "./lib/validation.js";
-*/
-
 import API from './api.js';
 import DOM from './dom.js';
 import PagePrivacyPolicy from './pages/legal/privacy_policy.js';
 import PageRetentionSchedule from './pages/legal/retention_schedule.js';
-
-// Create a context for the pages
-// const pagesContext = require.context('./pages', true, /\.js$/);
-
-/*
-const pageModules = {
-    // Core
-    [hashPageHome]: () => import('./pages/core/home.js'),
-    [hashPageContact]: () => import('./pages/core/contact.js'),
-    [hashPageServices]: () => import('./pages/core/services.js'),
-    [hashPageAdminHome]: () => import('./pages/core/admin_home.js'),
-    // Legal
-    [hashPageAccessibilityStatement]: () => import('./pages/legal/accessibility_statement.js'),
-    [hashPageLicense]: () => import('./pages/legal/license.js'),
-    // Store
-    [hashPageStoreProductCategories]: () => import('./pages/store/product_categories.js'),
-    [hashPageStoreProductPermutations]: () => import('./pages/store/product_permutations.js'),
-    // [hashPageStoreProducts]: () => import('./pages/store/products.js'),
-    // User
-    // Add other pages here...
-};
-*/
 
 export default class Router {
     constructor() {
@@ -326,11 +293,8 @@ export default class Router {
     }
 }
 
-// Create and export a singleton instance
 export const router = new Router();
-// import this for navigation
 
-// Usage example (you can put this in your main.js or app.js)
 /*
 router.addRoute('/', () => {
     console.log('Home page');
@@ -342,7 +306,6 @@ router.addRoute('/about', () => {
     // Load about page content
 });
 
-// Example of how to use the router in other parts of your application
 export function setupNavigationEvents() {
     document.querySelectorAll('a[data-nav]').forEach(link => {
         link.addEventListener('click', (e) => {

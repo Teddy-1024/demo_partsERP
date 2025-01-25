@@ -8,7 +8,7 @@ from authlib.integrations.flask_client import OAuth
 
 
 csrf = CSRFProtect()
-cors = CORS()
+# cors = CORS()
 db = SQLAlchemy()
 mail = Mail()
 oauth = OAuth()

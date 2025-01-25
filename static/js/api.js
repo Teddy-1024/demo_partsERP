@@ -1,6 +1,5 @@
 import DOM from './dom.js';
 
-// Module for API calls
 export default class API {
     
     static getCsrfToken() {
@@ -151,7 +150,6 @@ export default class API {
 const api = new API();
 export default api;
 
-Example of using the API
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
     setupEventListeners();
