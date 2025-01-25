@@ -29,7 +29,7 @@ from controllers.store.stock_item import routes_store_stock_item
 from controllers.store.supplier import routes_store_supplier
 from controllers.store.supplier_purchase_order import routes_store_supplier_purchase_order
 from controllers.user import routes_user
-from extensions import db, csrf, cors, mail, oauth
+from extensions import db, csrf, mail, oauth
 from helpers.helper_app import Helper_App
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
@@ -82,12 +82,13 @@ def make_session_permanent():
     session.permanent = True
 
 csrf = CSRFProtect()
-"""
-cors = CORS()
-db = SQLAlchemy()
-mail = Mail()
-oauth = OAuth()
-"""
+cors = CORS(app, resources={
+    r"/static/*": {
+        "origins": [app.config["URL_HOST"]],
+        "methods": ["GET"],
+        "max_age": 3600
+    }
+})
 
 csrf.init_app(app)
 cors.init_app(app)
@@ -133,3 +134,13 @@ app.register_blueprint(routes_user)
 def console_log(value):
     Helper_App.console_log(value)
     return value
+
+@app.after_request
+def add_cache_headers(response):
+    if request.path.startswith('/static/'):
+        # Cache static assets
+        response.headers['Cache-Control'] = 'public, max-age=31536000'
+    else:
+        # No caching for dynamic content
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    return response

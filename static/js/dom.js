@@ -1,7 +1,6 @@
 
 import Validation from "./lib/validation.js";
 
-// Module for DOM manipulation
 export default class DOM {
     static setElementAttributesValuesCurrentAndPrevious(element, data) {
         DOM.setElementAttributeValueCurrent(element, data);

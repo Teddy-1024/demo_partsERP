@@ -40,7 +40,8 @@ class Config:
     # Auth0
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
-    # SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SAMESITE = 'Strict'
+    REMEMBER_COOKIE_SECURE = True
     # PERMANENT_SESSION_LIFETIME = 3600
     WTF_CSRF_ENABLED = True
     # WTF_CSRF_CHECK_DEFAULT = False  # We'll check it manually for API routes
