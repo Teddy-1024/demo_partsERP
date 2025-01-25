@@ -295,7 +295,7 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     # id_category: int = db.Column(db.Integer)
     id_product: int = db.Column(db.Integer)
     id_permutation: int = db.Column(db.Integer)
-    csv_list_variations: str = db.Column(db.String)
+    csv_list_variations: str = db.Column(db.String(4000))
     id_unit_quantity: int = db.Column(db.Integer)
     quantity_used: float = db.Column(db.Float)
     quantity_produced: float = db.Column(db.Float)
