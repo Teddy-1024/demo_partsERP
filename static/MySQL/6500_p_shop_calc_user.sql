@@ -347,8 +347,8 @@ BEGIN
 			, id_permission_required
 			, priority_access_level_required
 			, id_product
-			, is_super_user
 			, priority_access_level_user
+                        , is_super_user
 		)
 		SELECT 
 			t_UCU.id_user
