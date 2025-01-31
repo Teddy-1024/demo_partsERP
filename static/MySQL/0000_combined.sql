@@ -24738,6 +24738,14 @@ VALUES
 		, 'tierneybailey13@gmail.com' -- email
 		, 1 -- is_super_user
 		, 1 -- active
+	),
+	(
+		'auth0|679cc2fe0d652a47af90d16b' -- id_user_auth0
+        , 'Demo' -- firstname
+        , '' -- surname
+        , 'bot@partsltd.co.uk' -- email
+        , 0 -- is_super_user
+		, 1 -- active
 	)
 ;
 

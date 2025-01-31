@@ -40,7 +40,7 @@ class Config:
     # Auth0
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Strict'
+    SESSION_COOKIE_SAMESITE = 'Lax' # 'Strict' # Strict is preferable for security, but Lax is required for OAuth functionality
     REMEMBER_COOKIE_SECURE = True
     # PERMANENT_SESSION_LIFETIME = 3600
     WTF_CSRF_ENABLED = True
