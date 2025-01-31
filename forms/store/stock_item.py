@@ -30,6 +30,7 @@ class Filters_Stock_Item(Form_Base):
     is_out_of_stock = BooleanField('Out of stock only?')
     quantity_min = FloatField('Min stock')
     quantity_max = FloatField('Max stock')
+    active = BooleanField("Active")
     # submit = SubmitField('Submit')
     """
     def __repr__(self):
@@ -52,6 +53,7 @@ class Filters_Stock_Item(Form_Base):
         form.is_out_of_stock.data = av.input_bool(json[Store_Base.FLAG_IS_OUT_OF_STOCK], Store_Base.FLAG_IS_OUT_OF_STOCK, f'{cls.__name__}.from_json')
         form.quantity_min.data = json[Store_Base.FLAG_QUANTITY_MIN]
         form.quantity_max.data = json[Store_Base.FLAG_QUANTITY_MAX]
+        form.active.data = json[Store_Base.FLAG_ACTIVE]
         return form
     def to_json(self):
         return {
@@ -59,7 +61,8 @@ class Filters_Stock_Item(Form_Base):
             Store_Base.ATTR_ID_PRODUCT: self.id_product.data,
             Store_Base.FLAG_IS_OUT_OF_STOCK: self.is_out_of_stock.data,
             Store_Base.FLAG_QUANTITY_MIN: self.quantity_min.data,
-            Store_Base.FLAG_QUANTITY_MAX: self.quantity_max.data
+            Store_Base.FLAG_QUANTITY_MAX: self.quantity_max.data,
+            Store_Base.FLAG_ACTIVE: self.active.data
         }
     @classmethod
     def get_default(cls):
