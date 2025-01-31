@@ -325,7 +325,7 @@ BEGIN
 		)
         SELECT
 			U.id_user
-            , U.is_super_user
+            , IFNULL(U.is_super_user, 0) AS is_super_user
             -- , IFNULL(AL_U.id_access_level, v_id_access_level_view) AS id_access_level
             , IFNULL(MIN(AL_U.priority), v_priority_access_level_view) AS priority_access_level
 		FROM tmp_Split t_S
@@ -355,8 +355,8 @@ BEGIN
 			, v_id_permission_required
 			, v_priority_access_level AS priority_access_level_required
 			, NULL
-			, t_UCU.priority_access_level AS priority_access_level_user
 			, t_UCU.is_super_user AS is_super_user
+			, t_UCU.priority_access_level AS priority_access_level_user
 		FROM tmp_User_Calc_User t_UCU
         ;
         
@@ -507,8 +507,8 @@ BEGIN
 		, v_id_permission_required
 		, CASE WHEN AL.priority < v_priority_access_level THEN AL.priority ELSE v_priority_access_level END AS priority_access_level_required
 		, t_P.id_product 
-		, t_U.priority_access_level AS priority_access_level_user
 		, t_U.is_super_user AS is_super_user
+		, t_U.priority_access_level AS priority_access_level_user
 	FROM tmp_User_Calc_User t_U
 	CROSS JOIN tmp_Product_Calc_User t_P
     LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_P.id_access_level_required = AL.id_access_level

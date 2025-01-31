@@ -916,7 +916,8 @@ INSERT INTO Shop_User_Role_Link (
 	id_user, id_role
 )
 VALUES 
-	(1, 1)
+	(1, 1),
+	(4, 1)
 ;
 
 # User Addresses
