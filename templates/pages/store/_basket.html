@@ -7,7 +7,6 @@
 
 
 {% block page_body %}
-    <!-- HTML content -->
     <div class="{{ model.FLAG_CARD }}">
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
             <div id="{{ model.ID_CONTAINER_INFO_DELIVERY }}" class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}" style="border-bottom: 1px black;">
@@ -55,15 +54,4 @@
     -->
     {% set block_id = 'checkout' %}
     {% include 'layouts/_shared_store.html' %}
-    <!--
-    <script>
-        var hashPageCurrent = "{{ model.HASH_PAGE_STORE_BASKET }}";
-        
-        $(document).ready(function() {
-            console.log('Hooking up store basket review page...');
-            hookupStorePageBasket();
-            // hookupStorePageBilling();
-        });
-    </script>
-    -->
 {% endblock %}

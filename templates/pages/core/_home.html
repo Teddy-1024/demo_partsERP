@@ -3,31 +3,11 @@
 {% extends 'layouts/layout.html' %}
 
 {% block page_body %}
-    <!-- Include Stylesheet
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/core.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/core/home.css') }}" />
-    -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/core_home.bundle.css') }}">
 
-    <!-- HTML content -->
     <div>
         <h2 style="font-size: 24px; color: white; font-weight: normal;">We make websites, web apps, and desktop software</h2>
         {% set block_id = 'button_get_in_touch' %}
         {% include 'components/common/buttons/_buttons_save_cancel.html' %}
     </div>
-    
-    <!-- Include JavaScript
-    <script type="module" src="{{ url_for('static', filename='js/sections/core.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/pages/core/home.js') }}"></script>
-    -->
-    
-    <!--
-    <script>
-        var hashPageCurrent = "{{ model.HASH_PAGE_HOME }}";
-
-        $(document).ready(function() {
-            hookupPageHome();
-        });
-    </script>
-    -->
 {% endblock %}
