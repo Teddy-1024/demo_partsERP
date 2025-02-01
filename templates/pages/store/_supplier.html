@@ -6,13 +6,9 @@
     {% set supplier = model.supplier %}
     {% set block_id = 'styles' %}
     {% include 'layouts/_shared_store.html' %}
-    <!--
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/supplier.css') }}">
-    -->
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_supplier.bundle.css') }}">
     
-    <!-- HTML content -->
     <div class="card">
         <form id="{{ model.ID_FORM_SUPPLIER }}" class="{{ model.FLAG_CONTAINER }}" action="{{ url_for('routes_store.supplier') }}" method="POST">
             <h2 class="label-title">Supplier</h2>
@@ -94,24 +90,4 @@
             </div>
         </form>
     </div>
-
-    <!-- Include JavaScript
-    <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/pages/store/supplier.js') }}"></script>
-    -->
-
-    <!--
-    <script>
-        // pass arguments from model to JS
-        var hashPageCurrent = "{{ model.HASH_PAGE_STORE_SUPPLIERS }}";
-
-        /*
-        // hookup elements
-        $(document).ready(function() {
-            console.log('Hooking up store supplier page...');
-            hookupStorePageSupplier();
-        });
-        */
-    </script>
-    -->
 {% endblock %}

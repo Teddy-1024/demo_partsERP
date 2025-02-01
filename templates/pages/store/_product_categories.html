@@ -1,10 +1,6 @@
 {% extends 'layouts/layout.html' %}
 
 {% block page_body %}
-    <!--
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/product_categories.css') }}">
-    -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_product_categories.bundle.css') }}">
     
     <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}"> <!-- {{ model.FLAG_CONTAINER }} -->
@@ -60,11 +56,9 @@
     {% include 'components/common/temporary/_overlay_confirm.html' %}
     {% include 'components/common/temporary/_overlay_error.html' %}
 
-    <!-- Include JavaScript -->
     <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
 
     <script>
-        // pass arguments from model to JS
         var flagIsNotEmpty = "{{ model.FLAG_IS_NOT_EMPTY }}";
         var accessLevels = {{ model.convert_list_objects_to_dict_json_by_attribute_key_default(model.access_levels) | tojson | safe }};
     </script>

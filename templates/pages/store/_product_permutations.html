@@ -1,16 +1,8 @@
 {% extends 'layouts/layout.html' %}
 
 {% block page_body %}
-    <!--
-    { % set product = model.product %}
-    { % set permutation = product.get_permutation_selected() %}
-    <script>console.log("test 1");</script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/store.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/store/product_permutations.css') }}">
-    -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/store_product_permutations.bundle.css') }}">
     
-    <!-- HTML content -->
     <form id="{{ model.ID_FORM_FILTERS }}" class="{{ model.FLAG_FILTER }} {{ model.FLAG_ROW }} {{ model.FLAG_CARD }}">
         {{ model.form_filters.hidden_tag() }}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
@@ -121,7 +113,6 @@
     {% include 'components/common/temporary/_overlay_confirm.html' %}
     {% include 'components/common/temporary/_overlay_error.html' %}
 
-    <!-- Include JavaScript -->
     <script src="{{ url_for('routes_store.scripts_section_store') }}"></script>
 
     <script>
