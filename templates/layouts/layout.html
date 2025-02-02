@@ -339,9 +339,11 @@
         </div>
     {% endif %}
     {% if model.user.is_logged_in %}
-        <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
-            <a class="{{ model.FLAG_NAV_USER_ACCOUNT }}">Account</a>
-        </div>
+        {#
+            <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
+                <a class="{{ model.FLAG_NAV_USER_ACCOUNT }}">Account</a>
+            </div>
+        #}
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_ROW }}">
             <a class="{{ model.FLAG_NAV_USER_LOGOUT }}">Logout</a>
         </div>

@@ -52,7 +52,7 @@
 }
 
 td > input, td > select, td > textarea, .container-input > input, .container-input > select, .container-input > textarea {
-    border: 2px solid var(--c_purple);
+    border: 2px solid var(--border-colour);
     border-radius: 0.5vh;
 }
 

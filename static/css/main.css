@@ -1,14 +1,31 @@
 
 :root {
     /* Declare global variables */
+    /*
     --c_purple: #5B29FF;
     --c_purple_pastel: #D1D1FF;
+    --c_purple_lighter: #E8E1FF;
     --c_purple_light: #C6BDFF;
     --c_purple_dark: #4700B3;
+    */
+    /* purple theme
+        - light https://coolors.co/palette/a172fd-a77afe-ac82fe-b691fe-c1a0fe-cbaffe-d6bffe-e0cefe-ebddfe-f5ecfe
+        - dark https://coolors.co/palette/310055-3c0663-4a0a77-5a108f-6818a5-8b2fc9-ab51e3-bd68ee-d283ff-dc97ff
+    */
+    --c_purple_darker: #310055;
+    --c_purple_dark: #4A0A77;
+    --c_purple: #6818A5;
+    --c_purple_light: #CBAFFE;
+    --c_purple_lighter: #F5ECFE;
+
     --c_blue: #0044FF;
     --c_blue_pastel: #B8E0FF;
     --c_blue_light: #73E8FF;
     --c_blue_dark: #003ADB;
+    /* --c_red: */
+    --c-red: #FF0000;
+    --c_red_pastel: #FAE0E2;
+    --c_red_lighter: #FAE0E2;
 }
 
 html {
@@ -16,14 +33,14 @@ html {
 }
 
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
+    background-color: var(--background-colour);
+    color: var(--text-colour);
     font-family: var(--font-family-base);
     font-family: Arial;
     padding: 0;
     margin: 0;
     border: 0;
-    background: linear-gradient(to bottom right, var(--c_purple), #dc2430); /* var(--c_purple_pastel); */
+    background: linear-gradient(to bottom right, var(--c_purple_lighter), var(--c_red_lighter)); /* var(--c_purple); */
     height: 100vh;
     max-height: 100%;
 }
@@ -53,7 +70,8 @@ script, link {
     overflow-y: auto;
     overflow-x: hidden;
     position: absolute;
-    width: 98vw; 
+    width: 98vw;
+    color: var(--text-colour);
 }
 
 .page-body > * {
@@ -70,7 +88,7 @@ script, link {
     align-self: center;
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
-    color: var(--c_purple_dark);
+    /* color: var(--c_purple_dark); */
 }
 #pageBody > .card {
     height: fit-content;
@@ -160,7 +178,7 @@ img.header-logo {
 
 /* Add a card effect for articles */
 .card {
-    background-color: var(--c_purple_pastel);
+    background-color: white;
     padding: 1vh;
     margin: 1vh;
     display: flex !important;
@@ -250,7 +268,7 @@ img.header-logo {
 }
 
 .container-input > input, .container-input > textarea {
-    border: 2px solid var(--c_purple);
+    border: 2px solid var(--border-colour);
     padding: 1vh;
 }
 
@@ -270,10 +288,10 @@ li {
 
 
 :not(input,textarea,select,button).dirty {
-    background-color: var(--c_purple_dark);
+    background-color: var(--accent-colour);
 }
 input.dirty, textarea.dirty, select.dirty {
-    border-color: var(--c_purple_dark);
+    border-color: var(--border-colour);
 }
 
 

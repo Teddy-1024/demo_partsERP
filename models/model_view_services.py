@@ -14,9 +14,13 @@ Data model for services view
 from models.model_view_base import Model_View_Base
 # from routes import bp_home
 # external
+from typing import ClassVar
 
 class Model_View_Services(Model_View_Base):
-    # Attributes
+    FLAG_FAQ: ClassVar[str] = 'faq'
+    FLAG_SERVICES: ClassVar[str] = 'services'
+    FLAG_TECHNOLOGIES: ClassVar[str] = 'technologies'
+
     @property
     def title(self):
         return 'Services'

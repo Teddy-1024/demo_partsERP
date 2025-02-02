@@ -10,7 +10,7 @@
     right: 0;
     width: 100px;
     /* height: 50%; */ 
-    background: var(--c_purple_pastel);
+    background: var(--background-colour);
     justify-content: right;
     align-items: right;
     align-self: right;
@@ -33,7 +33,7 @@
     max-height: 80%;
 }
 .hamburger {
-    border: 2px solid var(--c_purple_dark);
+    border: 2px solid var(--border-colour);
     border-radius: 4px;
 }
 .hamburger:first-child {
@@ -52,14 +52,14 @@
     justify-content: center;
     text-align: center;
     width: 100%;
-    color: var(--c_purple_dark);
+    /* color: var(--text-colour); */
     font-weight: bold;
     font-size: 18px;
     /* height: 18px; */
 }
 .hamburger > :hover {
-    background-color: var(--c_purple_light);
-    color: var(--c_purple_dark);
+    color: var(--background-colour);
+    background-color: var(--primary-colour);
 }
 .hamburger > * > * {
     width: 100%;
@@ -71,10 +71,6 @@
 .hamburger > .container {
     padding-top: 4.5px;
     padding-bottom: 4.5px;
-}
-
-#overlayHamburger .row *:hover {
-    text-decoration: underline;
 }
 
 /* Confirm overlay */

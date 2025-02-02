@@ -12,6 +12,15 @@
     margin-bottom: 35vh;
 }
 
+.home-hero {
+
+}
+
+.home-hero-title {
+    font-size: 24px; 
+    font-weight: normal;
+}
+
 .img-demo {
     max-width: 50%;
     min-width: 500px;

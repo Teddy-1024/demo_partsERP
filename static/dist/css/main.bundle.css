@@ -1,14 +1,31 @@
 
 :root {
     /* Declare global variables */
+    /*
     --c_purple: #5B29FF;
     --c_purple_pastel: #D1D1FF;
+    --c_purple_lighter: #E8E1FF;
     --c_purple_light: #C6BDFF;
     --c_purple_dark: #4700B3;
+    */
+    /* purple theme
+        - light https://coolors.co/palette/a172fd-a77afe-ac82fe-b691fe-c1a0fe-cbaffe-d6bffe-e0cefe-ebddfe-f5ecfe
+        - dark https://coolors.co/palette/310055-3c0663-4a0a77-5a108f-6818a5-8b2fc9-ab51e3-bd68ee-d283ff-dc97ff
+    */
+    --c_purple_darker: #310055;
+    --c_purple_dark: #4A0A77;
+    --c_purple: #6818A5;
+    --c_purple_light: #CBAFFE;
+    --c_purple_lighter: #F5ECFE;
+
     --c_blue: #0044FF;
     --c_blue_pastel: #B8E0FF;
     --c_blue_light: #73E8FF;
     --c_blue_dark: #003ADB;
+    /* --c_red: */
+    --c-red: #FF0000;
+    --c_red_pastel: #FAE0E2;
+    --c_red_lighter: #FAE0E2;
 }
 
 html {
@@ -16,14 +33,14 @@ html {
 }
 
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
+    background-color: var(--background-colour);
+    color: var(--text-colour);
     font-family: var(--font-family-base);
     font-family: Arial;
     padding: 0;
     margin: 0;
     border: 0;
-    background: linear-gradient(to bottom right, var(--c_purple), #dc2430); /* var(--c_purple_pastel); */
+    background: linear-gradient(to bottom right, var(--c_purple_lighter), var(--c_red_lighter)); /* var(--c_purple); */
     height: 100vh;
     max-height: 100%;
 }
@@ -53,7 +70,8 @@ script, link {
     overflow-y: auto;
     overflow-x: hidden;
     position: absolute;
-    width: 98vw; 
+    width: 98vw;
+    color: var(--text-colour);
 }
 
 .page-body > * {
@@ -70,7 +88,7 @@ script, link {
     align-self: center;
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
-    color: var(--c_purple_dark);
+    /* color: var(--c_purple_dark); */
 }
 #pageBody > .card {
     height: fit-content;
@@ -160,7 +178,7 @@ img.header-logo {
 
 /* Add a card effect for articles */
 .card {
-    background-color: var(--c_purple_pastel);
+    background-color: white;
     padding: 1vh;
     margin: 1vh;
     display: flex !important;
@@ -250,7 +268,7 @@ img.header-logo {
 }
 
 .container-input > input, .container-input > textarea {
-    border: 2px solid var(--c_purple);
+    border: 2px solid var(--border-colour);
     padding: 1vh;
 }
 
@@ -270,10 +288,10 @@ li {
 
 
 :not(input,textarea,select,button).dirty {
-    background-color: var(--c_purple_dark);
+    background-color: var(--accent-colour);
 }
 input.dirty, textarea.dirty, select.dirty {
-    border-color: var(--c_purple_dark);
+    border-color: var(--border-colour);
 }
 
 
@@ -288,15 +306,15 @@ button, .button-submit, input[type="submit"] {
     border-radius: 2vh;
     padding: 1vh 2vh 1vh 2vh;
     margin: 0.5vh;
-    background-color: var(--c_purple_pastel);
-    color: var(--c_purple_dark);
-    border-color: var(--c_purple_dark);
+    background-color: var(--background-colour);
+    color: var(--primary-colour);
+    border-color: var(--border-colour);
 }
 
 button.navContactUs {
-    border: 4px solid var(--c_purple_dark);
+    border: 4px solid var(--border-colour);
     background-color: var(--c_purple_pastel);
-    color: var(--c_purple_dark) !important;
+    /* color: var(--c_purple_dark) !important; */
     border-radius: 2vh;
     width: 180px !important;
 }
@@ -354,7 +372,7 @@ h5 {
     right: 0;
     width: 100px;
     /* height: 50%; */ 
-    background: var(--c_purple_pastel);
+    background: var(--background-colour);
     justify-content: right;
     align-items: right;
     align-self: right;
@@ -377,7 +395,7 @@ h5 {
     max-height: 80%;
 }
 .hamburger {
-    border: 2px solid var(--c_purple_dark);
+    border: 2px solid var(--border-colour);
     border-radius: 4px;
 }
 .hamburger:first-child {
@@ -396,14 +414,14 @@ h5 {
     justify-content: center;
     text-align: center;
     width: 100%;
-    color: var(--c_purple_dark);
+    /* color: var(--text-colour); */
     font-weight: bold;
     font-size: 18px;
     /* height: 18px; */
 }
 .hamburger > :hover {
-    background-color: var(--c_purple_light);
-    color: var(--c_purple_dark);
+    color: var(--background-colour);
+    background-color: var(--primary-colour);
 }
 .hamburger > * > * {
     width: 100%;
@@ -415,10 +433,6 @@ h5 {
 .hamburger > .container {
     padding-top: 4.5px;
     padding-bottom: 4.5px;
-}
-
-#overlayHamburger .row *:hover {
-    text-decoration: underline;
 }
 
 /* Confirm overlay */
@@ -439,7 +453,7 @@ thead, tbody {
 }
 
 th {
-    background-color: var(--c_purple_pastel);
+    background-color: transparent;
 }
 td {
     font-size: min(12px, calc(1vh * 3));
@@ -449,7 +463,7 @@ th, td {
     min-width: fit-content;
 }
 tr:not(:last-child) > td {
-    border-bottom: 1px dashed var(--c_purple_dark);
+    border-bottom: 1px dashed var(--border-colour);
 }
 td > table > tbody > tr > td {
     border: none !important;
@@ -458,17 +472,18 @@ th.collapsed, td.collapsed {
     display: table-cell !important;
 }
 td.dirty {
-    background-color: var(--c_purple_dark);
+    background-color: var(--primary-colour);
 }
 td:not(.dirty) {
     /* color: var(--c_purple_dark); */
-    background-color: var(--c_purple_pastel);
+    background-color: transparent;
 }
 
 tr {
     min-height: 1px;
-    border-bottom: 1px solid var(--c_purple_dark);
-    border-top: 1px solid var(--c_purple_dark);
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+    border-color: var(--border-colour);
     background-color: transparent;
 }
 
@@ -484,11 +499,11 @@ table button {
 }
 
 table button.active {
-    background-color: var(--c_purple_pastel);
+    background-color: var(--background-colour);
 }
 
 tr.delete, tr.delete > td {
-    background-color: red;
+    background-color: var(--c-red);
 }
 
 table div {
@@ -513,7 +528,7 @@ table div {
 .topnav a, .topnav label, .topnav p, .topnav h1 {
     float: left;
     display: flex;
-    color: white;
+    /* color: white; */
     text-align: center;
     text-decoration: none;
     width: 100%;
@@ -522,8 +537,8 @@ table div {
     justify-content: center;
 }
 .topnav a:hover {
-    background-color: var(--c_purple_light);
-    color: var(--c_purple_dark);
+    background-color: var(--background-colour);
+    /* color: var(--c_purple_dark); */
 }
 
 .topnav > .container {
@@ -539,9 +554,11 @@ table div {
     padding: 1vh;
     margin: 1vh;
     border-radius: 1vh;
-    /* background-color: var(--c_purple_light); */
-    color: var(--c_purple_dark);
-    border: 2px solid white;
+    /*
+    background-color: var(--c_purple_light);
+    color: var(--c_purple_dark); 
+    */
+    border: 2px solid var(--border-colour);
     font-weight: bold;
     text-align: center;
 }
@@ -554,7 +571,6 @@ table div {
 
 .company-name {
     font-size: min(28px, calc(1vh * 7));
-    color: white;
 }
 @media screen and (max-width: 450px) {
     .company-name {
@@ -596,7 +612,7 @@ form.filter button.save, form.filter button.button-cancel {
 }
 form.filter button.save, form.filter button.button-cancel {
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 1px;
 }
 
 /* Footer */
@@ -608,9 +624,11 @@ form.filter button.save, form.filter button.button-cancel {
     margin: 0;
     height: 8vh !important;
     overflow-y: auto;
-    background-color: var(--c_purple_pastel);
+    background-color: var(--accent-colour);
+    /*
     border-top-left-radius: 2.5vh;
     border-top-right-radius: 2.5vh;
+    */
     position: absolute;
     /* top: 2.5vh; */
     bottom: 0;
@@ -668,49 +686,52 @@ form.filter button.save, form.filter button.button-cancel {
 
 
 :root {
-    --background-color: #ffffff;
-    --text-color: #333333;
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --danger-color: #dc3545;
-    --warning-color: #ffc107;
-    --info-color: #17a2b8;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --border-color: #dee2e6;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    /* --background-colour: #ffffff; */
+    --text-colour: var(--c_purple_darker);
+    --primary-colour: var(--c_purple_dark);
+    --secondary-colour: var(--c_purple);
+    --accent-colour: var(--c_purple_light);
+    --background-colour: var(--c_purple_lighter);
+    --success-colour: #28a745;
+    --danger-colour: #dc3545;
+    --warning-colour: #ffc107;
+    --info-colour: #17a2b8;
+    --light-colour: var(--c_purple_light);
+    --dark-colour: var(--c_purple_dark);
+    --border-colour: var(--c_purple_dark);
+    --shadow-colour: rgba(0, 0, 0, 0.1);
     
-    /* Header */
+    /* Header * /
     --header-bg: #f8f9fa;
     --header-text: #333333;
     
-    /* Footer */
+    /* Footer * /
     --footer-bg: #f8f9fa;
     --footer-text: #6c757d;
     
-    /* Navigation */
+    /* Navigation * /
     --nav-bg: #ffffff;
     --nav-text: #333333;
     --nav-hover-bg: #f1f3f5;
     --nav-hover-text: #007bff;
     
-    /* Buttons */
+    /* Buttons * /
     --Button-primary-bg: #007bff;
     --Button-primary-text: #ffffff;
     --Button-secondary-bg: #6c757d;
     --Button-secondary-text: #ffffff;
     
-    /* Forms */
+    /* Forms * /
     --input-bg: #ffffff;
     --input-border: #ced4da;
     --input-text: #495057;
     --input-focus-border: #80bdff;
     
-    /* Cards */
+    /* Cards * /
     --card-bg: #ffffff;
     --card-border: #dee2e6;
     --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    */
 }
 
 /*# sourceMappingURL=main.bundle.css.map*/
