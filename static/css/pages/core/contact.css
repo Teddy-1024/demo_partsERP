@@ -11,15 +11,19 @@
     font-size: min(16px, calc(1vh * 4));
 }
 
+#pageBody > .card {
+    max-width: min(80vw, 1000px);
+}
+
 #email {
     /* min-width: 40vw; */
-    width: 40vw;
+    width: min(40vw, 500px);
 }
 #name {
-    width: 50vw;
+    width: min(50vw, 625px);
 }
 #message {
-    width: 60vw;
+    width: min(60vw, 750px);
 }
 
 input, textarea {

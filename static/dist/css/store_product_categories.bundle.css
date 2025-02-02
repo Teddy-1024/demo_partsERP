@@ -14,15 +14,15 @@
 }
 
 .buttonAddToBasket {
-    background-color: var(--c_blue_pastel);
-    color: var(--c_blue_dark);
-    border-color: var(--c_blue_dark);
+    background-color: var(--background-colour);
+    /* color: var(--c_blue_dark); */
+    border-color: var(--border-colour);
 }
 
 #buttonCheckout, .buttonBuyNow {
-    background-color: var(--c_purple_pastel);
-    color: var(--c_purple_dark);
-    border-color: var(--c_purple_dark);
+    background-color: var(--background-colour);
+    /* color: var(--c_purple_dark); */
+    border-color: var(--border-colour);
 }
 
 .button-increment, .button-decrement {
@@ -109,7 +109,7 @@
 }
 
 td > input, td > select, td > textarea, .container-input > input, .container-input > select, .container-input > textarea {
-    border: 2px solid var(--c_purple);
+    border: 2px solid var(--border-colour);
     border-radius: 0.5vh;
 }
 

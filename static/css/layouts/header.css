@@ -17,7 +17,7 @@
 .topnav a, .topnav label, .topnav p, .topnav h1 {
     float: left;
     display: flex;
-    color: white;
+    /* color: white; */
     text-align: center;
     text-decoration: none;
     width: 100%;
@@ -26,8 +26,8 @@
     justify-content: center;
 }
 .topnav a:hover {
-    background-color: var(--c_purple_light);
-    color: var(--c_purple_dark);
+    background-color: var(--background-colour);
+    /* color: var(--c_purple_dark); */
 }
 
 .topnav > .container {
@@ -43,9 +43,11 @@
     padding: 1vh;
     margin: 1vh;
     border-radius: 1vh;
-    /* background-color: var(--c_purple_light); */
-    color: var(--c_purple_dark);
-    border: 2px solid white;
+    /*
+    background-color: var(--c_purple_light);
+    color: var(--c_purple_dark); 
+    */
+    border: 2px solid var(--border-colour);
     font-weight: bold;
     text-align: center;
 }
@@ -58,7 +60,6 @@
 
 .company-name {
     font-size: min(28px, calc(1vh * 7));
-    color: white;
 }
 @media screen and (max-width: 450px) {
     .company-name {
@@ -100,5 +101,5 @@ form.filter button.save, form.filter button.button-cancel {
 }
 form.filter button.save, form.filter button.button-cancel {
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 1px;
 }

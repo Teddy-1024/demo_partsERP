@@ -167,8 +167,6 @@ function dom_createClass(e, r, t) { return r && dom_defineProperties(e.prototype
 function dom_toPropertyKey(t) { var i = dom_toPrimitive(t, "string"); return "symbol" == dom_typeof(i) ? i : i + ""; }
 function dom_toPrimitive(t, r) { if ("object" != dom_typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != dom_typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
-
-// Module for DOM manipulation
 var DOM = /*#__PURE__*/function () {
   function DOM() {
     dom_classCallCheck(this, DOM);
@@ -538,8 +536,6 @@ function api_createClass(e, r, t) { return r && api_defineProperties(e.prototype
 function api_toPropertyKey(t) { var i = api_toPrimitive(t, "string"); return "symbol" == api_typeof(i) ? i : i + ""; }
 function api_toPrimitive(t, r) { if ("object" != api_typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != api_typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
-
-// Module for API calls
 var api_API = /*#__PURE__*/function () {
   function API() {
     api_classCallCheck(this, API);
@@ -896,7 +892,6 @@ var api_API = /*#__PURE__*/function () {
 const api = new API();
 export default api;
 
-Example of using the API
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
     setupEventListeners();
@@ -3270,7 +3265,7 @@ var StoreMixinPage = /*#__PURE__*/function () {
               ajaxData[flagForm] = convertForm2JSON(elForm);
               console.log('sending data to currency selector controller: '); console.log(ajaxData);
               ajaxJSONData('select currency', mapHashToController(hashStoreSelectCurrency), ajaxData, function() { window.location.reload() }, false);
-                let optionSelected = elSelector.options[elSelector.selectedIndex]
+               let optionSelected = elSelector.options[elSelector.selectedIndex]
               let textSelected = optionSelected.getAttribute(attrDataShort)
               
           });
@@ -3471,7 +3466,7 @@ var StoreMixinPage = /*#__PURE__*/function () {
           // goToPage(hashPageStoreBasket);
           let ajaxData = {};
           ajaxData[keyBasket] = basket;
-            ajaxJSONData('checkout', mapHashToController(hashPageStoreBasket), ajaxData, null, false);
+           ajaxJSONData('checkout', mapHashToController(hashPageStoreBasket), ajaxData, null, false);
           */
           this.router.navigateToHash(hashPageStoreBasket);
         });
@@ -4125,7 +4120,7 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       inputCostTotalLocalVatExcl.step = 0.01;
       DOM.setElementAttributesValuesCurrentAndPrevious(inputCostTotalLocalVatExcl, orderItem[flagCostTotalLocalVatExcl]);
       tdCostTotalLocalVatExcl.appendChild(inputCostTotalLocalVatExcl);
-        let tdCostTotalLocalVatIncl = document.createElement("td");
+       let tdCostTotalLocalVatIncl = document.createElement("td");
       tdCostTotalLocalVatIncl.classList.add(flagCostTotalLocalVatIncl);
       let inputCostTotalLocalVatIncl = document.createElement("input");
       inputCostTotalLocalVatIncl.classList.add(flagCostTotalLocalVatIncl);
@@ -4133,13 +4128,13 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
       inputCostTotalLocalVatIncl.step = 0.01;
       DOM.setElementAttributesValuesCurrentAndPrevious(inputCostTotalLocalVatIncl, orderItem[flagCostTotalLocalVatIncl]);
       tdCostTotalLocalVatIncl.appendChild(inputCostTotalLocalVatIncl);
-        let tdCostUnitLocalVatExcl = document.createElement("td");
+       let tdCostUnitLocalVatExcl = document.createElement("td");
       tdCostUnitLocalVatExcl.classList.add(flagCostUnitLocalVatExcl);
       let divCostUnitLocalVatExcl = document.createElement("div");
       divCostUnitLocalVatExcl.classList.add(flagCostUnitLocalVatExcl);
       DOM.setElementValuesCurrentAndPrevious(divCostUnitLocalVatExcl, orderItem[flagCostUnitLocalVatExcl]);
       tdCostUnitLocalVatExcl.appendChild(divCostUnitLocalVatExcl);
-        let tdCostUnitLocalVatIncl = document.createElement("td");
+       let tdCostUnitLocalVatIncl = document.createElement("td");
       tdCostUnitLocalVatIncl.classList.add(flagCostUnitLocalVatIncl);
       let divCostUnitLocalVatIncl = document.createElement("div");
       divCostUnitLocalVatIncl.classList.add(flagCostUnitLocalVatIncl);
@@ -4253,10 +4248,10 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
         let priceTotalLocalVatExcl = DOM.getElementValueCurrent(inputPriceTotalLocalVatExcl);
         let inputQuantityUsed = row.querySelector('td.' + flagQuantityUsed + ' input');
         let quantityUsed = DOM.getElementValueCurrent(inputQuantityUsed);
-          let divPriceUnitLocalVatExcl = row.querySelector('td.' + flagPriceUnitLocalVatExcl + ' div');
+         let divPriceUnitLocalVatExcl = row.querySelector('td.' + flagPriceUnitLocalVatExcl + ' div');
         let priceUnitLocalVatExcl = quantityUsed == 0 ? 0 : priceTotalLocalVatExcl / quantityUsed;
         DOM.setElementValuesCurrentAndPrevious(divPriceUnitLocalVatExcl, priceUnitLocalVatExcl);
-          let rowManufacturingPurchaseOrder = row.closest(idTableMain + ' > tbody > tr');
+         let rowManufacturingPurchaseOrder = row.closest(idTableMain + ' > tbody > tr');
         let divPriceGrandTotalLocalVatExcl = rowManufacturingPurchaseOrder.querySelector('td.' + flagPriceTotalLocalVatExcl + ' div');
         let inputsPriceTotalLocalVatExcl = rowManufacturingPurchaseOrder.querySelectorAll('td.' + flagOrderItems + ' td.' + flagPriceTotalLocalVatExcl + ' input');
         let priceGrandTotalLocalVatExcl = Array.from(inputsPriceTotalLocalVatExcl).reduce((acc, input) => acc + Number(DOM.getElementValueCurrent(input)), 0);
@@ -4268,10 +4263,10 @@ var PageStoreManufacturingPurchaseOrders = /*#__PURE__*/function (_TableBasePage
         let priceTotalLocalVatIncl = DOM.getElementValueCurrent(inputPriceTotalLocalVatIncl);
         let inputQuantityUsed = row.querySelector('td.' + flagQuantityUsed + ' input');
         let quantityUsed = DOM.getElementValueCurrent(inputQuantityUsed);
-          let divPriceUnitLocalVatIncl = row.querySelector('td.' + flagPriceUnitLocalVatIncl + ' div');
+         let divPriceUnitLocalVatIncl = row.querySelector('td.' + flagPriceUnitLocalVatIncl + ' div');
         let priceUnitLocalVatIncl = quantityUsed == 0 ? 0 : priceTotalLocalVatIncl / quantityUsed;
         DOM.setElementValuesCurrentAndPrevious(divPriceUnitLocalVatIncl, priceUnitLocalVatIncl);
-          let rowManufacturingPurchaseOrder = row.closest(idTableMain + ' > tbody > tr');
+         let rowManufacturingPurchaseOrder = row.closest(idTableMain + ' > tbody > tr');
         let divPriceGrandTotalLocalVatIncl = rowManufacturingPurchaseOrder.querySelector('td.' + flagPriceTotalLocalVatIncl + ' div');
         let inputsPriceTotalLocalVatIncl = rowManufacturingPurchaseOrder.querySelectorAll('td.' + flagOrderItems + ' td.' + flagPriceTotalLocalVatIncl + ' input');
         let priceGrandTotalLocalVatIncl = Array.from(inputsPriceTotalLocalVatIncl).reduce((acc, input) => acc + Number(DOM.getElementValueCurrent(input)), 0);
@@ -4647,7 +4642,7 @@ var PageStoreProductPermutations = /*#__PURE__*/function (_TableBasePage) {
       DOM.setElementValuesCurrentAndPrevious(inputQuantityMax, rowJson[flagQuantityMax]);
       let inputQuantityStep = row.querySelector('td.' + flagCountUnitMeasurementPerQuantityStep + ' input');
       DOM.setElementValuesCurrentAndPrevious(inputQuantityStep, rowJson[flagCountUnitMeasurementPerQuantityStep]);
-            row.querySelector('td.' + flagQuantityStock + ' input').value = rowJson[flagQuantityStock];
+         row.querySelector('td.' + flagQuantityStock + ' input').value = rowJson[flagQuantityStock];
       row.querySelector('td.' + flagQuantityMin + ' input').value = rowJson[flagQuantityMin];
       row.querySelector('td.' + flagQuantityMax + ' input').value = rowJson[flagQuantityMax];
       row.querySelector('td.' + flagCostLocal).innerHTML = rowJson[flagCostLocal];
@@ -6926,43 +6921,10 @@ function router_toPrimitive(t, r) { if ("object" != router_typeof(t) || !t) retu
 // import PageUserLogout from './pages/user/logout.js';
 // import PageUserAccount from './pages/user/account.js';
 
-/*
-import "./lib/common.js";
-import "./lib/constants.js";
-import "./lib/events.js";
-import "./lib/extras.js";
-// import "./DEPRECATED/init.js";
-import "./lib/local_storage.js";
-import "./lib/utils.js";
-import "./lib/validation.js";
-*/
 
 
 
 
-
-
-// Create a context for the pages
-// const pagesContext = require.context('./pages', true, /\.js$/);
-
-/*
-const pageModules = {
-    // Core
-    [hashPageHome]: () => import('./pages/core/home.js'),
-    [hashPageContact]: () => import('./pages/core/contact.js'),
-    [hashPageServices]: () => import('./pages/core/services.js'),
-    [hashPageAdminHome]: () => import('./pages/core/admin_home.js'),
-    // Legal
-    [hashPageAccessibilityStatement]: () => import('./pages/legal/accessibility_statement.js'),
-    [hashPageLicense]: () => import('./pages/legal/license.js'),
-    // Store
-    [hashPageStoreProductCategories]: () => import('./pages/store/product_categories.js'),
-    [hashPageStoreProductPermutations]: () => import('./pages/store/product_permutations.js'),
-    // [hashPageStoreProducts]: () => import('./pages/store/products.js'),
-    // User
-    // Add other pages here...
-};
-*/
 var Router = /*#__PURE__*/function () {
   function Router() {
     var _this = this;
@@ -7236,10 +7198,10 @@ var Router = /*#__PURE__*/function () {
         console.log("pages: ", pages);
         return pages;
     }
-      addRoute(path, handler) {
+     addRoute(path, handler) {
         this.routes[path] = handler;
     }
-      handlePopState(event) {
+     handlePopState(event) {
         /*
         let url = window.location.pathname;
         url = url.split('?')[0];
@@ -7250,11 +7212,11 @@ var Router = /*#__PURE__*/function () {
         let pageCurrent = Router.getPageCurrent();
         pageCurrent.initialize(true);
     }
-      navigateToHash(hash, data = null) {
+     navigateToHash(hash, data = null) {
         const url = API.getUrlFromHash(hash);
         this.navigateToUrl(url, data);
     }
-        leavePageCurrent() {
+      leavePageCurrent() {
         const pageCurrent = Router.getPageCurrent();
         if (pageCurrent) pageCurrent.leave();
     }
@@ -7272,7 +7234,7 @@ var Router = /*#__PURE__*/function () {
         }
         throw new Error('Page not found: ' + hashPageCurrent);
     }
-      static parameteriseUrl(url, parameters) {
+     static parameteriseUrl(url, parameters) {
         if (!Validation.isEmpty(parameters)) {
             url += '%3F'; // '?';
             let firstParameter = true;
@@ -7301,7 +7263,7 @@ var Router = /*#__PURE__*/function () {
             // Optionally, handle 404 or redirect to a default route
         }
     }
-      handleRouteHash(hash) {
+     handleRouteHash(hash) {
         if (this.routes[hash]) {
             this.routes[hash]();
         } else {
@@ -7326,7 +7288,7 @@ var Router = /*#__PURE__*/function () {
     static getQueryParams() {
         return Object.fromEntries(new URLSearchParams(window.location.search));
     }
-      static updateQueryParams(params) {
+     static updateQueryParams(params) {
         const searchParams = new URLSearchParams(window.location.search);
         for (const [key, value] of Object.entries(params)) {
             searchParams.set(key, value);
@@ -7341,12 +7303,10 @@ var Router = /*#__PURE__*/function () {
       DOM.loadPageBody(response.data);
     }
   }]);
-}(); // Create and export a singleton instance
+}();
 
 var router = new Router();
-// import this for navigation
 
-// Usage example (you can put this in your main.js or app.js)
 /*
 router.addRoute('/', () => {
     console.log('Home page');
@@ -7358,7 +7318,6 @@ router.addRoute('/about', () => {
     // Load about page content
 });
 
-// Example of how to use the router in other parts of your application
 export function setupNavigationEvents() {
     document.querySelectorAll('a[data-nav]').forEach(link => {
         link.addEventListener('click', (e) => {
@@ -7370,32 +7329,8 @@ export function setupNavigationEvents() {
 }
 */
 ;// CONCATENATED MODULE: ./static/js/app.js
-/*
-// Bundle css imports
-import '../css/lib/reset.css';
-import '../css/lib/typography.css';
-import '../css/lib/variables.css';
-import '../css/lib/utils.css';
-
-import '../css/layouts/header.css';
-import '../css/layouts/footer.css';
-import '../css/layouts/table-main.css'
-
-import '../css/components/button.css';
-import '../css/components/card.css';
-import '../css/components/dialog.css';
-import '../css/components/form.css';
-import '../css/components/modal.css';
-import '../css/components/navigation.css';
-import '../css/components/overlay.css';
-
-import '../css/sections/store.css';
-*/
-
-// Main entry point for the application
 
 
-// import API from './api.js';
 function app_typeof(o) { "@babel/helpers - typeof"; return app_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, app_typeof(o); }
 function app_classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function app_defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, app_toPropertyKey(o.key), o); } }
@@ -7419,35 +7354,24 @@ var App = /*#__PURE__*/function () {
   }, {
     key: "setupEventListeners",
     value: function setupEventListeners() {
-      // Global event listeners
       // document.addEventListener('click', this.handleGlobalClick.bind(this));
-      // Add more global event listeners as needed
     }
   }, {
     key: "handleGlobalClick",
-    value: function handleGlobalClick(event) {
-      // Handle global click events
-    }
+    value: function handleGlobalClick(event) {}
   }, {
     key: "start",
     value: function start() {
-      // Additional startup logic
       this.initPageCurrent();
     }
   }, {
     key: "initPageCurrent",
     value: function initPageCurrent() {
-      /*
-      _pageCurrent = Router.getPageCurrent();
-      _pageCurrent.initialize();
-      */
       this.router.loadPageCurrent();
     }
   }]);
-}(); // Application instance
+}();
 var app = new App();
-
-// DOM ready handler
 function domReady(fn) {
   if (document.readyState !== 'loading') {
     fn();
@@ -7455,16 +7379,10 @@ function domReady(fn) {
     document.addEventListener('DOMContentLoaded', fn);
   }
 }
-
-// Initialize and start the app when DOM is ready
 domReady(function () {
   app.initialize();
 });
-
-// Expose app to window for debugging (optional)
 window.app = app;
-
-// Export app if using modules
 /* harmony default export */ const js_app = ((/* unused pure expression or super */ null && (app)));
 })();
 

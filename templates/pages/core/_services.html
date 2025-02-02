@@ -7,7 +7,7 @@
 {% block page_body %}
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/core_services.bundle.css') }}">
     
-    <div class="{{ model.FLAG_CARD }}">
+    <div class="{{ model.FLAG_CARD }} {{ model.FLAG_SERVICES }}">
         <div class="{{ model.FLAG_CONTAINER }} {{ model.FLAG_COLUMN }}">
             <h1>Services</h1>
             <h2>Website, Web App, & Desktop Software Development</h2>
@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <div class="{{ model.FLAG_CARD }}">
+    <div class="{{ model.FLAG_CARD }} {{ model.FLAG_TECHNOLOGIES }}">
         <h1>Technologies</h1>
         <p>We are most experienced with these technologies, in case you have any requirements.</p>
         <table>
@@ -82,7 +82,7 @@
         </table>
     </div>
     
-    <div class="{{ model.FLAG_CARD }}">
+    <div class="{{ model.FLAG_CARD }} {{ model.FLAG_FAQ }}">
         <h1>FAQs</h1>
         <h2>Websites, Web apps, and Software - what's the difference?</h2>
         <ul>
