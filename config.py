@@ -99,7 +99,7 @@ class ProductionConfig(Config):
 
 # Set the configuration class based on the environment
 # You can change 'development' to 'production' when deploying
-config_env = os.getenv('FLASK_ENV', "development")
+config_env = os.getenv('FLASK_ENV', "production")
 with open('app.log', 'a') as f:
     print(f'config_env: {config_env}')
     f.write(f'config_env: {config_env}\n')
