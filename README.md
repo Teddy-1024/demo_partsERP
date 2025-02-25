@@ -3,6 +3,7 @@ Demo subproject of partsERP Enterprise Resource Planning system featuring the co
 This web app uses Python with Flask for the server and MySQL for the database.
 
 # Build And Run
+NOTE: ALL INSTRUCTIONS ARE FOR LINUX.  
 ## 0. Prerequisites
 - Python 3.10
 - npm
@@ -46,13 +47,10 @@ NOTE: IF CONTACT US PAGE FORM FUNCTIONALITY IS REQUIRED, COMPLETE THIS STEP.
 - pip3 install -r requirements.txt  
 
 ## 10. Set required environment variables
-10.1. Windows command  
-- SET variable_name=variable_value  
-
-10.2. Linux command  
+10.1. Terminal command  
 - export variable_name=variable_value  
 
-10.3. Required variables
+10.2. Required variables
 | Name | Purpose | Example Value |
 | -------- | -------- | -------- |
 | KEY_SECRET_FLASK | Private key for server encryption. | password123 |
@@ -62,7 +60,7 @@ NOTE: IF CONTACT US PAGE FORM FUNCTIONALITY IS REQUIRED, COMPLETE THIS STEP.
 | SQLALCHEMY_DATABASE_URI | Database connection string for SQLAlchemy. | mysql://db_user_name:db_password@127.0.0.1:3306/db_name |
 | URL_HOST | Domain (and port as necessary) that the project is hosted on. | https://127.0.0.1:5000/ |
 
-10.4. Optional variables
+10.3. Optional variables
 | Name | Purpose | Example Value |
 | -------- | -------- | -------- |
 | MAIL_DEFAULT_SENDER | Bot email address. Required for sending internal emails following form completion on Contact Us page. | bot@partsltd.co.uk |
@@ -72,7 +70,7 @@ NOTE: IF CONTACT US PAGE FORM FUNCTIONALITY IS REQUIRED, COMPLETE THIS STEP.
 | RECAPTCHA_PRIVATE_KEY | Private key for Google ReCAPTCHA. Required for bot-prevention mesaures on Contact Us page form. | erDasdku8asdncuSAAS8... |
 
 ## 11. Host project
-NOTE: DO EITHER 11.1 OR 11.2.
+NOTE: DO EITHER 11.1 OR 11.2.  
 11.1. Host for local machine  
 - python3 -m flask run
 
@@ -84,20 +82,24 @@ NOTE: DO EITHER 11.1 OR 11.2.
 ## Files dedicated to each page
 CSS:  
 - page  
+
 HTML:  
 - page  
 - row  
+
 JavaScript:  
 - page  
 - api  
 - router  
 - base - navigation buttons  
+
 MySQL:  
 - get  
 - save  
 - table  
 - staging table  
 - audit table  
+
 Python:  
 - business object  
 - controller  
