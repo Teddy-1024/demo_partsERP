@@ -11,7 +11,7 @@ NOTE: ALL INSTRUCTIONS ARE FOR LINUX.
 
 ## 1. Create Auth0 application for project
 
-## 2. (Optional) Create Google ReCAPTCHA service
+## 2. (Optional) Create Google reCAPTCHA service
 NOTE: IF CONTACT US PAGE FORM FUNCTIONALITY IS REQUIRED, COMPLETE THIS STEP.  
 2.1. Go to the reCAPTCHA Admin Console and register your site: https://www.google.com/recaptcha/admin  
 2.2. Choose reCAPTCH v2  
@@ -66,8 +66,8 @@ NOTE: IF CONTACT US PAGE FORM FUNCTIONALITY IS REQUIRED, COMPLETE THIS STEP.
 | MAIL_DEFAULT_SENDER | Bot email address. Required for sending internal emails following form completion on Contact Us page. | bot@partsltd.co.uk |
 | MAIL_CONTACT_PUBLIC | Company's public communications email address. Required for receiving internal emails following form completion on Contact Us page. | teddy@partltd.co.uk |
 | MAIL_PASSWORD | Password for bot email account. Required for receiving internal emails following form completion on Contact Us page. | password123 |
-| RECAPTCHA_PUBLIC_KEY | Public key for Google ReCAPTCHA. Required for bot-prevention mesaures on Contact Us page form.| erDasdku8asdncuSAAS88... |
-| RECAPTCHA_PRIVATE_KEY | Private key for Google ReCAPTCHA. Required for bot-prevention mesaures on Contact Us page form. | erDasdku8asdncuSAAS8... |
+| RECAPTCHA_PUBLIC_KEY | Public key for Google reCAPTCHA. Required for bot-prevention mesaures on Contact Us page form.| erDasdku8asdncuSAAS88... |
+| RECAPTCHA_PRIVATE_KEY | Private key for Google reCAPTCHA. Required for bot-prevention mesaures on Contact Us page form. | erDasdku8asdncuSAAS8... |
 
 ## 11. Host project
 NOTE: DO EITHER 11.1 OR 11.2.  
