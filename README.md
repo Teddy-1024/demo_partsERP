@@ -106,3 +106,23 @@ Python:
 - datastore  
 - form  
 - model  
+
+
+# Link
+Live demo site  
+[https://erp.sandbox.partsenterprise.partsltd.co.uk/](https://erp.sandbox.partsenterprise.partsltd.co.uk/)  
+  
+Credentials portal for live demo site
+[https://auth.sandbox.teddy.org.uk/?target=https%3A%2F%2Ferp.sandbox.partsenterprise.partsltd.co.uk](https://auth.sandbox.teddy.org.uk/?target=https%3A%2F%2Ferp.sandbox.partsenterprise.partsltd.co.uk)  
+
+
+# Gallery
+Product Category page  
+![Product Category page](static/docs/page-product_category.png)
+  
+Product Variation page  
+![Product Variation page](static/docs/page-product_variation.png)
+
+
+# License
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details
