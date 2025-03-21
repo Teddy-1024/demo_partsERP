@@ -16,7 +16,6 @@ from lib import data_types
 from forms.forms import Form_Basket_Add, Form_Basket_Edit
 from forms.store.product_permutation import Filters_Product_Permutation
 from business_objects.db_base import SQLAlchemy_ABC, Get_Many_Parameters_Base
-from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.discount import Discount
 from business_objects.store.image import Image
 from business_objects.store.product_permutation import Product_Permutation
@@ -36,7 +35,6 @@ from typing import ClassVar, List
 class Product(SQLAlchemy_ABC, Store_Base):
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT
     NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME
-    # FLAG_HAS_VARIATIONS: ClassVar[str] = 'has-variations-product'
     FLAG_INDEX_PERMUTATION_SELECTED: ClassVar[str] = 'index-permutation-selected'
     FLAG_PRODUCT_VARIATION_TREES: ClassVar[str] = 'variation-trees'
 

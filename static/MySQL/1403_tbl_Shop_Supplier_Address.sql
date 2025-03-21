@@ -8,12 +8,12 @@ CREATE TABLE Shop_Supplier_Address (
     , id_supplier INT NOT NULL
     , CONSTRAINT FK_Shop_Supplier_Address_id_supplier
 		FOREIGN KEY (id_supplier)
-        REFERENCES partsltd_prod.Shop_Supplier(id_supplier)
+        REFERENCES demo.Shop_Supplier(id_supplier)
         ON UPDATE RESTRICT
     , id_region INT NOT NULL
     , CONSTRAINT FK_Shop_Supplier_Address_id_region
 		FOREIGN KEY (id_region)
-        REFERENCES partsltd_prod.Shop_Region(id_region)
+        REFERENCES demo.Shop_Region(id_region)
     , postcode VARCHAR(20) NOT NULL
     , address_line_1 VARCHAR(256) NOT NULL
     , address_line_2 VARCHAR(256) NOT NULL
@@ -25,5 +25,5 @@ CREATE TABLE Shop_Supplier_Address (
     , id_change_set INT
     , CONSTRAINT FK_Shop_Supplier_Address_id_change_set
 		FOREIGN KEY (id_change_set)
-        REFERENCES partsltd_prod.Shop_User_Change_Set(id_change_set)
+        REFERENCES demo.Shop_User_Change_Set(id_change_set)
 );

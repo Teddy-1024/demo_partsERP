@@ -45,7 +45,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE MET.code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -112,7 +112,7 @@ BEGIN
         , IFNULL(U_T.is_included_VAT_default, U.is_included_VAT_default) AS is_included_VAT_default
         , IFNULL(IFNULL(U_T.active, U.active), 1) AS active
         , IFNULL(U_T.display_order, PC.display_order) AS display_order
-	FROM partsltd_prod.Shop_User_Temp U_T
+	FROM demo.Shop_User_Temp U_T
     LEFT JOIN Shop_User U ON U_T.id_user = U.id_user
     WHERE U_T.guid = a_guid
     ;
@@ -194,7 +194,7 @@ BEGIN
 
     SET v_can_admin_user := (
         SELECT IFNULL(UE_T.can_edit, 0) = 1
-        FROM partsltd_prod.Shop_User_Eval_Temp UE_T 
+        FROM demo.Shop_User_Eval_Temp UE_T 
         WHERE
             UE_T.GUID = a_guid
             AND UE_T.id_user = a_id_user
@@ -261,7 +261,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -272,7 +272,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_User;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;

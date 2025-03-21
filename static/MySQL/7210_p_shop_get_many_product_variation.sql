@@ -92,7 +92,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_variation_type THEN -- NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_variation_type, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_variation_type, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -103,21 +103,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
+            LEFT JOIN demo.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(VT.id_type)
@@ -134,7 +134,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive variation type IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
+			LEFT JOIN demo.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(VT.id_type)
@@ -146,7 +146,7 @@ BEGIN
             SELECT
 				DISTINCT VT.id_type
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
+			RIGHT JOIN demo.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
 			WHERE 
 				(
 					a_get_all_variation_type = 1
@@ -166,7 +166,7 @@ BEGIN
     DELETE FROM tmp_Split;
     
     IF (v_has_filter_variation AND NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1)) THEN -- NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_variation, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_variation, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -177,21 +177,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Variation V ON t_S.as_int = V.id_variation
+            LEFT JOIN demo.Shop_Variation V ON t_S.as_int = V.id_variation
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(V.id_variation)
@@ -208,7 +208,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive variation IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Variation V ON t_S.as_int = V.id_variation
+			LEFT JOIN demo.Shop_Variation V ON t_S.as_int = V.id_variation
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(VT.id_type)
@@ -222,7 +222,7 @@ BEGIN
 				DISTINCT V.id_variation
 				, V.id_type
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Variation V ON t_S.as_int = V.id_variation
+			RIGHT JOIN demo.Shop_Variation V ON t_S.as_int = V.id_variation
 			WHERE 
 				(
 					a_get_all_variation = 1
@@ -345,10 +345,10 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Variation;
     DROP TABLE IF EXISTS tmp_Variation_Type;
     
-	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+	CALL demo.p_shop_clear_calc_product_permutation ( v_guid );
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;

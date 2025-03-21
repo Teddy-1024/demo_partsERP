@@ -1,10 +1,8 @@
--- Combined SQL files
 
-DROP DATABASE IF EXISTS partsltd_prod;
-CREATE DATABASE partsltd_prod;
-USE partsltd_prod;
 
--- File: 0001_destroy.sql
+CREATE DATABASE IF NOT EXISTS demo;
+
+USE demo;
 
 /* Clear Store DataBase */
 
@@ -343,9 +341,6 @@ DROP PROCEDURE IF EXISTS p_shop_get_many_customer;
 DROP PROCEDURE IF EXISTS p_shop_save_customer_sales_order;
 DROP PROCEDURE IF EXISTS p_shop_get_many_customer_sales_order;
 
-
--- File: 1000_tbl_Shop_Product_Change_Set.sql
-
 # Product Change Sets
 
 
@@ -358,11 +353,8 @@ CREATE TABLE Shop_Product_Change_Set (
 	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
-
--- File: 1000_tbl_Split_Temp.sql
-
 # Split Staging
--- USE partsltd_prod;
+-- USE demo;
 -- DROP TABLE IF EXISTS Split_Temp;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Split_Temp';
@@ -372,9 +364,6 @@ CREATE TABLE Split_Temp (
     , display_order INT NOT NULL
 	, substring VARCHAR(4000) NOT NULL
 );
-
-
--- File: 1001_tbl_Shop_User_Change_Set.sql
 
 # User Change Sets
 
@@ -388,11 +377,8 @@ CREATE TABLE IF NOT EXISTS Shop_User_Change_Set (
     updated_last_on DATETIME,
     updated_last_by VARCHAR(100)
 );
-
--- File: 1001_tbl_Split_Key_Value_Pair_Csv_Temp.sql
-
 # Split Key Value Pair CSV Staging
--- USE partsltd_prod;
+-- USE demo;
 -- DROP TABLE IF EXISTS Split_Temp;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Split_Key_Value_Pair_Csv_Temp';
@@ -403,9 +389,6 @@ CREATE TABLE Split_Key_Value_Pair_Csv_Temp (
 	, key_column VARCHAR(4000) NULL
     , value_column VARCHAR(4000) NULL
 );
-
-
--- File: 1002_tbl_Shop_Sales_And_Purchasing_Change_Set.sql
 
 # Sales And Purchasing Change Sets
 
@@ -419,9 +402,6 @@ CREATE TABLE Shop_Sales_And_Purchasing_Change_Set (
 	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
-
--- File: 1003_tbl_Shop_Access_Level.sql
-
 # Access Levels
 
 
@@ -445,9 +425,6 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level (
 
 
 
-
--- File: 1004_tbl_Shop_Access_Level_Audit.sql
-
 # Access Level Audits
 
 
@@ -469,9 +446,6 @@ CREATE TABLE IF NOT EXISTS Shop_Access_Level_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1005_tbl_Msg_Error_Type.sql
-
 # Error Message Type
 
 
@@ -484,9 +458,6 @@ CREATE TABLE IF NOT EXISTS Shop_Msg_Error_Type (
 	name VARCHAR(500) NOT NULL,
 	description VARCHAR(1000)
 );
-
-
--- File: 1010_tbl_File_Type.sql
 
 # File Types
 
@@ -504,9 +475,6 @@ CREATE TABLE IF NOT EXISTS File_Type (
 	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
-
-
--- File: 1011_tbl_File_Type_Audit.sql
 
 # File Type Audit
 
@@ -529,9 +497,6 @@ CREATE TABLE IF NOT EXISTS File_Type_Audit (
 	updated_last_on DATETIME,
 	updated_last_by VARCHAR(100)
 );
-
--- File: 1012_tbl_Shop_General.sql
-
 # Generic / shared properties
 
 
@@ -548,9 +513,6 @@ CREATE TABLE IF NOT EXISTS Shop_General (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1013_tbl_Shop_General_Audit.sql
-
 # Shop General Audits
 
 
@@ -572,9 +534,6 @@ CREATE TABLE IF NOT EXISTS Shop_General_Audit (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1014_tbl_Shop_Image_Type.sql
-
 # Image Types
 
 
@@ -602,9 +561,6 @@ CREATE TABLE IF NOT EXISTS Shop_Image_Type (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1015_tbl_Shop_Image_Type_Audit.sql
-
 # Image Type Audits
 
 
@@ -626,9 +582,6 @@ CREATE TABLE IF NOT EXISTS Shop_Image_Type_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1100_tbl_Shop_Region.sql
-
 # Regions
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Region';
@@ -646,9 +599,6 @@ CREATE TABLE IF NOT EXISTS Shop_Region (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1101_tbl_Shop_Region_Audit.sql
-
 # Region Audits
 
 
@@ -670,9 +620,6 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1102_tbl_Shop_Region_Temp.sql
-
 # Region Temp
 
 
@@ -692,9 +639,6 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Temp (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1103_tbl_Shop_Region_Branch.sql
-
 # Region Branchs
 
 
@@ -723,9 +667,6 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1104_tbl_Shop_Region_Branch_Audit.sql
-
 # Region Audits
 
 
@@ -747,9 +688,6 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1105_tbl_Shop_Region_Branch_Temp.sql
-
 # Region Branch Temp
 
 
@@ -764,9 +702,6 @@ CREATE TABLE IF NOT EXISTS Shop_Region_Branch_Temp (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL
 );
-
--- File: 1106_tbl_Shop_Address.sql
-
 # Addresses
 
 
@@ -777,12 +712,12 @@ CREATE TABLE Shop_Address (
     , id_region INT NOT NULL
     , CONSTRAINT FK_Shop_Address_id_region
 		FOREIGN KEY (id_region)
-        REFERENCES partsltd_prod.Shop_Region(id_region)
+        REFERENCES demo.Shop_Region(id_region)
 	/*
     , id_supplier INT NULL
     , CONSTRAINT FK_Shop_Address_id_supplier
 		FOREIGN KEY (id_supplier)
-        REFERENCES partsltd_prod.Shop_Supplier(id_supplier)
+        REFERENCES demo.Shop_Supplier(id_supplier)
     */
     , postcode VARCHAR(20) NOT NULL
     , address_line_1 VARCHAR(256) NOT NULL
@@ -795,11 +730,8 @@ CREATE TABLE Shop_Address (
     , id_change_set INT
     , CONSTRAINT FK_Shop_Address_id_change_set
 		FOREIGN KEY (id_change_set)
-        REFERENCES partsltd_prod.Shop_User_Change_Set(id_change_set)
+        REFERENCES demo.Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1106_tbl_Shop_Plant.sql
-
 # Plant
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Plant';
@@ -822,9 +754,6 @@ CREATE TABLE IF NOT EXISTS Shop_Plant (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1107_tbl_Shop_Address_Audit.sql
-
 # Address Audits
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Address_Audit';
@@ -845,9 +774,6 @@ CREATE TABLE IF NOT EXISTS Shop_Address_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1107_tbl_Shop_Plant_Audit.sql
-
 # Plant Audits
 
 
@@ -870,9 +796,6 @@ CREATE TABLE IF NOT EXISTS Shop_Plant_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1108_tbl_Shop_Plant_Temp.sql
-
 # Plant Temp
 
 
@@ -888,9 +811,6 @@ CREATE TABLE IF NOT EXISTS Shop_Plant_Temp (
 	, active BIT NOT NULL DEFAULT 1
     , guid BINARY(36) NOT NULL
 );
-
-
--- File: 1109_tbl_Shop_Storage_Location.sql
 
 # Storage Location
 
@@ -915,9 +835,6 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1110_tbl_Shop_Storage_Location_Audit.sql
-
 # Storage Location Audits
 
 
@@ -940,9 +857,6 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1111_tbl_Shop_Storage_Location_Temp.sql
-
 # Storage Location Temp
 
 
@@ -955,9 +869,6 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location (
     name VARCHAR(500) NOT NULL,
 	active BIT NOT NULL DEFAULT 1
 );
-
-
--- File: 1112_tbl_Shop_Storage_Location_Branch.sql
 
 # Storage Location Branch
 
@@ -987,9 +898,6 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1113_tbl_Shop_Storage_Location_Branch_Audit.sql
-
 # Storage Location Branch Audits
 
 
@@ -1012,9 +920,6 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1114_tbl_Shop_Storage_Location_Branch_Temp.sql
-
 # Storage Location Branch Temp
 
 
@@ -1029,9 +934,6 @@ CREATE TABLE IF NOT EXISTS Shop_Storage_Location_Branch_Temp (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL
 );
-
--- File: 1115_tbl_Shop_Currency.sql
-
 # Currencies
 
 
@@ -1054,9 +956,6 @@ CREATE TABLE IF NOT EXISTS Shop_Currency (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1116_tbl_Shop_Currency_Audit.sql
-
 # Currency Audits
 
 
@@ -1079,9 +978,6 @@ CREATE TABLE IF NOT EXISTS Shop_Currency_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1117_tbl_Shop_Currency_Temp.sql
-
 # Currency Temp
 
 
@@ -1097,9 +993,6 @@ CREATE TABLE IF NOT EXISTS Shop_Currency_Temp (
     active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL
 );
-
--- File: 1118_tbl_Shop_Tax_Or_Surcharge.sql
-
 # Taxes and Surcharges
 
 
@@ -1138,9 +1031,6 @@ CREATE TABLE Shop_Tax_Or_Surcharge (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1119_tbl_Shop_Tax_Or_Surcharge_Audit.sql
-
 # Tax Or Surcharge Audits
 
 
@@ -1163,9 +1053,6 @@ CREATE TABLE IF NOT EXISTS Shop_Tax_Or_Surcharge_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1120_tbl_Shop_Tax_Or_Surcharge_Temp.sql
-
 # Taxes and Surcharges Temp
 
 
@@ -1187,9 +1074,6 @@ CREATE TABLE Shop_Tax_Or_Surcharge_Temp (
 	active BIT NOT NULL DEFAULT 1,
     display_order INT NOT NULL
 );
-
-
--- File: 1121_tbl_Shop_Unit_Measurement.sql
 
 # Unit of Measurement
 
@@ -1217,9 +1101,6 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement (
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1122_tbl_Shop_Unit_Measurement_Audit.sql
-
 # Unit of Measurement Audits
 
 
@@ -1241,9 +1122,6 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
-
--- File: 1124_tbl_Shop_Unit_Measurement_Conversion.sql
 
 # Unit of Measurement Conversion
 
@@ -1268,9 +1146,6 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion (
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1125_tbl_Shop_Unit_Measurement_Conversion_Audit.sql
-
 # Unit of Measurement Conversion Audits
 
 
@@ -1292,9 +1167,6 @@ CREATE TABLE IF NOT EXISTS Shop_Unit_Measurement_Conversion_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
-
--- File: 1200_tbl_Shop_Product_Category.sql
 
 # Categories
 
@@ -1320,9 +1192,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1201_tbl_Shop_Product_Category_Audit.sql
-
 # Category Audits
 
 
@@ -1345,9 +1214,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1202_tbl_Shop_Product_Category_Temp.sql
-
 # Categories Temp
 
 -- DROP TABLE Shop_Product_Category_Temp;
@@ -1368,9 +1234,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Category_Temp (
 	, can_admin BIT NULL
     , guid BINARY(36) NOT NULL
 );
-
-
--- File: 1203_tbl_Shop_Product.sql
 
 # Products
 
@@ -1420,9 +1283,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1204_tbl_Shop_Product_Audit.sql
-
 # Products
 
 
@@ -1444,9 +1304,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Audit (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1205_tbl_Shop_Product_Temp.sql
-
 # Products Temp
 
 -- DROP TABLE IF EXISTS Shop_Product_Temp;
@@ -1468,12 +1325,9 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Temp (
     , guid BINARY(36) NOT NULL
 );
 
-
--- File: 1206_tbl_Shop_Product_Permutation.sql
-
 # Product Permutation
 
--- DROP TABLE partsltd_prod.Shop_Product_Permutation;
+-- DROP TABLE demo.Shop_Product_Permutation;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Product_Permutation';
 
@@ -1532,9 +1386,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1207_tbl_Shop_Product_Permutation_Audit.sql
-
 # Product Permutation Audits
 
 
@@ -1557,9 +1408,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 		ON UPDATE RESTRICT
 );
-
-
--- File: 1208_tbl_Shop_Product_Permutation_Temp.sql
 
 # Product Permutation Temp
 
@@ -1598,9 +1446,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Temp (
 	, can_admin BIT NULL DEFAULT NULL
 );
 
-
--- File: 1209_tbl_Shop_Variation_Type.sql
-
 # Variation Types
 
 
@@ -1622,9 +1467,6 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1210_tbl_Shop_Variation_Type_Audit.sql
-
 # Variation Type Audits
 
 
@@ -1647,12 +1489,9 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1211_tbl_Shop_Variation_Type_Temp.sql
-
 # Variation Types Temp
 
--- DROP TABLE partsltd_prod.Shop_Variation_Type_Temp;
+-- DROP TABLE demo.Shop_Variation_Type_Temp;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation_Type_Temp';
 
@@ -1669,9 +1508,6 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Type_Temp (
 	, created_by INT
     , guid BINARY(36) NOT NULL
 );
-
--- File: 1212_tbl_Shop_Variation.sql
-
 # Variations
 
 
@@ -1683,12 +1519,12 @@ CREATE TABLE Shop_Variation (
 	, id_type INT NOT NULL
 	, CONSTRAINT FK_Shop_Variation_id_type
 		FOREIGN KEY (id_type) 
-		REFERENCES partsltd_prod.Shop_Variation_Type(id_type)
+		REFERENCES demo.Shop_Variation_Type(id_type)
 		ON UPDATE RESTRICT
     , id_unit_measurement INT NULL
 	, CONSTRAINT FK_Shop_Unit_Measurement_id_unit_measurement
 		FOREIGN KEY (id_unit_measurement) 
-		REFERENCES partsltd_prod.Shop_Unit_Measurement(id_unit_measurement)
+		REFERENCES demo.Shop_Unit_Measurement(id_unit_measurement)
     , count_unit_measurement INT NULL
 	, code VARCHAR(50)
 	, name VARCHAR(255)
@@ -1699,11 +1535,8 @@ CREATE TABLE Shop_Variation (
 	, id_change_set INT
 	, CONSTRAINT FK_Shop_Variation_id_change_set
 		FOREIGN KEY (id_change_set) 
-		REFERENCES partsltd_prod.Shop_Product_Change_Set(id_change_set)
+		REFERENCES demo.Shop_Product_Change_Set(id_change_set)
 );
-
-
--- File: 1213_tbl_Shop_Variation_Audit.sql
 
 # Variation Audits
 
@@ -1727,12 +1560,9 @@ CREATE TABLE IF NOT EXISTS Shop_Variation_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1214_tbl_Shop_Variation_Temp.sql
-
 # Variations Temp
 
--- DROP TABLE partsltd_prod.Shop_Variation_Temp;
+-- DROP TABLE demo.Shop_Variation_Temp;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation_Temp';
 
@@ -1750,9 +1580,6 @@ CREATE TABLE Shop_Variation_Temp (
 	, created_by INT
 	, guid BINARY(36)
 );
-
-
--- File: 1215_tbl_Shop_Product_Permutation_Variation_Link.sql
 
 # Product Permutation Variation Link
 
@@ -1782,9 +1609,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1216_tbl_Shop_Product_Permutation_Variation_Link_Audit.sql
-
 # Product Permutation Variation Link Audits
 
 
@@ -1807,9 +1631,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1217_tbl_Shop_Product_Permutation_Variation_Link_Temp.sql
-
 # Product Permutation Variation Link
 
 -- DROP TABLE IF EXISTS Shop_Product_Permutation_Variation_Link_Temp;
@@ -1825,9 +1646,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Variation_Link_Temp (
 	, display_order INT NOT NULL
     , GUID BINARY(36) NOT NULL
 );
-
-
--- File: 1221_tbl_Shop_Product_Price.sql
 
 # Product Price
 
@@ -1860,9 +1678,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1222_tbl_Shop_Product_Price_Audit.sql
-
 # Product Price Audits
 
 
@@ -1885,9 +1700,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1223_tbl_Shop_Product_Price_Temp.sql
-
 # Product Price Temp
 
 
@@ -1904,9 +1716,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Price_Temp (
 	id_stripe_price VARCHAR(200),
     active BIT NOT NULL DEFAULT 1
 );
-
--- File: 1224_tbl_Shop_Product_Image.sql
-
 # Product Permutation Images
 
 
@@ -1933,9 +1742,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Image (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1225_tbl_Shop_Product_Image_Audit.sql
-
 # Product Image Audits
 
 
@@ -1956,9 +1762,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Image_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1227_tbl_Shop_Delivery_Option.sql
-
 # Delivery Options
 
 
@@ -1986,9 +1789,6 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option (
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1228_tbl_Shop_Delivery_Option_Audit.sql
-
 # Delivery Option Audits
 
 
@@ -2010,9 +1810,6 @@ CREATE TABLE IF NOT EXISTS Shop_Delivery_Option_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1230_tbl_Shop_Product_Permutation_Delivery_Option_Link.sql
-
 # Delivery Option
 
 
@@ -2058,9 +1855,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Delivery_Option_Link (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1231_tbl_Shop_Product_Permutation_Delivery_Option_Link_Audit.sql
-
 # Delivery Option Audits
 
 
@@ -2082,9 +1876,6 @@ CREATE TABLE IF NOT EXISTS Shop_Product_Permutation_Delivery_Option_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1233_tbl_Shop_Discount.sql
-
 # Discounts
 
 
@@ -2133,9 +1924,6 @@ CREATE TABLE Shop_Discount (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 );
 
-
--- File: 1234_tbl_Shop_Discount_Audit.sql
-
 # Discount Audits
 
 
@@ -2158,9 +1946,6 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1236_tbl_Shop_Discount_Region_Currency_Link.sql
-
 # Discount Region Currency Link
 
 
@@ -2192,9 +1977,6 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Region_Currency_Link (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1237_tbl_Shop_Discount_Region_Currency_Link_Audit.sql
-
 # Discount Region Currency Link Audits
 
 
@@ -2217,9 +1999,6 @@ CREATE TABLE IF NOT EXISTS Shop_Discount_Region_Currency_Link_Audit (
         REFERENCES Shop_Product_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1300_tbl_Shop_Permission_Group.sql
-
 # Permission Groups
 
 
@@ -2240,9 +2019,6 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Group (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1301_tbl_Shop_Permission_Group_Audit.sql
-
 # Permission Group Audits
 
 
@@ -2265,9 +2041,6 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Group_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1303_tbl_Shop_Permission.sql
-
 # Permissions
 
 
@@ -2296,9 +2069,6 @@ CREATE TABLE IF NOT EXISTS Shop_Permission (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1304_tbl_Shop_Permission_Audit.sql
-
 # Permission Audits
 
 
@@ -2321,9 +2091,6 @@ CREATE TABLE IF NOT EXISTS Shop_Permission_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1306_tbl_Shop_Role.sql
-
 # Roles
 
 
@@ -2343,9 +2110,6 @@ CREATE TABLE IF NOT EXISTS Shop_Role (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1307_tbl_Shop_Role_Audit.sql
-
 # Role Audits
 
 
@@ -2368,9 +2132,6 @@ CREATE TABLE Shop_Role_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1309_tbl_Shop_Role_Permission_Link.sql
-
 # Role Permission link
 
 
@@ -2401,9 +2162,6 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1310_tbl_Shop_Role_Permission_Link_Audit.sql
-
 # Role Permission link Audits
 
 
@@ -2425,9 +2183,6 @@ CREATE TABLE IF NOT EXISTS Shop_Role_Permission_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1312_tbl_Shop_User.sql
-
 # Users
 
 
@@ -2454,9 +2209,6 @@ CREATE TABLE IF NOT EXISTS Shop_User (
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
 
-
--- File: 1313_tbl_Shop_User_Audit.sql
-
 # User Audits
 
 
@@ -2479,9 +2231,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1314_tbl_Shop_User_Temp.sql
-
 # Users Temp
 
 -- DROP TABLE IF EXISTS Shop_User_Temp;
@@ -2503,9 +2252,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Temp (
     , active BIT
     , guid BINARY(36) NOT NULL
 );
-
-
--- File: 1315_tbl_Shop_User_Role_Link.sql
 
 # User Role link
 
@@ -2532,9 +2278,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1316_tbl_Shop_User_Role_Link_Audit.sql
-
 # User Role Link Audits
 
 
@@ -2556,9 +2299,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Role_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
-
--- File: 1318_tbl_Shop_User_Address.sql
 
 # User Addresses
 
@@ -2588,9 +2328,6 @@ CREATE TABLE Shop_User_Address (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1319_tbl_Shop_User_Address_Audit.sql
-
 # Address Audits
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_User_Address_Audit';
@@ -2611,9 +2348,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Address_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1321_tbl_Shop_User_Basket.sql
-
 # User Basket (Product Link)
 
 
@@ -2653,9 +2387,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket (
         */
 );
 
-
--- File: 1322_tbl_Shop_User_Basket_Audit.sql
-
 # Product Basket Audits
 
 
@@ -2683,9 +2414,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Basket_Audit (
 	*/
 );
 
-
--- File: 1397_tbl_Shop_Order_Status.sql
-
 # User Order Types
 
 
@@ -2706,9 +2434,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order_Status (
 		FOREIGN KEY (id_change_set) 
 		REFERENCES Shop_User_Change_Set(id_change_set)
 );
-
-
--- File: 1398_tbl_Shop_Order_Status_Audit.sql
 
 # Order Type Audits
 
@@ -2731,9 +2456,6 @@ CREATE TABLE IF NOT EXISTS Shop_User_Order_Status_Audit (
 		FOREIGN KEY (id_change_set) 
         REFERENCES Shop_Product_Change_Set(id_change_set)
 );
-
--- File: 1400_tbl_Shop_Supplier.sql
-
 # Supplier
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier';
@@ -2767,9 +2489,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier (
 	, id_supplier_temp INT NOT NULL
 );
 
-
--- File: 1401_tbl_Shop_Supplier_Audit.sql
-
 # Supplier Audits
 
 
@@ -2792,9 +2511,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
 );
 
-
--- File: 1402_tbl_Shop_Supplier_Temp.sql
-
 # Supplier Staging
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Temp';
@@ -2815,9 +2531,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Temp (
     GUID BINARY(36) NOT NULL
 );
 
-
--- File: 1403_tbl_Shop_Supplier_Address.sql
-
 # Supplier Addresses
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Address';
@@ -2827,12 +2540,12 @@ CREATE TABLE Shop_Supplier_Address (
     , id_supplier INT NOT NULL
     , CONSTRAINT FK_Shop_Supplier_Address_id_supplier
 		FOREIGN KEY (id_supplier)
-        REFERENCES partsltd_prod.Shop_Supplier(id_supplier)
+        REFERENCES demo.Shop_Supplier(id_supplier)
         ON UPDATE RESTRICT
     , id_region INT NOT NULL
     , CONSTRAINT FK_Shop_Supplier_Address_id_region
 		FOREIGN KEY (id_region)
-        REFERENCES partsltd_prod.Shop_Region(id_region)
+        REFERENCES demo.Shop_Region(id_region)
     , postcode VARCHAR(20) NOT NULL
     , address_line_1 VARCHAR(256) NOT NULL
     , address_line_2 VARCHAR(256) NOT NULL
@@ -2844,11 +2557,8 @@ CREATE TABLE Shop_Supplier_Address (
     , id_change_set INT
     , CONSTRAINT FK_Shop_Supplier_Address_id_change_set
 		FOREIGN KEY (id_change_set)
-        REFERENCES partsltd_prod.Shop_User_Change_Set(id_change_set)
+        REFERENCES demo.Shop_User_Change_Set(id_change_set)
 );
-
--- File: 1404_tbl_Shop_Supplier_Address_Audit.sql
-
 # Supplier Address Audits
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Address_Audit';
@@ -2869,9 +2579,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Address_Audit (
         REFERENCES Shop_User_Change_Set(id_change_set)
         ON UPDATE RESTRICT
 );
-
--- File: 1405_tbl_Shop_Supplier_Address_Temp.sql
-
 # Supplier Addresses Staging
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Supplier_Address_Temp';
@@ -2888,9 +2595,6 @@ CREATE TABLE Shop_Supplier_Address_Temp (
     , active BIT NOT NULL DEFAULT 1
     , GUID BINARY(36) NOT NULL
 );
-
--- File: 1409_tbl_Shop_Supplier_Purchase_Order.sql
-
 # Supplier Purchase Order
 
 
@@ -2934,9 +2638,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
-
--- File: 1410_tbl_Shop_Supplier_Purchase_Order_Audit.sql
-
 # Supplier Purchase Order Audits
 
 
@@ -2959,9 +2660,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Audit (
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
-
--- File: 1411_tbl_Shop_Supplier_Purchase_Order_Temp.sql
-
 # Supplier Purchase Order Staging
 
 DROP TABLE IF EXISTS Shop_Supplier_Purchase_Order_Temp;
@@ -2976,9 +2674,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Temp (
     , active BIT NULL
     , GUID BINARY(36) NOT NULL
 );
-
-
--- File: 1412_tbl_Shop_Manufacturing_Purchase_Order.sql
 
 # Manufacturing Purchase Order
 
@@ -3020,9 +2715,6 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
-
--- File: 1413_tbl_Shop_Manufacturing_Purchase_Order_Audit.sql
-
 # Manufacturing Purchase Order Audits
 
 
@@ -3044,9 +2736,6 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
-
-
--- File: 1414_tbl_Shop_Manufacturing_Purchase_Order_Temp.sql
 
 # Manufacturing Purchase Order Temp
 
@@ -3078,9 +2767,6 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Temp (
     active BIT NOT NULL DEFAULT 1,
     GUID BINARY(36) NOT NULL
 );
-
-
--- File: 1415_tbl_Shop_Customer.sql
 # Customer
 
 
@@ -3111,9 +2797,6 @@ CREATE TABLE IF NOT EXISTS Shop_Customer (
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
-
--- File: 1416_tbl_Shop_Customer_Audit.sql
-
 # Customer Audits
 
 
@@ -3135,9 +2818,6 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
-
-
--- File: 1418_tbl_Shop_Customer_Sales_Order.sql
 
 # Customer Sales Purchase Order
 
@@ -3174,9 +2854,6 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
-
--- File: 1419_tbl_Shop_Customer_Sales_Order_Audit.sql
-
 # Customer Sales Order Audits
 
 
@@ -3199,9 +2876,6 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Audit (
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
-
--- File: 1421_tbl_Shop_Stock_Item.sql
-
 # Stock Stock Item
 
 -- DROP TABLE IF EXISTS Shop_Stock_Item_Audit;
@@ -3214,29 +2888,29 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item (
 	, id_permutation INT NOT NULL
 	, CONSTRAINT FK_Shop_Stock_Item_id_permutation
 		FOREIGN KEY (id_permutation)
-		REFERENCES partsltd_prod.Shop_Product_Permutation(id_permutation)
+		REFERENCES demo.Shop_Product_Permutation(id_permutation)
 	, id_supplier_purchase_order INT NULL
 	, CONSTRAINT FK_Shop_Stock_Item_id_supplier_purchase_order
 		FOREIGN KEY (id_supplier_purchase_order)
-		REFERENCES partsltd_prod.Shop_Supplier_Purchase_Order(id_order)
+		REFERENCES demo.Shop_Supplier_Purchase_Order(id_order)
 	, id_manufacturing_purchase_order INT NULL
 	, CONSTRAINT FK_Shop_Stock_Item_id_manufacturing_purchase_order
 		FOREIGN KEY (id_manufacturing_purchase_order)
-		REFERENCES partsltd_prod.Shop_Manufacturing_Purchase_Order(id_order)
+		REFERENCES demo.Shop_Manufacturing_Purchase_Order(id_order)
 	, id_customer_sales_order INT NULL
 	, CONSTRAINT FK_Shop_Stock_Item_id_customer_sales_order
 		FOREIGN KEY (id_customer_sales_order)
-		REFERENCES partsltd_prod.Shop_Customer_Sales_Order(id_order)
+		REFERENCES demo.Shop_Customer_Sales_Order(id_order)
 	, date_purchased DATETIME NOT NULL
     , date_received DATETIME
     , id_location_storage INT NOT NULL
     , CONSTRAINT FK_Shop_Stock_Item_id_location_storage
 		FOREIGN KEY (id_location_storage)
-        REFERENCES partsltd_prod.Shop_Storage_Location(id_location)
+        REFERENCES demo.Shop_Storage_Location(id_location)
     , id_currency_cost INT NOT NULL
     , CONSTRAINT FK_Shop_Stock_Item_id_currency
 		FOREIGN KEY (id_currency_cost)
-        REFERENCES partsltd_prod.Shop_Currency(id_currency)
+        REFERENCES demo.Shop_Currency(id_currency)
     , cost_local_VAT_incl FLOAT
     , cost_local_VAT_excl FLOAT
     , is_sealed BIT NOT NULL DEFAULT 1
@@ -3250,11 +2924,8 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item (
 	, id_change_set INT
 	, CONSTRAINT FK_Shop_Stock_Item_id_change_set
 		FOREIGN KEY (id_change_set)
-		REFERENCES partsltd_prod.Shop_Product_Change_Set(id_change_set)
+		REFERENCES demo.Shop_Product_Change_Set(id_change_set)
 );
-
-
--- File: 1422_tbl_Shop_Stock_Item_Audit.sql
 
 # Stock Item Audits
 
@@ -3278,9 +2949,6 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item_Audit (
 		REFERENCES Shop_Product_Change_Set(id_change_set)
 		ON UPDATE RESTRICT
 );
-
-
--- File: 1423_tbl_Shop_Stock_Item_Temp.sql
 
 # Stock Stock Item Temp
 
@@ -3308,9 +2976,6 @@ CREATE TABLE IF NOT EXISTS Shop_Stock_Item_Temp (
 	, active BIT NOT NULL
     , guid BINARY(36) NOT NULL
 );
-
-
--- File: 1424_tbl_Shop_Supplier_Purchase_Order_Product_Link.sql
 
 # Supplier Purchase Order Product Link
 
@@ -3352,9 +3017,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
-
--- File: 1425_tbl_Shop_Supplier_Purchase_Order_Product_Link_Audit.sql
-
 # Supplier Purchase Order Product Link Audits
 
 
@@ -3376,9 +3038,6 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
-
-
--- File: 1426_tbl_Shop_Supplier_Purchase_Order_Product_Link_Temp.sql
 
 # Supplier Purchase Order Product Link Temp
 
@@ -3406,13 +3065,10 @@ CREATE TABLE IF NOT EXISTS Shop_Supplier_Purchase_Order_Product_Link_Temp (
     , GUID BINARY(36) NOT NULL
 );
 
-
--- File: 1427_tbl_Shop_Manufacturing_Purchase_Order_Product_Link.sql
-
 # Manufacturing Purchase Order Product Link
 
--- DROP TABLE partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Audit
--- DROP TABLE partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
+-- DROP TABLE demo.Shop_Manufacturing_Purchase_Order_Product_Link_Audit
+-- DROP TABLE demo.Shop_Manufacturing_Purchase_Order_Product_Link
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Manufacturing_Purchase_Order_Product_Link';
 
@@ -3421,11 +3077,11 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
     , id_order INT NOT NULL
     , CONSTRAINT FK_Manufacturing_Purchase_Order_Product_Link_id_order
 		FOREIGN KEY (id_order) 
-        REFERENCES partsltd_prod.Shop_Manufacturing_Purchase_Order(id_order)
+        REFERENCES demo.Shop_Manufacturing_Purchase_Order(id_order)
     , id_permutation INT NOT NULL
     , CONSTRAINT FK_Manufacturing_Purchase_Order_Product_Link_id_permutation
 		FOREIGN KEY (id_permutation) 
-        REFERENCES partsltd_prod.Shop_Product_Permutation(id_permutation)
+        REFERENCES demo.Shop_Product_Permutation(id_permutation)
     , cost_unit_local_VAT_excl FLOAT NULL
     , cost_unit_local_VAT_incl FLOAT NULL
     , price_unit_local_VAT_excl FLOAT NULL
@@ -3433,13 +3089,13 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
 	, id_unit_quantity INT NOT NULL
     , CONSTRAINT FK_Manufacturing_Purchase_Order_id_unit_quantity
 		FOREIGN KEY (id_unit_quantity)
-        REFERENCES partsltd_prod.Shop_Unit_Measurement(id_unit_measurement)
+        REFERENCES demo.Shop_Unit_Measurement(id_unit_measurement)
 	, quantity_used FLOAT NULL
 	, quantity_produced FLOAT NULL
 	, id_unit_latency_manufacture INT NULL
 	, CONSTRAINT FK_MPO_id_unit_latency_manufacture
 		FOREIGN KEY (id_unit_latency_manufacture)
-		REFERENCES partsltd_prod.Shop_Unit_Measurement(id_unit_measurement)
+		REFERENCES demo.Shop_Unit_Measurement(id_unit_measurement)
     , latency_manufacture INT NULL
 	, display_order INT NOT NULL
     , active BIT NOT NULL
@@ -3450,11 +3106,8 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link (
 	, id_change_set INT NULL
 	, CONSTRAINT FK_Manufacturing_Purchase_Order_id_change_set
 		FOREIGN KEY (id_change_set)
-		REFERENCES partsltd_prod.Shop_Sales_And_Purchasing_Change_Set(id_change_set)
+		REFERENCES demo.Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
-
-
--- File: 1428_tbl_Shop_Manufacturing_Purchase_Order_Product_Link_Audit.sql
 
 # Manufacturing Purchase Order Product Link Audits
 
@@ -3477,9 +3130,6 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Audit 
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
-
-
--- File: 1429_tbl_Shop_Manufacturing_Purchase_Order_Product_Link_Temp.sql
 
 # Manufacturing Purchase Order Product Link Temp
 
@@ -3508,9 +3158,6 @@ CREATE TABLE IF NOT EXISTS Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
     price_unit_local_VAT_incl FLOAT NULL,
     GUID BINARY(36) NOT NULL
 );
-
-
--- File: 1430_tbl_Shop_Customer_Sales_Order_Product_Link.sql
 
 # Customer Sales Order Product Link
 
@@ -3550,9 +3197,6 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link (
 		REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
 
-
--- File: 1431_tbl_Shop_Customer_Sales_Order_Product_Link_Audit.sql
-
 # Customer Sales Order Product Link Audits
 
 
@@ -3574,9 +3218,6 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link_Audit (
 		FOREIGN KEY (id_change_set)
         REFERENCES Shop_Sales_And_Purchasing_Change_Set(id_change_set)
 );
-
-
--- File: 1432_tbl_Shop_Customer_Sales_Order_Product_Link_Temp.sql
 
 # Customer Sales Order Product Link Temp
 
@@ -3612,11 +3253,8 @@ CREATE TABLE IF NOT EXISTS Shop_Customer_Sales_Order_Product_Link_Temp (
     active BIT NOT NULL
 );
 
-
--- File: 1500_tbl_Shop_Calc_User_Temp.sql
-
 # Calc User Staging
--- USE partsltd_prod;
+-- USE demo;
 -- DROP TABLE IF EXISTS Shop_Calc_User_Temp;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Calc_User_Temp';
@@ -3628,21 +3266,18 @@ CREATE TABLE Shop_Calc_User_Temp (
 	id_permission_required INT NOT NULL,
 	CONSTRAINT FK_Shop_Calc_User_Temp_id_permission_required
 		FOREIGN KEY (id_permission_required)
-		REFERENCES partsltd_prod.Shop_Permission (id_permission),
+		REFERENCES demo.Shop_Permission (id_permission),
 	priority_access_level_required INT NOT NULL,
 	id_product INT NULL,
 	CONSTRAINT FK_Shop_Calc_User_Temp_id_product
 		FOREIGN KEY (id_product)
-		REFERENCES partsltd_prod.Shop_Product (id_product),
+		REFERENCES demo.Shop_Product (id_product),
 	is_super_user BIT NULL,
 	priority_access_level_user INT NULL,
 	can_view BIT,
 	can_edit BIT,
 	can_admin BIT
 );
-
--- File: 3000_tri_Shop_Access_Level.sql
-
 # Shop Access Level
 
 
@@ -3702,9 +3337,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3000_tri_Shop_Product_Change_Set.sql
-
 # Product Change Set
 
 
@@ -3724,9 +3356,6 @@ BEGIN
 	END IF;
 END //
 DELIMITER ;
-
-
--- File: 3001_tri_Shop_User_Change_Set.sql
 
 # Shop User Change Set
 
@@ -3748,9 +3377,6 @@ BEGIN
 	END IF;
 END //
 DELIMITER ;
-
--- File: 3002_tri_Shop_Sales_And_Purchasing_Change_Set.sql
-
 # Product Change Set
 
 
@@ -3770,9 +3396,6 @@ BEGIN
 	END IF;
 END //
 DELIMITER ;
-
-
--- File: 3010_tri_File_Type.sql
 
 # File Type
 
@@ -3817,9 +3440,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3011_tri_File_Type_Audit.sql
-
 # File Type Audits
 
 
@@ -3847,9 +3467,6 @@ BEGIN
     SET NEW.updated_last_by = CURRENT_USER();
 END //
 DELIMITER ;
-
--- File: 3012_tri_Shop_General.sql
-
 # Shop General
 
 
@@ -3890,9 +3507,6 @@ BEGIN
 	;
 END //
 DELIMITER ;
-
--- File: 3014_tri_Shop_Image_Type.sql
-
 # Shop Image Type
 
 
@@ -3957,9 +3571,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3100_tri_Shop_Region.sql
-
 # Shop Delivery Region
 
 
@@ -4015,9 +3626,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3103_tri_Shop_Region_Branch.sql
-
 # Shop Region Branch
 
 
@@ -4070,9 +3678,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
-
--- File: 3106_tri_Shop_Address.sql
 
 # Shop Address
 
@@ -4140,9 +3745,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3109_tri_Shop_Storage_Location.sql
-
 # Shop Storage Location
 
 
@@ -4197,9 +3799,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
-
--- File: 3115_tri_Shop_Currency.sql
 
 # Shop Currency
 
@@ -4263,9 +3862,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3118_tri_Shop_Tax_Or_Surcharge.sql
-
 # Shop Tax_Or_Surcharge
 
 
@@ -4341,9 +3937,6 @@ END //
 DELIMITER ;
 
 
-
--- File: 3200_tri_Shop_Category.sql
-
 # Shop Category
 
 
@@ -4404,9 +3997,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
-
--- File: 3203_tri_Shop_Product.sql
 
 # Shop Product
 
@@ -4578,9 +4168,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3206_tri_Shop_Product_Permutation.sql
-
 # Shop Product Permutation
 
 
@@ -4748,9 +4335,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3209_tri_Shop_Variation_Type.sql
-
 # Shop Variation Type
 
 
@@ -4810,9 +4394,6 @@ BEGIN
 	;
 END //
 DELIMITER ;
-
-
--- File: 3212_tri_Shop_Variation.sql
 
 # Shop Variation
 
@@ -4877,9 +4458,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3215_tri_Shop_Product_Permutation_Variation_Link.sql
-
 # Shop Product Permutation Variation Link
 
 
@@ -4936,9 +4514,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3218_tri_Shop_Stock_Item.sql
-
 # Shop Product Permutation
 
 
@@ -5030,9 +4605,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3221_tri_Shop_Product_Price.sql
-
 # Shop Product Currency Link
 
 
@@ -5120,9 +4692,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3224_tri_Shop_Product_Image.sql
-
 # Shop Image
 
 
@@ -5195,9 +4764,6 @@ BEGIN
 	;
 END //
 DELIMITER ;
-
--- File: 3227_tri_Shop_Delivery_Option.sql
-
 # Shop Delivery Option Type
 
 
@@ -5270,9 +4836,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3230_tri_Shop_Product_Permutation_Delivery_Option_Link.sql
-
 # Shop Product Delivery Option Link
 
 
@@ -5351,9 +4914,6 @@ BEGIN
 	;
 END //
 DELIMITER ;
-
--- File: 3233_tri_Shop_Discount.sql
-
 # Shop Discount
 
 
@@ -5437,9 +4997,6 @@ END //
 DELIMITER ;
 
 
-
--- File: 3236_tri_Shop_Discount_Region_Currency_Link.sql
-
 # Shop Discount Region Currency Link
 
 
@@ -5492,9 +5049,6 @@ BEGIN
 	;
 END //
 DELIMITER ;
-
--- File: 3300_tri_Shop_Permission_Group.sql
-
 # Shop Permission Group
 
 
@@ -5549,9 +5103,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3303_tri_Shop_Permission.sql
-
 # Shop Permission
 
 
@@ -5614,9 +5165,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3306_tri_Shop_Role.sql
-
 # Shop Role
 
 
@@ -5671,9 +5219,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
-
--- File: 3309_tri_Shop_Role_Permission_Link.sql
 
 # Shop Role Permission Link
 
@@ -5731,9 +5276,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
-
--- File: 3312_tri_Shop_User.sql
 
 # Shop User
 
@@ -5813,9 +5355,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3315_tri_Shop_User_Role_Link.sql
-
 # Shop User Role Link
 
 
@@ -5858,9 +5397,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3318_tri_Shop_User_Address.sql
-
 # Shop Address
 
 
@@ -5935,9 +5471,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3321_tri_Shop_User_Basket.sql
-
 # Shop Product Variation Link
 
 
@@ -5992,9 +5525,6 @@ BEGIN
 	;
 END //
 DELIMITER ;
-
--- File: 3324_tri_Shop_User_Order_Status.sql
-
 # Shop User Order Type
 
 
@@ -6053,9 +5583,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3400_tri_Shop_Supplier.sql
-
 # Shop Supplier
 
 
@@ -6137,9 +5664,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3403_tri_Shop_Supplier_Address.sql
-
 # Shop Supplier Address
 
 DROP TRIGGER IF EXISTS before_insert_Shop_Supplier_Address;
@@ -6204,9 +5728,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
--- File: 3403_tri_Shop_Unit_Measurement.sql
-
 # Shop Unit of Measurement
 
 
@@ -6283,9 +5804,6 @@ END //
 DELIMITER ;
 
 
-
--- File: 3406_tri_Shop_Unit_Of_Measurement_Conversion.sql
-
 # Shop Unit of Measurement Conversion
 
 
@@ -6349,9 +5867,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
-
--- File: 3409_tri_Shop_Supplier_Purchase_Order.sql
 
 # Shop Supplier Purchase Order
 
@@ -6430,9 +5945,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
-
--- File: 3412_tri_Shop_Supplier_Purchase_Order_Product_Link.sql
 
 # Shop Supplier Purchase Order Product Link
 
@@ -6527,9 +6039,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- File: 3415_tri_Shop_Manufacturing_Purchase_Order.sql
-
 # Shop Manufacturing Purchase Order
 
 
@@ -6545,7 +6054,7 @@ FOR EACH ROW
 BEGIN
 	SET NEW.created_on := IFNULL(NEW.created_on, NOW());
 	-- SET NEW.created_by := IFNULL(NEW.created_by, IFNULL((SELECT id_user FROM Shop_User WHERE firstname = CURRENT_USER()), -1));
-	IF NOT EXISTS (SELECT * FROM partsltd_prod.Shop_User U WHERE U.id_user = NEW.created_by LIMIT 1) THEN
+	IF NOT EXISTS (SELECT * FROM demo.Shop_User U WHERE U.id_user = NEW.created_by LIMIT 1) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Valid created by User ID must be provided.';
     END IF;
@@ -6600,9 +6109,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
-
--- File: 3418_tri_Shop_Manufacturing_Purchase_Order_Product_Link.sql
 
 # Shop Manufacturing Purchase Order Product Link
 
@@ -6696,9 +6202,6 @@ END //
 DELIMITER ;
 
 
-
--- File: 3421_tri_Shop_Customer.sql
-
 # Shop Customer
 
 
@@ -6771,9 +6274,6 @@ END //
 DELIMITER ;
 
 
-
--- File: 3424_tri_Shop_Customer_Sales_Order.sql
-
 # Shop Customer Sales Order
 
 
@@ -6828,9 +6328,6 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
-
--- File: 3427_tri_Shop_Customer_Sales_Order_Product_Link.sql
 
 # Shop Customer Sales Order Product Link
 
@@ -6910,10 +6407,7 @@ BEGIN
     ;
 END //
 DELIMITER ;
-
-
--- File: 6000_p_debug_timing_reporting.sql
--- USE partsltd_prod;
+-- USE demo;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_debug_timing_reporting;
@@ -6952,13 +6446,10 @@ END //
 DELIMITER ;
 
 /*
-CALL partsltd_prod.p_debug_timing_reporting (
+CALL demo.p_debug_timing_reporting (
 	CURRENT_TIMESTAMP(6)
 );
 */
-
--- File: 6000_p_split.sql
-
 
 DROP PROCEDURE IF EXISTS p_split;
 
@@ -7063,9 +6554,6 @@ WHERE GUID = 'nips';
 CALL p_clear_split_temp( 'nips' );
 */
 
-
--- File: 6001_p_clear_split_temp.sql
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_clear_split_temp;
 
@@ -7094,9 +6582,6 @@ CALL p_clear_split_temp ( 'nips' );
 
 
 */
-
-
--- File: 6001_p_validate_guid.sql
 
 
 DROP PROCEDURE IF EXISTS p_validate_guid;
@@ -7156,9 +6641,6 @@ END //
 DELIMITER ;
 
 -- CALL p_validate_guid_test();
-
--- File: 6003_p_split_key_value_pair_csv.sql
-
 
 DROP PROCEDURE IF EXISTS p_split_key_value_pair_csv;
 
@@ -7267,9 +6749,6 @@ WHERE GUID = 'nipsnipsnipsnipsnipsnipsnipsnipsnips';
 CALL p_clear_split_key_value_pair_csv_temp( 'nipsnipsnipsnipsnipsnipsnipsnipsnips' );
 */
 
-
--- File: 6004_p_clear_split_key_value_pair_csv_temp.sql
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_clear_split_key_value_pair_csv_temp;
 
@@ -7298,9 +6777,6 @@ CALL p_clear_split_key_value_pair_csv_temp ( 'nipsnipsnipsnipsnipsnipsnipsnipsni
 
 
 */
-
-
--- File: 6206_fn_shop_get_product_permutation_name.sql
 
 DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_name;
 
@@ -7345,9 +6821,6 @@ SELECT
 	)
 ;
 */
-
--- File: 6210_fn_shop_get_id_product_permutation_from_variation_csv_list.sql
-
 DROP FUNCTION IF EXISTS fn_shop_get_id_product_permutation_from_variation_csv_list;
 
 DELIMITER //
@@ -7395,9 +6868,9 @@ BEGIN
         IF v_id_permutation IS NULL THEN
             -- First iteration: find initial v_id_permutations
             SELECT PPVL.id_permutation INTO v_id_permutation
-            FROM partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL
-            INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PPVL.id_permutation = PP.id_permutation
-            INNER JOIN partsltd_prod.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
+            FROM demo.Shop_Product_Permutation_Variation_Link PPVL
+            INNER JOIN demo.Shop_Product_Permutation PP ON PPVL.id_permutation = PP.id_permutation
+            INNER JOIN demo.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
             WHERE 1=1
 				AND PP.id_product = a_id_product
 				AND PPVL.id_variation = v_id_variation
@@ -7406,9 +6879,9 @@ BEGIN
         ELSE
             -- Subsequent iterations: narrow down the v_id_permutation
             SELECT PPVL.id_permutation INTO v_id_permutation_tmp
-            FROM partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL
-            INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PPVL.id_permutation = PP.id_permutation
-            INNER JOIN partsltd_prod.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
+            FROM demo.Shop_Product_Permutation_Variation_Link PPVL
+            INNER JOIN demo.Shop_Product_Permutation PP ON PPVL.id_permutation = PP.id_permutation
+            INNER JOIN demo.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
             WHERE 1=1
 				AND PP.id_product = a_id_product
 				AND PPVL.v_id_permutation = v_id_permutation
@@ -7447,7 +6920,7 @@ WHERE v_id_permutation IS NULL;
 */
 
 /*
-select * from partsltd_prod.Shop_Variation
+select * from demo.Shop_Variation
 
 DROP PROCEDURE IF EXISTS p_shop_get_id_product_permutation_from_variation_csv_list;
 
@@ -7569,9 +7042,6 @@ WHERE GUID = 'nipsnipsnipsnipsnipsnipsnipsnipsnips';
 CALL p_clear_split_key_value_pair_csv_temp( 'nipsnipsnipsnipsnipsnipsnipsnipsnips' );
 */
 
-
--- File: 6211_fn_shop_get_product_variations_from_id_csv_list.sql
-
 DROP FUNCTION IF EXISTS fn_shop_get_product_variations_from_id_csv_list;
 
 DELIMITER //
@@ -7628,7 +7098,7 @@ BEGIN
         END IF;
     END WHILE;
     
-	INSERT INTO partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp (
+	INSERT INTO demo.Shop_Product_Permutation_Variation_Link_Temp (
 		id_link
 		, id_permutation
 		, id_variation
@@ -7644,7 +7114,7 @@ BEGIN
         , 1 AS active
 		, a_guid
 	FROM tmp_Get_Variation_From_Csv_Variations t_V
-	LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON t_V.id_variation = PPVL.id_variation
+	LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON t_V.id_variation = PPVL.id_variation
 	;
 	
     DROP TEMPORARY TABLE tmp_Get_Variation_From_Csv_Variations;
@@ -7658,24 +7128,21 @@ DELIMITER ;
 /*
 
 SELECT 
-	partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
+	demo.fn_shop_get_product_variations_from_id_csv_list(
 		1 -- a_id_permutation
         , '1:1' -- a_variation_csv
         , 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE' -- a_guid
 	)
 ;
 SELECT *
-FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 WHERE GUID = 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE'
 ;
 DELETE
-FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 WHERE GUID = 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE'
 ;
 */
-
-
--- File: 6212_fn_shop_get_product_permutation_variations_csv.sql
 
 DROP FUNCTION IF EXISTS fn_shop_get_product_permutation_variations_csv;
 
@@ -7701,11 +7168,11 @@ BEGIN
 					SEPARATOR ','
 				)
 			END 
-		FROM partsltd_prod.Shop_Product_Permutation PP
-		LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
-		LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
-		LEFT JOIN partsltd_prod.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
-		LEFT JOIN partsltd_prod.Shop_Variation_Type PVT ON PV.id_type = PVT.id_type
+		FROM demo.Shop_Product_Permutation PP
+		LEFT JOIN demo.Shop_Product P ON PP.id_product = P.id_product
+		LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+		LEFT JOIN demo.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
+		LEFT JOIN demo.Shop_Variation_Type PVT ON PV.id_type = PVT.id_type
         WHERE PP.id_permutation = id_product_permutation
         GROUP BY P.id_product, P.has_variations, PVT.display_order, PVT.name, PV.display_order, PV.name
         LIMIT 1
@@ -7725,9 +7192,6 @@ SELECT
 ;
 /*
 */
-
--- File: 6500_p_shop_calc_user.sql
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_user_eval;
 DROP PROCEDURE IF EXISTS p_shop_calc_user;
@@ -7772,7 +7236,7 @@ BEGIN
     
     SET v_code_error_permission := (SELECT code FROM Shop_Msg_Error_Type WHERE id_type = 2);
     
-    CALL partsltd_prod.p_validate_guid ( a_guid );
+    CALL demo.p_validate_guid ( a_guid );
     SET a_ids_user := TRIM(IFNULL(a_ids_user, ''));
     SET a_get_inactive_user := IFNULL(a_get_inactive_user, 0);
     SET a_ids_permission := TRIM(IFNULL(a_ids_permission, ''));
@@ -7853,10 +7317,10 @@ BEGIN
     */
 	SET a_ids_product = REPLACE(a_ids_product, '|', ',');
     SET v_has_filter_product = CASE WHEN a_ids_product = '' THEN 0 ELSE 1 END;
-    SET v_id_access_level_view = (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_priority_access_level_view = (SELECT priority FROM partsltd_prod.Shop_Access_Level WHERE id_access_level = v_id_access_level_view);
-    SET v_priority_access_level_edit = (SELECT priority FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
-    SET v_priority_access_level_admin = (SELECT priority FROM partsltd_prod.Shop_Access_Level WHERE code = 'ADMIN' LIMIT 1);
+    SET v_id_access_level_view = (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_priority_access_level_view = (SELECT priority FROM demo.Shop_Access_Level WHERE id_access_level = v_id_access_level_view);
+    SET v_priority_access_level_edit = (SELECT priority FROM demo.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_priority_access_level_admin = (SELECT priority FROM demo.Shop_Access_Level WHERE code = 'ADMIN' LIMIT 1);
     
     IF a_debug = 1 THEN
 		SELECT 
@@ -7868,7 +7332,7 @@ BEGIN
     
     # Access levels
 	IF v_has_filter_access_level THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_access_level, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_access_level, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -7884,13 +7348,13 @@ BEGIN
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 		
 		# Invalid IDs
 		IF EXISTS (
 			SELECT t_S.substring 
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_S.as_int = AL.id_access_level
+			LEFT JOIN demo.Shop_Access_Level AL ON t_S.as_int = AL.id_access_level
 			WHERE 
 				ISNULL(t_S.as_int)
 				OR ISNULL(AL.id_access_level)
@@ -7908,7 +7372,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive access level IDs: ', GROUP_CONCAT(t_S.substring SEPARATOR ', '))
 			FROM tmp_Split t_S 
-			LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_S.as_int = AL.id_access_level
+			LEFT JOIN demo.Shop_Access_Level AL ON t_S.as_int = AL.id_access_level
 			WHERE 
 				ISNULL(t_S.as_int)
 				OR ISNULL(AL.id_access_level)
@@ -7919,7 +7383,7 @@ BEGIN
 				SET v_id_access_level := (
 					SELECT AL.id_access_level 
 					FROM tmp_Split t_S
-					INNER JOIN partsltd_prod.Shop_Access_Level AL 
+					INNER JOIN demo.Shop_Access_Level AL 
 						ON t_S.as_int = AL.id_access_level
 						AND AL.active 
 					ORDER BY AL.priority ASC 
@@ -7928,14 +7392,14 @@ BEGIN
 			ELSE
 				SET v_id_access_level = v_id_access_level_view;
 			END IF;
-			SET v_priority_access_level := (SELECT priority FROM partsltd_prod.Shop_Access_Level WHERE id_access_level = v_id_access_level LIMIT 1);
+			SET v_priority_access_level := (SELECT priority FROM demo.Shop_Access_Level WHERE id_access_level = v_id_access_level LIMIT 1);
 		END IF;
 	END IF;
 	DELETE FROM tmp_Split;
     
     -- Permission IDs
 	IF v_has_filter_permission THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_permission, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_permission, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -7951,10 +7415,10 @@ BEGIN
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 		
 		# Invalid or inactive
-		IF EXISTS (SELECT PERM.id_permission FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_Permission PERM ON t_S.as_int = PERM.id_permission WHERE ISNULL(t_S.as_int) OR ISNULL(PERM.id_permission) OR PERM.active = 0) THEN
+		IF EXISTS (SELECT PERM.id_permission FROM tmp_Split t_S LEFT JOIN demo.Shop_Permission PERM ON t_S.as_int = PERM.id_permission WHERE ISNULL(t_S.as_int) OR ISNULL(PERM.id_permission) OR PERM.active = 0) THEN
 			INSERT INTO tmp_Msg_Error (
 				-- guid,
 				id_type,
@@ -7967,7 +7431,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive permission IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Permission PERM ON t_S.as_int = PERM.id_permission 
+			LEFT JOIN demo.Shop_Permission PERM ON t_S.as_int = PERM.id_permission 
 			WHERE 
 				ISNULL(t_S.as_int)
 				OR ISNULL(PERM.id_permission)
@@ -7976,8 +7440,8 @@ BEGIN
 		ELSE 
 			SET v_id_permission_required := (
 				SELECT PERM.id_permission
-				FROM partsltd_prod.Shop_Permission PERM
-				INNER JOIN partsltd_prod.Shop_Access_Level AL ON PERM.id_access_level_required = AL.id_access_level
+				FROM demo.Shop_Permission PERM
+				INNER JOIN demo.Shop_Access_Level AL ON PERM.id_access_level_required = AL.id_access_level
 				ORDER BY AL.priority ASC
 				LIMIT 1
 			);
@@ -7986,7 +7450,7 @@ BEGIN
     DELETE FROM tmp_Split;
     
 	# Users
-	CALL partsltd_prod.p_split(a_guid, a_ids_user, ',', a_debug);
+	CALL demo.p_split(a_guid, a_ids_user, ',', a_debug);
 	
 	INSERT INTO tmp_Split (
 		substring
@@ -8002,10 +7466,10 @@ BEGIN
 		AND substring != ''
 	;
 	
-	CALL partsltd_prod.p_clear_split_temp( a_guid );
+	CALL demo.p_clear_split_temp( a_guid );
 	
 	# Invalid or inactive
-	IF EXISTS (SELECT U.id_user FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user WHERE ISNULL(t_S.as_int) OR ISNULL(U.id_user) OR (a_get_inactive_user = 0 AND U.active = 0)) THEN
+	IF EXISTS (SELECT U.id_user FROM tmp_Split t_S LEFT JOIN demo.Shop_User U ON t_S.as_int = U.id_user WHERE ISNULL(t_S.as_int) OR ISNULL(U.id_user) OR (a_get_inactive_user = 0 AND U.active = 0)) THEN
 		INSERT INTO tmp_Msg_Error (
 			-- guid,
 			id_type,
@@ -8018,7 +7482,7 @@ BEGIN
 			v_code_type_error_bad_data, 
 			CONCAT('Invalid or inactive user IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 		FROM tmp_Split t_S
-		LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user 
+		LEFT JOIN demo.Shop_User U ON t_S.as_int = U.id_user 
 		WHERE 
 			ISNULL(t_S.as_int) 
 			OR ISNULL(U.id_user)
@@ -8032,7 +7496,7 @@ BEGIN
 		SET a_ids_user = (
 			SELECT U.id_user 
 			FROM tmp_Split t_S
-			INNER JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+			INNER JOIN demo.Shop_User U ON t_S.as_int = U.id_user
 		);
 		SET v_has_filter_user = ISNULL(a_ids_user);
 		*/
@@ -8054,18 +7518,18 @@ BEGIN
 		)
         SELECT
 			U.id_user
-            , U.is_super_user
+            , IFNULL(U.is_super_user, 0) AS is_super_user
             -- , IFNULL(AL_U.id_access_level, v_id_access_level_view) AS id_access_level
             , IFNULL(MIN(AL_U.priority), v_priority_access_level_view) AS priority_access_level
 		FROM tmp_Split t_S
-        INNER JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
-		LEFT JOIN partsltd_prod.Shop_User_Role_Link URL
+        INNER JOIN demo.Shop_User U ON t_S.as_int = U.id_user
+		LEFT JOIN demo.Shop_User_Role_Link URL
 			ON U.id_user = URL.id_user
 			AND URL.active
-		LEFT JOIN partsltd_prod.Shop_Role_Permission_Link RPL
+		LEFT JOIN demo.Shop_Role_Permission_Link RPL
 			ON URL.id_role = RPL.id_role
 			AND RPL.active
-		LEFT JOIN partsltd_prod.Shop_Access_Level AL_U
+		LEFT JOIN demo.Shop_Access_Level AL_U
 			ON RPL.id_access_level = AL_U.id_access_level
 			AND AL_U.active
 		GROUP BY U.id_user
@@ -8076,16 +7540,16 @@ BEGIN
 			, id_permission_required
 			, priority_access_level_required
 			, id_product
-			, is_super_user
 			, priority_access_level_user
+                        , is_super_user
 		)
 		SELECT 
 			t_UCU.id_user
 			, v_id_permission_required
 			, v_priority_access_level AS priority_access_level_required
 			, NULL
-			, t_UCU.priority_access_level AS priority_access_level_user
 			, t_UCU.is_super_user AS is_super_user
+			, t_UCU.priority_access_level AS priority_access_level_user
 		FROM tmp_User_Calc_User t_UCU
         ;
         
@@ -8106,21 +7570,21 @@ BEGIN
 			, CASE WHEN MIN(IFNULL(AL_U.priority, 0)) = 0 THEN v_priority_access_level_view ELSE MIN(IFNULL(AL_U.priority, 0)) END AS priority_access_level_user
 			, IFNULL(U.is_super_user, 0) AS is_super_user
 		FROM tmp_Split t_S
-		LEFT JOIN partsltd_prod.Shop_User U
+		LEFT JOIN demo.Shop_User U
 			ON t_S.as_int = U.id_user
 			AND U.active
-		LEFT JOIN partsltd_prod.Shop_User_Role_Link URL
+		LEFT JOIN demo.Shop_User_Role_Link URL
 			ON U.id_user = URL.id_user
 			AND URL.active
-		LEFT JOIN partsltd_prod.Shop_Role_Permission_Link RPL
+		LEFT JOIN demo.Shop_Role_Permission_Link RPL
 			ON URL.id_role = RPL.id_role
 			AND RPL.active
-		LEFT JOIN partsltd_prod.Shop_Access_Level AL_U
+		LEFT JOIN demo.Shop_Access_Level AL_U
 			ON RPL.id_access_level = AL_U.id_access_level
 			AND AL_U.active
 		*
 		CROSS JOIN tmp_Product_Calc_User t_P
-		LEFT JOIN partsltd_prod.Shop_Access_Level AL_P
+		LEFT JOIN demo.Shop_Access_Level AL_P
 			ON t_P.id_access_level_required = AL_P.id_access_level
 			AND AL_P.active
 		*
@@ -8134,7 +7598,7 @@ BEGIN
     
     # Products
 	IF v_has_filter_product = 1 THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_product, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -8150,10 +7614,10 @@ BEGIN
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 					
 		# Invalid product IDs
-		IF EXISTS (SELECT * FROM tmp_Split t_S LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product WHERE ISNULL(t_S.as_int) OR ISNULL(P.id_product)) THEN 
+		IF EXISTS (SELECT * FROM tmp_Split t_S LEFT JOIN demo.Shop_Product P ON t_S.as_int = P.id_product WHERE ISNULL(t_S.as_int) OR ISNULL(P.id_product)) THEN 
 			INSERT INTO tmp_Msg_Error (
 				-- guid,
 				id_type,
@@ -8166,7 +7630,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid Product IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product 
+			LEFT JOIN demo.Shop_Product P ON t_S.as_int = P.id_product 
 			WHERE 
 				ISNULL(t_S.as_int)
 				OR ISNULL(P.id_product) 
@@ -8186,12 +7650,12 @@ BEGIN
 				CASE WHEN AL_P.priority < AL_C.priority THEN AL_P.id_access_level ELSE AL_C.id_access_level END AS id_access_level_required,
 				CASE WHEN AL_P.priority < AL_C.priority THEN AL_P.priority ELSE AL_C.priority END AS priority_access_level_required
 			FROM tmp_Split t_S
-			INNER JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product # Shop_Product_Permutation PP
-			INNER JOIN partsltd_prod.Shop_Access_Level AL_P
+			INNER JOIN demo.Shop_Product P ON t_S.as_int = P.id_product # Shop_Product_Permutation PP
+			INNER JOIN demo.Shop_Access_Level AL_P
 				ON P.id_access_level_required = AL_P.id_access_level
 				AND AL_P.active
-			INNER JOIN partsltd_prod.Shop_Product_Category C ON P.id_category = C.id_category
-			INNER JOIN partsltd_prod.Shop_Access_Level AL_C
+			INNER JOIN demo.Shop_Product_Category C ON P.id_category = C.id_category
+			INNER JOIN demo.Shop_Access_Level AL_C
 				ON C.id_access_level_required = AL_C.id_access_level
 				AND AL_C.active
 			;
@@ -8199,9 +7663,9 @@ BEGIN
 			SET v_has_filter_product = EXISTS (SELECT * FROM tmp_Product_Calc_User);
 			/*
 			UPDATE tmp_Product_Calc_User t_P
-			INNER JOIN partsltd_prod.Shop_Product P ON t_P.id_product = P.id_product
-			INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
-			INNER JOIN partsltd_prod.Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
+			INNER JOIN demo.Shop_Product P ON t_P.id_product = P.id_product
+			INNER JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
+			INNER JOIN demo.Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
 			SET 
 				t_P.id_access_level_required = CASE WHEN t_P.priority_access_level_required <= AL.priority THEN t_P.id_access_level_required ELSE AL.id_access_level END
 				, t_P.priority_access_level_required = LEAST(t_P.priority_access_level_required, AL.priority)
@@ -8236,11 +7700,11 @@ BEGIN
 		, v_id_permission_required
 		, CASE WHEN AL.priority < v_priority_access_level THEN AL.priority ELSE v_priority_access_level END AS priority_access_level_required
 		, t_P.id_product 
-		, t_U.priority_access_level AS priority_access_level_user
 		, t_U.is_super_user AS is_super_user
+		, t_U.priority_access_level AS priority_access_level_user
 	FROM tmp_User_Calc_User t_U
 	CROSS JOIN tmp_Product_Calc_User t_P
-    LEFT JOIN partsltd_prod.Shop_Access_Level AL ON t_P.id_access_level_required = AL.id_access_level
+    LEFT JOIN demo.Shop_Access_Level AL ON t_P.id_access_level_required = AL.id_access_level
 	;
     
     -- Calculated fields
@@ -8254,7 +7718,7 @@ BEGIN
     -- Export data to staging table
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN
         START TRANSACTION;
-			INSERT INTO partsltd_prod.Shop_Calc_User_Temp (
+			INSERT INTO demo.Shop_Calc_User_Temp (
 				guid
 				, id_user
 				, id_permission_required
@@ -8287,8 +7751,8 @@ BEGIN
 		SELECT * FROM tmp_Calc_User;
         SELECT * FROM tmp_User_Calc_User;
 		SELECT * FROM tmp_Product_Calc_User;
-		SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
-		CALL partsltd_prod.p_shop_clear_calc_user ( a_guid, a_debug );
+		SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = a_guid;
+		CALL demo.p_shop_clear_calc_user ( a_guid, a_debug );
     END IF;
     
     -- Clean up
@@ -8300,14 +7764,14 @@ BEGIN
     DELETE FROM tmp_Split;
     
     IF a_debug = 1 THEN
-        CALL partsltd_prod.p_debug_timing_reporting( v_time_start );
+        CALL demo.p_debug_timing_reporting( v_time_start );
     END IF;
 END //
 DELIMITER ;
 
 /*
 
-CALL partsltd_prod.p_shop_calc_user (
+CALL demo.p_shop_calc_user (
 	'chips                               '
 	, 1
 	, 0
@@ -8316,7 +7780,7 @@ CALL partsltd_prod.p_shop_calc_user (
 	, '1,2,3,4,5'
     , 0
 );
-CALL partsltd_prod.p_shop_calc_user (
+CALL demo.p_shop_calc_user (
 	'chips                               '
 	, 1
 	, 0
@@ -8325,14 +7789,14 @@ CALL partsltd_prod.p_shop_calc_user (
 	, NULL
     , 0
 );
-SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
-DELETE FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
+SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
+DELETE FROM demo.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
 
         
--- SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
-SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
-CALL partsltd_prod.p_shop_clear_calc_user ( 'chips                               ', 0 );
--- SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+-- SELECT * FROM demo.Shop_Calc_User_Temp;
+SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
+CALL demo.p_shop_clear_calc_user ( 'chips                               ', 0 );
+-- SELECT * FROM demo.Shop_Calc_User_Temp;
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
         CALL p_shop_calc_user(
@@ -8344,16 +7808,14 @@ DROP TABLE IF EXISTS tmp_Msg_Error;
             , '' -- a_ids_product
             , 0 -- a_debug
 		);
-SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
-CALL partsltd_prod.p_shop_clear_calc_user ( 'chips                               ', 0 );
+SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = 'chips                               ';
+CALL demo.p_shop_clear_calc_user ( 'chips                               ', 0 );
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-SELECT * FROM partsltd_prod.shop_user_role_link;
-SELECT * FROM partsltd_prod.shop_role_permission_link;
+SELECT * FROM demo.shop_user_role_link;
+SELECT * FROM demo.shop_role_permission_link;
 
 */
-
--- File: 6501_p_shop_clear_calc_user.sql
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_clear_Shop_Calc_User_Temp;
@@ -8381,7 +7843,7 @@ BEGIN
 	COMMIT;
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting( v_time_start );
+		CALL demo.p_debug_timing_reporting( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -8399,9 +7861,6 @@ WHERE GUID = 'noods, cheese '
 ;
 
 */
-
-
--- File: 7003_p_shop_get_many_access_level.sql
 
 
 
@@ -8449,9 +7908,6 @@ CALL p_shop_get_many_access_level (
 */
 
 
--- File: 7101_p_shop_get_many_region.sql
-
-
 
 /*
 
@@ -8497,9 +7953,6 @@ CALL p_shop_get_many_region (
 */
 
 
--- File: 7106_p_shop_get_many_plant.sql
-
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_plant;
 
@@ -8534,9 +7987,6 @@ CALL p_shop_get_many_plant (
 	0 # a_get_inactive_plant
 );
 */
-
-
--- File: 7109_p_shop_get_many_storage_location.sql
 
 
 -- Clear previous proc
@@ -8574,9 +8024,6 @@ CALL p_shop_get_many_storage_location (
 	0 # a_get_inactive_storage_location
 );
 */
-
-
--- File: 7116_p_shop_get_many_currency.sql
 
 
 
@@ -8625,9 +8072,6 @@ CALL p_shop_get_many_currency (
 );
 */
 
-
--- File: 7122_p_shop_get_many_unit_measurement.sql
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_unit_measurement;
 
@@ -8668,87 +8112,6 @@ CALL p_shop_get_many_unit_measurement (
 select *
 from shop_unit_measurement
 */
-
-
--- File: 7200_p_shop_save_product_category_test.sql
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_category_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_product_category_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Product_Category_Temp (
-			id_category
-            , name
-            , code
-            , description
-            , id_access_level_required
-            , display_order
-            , guid
-		)
-		VALUES (
-			-5 -- id_category
-			, 'Nips' -- name
-			, 'Lips' -- code
-			, 'Chips' -- description
-			, 2 -- id_access_level_required
-			, 25 -- display_order
-			, v_guid
-		);
-		
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_product_category ( 
-		'Test save product category' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Category_Temp
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;
-
-/*
-CALL partsltd_prod.p_shop_save_product_category_test ();
-
-DELETE FROM partsltd_prod.Shop_Product_Category_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-*/
-
-
--- File: 7200_p_shop_save_product_category.sql
 
 
 -- Clear previous proc
@@ -8798,7 +8161,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE MET.code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -8860,8 +8223,8 @@ BEGIN
         , IFNULL(PC_T.display_order, PC.display_order) AS display_order
         , IFNULL(PC_T.name, IFNULL(PC.name, IFNULL(PC_T.code, IFNULL(PC.code, IFNULL(PC_T.id_category, '(No Product Category)'))))) AS name_error
         , CASE WHEN IFNULL(PC_T.id_category, 0) < 1 THEN 1 ELSE 0 END AS is_new
-	FROM partsltd_prod.Shop_Product_Category_Temp PC_T
-    LEFT JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+	FROM demo.Shop_Product_Category_Temp PC_T
+    LEFT JOIN demo.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
     WHERE PC_T.guid = a_guid
     ;
     
@@ -8916,7 +8279,7 @@ BEGIN
     -- Permissions
 	SET v_ids_product_permission := (
 		SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') 
-		FROM partsltd_prod.Shop_Product P 
+		FROM demo.Shop_Product P 
 		INNER JOIN tmp_Category t_C
 			ON P.id_category = t_C.id_category 
 			AND t_C.is_new = 0
@@ -8936,7 +8299,7 @@ BEGIN
         ;
     END IF;
     
-	CALL partsltd_prod.p_shop_calc_user(
+	CALL demo.p_shop_calc_user(
 		a_guid
         , a_id_user
         , FALSE -- a_get_inactive_user
@@ -8947,8 +8310,8 @@ BEGIN
     );
 	
 	UPDATE tmp_Category t_C
-	INNER JOIN partsltd_prod.Shop_Product P ON t_C.id_category = P.id_product
-	INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+	INNER JOIN demo.Shop_Product P ON t_C.id_category = P.id_product
+	INNER JOIN demo.Shop_Calc_User_Temp UE_T
 		ON P.id_product = UE_T.id_product
 		AND UE_T.GUID = a_guid
 	SET 
@@ -8974,7 +8337,7 @@ BEGIN
 		;
     END IF;
     
-    IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0 LIMIT 1) THEN
+    IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0 LIMIT 1) THEN
 		DELETE t_ME
         FROM tmp_Msg_Error t_ME
         WHERE t_ME.id_type <> v_id_type_error_no_permission
@@ -8992,7 +8355,7 @@ BEGIN
         ;
     END IF;
 	
-	CALL partsltd_prod.p_shop_clear_calc_user(
+	CALL demo.p_shop_clear_calc_user(
 		a_guid
         , 0 -- a_debug
 	);
@@ -9000,13 +8363,13 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
 		
-			INSERT INTO partsltd_prod.Shop_Product_Change_Set ( comment )
+			INSERT INTO demo.Shop_Product_Change_Set ( comment )
 			VALUES ( a_comment )
 			;
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 			
-			UPDATE partsltd_prod.Shop_Product_Category PC
+			UPDATE demo.Shop_Product_Category PC
 			INNER JOIN tmp_Category t_C 
 				ON PC.id_category = t_C.id_category
 				AND t_C.is_new = 0
@@ -9021,7 +8384,7 @@ BEGIN
 				, PC.id_change_set = v_id_change_set
 			;
 			
-			INSERT INTO partsltd_prod.Shop_Product_Category (
+			INSERT INTO demo.Shop_Product_Category (
 				code
 				, name
 				, description
@@ -9052,7 +8415,7 @@ BEGIN
 	
 	START TRANSACTION;
 
-		DELETE FROM partsltd_prod.Shop_Product_Category_Temp
+		DELETE FROM demo.Shop_Product_Category_Temp
 		WHERE GUID = a_guid;
 		
 	COMMIT;
@@ -9060,7 +8423,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -9071,7 +8434,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
@@ -9081,13 +8444,13 @@ select
 	*
     -- COUNT(*)
 -- delete
-from partsltd_prod.Shop_Product_Category_Temp
+from demo.Shop_Product_Category_Temp
 ;
 
 
-CALL partsltd_prod.p_shop_save_product_category (
+CALL demo.p_shop_save_product_category (
 	'nipples'
-    , (SELECT GUID FROM partsltd_prod.Shop_Product_Category_Temp ORDER BY id_temp DESC LIMIT 1)
+    , (SELECT GUID FROM demo.Shop_Product_Category_Temp ORDER BY id_temp DESC LIMIT 1)
     , 1
     , 1
 );
@@ -9096,13 +8459,85 @@ select
 	*
     -- COUNT(*)
 -- delete
-from partsltd_prod.Shop_Product_Category_Temp
+from demo.Shop_Product_Category_Temp
 ;
 
 */
 
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS demo.p_shop_save_product_category_test;
 
--- File: 7202_p_shop_clear_calc_product_permutation.sql
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_product_category_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM demo.Shop_Product_Category
+	;
+	SELECT *
+	FROM demo.Shop_Product_Category_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO demo.Shop_Product_Category_Temp (
+			id_category
+            , name
+            , code
+            , description
+            , id_access_level_required
+            , display_order
+            , guid
+		)
+		VALUES (
+			-5 -- id_category
+			, 'Nips' -- name
+			, 'Lips' -- code
+			, 'Chips' -- description
+			, 2 -- id_access_level_required
+			, 25 -- display_order
+			, v_guid
+		);
+		
+	COMMIT;
+    
+	SELECT *
+	FROM demo.Shop_Product_Category_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL demo.p_shop_save_product_category ( 
+		'Test save product category' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM demo.Shop_Product_Category
+	;
+	SELECT *
+	FROM demo.Shop_Product_Category_Temp
+	;
+    
+	CALL demo.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;
+
+/*
+CALL demo.p_shop_save_product_category_test ();
+
+DELETE FROM demo.Shop_Product_Category_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+*/
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_clear_calc_product_permutation;
@@ -9157,104 +8592,6 @@ WHERE GUID = a_guid
 */
 
 
--- File: 7203_p_shop_save_product_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_product_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Product
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Product_Temp (
-			id_product
-			, id_category
-			, name
-			, has_variations
-			, id_access_level_required
-			, display_order
-			, active
-			, guid
-		)
-		VALUES 
-        /* Test 1 - Update
-        (
-			4 -- id_product
-			, 1 -- id_category
-			, 'Laptops' -- name
-			, 0 -- has_variations
-			, 2 -- id_access_level_required
-			, 2 -- display_order
-			, 1 -- active
-			, v_guid
-		)
-        */
-        /* Test 2 - Insert */
-        (
-			-14 -- id_product
-			, 5 -- id_category
-			, 'Clip' -- name
-			, 0 -- has_variations
-			, 1 -- id_access_level_required
-			, 1 -- display_order
-			, 1 -- active
-			, v_guid
-		)
-        ;
-		
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_product ( 
-		'Test save product' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;
-
-/*
-CALL partsltd_prod.p_shop_save_product_test ();
-
-DELETE FROM partsltd_prod.Shop_Product_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-*/
-
--- File: 7203_p_shop_save_product.sql
-
-
 
 
 -- Clear previous proc
@@ -9307,7 +8644,7 @@ BEGIN
         
         SELECT *
         FROM tmp_Msg_Error t_ME
-        INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+        INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
         ;
         
         DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
@@ -9383,8 +8720,8 @@ BEGIN
         , IFNULL(P_T.display_order, P.display_order) AS display_order
         , IFNULL(P_T.name, IFNULL(P.name, IFNULL(P_T.id_product, '(No Product)'))) AS name_error
         , CASE WHEN IFNULL(P_T.id_product, 0) < 1 THEN 1 ELSE 0 END AS is_new
-	FROM partsltd_prod.Shop_Product_Temp P_T
-    LEFT JOIN partsltd_prod.Shop_Product P ON P_T.id_product = P.id_product
+	FROM demo.Shop_Product_Temp P_T
+    LEFT JOIN demo.Shop_Product P ON P_T.id_product = P.id_product
     ;
     
     -- Validation
@@ -9475,7 +8812,7 @@ BEGIN
 
 	SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
 	
-	CALL partsltd_prod.p_shop_calc_user(
+	CALL demo.p_shop_calc_user(
 		a_guid
 		, a_id_user
 		, FALSE -- get_inactive_users
@@ -9486,7 +8823,7 @@ BEGIN
 	);
 	
 	UPDATE tmp_Product t_P
-	INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+	INNER JOIN demo.Shop_Calc_User_Temp UE_T
 		ON t_P.id_product = UE_T.id_product
 		AND UE_T.GUID = a_guid
 	SET 
@@ -9512,7 +8849,7 @@ BEGIN
 		;
     END IF;
     
-    IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
+    IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
 		DELETE t_ME
         FROM tmp_Msg_Error t_ME
         WHERE t_ME.id_type <> v_id_type_error_no_permission
@@ -9530,7 +8867,7 @@ BEGIN
 		;
     END IF;
 	
-	CALL partsltd_prod.p_shop_clear_calc_user(
+	CALL demo.p_shop_clear_calc_user(
 		a_guid
 		, 0 -- debug
 	);
@@ -9538,13 +8875,13 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
 	
-			INSERT INTO partsltd_prod.Shop_Product_Change_Set ( comment )
+			INSERT INTO demo.Shop_Product_Change_Set ( comment )
 			VALUES ( a_comment )
 			;
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 			
-			UPDATE partsltd_prod.Shop_Product P
+			UPDATE demo.Shop_Product P
 			INNER JOIN tmp_Product t_P ON P.id_product = t_P.id_product
 			SET 
 				P.id_category = t_P.id_category
@@ -9556,7 +8893,7 @@ BEGIN
 				, P.id_change_set = v_id_change_set
 			;
             
-            INSERT INTO partsltd_prod.Shop_Product (
+            INSERT INTO demo.Shop_Product (
                 id_category
                 , name
                 , has_variations
@@ -9582,29 +8919,118 @@ BEGIN
         
 	START TRANSACTION;
 
-		DELETE FROM partsltd_prod.Shop_Product_Temp
+		DELETE FROM demo.Shop_Product_Temp
 		WHERE GUID = a_guid;
 
 	COMMIT;
     
     SELECT * 
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
 
 
 
--- File: 7204_p_shop_calc_product_permutation.sql
--- USE partsltd_prod;
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS demo.p_shop_save_product_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_product_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM demo.Shop_Product
+	;
+	SELECT *
+	FROM demo.Shop_Product_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO demo.Shop_Product_Temp (
+			id_product
+			, id_category
+			, name
+			, has_variations
+			, id_access_level_required
+			, display_order
+			, active
+			, guid
+		)
+		VALUES 
+        /* Test 1 - Update
+        (
+			4 -- id_product
+			, 1 -- id_category
+			, 'Laptops' -- name
+			, 0 -- has_variations
+			, 2 -- id_access_level_required
+			, 2 -- display_order
+			, 1 -- active
+			, v_guid
+		)
+        */
+        /* Test 2 - Insert */
+        (
+			-14 -- id_product
+			, 5 -- id_category
+			, 'Clip' -- name
+			, 0 -- has_variations
+			, 1 -- id_access_level_required
+			, 1 -- display_order
+			, 1 -- active
+			, v_guid
+		)
+        ;
+		
+	COMMIT;
+    
+	SELECT *
+	FROM demo.Shop_Product_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL demo.p_shop_save_product ( 
+		'Test save product' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM demo.Shop_Product
+	;
+	SELECT *
+	FROM demo.Shop_Product_Temp
+	;
+    
+	CALL demo.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;
+
+/*
+CALL demo.p_shop_save_product_test ();
+
+DELETE FROM demo.Shop_Product_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+*/-- USE demo;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_calc_product_permutation;
@@ -9630,7 +9056,7 @@ BEGIN
 	PROCEDURE p_shop_calc_product_permutation
 	Shared filtering for product permutations
     
-    select * FROM partsltd_prod.Shop_msg_error_type;
+    select * FROM demo.Shop_msg_error_type;
 */
     DECLARE v_has_filter_product_category BIT;
     DECLARE v_has_filter_product BIT;
@@ -9646,7 +9072,7 @@ BEGIN
     DECLARE v_code_type_error_bad_data VARCHAR(50);
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW');
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW');
     
     SELECT 
 		MET.id_type
@@ -9654,7 +9080,7 @@ BEGIN
 	INTO
 		v_id_type_error_bad_data
 		, v_code_type_error_bad_data
-	FROM partsltd_prod.Shop_Msg_Error_Type MET
+	FROM demo.Shop_Msg_Error_Type MET
 	WHERE MET.code = 'BAD_DATA'
 	;
     
@@ -9745,7 +9171,7 @@ BEGIN
     
     -- Categories
     IF TRUE THEN -- NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_product_category, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_product_category, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -9754,21 +9180,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = a_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Category PC ON t_S.as_int = PC.id_category 
+            LEFT JOIN demo.Shop_Product_Category PC ON t_S.as_int = PC.id_category 
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PC.id_category)
@@ -9789,7 +9215,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive category IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Category PC ON t_S.as_int = PC.id_category
+			LEFT JOIN demo.Shop_Product_Category PC ON t_S.as_int = PC.id_category
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(PC.id_category)
@@ -9805,7 +9231,7 @@ BEGIN
 			SELECT 
 				PC.id_category
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Category PC ON t_S.as_int = PC.id_category
+			RIGHT JOIN demo.Shop_Product_Category PC ON t_S.as_int = PC.id_category
 			WHERE (
 					a_get_all_product_category = 1
 					OR (
@@ -9825,7 +9251,7 @@ BEGIN
     
     -- Products
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_product, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -9834,21 +9260,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = a_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product
+            LEFT JOIN demo.Shop_Product P ON t_S.as_int = P.id_product
 			WHERE 
 				ISNULL(t_S.as_int)
                 OR ISNULL(P.id_product)
@@ -9869,7 +9295,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive product IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product
+			LEFT JOIN demo.Shop_Product P ON t_S.as_int = P.id_product
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(P.id_product)
@@ -9887,7 +9313,7 @@ BEGIN
 				P.id_category
 				, P.id_product
 			FROM tmp_Split t_S
-            RIGHT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product
+            RIGHT JOIN demo.Shop_Product P ON t_S.as_int = P.id_product
 			INNER JOIN tmp_Category_calc t_C ON P.id_category = t_C.id_category
 			WHERE (
 					a_get_all_product = 1
@@ -9908,7 +9334,7 @@ BEGIN
         
 	-- Permutations
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_product, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -9917,21 +9343,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = a_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+            LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int)
                 OR ISNULL(PP.id_permutation)
@@ -9948,7 +9374,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive permutation IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+			LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(PP.id_permutation)
@@ -9968,7 +9394,7 @@ BEGIN
 				-- P.id_category,
 				, PP.id_product
 			FROM tmp_Split t_S 
-            RIGHT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+            RIGHT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			INNER JOIN tmp_Product_calc t_P ON PP.id_product = t_P.id_product
 			WHERE 1=1
 				AND (
@@ -9995,7 +9421,7 @@ BEGIN
 	-- Permissions
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (SELECT * FROM tmp_Product_calc LIMIT 1) THEN
-			SET v_id_permission_product := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
+			SET v_id_permission_product := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
 			SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Product_calc WHERE NOT ISNULL(id_product));
 			
 			IF a_debug = 1 THEN
@@ -10021,7 +9447,7 @@ BEGIN
 			
 			
 			UPDATE tmp_Product_calc t_P
-			INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+			INNER JOIN demo.Shop_Calc_User_Temp UE_T
 				ON t_P.id_product = UE_T.id_product
 				AND UE_T.GUID = a_guid
 			SET t_P.can_view = UE_T.can_view,
@@ -10031,7 +9457,7 @@ BEGIN
 			
 			IF a_debug = 1 THEN
 				SELECT * 
-                FROM partsltd_prod.Shop_Calc_User_Temp
+                FROM demo.Shop_Calc_User_Temp
                 WHERE GUID = a_guid
                 ;
 			END IF;
@@ -10112,7 +9538,7 @@ BEGIN
 				, MIN(IFNULL(t_P.can_admin, 0)) AS can_admin
 				, a_guid
 			FROM tmp_Category_calc t_C
-			INNER JOIN partsltd_prod.Shop_Product_Category PC ON t_C.id_category = PC.id_category
+			INNER JOIN demo.Shop_Product_Category PC ON t_C.id_category = PC.id_category
 			LEFT JOIN tmp_Product_calc t_P ON t_C.id_category = t_P.id_product
 			GROUP BY PC.id_category
 			;
@@ -10144,9 +9570,9 @@ BEGIN
 				, t_P.can_admin
 				, a_guid
 			FROM tmp_Product_calc t_P
-			INNER JOIN partsltd_prod.Shop_Product P ON t_P.id_product = P.id_product
+			INNER JOIN demo.Shop_Product P ON t_P.id_product = P.id_product
 			INNER JOIN tmp_Category_calc t_C ON t_P.id_category = t_C.id_category
-			INNER JOIN partsltd_prod.Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
+			INNER JOIN demo.Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
 			GROUP BY P.id_product, t_P.can_view, t_P.can_edit, t_P.can_admin
 			;
 			
@@ -10205,15 +9631,15 @@ BEGIN
 				, IFNULL(t_P.can_admin, 0) AS can_admin
 				, a_guid
 			FROM tmp_Permutation_calc t_PP
-			INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
+			INNER JOIN demo.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
 			INNER JOIN tmp_Product_calc t_P ON t_PP.id_product = t_P.id_product
-			INNER JOIN partsltd_prod.Shop_Product P ON t_PP.id_product = P.id_product
-			INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
-			LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
-			LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
-			LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
-			LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
-			INNER JOIN partsltd_prod.Shop_Currency C ON PP.id_currency_cost = C.id_currency
+			INNER JOIN demo.Shop_Product P ON t_PP.id_product = P.id_product
+			INNER JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
+			LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+			LEFT JOIN demo.Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
+			LEFT JOIN demo.Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
+			LEFT JOIN demo.Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
+			INNER JOIN demo.Shop_Currency C ON PP.id_currency_cost = C.id_currency
 			GROUP BY PP.id_permutation, t_P.can_view, t_P.can_edit, t_P.can_admin
 			;
 			
@@ -10231,7 +9657,7 @@ BEGIN
         MET.name,
         MET.description
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET
+    INNER JOIN demo.Shop_Msg_Error_Type MET
 		ON t_ME.id_type = MET.id_type
     WHERE guid = a_guid
     ;
@@ -10243,15 +9669,15 @@ BEGIN
         ;
         
         SELECT *
-        FROM partsltd_prod.Shop_Product_Category_Temp
+        FROM demo.Shop_Product_Category_Temp
         WHERE GUID = a_guid
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Temp
+        FROM demo.Shop_Product_Temp
         WHERE GUID = a_guid
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Permutation_Temp
+        FROM demo.Shop_Product_Permutation_Temp
         WHERE GUID = a_guid
         ;
         
@@ -10265,7 +9691,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Category_calc;
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -10273,7 +9699,7 @@ DELIMITER ;
 
 /*
 
-CALL partsltd_prod.p_shop_calc_product_permutation (
+CALL demo.p_shop_calc_product_permutation (
 	1 #'auth0|6582b95c895d09a70ba10fef', # a_id_user
     , 1 # a_get_all_product_category
 	, 0 # a_get_inactive_product_category
@@ -10291,38 +9717,35 @@ CALL partsltd_prod.p_shop_calc_product_permutation (
 
 
         SELECT *
-        FROM partsltd_prod.Shop_Product_Category_Temp
+        FROM demo.Shop_Product_Category_Temp
         WHERE GUID = 'NIPS                                '
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Temp
+        FROM demo.Shop_Product_Temp
         WHERE GUID = 'NIPS                                '
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Permutation_Temp
+        FROM demo.Shop_Product_Permutation_Temp
         WHERE GUID = 'NIPS                                '
         ;
         
         CALL p_shop_clear_calc_product_permutation ( 'NIPS                                ' );
         
         SELECT *
-        FROM partsltd_prod.Shop_Product_Category_Temp
+        FROM demo.Shop_Product_Category_Temp
         WHERE GUID = 'NIPS                                '
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Temp
+        FROM demo.Shop_Product_Temp
         WHERE GUID = 'NIPS                                '
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Permutation_Temp
+        FROM demo.Shop_Product_Permutation_Temp
         WHERE GUID = 'NIPS                                '
         ;
         
-*/
-
--- File: 7204_p_shop_get_many_product.sql
--- 
-USE partsltd_prod;
+*/-- 
+USE demo;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product;
@@ -10367,7 +9790,7 @@ BEGIN
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW');
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW');
     
     
 	-- Argument validation + default values
@@ -10469,7 +9892,7 @@ BEGIN
 
 	-- select v_has_filter_product, v_has_filter_permutation;
     
-    CALL partsltd_prod.p_shop_calc_product_permutation (
+    CALL demo.p_shop_calc_product_permutation (
 		a_id_user
 		, a_get_all_product_category
 		, a_get_inactive_product_category
@@ -10498,8 +9921,8 @@ BEGIN
         PC.active,
 		*/
         , PC.display_order
-	FROM (SELECT * FROM partsltd_prod.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
-    INNER JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+	FROM (SELECT * FROM demo.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
+    INNER JOIN demo.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
     ;
     
 	INSERT INTO tmp_Product (
@@ -10515,8 +9938,8 @@ BEGIN
 		, P.id_category
         -- P.active,
         , P.display_order
-	FROM (SELECT * FROM partsltd_prod.Shop_Product_Temp WHERE GUID = v_guid) P_T 
-    INNER JOIN partsltd_prod.Shop_Product P ON P.id_product = P_T.id_product
+	FROM (SELECT * FROM demo.Shop_Product_Temp WHERE GUID = v_guid) P_T 
+    INNER JOIN demo.Shop_Product P ON P.id_product = P_T.id_product
     ;
     
 	INSERT INTO tmp_Permutation (
@@ -10532,13 +9955,13 @@ BEGIN
 		, PP.id_product
         -- , PP.active
         -- , RANK() OVER (ORDER BY VT.display_order, V.display_order)
-	FROM (SELECT * FROM partsltd_prod.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
-    INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
+	FROM (SELECT * FROM demo.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
+    INNER JOIN demo.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
     ;
     
     # Product Images
     IF (v_has_filter_image = 1 AND NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1)) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_image, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_image, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -10547,21 +9970,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Image I ON t_S.as_int = I.id_image
+            LEFT JOIN demo.Shop_Product_Image I ON t_S.as_int = I.id_image
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(I.id_image)
@@ -10578,7 +10001,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive image IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Image I ON t_S.as_int = I.id_image
+			LEFT JOIN demo.Shop_Product_Image I ON t_S.as_int = I.id_image
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(I.id_image)
@@ -10593,7 +10016,7 @@ BEGIN
 				I.id_image
                 , I.id_permutation
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Image I ON t_S.as_int = I.id_image
+			RIGHT JOIN demo.Shop_Product_Image I ON t_S.as_int = I.id_image
             INNER JOIN tmp_Permutation t_PP ON I.id_permutation = t_PP.id_permutation
 			WHERE 
 				(
@@ -10626,9 +10049,9 @@ BEGIN
         , MIN(t_P.can_edit) AS can_edit
         , MIN(t_P.can_admin) AS can_admin
     FROM tmp_Category t_C
-    INNER JOIN partsltd_prod.Shop_Product_Category PC ON t_C.id_category = PC.id_category
+    INNER JOIN demo.Shop_Product_Category PC ON t_C.id_category = PC.id_category
     LEFT JOIN tmp_Product t_P ON t_C.id_category = t_P.id_product
-    INNER JOIN partsltd_prod.Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
+    INNER JOIN demo.Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
 	GROUP BY t_C.id_category -- , t_P.id_product
 	ORDER BY PC.display_order
 	;
@@ -10647,9 +10070,9 @@ BEGIN
         t_P.can_edit,
         t_P.can_admin
     FROM tmp_Product t_P
-    INNER JOIN partsltd_prod.Shop_Product P ON t_P.id_product = P.id_product
+    INNER JOIN demo.Shop_Product P ON t_P.id_product = P.id_product
     INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
-    INNER JOIN partsltd_prod.Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
+    INNER JOIN demo.Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
     GROUP BY t_P.id_category, t_C.display_order, t_P.id_product, t_P.can_view, t_P.can_edit, t_P.can_admin
 	ORDER BY t_C.display_order, P.display_order
 	;
@@ -10698,15 +10121,15 @@ BEGIN
         IFNULL(t_P.can_edit, 0) AS can_edit,
         IFNULL(t_P.can_admin, 0) AS can_admin
     FROM tmp_Permutation t_PP
-    INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
+    INNER JOIN demo.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
     INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
-    INNER JOIN partsltd_prod.Shop_Product P ON t_PP.id_product = P.id_product
-    INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
-	LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
-	LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
-	LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
-    INNER JOIN partsltd_prod.Shop_Currency C ON PP.id_currency_cost = C.id_currency
+    INNER JOIN demo.Shop_Product P ON t_PP.id_product = P.id_product
+    INNER JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
+    LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+	LEFT JOIN demo.Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
+	LEFT JOIN demo.Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
+	LEFT JOIN demo.Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
+    INNER JOIN demo.Shop_Currency C ON PP.id_currency_cost = C.id_currency
     GROUP BY PC.id_category, P.id_product, PP.id_permutation, t_P.can_view, t_P.can_edit, t_P.can_admin
 	ORDER BY PC.display_order, P.display_order -- , t_PP.display_order
 	;
@@ -10727,9 +10150,9 @@ BEGIN
         , t_P.id_product
         , t_PP.id_permutation
         , t_C.id_category
-    FROM partsltd_prod.Shop_Variation V
-	INNER JOIN partsltd_prod.Shop_Variation_Type VT ON V.id_type = VT.id_type
-    INNER JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON V.id_variation = PPVL.id_variation
+    FROM demo.Shop_Variation V
+	INNER JOIN demo.Shop_Variation_Type VT ON V.id_type = VT.id_type
+    INNER JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON V.id_variation = PPVL.id_variation
 	INNER JOIN tmp_Permutation t_PP ON PPVL.id_permutation = t_PP.id_permutation
 	INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
 	INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
@@ -10748,7 +10171,7 @@ BEGIN
         I.active,
         I.display_order
     FROM tmp_Image t_I
-    INNER JOIN partsltd_prod.Shop_Product_Image I ON t_I.id_image = I.id_image
+    INNER JOIN demo.Shop_Product_Image I ON t_I.id_image = I.id_image
 	INNER JOIN tmp_Permutation t_PP ON t_I.id_permutation = t_PP.id_permutation
     INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
     INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
@@ -10767,7 +10190,7 @@ BEGIN
         MET.description
 	*/
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     -- WHERE guid = v_guid
     ;
     
@@ -10784,10 +10207,10 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     
-	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+	CALL demo.p_shop_clear_calc_product_permutation ( v_guid );
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -10795,7 +10218,7 @@ DELIMITER ;
 
 /*
 
-CALL partsltd_prod.p_shop_get_many_product (
+CALL demo.p_shop_get_many_product (
 	1 #'auth0|6582b95c895d09a70ba10fef', # a_id_user
     , 1 # a_get_all_product_category
 	, 0 # a_get_inactive_product_category
@@ -10813,21 +10236,21 @@ CALL partsltd_prod.p_shop_get_many_product (
     , 0 # a_debug
 );
 
-select * FROM partsltd_prod.Shop_Calc_User_Temp;
+select * FROM demo.Shop_Calc_User_Temp;
 
-select * FROM partsltd_prod.Shop_Product_Category;
-select * FROM partsltd_prod.Shop_Product_Permutation;
-select * FROM partsltd_prod.Shop_product_change_set;
+select * FROM demo.Shop_Product_Category;
+select * FROM demo.Shop_Product_Permutation;
+select * FROM demo.Shop_product_change_set;
 insert into shop_product_change_set ( comment ) values ('set stock quantities below minimum for testing');
 update shop_product_permutation
 set quantity_stock = 0,
-	id_change_set = (select id_change_set FROM partsltd_prod.Shop_product_change_set order by id_change_set desc limit 1)
+	id_change_set = (select id_change_set FROM demo.Shop_product_change_set order by id_change_set desc limit 1)
 where id_permutation < 5
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-select * FROM partsltd_prod.Shop_image;
-select * FROM partsltd_prod.Shop_product;
+select * FROM demo.Shop_image;
+select * FROM demo.Shop_product;
 select * from TMP_MSG_ERROR;
 DROP TABLE TMP_MSG_ERROR;
 
@@ -10835,17 +10258,14 @@ insert into shop_product_change_set (comment)
     values ('set product not subscription - test bool output to python');
     update shop_product
     set is_subscription = 0,
-		id_change_set = (select id_change_set FROM partsltd_prod.Shop_product_change_set order by id_change_set desc limit 1)
+		id_change_set = (select id_change_set FROM demo.Shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
 
-select * FROM partsltd_prod.Shop_Calc_User_Temp;
+select * FROM demo.Shop_Calc_User_Temp;
 select distinct guid 
 -- DELETE
-FROM partsltd_prod.Shop_Calc_User_Temp;
+FROM demo.Shop_Calc_User_Temp;
 */
-
-
--- File: 7205_p_shop_get_many_stripe_product_new.sql
 
 
 
@@ -11155,182 +10575,6 @@ CALL p_shop_calc_user (
 */
 
 
--- File: 7206_p_shop_save_product_permutation_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_permutation_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_product_permutation_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Product_Permutation_Temp (
-			id_permutation
-			, id_product
-            , csv_id_pairs_variation
-            , description
-			, cost_local_VAT_excl
-			, cost_local_VAT_incl
-			, id_currency_cost
-			, profit_local_min 
-			, latency_manufacture
-			, id_unit_measurement_quantity
-			, count_unit_measurement_per_quantity_step
-			, quantity_min
-			, quantity_max
-			, quantity_stock
-			, is_subscription
-			, id_unit_measurement_interval_recurrence
-			, count_interval_recurrence
-			, id_stripe_product
-			, does_expire_faster_once_unsealed
-			, id_unit_measurement_interval_expiration_unsealed
-			, count_interval_expiration_unsealed
-			, active
-			, guid
-		)
-		VALUES 
-        /* Test 1 - Insert 
-        (
-			-1 -- id_permutation
-			, 5 -- id_product
-            , '' -- csv_id_pairs_variation
-            , 'Hair clip' -- description
-            , NULL -- cost_local_VAT_excl
-            , NULL -- cost_local_VAT_incl
-            , 1 -- id_currency_cost
-            , NULL -- profit_local_min
-            , 1 -- latency_manufacture
-            , 3 -- id_unit_measurement_quantity
-            , 1 -- count_unit_measurement_per_quantity_step
-            , 0 -- quantity_min
-            , 0 -- quantity_max
-            , 2 -- quantity_stock
-            , FALSE -- is_subscription
-            , NULL -- id_unit_measurement_interval_recurrence
-            , NULL -- count_interval_recurrence
-            , NULL -- id_stripe_product
-            , FALSE -- does_expire_faster_once_unsealed
-            , NULL -- id_unit_measurement_interval_expiration_unsealed
-            , NULL -- count_interval_expiration_unsealed
-			, 1 -- active
-			, v_guid
-		)
-        */
-        /* Test 2 - Update
-        (
-			4 -- id_product
-			, 1 -- id_category
-			, 'Laptops' -- name
-			, 0 -- has_variations
-			, 2 -- id_access_level_required
-			, 2 -- display_order
-			, 1 -- active
-			, v_guid
-		)
-        */
-        /* Test 3 - Insert with Variations */
-        (
-			-1 -- id_permutation
-			, 1 -- id_product
-            , '1:3' -- csv_id_pairs_variation
-            , 'Good Green' -- description
-            , NULL -- cost_local_VAT_excl
-            , NULL -- cost_local_VAT_incl
-            , 1 -- id_currency_cost
-            , NULL -- profit_local_min
-            , 1 -- latency_manufacture
-            , 3 -- id_unit_measurement_quantity
-            , 1 -- count_unit_measurement_per_quantity_step
-            , 0 -- quantity_min
-            , 0 -- quantity_max
-            , 2 -- quantity_stock
-            , FALSE -- is_subscription
-            , NULL -- id_unit_measurement_interval_recurrence
-            , NULL -- count_interval_recurrence
-            , NULL -- id_stripe_product
-            , TRUE -- does_expire_faster_once_unsealed
-            , 8 -- id_unit_measurement_interval_expiration_unsealed
-            , 2 -- count_interval_expiration_unsealed
-			, 1 -- active
-			, v_guid
-		)
-        ;
-		
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_product_permutation ( 
-		'Test save product' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;
-
-/*
-CALL partsltd_prod.p_shop_save_product_permutation_test ();
-
-DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-
-DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
-WHERE id_link >= 3
-;
-DELETE FROM partsltd_prod.Shop_Product_Permutation
-WHERE id_permutation >= 7
-;
-
-	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation
-	;
-*/
-
--- File: 7206_p_shop_save_product_permutation.sql
-
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_save_permutation;
 DROP PROCEDURE IF EXISTS p_shop_save_product_permutation;
@@ -11382,7 +10626,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE MET.code = 'MYSQL_ERROR'
         LIMIT 1
 		;
@@ -11509,7 +10753,7 @@ BEGIN
     ;
     
     SELECT
-		partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
+		demo.fn_shop_get_product_variations_from_id_csv_list(
 			t_PP.id_permutation -- a_id_permutation
 			, t_PP.csv_id_pairs_variation -- a_variation_csv
 			, a_guid -- a_guid
@@ -11533,8 +10777,8 @@ BEGIN
         , PPVL_T.display_order
         , NOT ISNULL(PPVL_T.id_link) AS active
         , IFNULL(PPVL_T.id_link, 0) < 1 AS is_new
-    FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp PPVL_T
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PPVL_T.id_link = PPVL.id_variation
+    FROM demo.Shop_Product_Permutation_Variation_Link_Temp PPVL_T
+    LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON PPVL_T.id_link = PPVL.id_variation
     LEFT JOIN tmp_Permutation t_PP ON PPVL_T.id_permutation = t_PP.id_permutation
     WHERE PPVL_T.GUID = a_guid
     ;
@@ -11763,7 +11007,7 @@ BEGIN
 	
     IF a_debug = 1 THEN
 		SELECT *
-        FROM partsltd_prod.Shop_Calc_User_Temp
+        FROM demo.Shop_Calc_User_Temp
         WHERE GUID = a_guid
         ;
         SELECT *
@@ -11788,7 +11032,7 @@ BEGIN
 		;
 	END IF;
 
-	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
+	IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
 		DELETE FROM tmp_Msg_Error
         WHERE id_type <> v_id_type_error_no_permission
         ;
@@ -11813,7 +11057,7 @@ BEGIN
 	
 	IF a_debug = 1 THEN
 		SELECT *
-		FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+		FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 		WHERE GUID = a_guid
 		;
 	END IF;
@@ -11913,7 +11157,7 @@ BEGIN
 			;
             
             UPDATE tmp_Permutation t_PP
-            INNER JOIN partsltd_prod.Shop_Product_Permutation PP 
+            INNER JOIN demo.Shop_Product_Permutation PP 
 				ON t_PP.id_permutation_temp = PP.id_permutation_temp
                 AND PP.id_change_set = v_id_change_set
             SET
@@ -11925,7 +11169,7 @@ BEGIN
 				t_PPVL.id_permutation = t_PP.id_permutation
 			;
             
-            INSERT INTO partsltd_prod.Shop_Product_Permutation_Variation_Link (
+            INSERT INTO demo.Shop_Product_Permutation_Variation_Link (
 				id_permutation
                 , id_variation
                 , display_order
@@ -11942,7 +11186,7 @@ BEGIN
                 AND t_PPVL.active = 1
             ;
             
-            UPDATE partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL
+            UPDATE demo.Shop_Product_Permutation_Variation_Link PPVL
             INNER JOIN tmp_Permutation_Variation_Link t_PPVL 
 				ON PPVL.id_link = t_PPVL.id_link
                 AND t_PPVL.is_new = 1
@@ -11963,7 +11207,7 @@ BEGIN
 		WHERE GUID = a_guid
         ;
         
-		DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+		DELETE FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 		WHERE GUID = a_guid
         ;
 	
@@ -11972,7 +11216,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -11985,7 +11229,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
@@ -12075,8 +11319,175 @@ select * from shop_unit_measurement;
 
 
 
--- File: 7210_p_shop_get_many_product_variation.sql
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS demo.p_shop_save_product_permutation_test;
 
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_product_permutation_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM demo.Shop_Product_Permutation
+	;
+	SELECT *
+	FROM demo.Shop_Product_Permutation_Variation_Link
+	;
+	SELECT *
+	FROM demo.Shop_Product_Permutation_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO demo.Shop_Product_Permutation_Temp (
+			id_permutation
+			, id_product
+            , csv_id_pairs_variation
+            , description
+			, cost_local_VAT_excl
+			, cost_local_VAT_incl
+			, id_currency_cost
+			, profit_local_min 
+			, latency_manufacture
+			, id_unit_measurement_quantity
+			, count_unit_measurement_per_quantity_step
+			, quantity_min
+			, quantity_max
+			, quantity_stock
+			, is_subscription
+			, id_unit_measurement_interval_recurrence
+			, count_interval_recurrence
+			, id_stripe_product
+			, does_expire_faster_once_unsealed
+			, id_unit_measurement_interval_expiration_unsealed
+			, count_interval_expiration_unsealed
+			, active
+			, guid
+		)
+		VALUES 
+        /* Test 1 - Insert 
+        (
+			-1 -- id_permutation
+			, 5 -- id_product
+            , '' -- csv_id_pairs_variation
+            , 'Hair clip' -- description
+            , NULL -- cost_local_VAT_excl
+            , NULL -- cost_local_VAT_incl
+            , 1 -- id_currency_cost
+            , NULL -- profit_local_min
+            , 1 -- latency_manufacture
+            , 3 -- id_unit_measurement_quantity
+            , 1 -- count_unit_measurement_per_quantity_step
+            , 0 -- quantity_min
+            , 0 -- quantity_max
+            , 2 -- quantity_stock
+            , FALSE -- is_subscription
+            , NULL -- id_unit_measurement_interval_recurrence
+            , NULL -- count_interval_recurrence
+            , NULL -- id_stripe_product
+            , FALSE -- does_expire_faster_once_unsealed
+            , NULL -- id_unit_measurement_interval_expiration_unsealed
+            , NULL -- count_interval_expiration_unsealed
+			, 1 -- active
+			, v_guid
+		)
+        */
+        /* Test 2 - Update
+        (
+			4 -- id_product
+			, 1 -- id_category
+			, 'Laptops' -- name
+			, 0 -- has_variations
+			, 2 -- id_access_level_required
+			, 2 -- display_order
+			, 1 -- active
+			, v_guid
+		)
+        */
+        /* Test 3 - Insert with Variations */
+        (
+			-1 -- id_permutation
+			, 1 -- id_product
+            , '1:3' -- csv_id_pairs_variation
+            , 'Good Green' -- description
+            , NULL -- cost_local_VAT_excl
+            , NULL -- cost_local_VAT_incl
+            , 1 -- id_currency_cost
+            , NULL -- profit_local_min
+            , 1 -- latency_manufacture
+            , 3 -- id_unit_measurement_quantity
+            , 1 -- count_unit_measurement_per_quantity_step
+            , 0 -- quantity_min
+            , 0 -- quantity_max
+            , 2 -- quantity_stock
+            , FALSE -- is_subscription
+            , NULL -- id_unit_measurement_interval_recurrence
+            , NULL -- count_interval_recurrence
+            , NULL -- id_stripe_product
+            , TRUE -- does_expire_faster_once_unsealed
+            , 8 -- id_unit_measurement_interval_expiration_unsealed
+            , 2 -- count_interval_expiration_unsealed
+			, 1 -- active
+			, v_guid
+		)
+        ;
+		
+	COMMIT;
+    
+	SELECT *
+	FROM demo.Shop_Product_Permutation_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL demo.p_shop_save_product_permutation ( 
+		'Test save product' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM demo.Shop_Product_Permutation
+	;
+	SELECT *
+	FROM demo.Shop_Product_Permutation_Variation_Link
+	;
+	SELECT *
+	FROM demo.Shop_Product_Permutation_Temp
+	;
+    
+	CALL demo.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;
+
+/*
+CALL demo.p_shop_save_product_permutation_test ();
+
+DELETE FROM demo.Shop_Product_Permutation_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+
+DELETE FROM demo.Shop_Product_Permutation_Variation_Link
+WHERE id_link >= 3
+;
+DELETE FROM demo.Shop_Product_Permutation
+WHERE id_permutation >= 7
+;
+
+	SELECT *
+	FROM demo.Shop_Product_Permutation_Variation_Link_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Variation
+	;
+*/
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_variation;
 
 DELIMITER //
@@ -12170,7 +11581,7 @@ BEGIN
 	-- select v_has_filter_product, v_has_filter_permutation;
     
     IF v_has_filter_variation_type THEN -- NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_variation_type, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_variation_type, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -12181,21 +11592,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
+            LEFT JOIN demo.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(VT.id_type)
@@ -12212,7 +11623,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive variation type IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
+			LEFT JOIN demo.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(VT.id_type)
@@ -12224,7 +11635,7 @@ BEGIN
             SELECT
 				DISTINCT VT.id_type
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
+			RIGHT JOIN demo.Shop_Variation_Type VT ON t_S.as_int = VT.id_type
 			WHERE 
 				(
 					a_get_all_variation_type = 1
@@ -12244,7 +11655,7 @@ BEGIN
     DELETE FROM tmp_Split;
     
     IF (v_has_filter_variation AND NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1)) THEN -- NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_variation, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_variation, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -12255,21 +11666,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Variation V ON t_S.as_int = V.id_variation
+            LEFT JOIN demo.Shop_Variation V ON t_S.as_int = V.id_variation
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(V.id_variation)
@@ -12286,7 +11697,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive variation IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Variation V ON t_S.as_int = V.id_variation
+			LEFT JOIN demo.Shop_Variation V ON t_S.as_int = V.id_variation
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(VT.id_type)
@@ -12300,7 +11711,7 @@ BEGIN
 				DISTINCT V.id_variation
 				, V.id_type
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Variation V ON t_S.as_int = V.id_variation
+			RIGHT JOIN demo.Shop_Variation V ON t_S.as_int = V.id_variation
 			WHERE 
 				(
 					a_get_all_variation = 1
@@ -12423,10 +11834,10 @@ BEGIN
     DROP TABLE IF EXISTS tmp_Variation;
     DROP TABLE IF EXISTS tmp_Variation_Type;
     
-	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+	CALL demo.p_shop_clear_calc_product_permutation ( v_guid );
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -12494,197 +11905,6 @@ insert into shop_product_change_set (comment)
 		END IF;
 */
 
--- File: 7212_p_shop_save_product_variation_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_variation_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_product_variation_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
-	;
-    
-	START TRANSACTION;
-    
-		DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
-		DELETE FROM partsltd_prod.Shop_Variation_Temp;
-
-		INSERT INTO partsltd_prod.Shop_Variation_Type_Temp (
-			id_type
-            -- , id_type_temp
-            , code
-            , name
-            , name_plural
-            , display_order
-            , active
-            , GUID
-		)
-        /* Test 1 - Insert 
-        VALUES (
-			-1
-            -- , -1
-            , 'SIZE'
-            , 'Size'
-            , 'Sizes'
-            , 2
-            , 1
-            , v_guid
-        )
-        */
-        /* Test 2: Alter */
-        SELECT
-			id_type
-            -- , id_type AS id_type_temp
-            , code
-            , name
-            , name_plural
-            , display_order
-            , active
-            , v_guid AS GUID
-		FROM partsltd_prod.Shop_Variation_Type
-        WHERE id_type = 1
-		;
-        
-		INSERT INTO partsltd_prod.Shop_Variation_Temp (
-			id_variation
-            , id_type
-            , code
-            , name
-            , display_order
-            , active
-            , GUID
-		)
-        /* Test 1 - Insert 
-        VALUES (
-			-1 -- id_variation
-            , -1 -- id_type
-            , '300 mL' -- code
-            , '300 millilitres' -- name
-            , 1 -- display_order
-            , 1 -- active
-            , v_guid -- 
-        )
-        */
-        /* Test 3 - Insert 
-        VALUES (
-			-1 -- id_variation
-            , 1 -- id_type
-            , 'SILVER' -- code
-            , 'Silver' -- name
-            , 10 -- display_order
-            , 1 -- active
-            , 'NIPS' -- v_guid -- 
-        );
-        */
-        /* Test 2: Alter */
-        SELECT
-			id_variation
-            , id_type
-            , code
-            , name
-            , display_order
-            , active
-            , v_guid AS GUID
-		FROM partsltd_prod.Shop_Variation
-        WHERE id_variation = 2
-        UNION
-        SELECT
-			-1 -- id_variation
-            , 1 -- id_type
-            , 'GREEN' -- code
-            , 'Green' -- name
-            , 3 -- display_order
-            , 1 -- active
-            , v_guid -- 
-        ;
-        
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
-	WHERE GUID = v_guid
-    ;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_product_variation ( 
-		'Test save Variations - add + edit' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Variation
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;
-
-/*
-CALL partsltd_prod.p_shop_save_product_variation_test ();
-
-DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
-DELETE FROM partsltd_prod.Shop_Variation_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-
-delete from shop_variation_audit
-where id_variation = 3
-;
-delete from shop_variation_audit
-where id_variation = 3
-;
-delete from shop_variation_type_audit
-where id_type = -1
-;
-delete
--- select *
- from shop_variation_type
-where id_type = -1
-;
-
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_variation_type`, CONSTRAINT `FK_Shop_Variation_Type_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`))
-
-*/
-
--- File: 7212_p_shop_save_product_variation.sql
-
-
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_save_product_variation;
 
@@ -12737,7 +11957,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE code = 'MYSQL_ERROR'
         LIMIT 1
 		;
@@ -12747,14 +11967,14 @@ BEGIN
     END;
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-	SET v_code_type_error_warning := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
-    SET v_id_type_error_warning := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
-	SET v_ids_permission_product_variation := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_PRODUCT'));
-	SET v_id_access_level_edit := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+	SET v_code_type_error_warning := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
+    SET v_id_type_error_warning := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
+	SET v_ids_permission_product_variation := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM demo.Shop_Permission WHERE code IN ('STORE_PRODUCT'));
+	SET v_id_access_level_edit := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -12842,8 +12062,8 @@ BEGIN
                 , IFNULL(VT_T.name, '(No Name)')
 			)
 		END AS name_error
-	FROM partsltd_prod.Shop_Variation_Type_Temp VT_T
-	LEFT JOIN partsltd_prod.Shop_Variation_Type VT ON VT_T.id_type = VT.id_type
+	FROM demo.Shop_Variation_Type_Temp VT_T
+	LEFT JOIN demo.Shop_Variation_Type VT ON VT_T.id_type = VT.id_type
 	WHERE VT_T.GUID = a_guid
 	;
 
@@ -12889,9 +12109,9 @@ BEGIN
                 , IFNULL(V_T.name, '(No Name)')
 			)
 		END AS name_error
-	FROM partsltd_prod.Shop_Variation_Temp V_T
-	LEFT JOIN partsltd_prod.Shop_Variation V ON V_T.id_variation = V.id_variation
-	-- LEFT JOIN partsltd_prod.Shop_Variation_Type VT ON V_T.id_type = VT.id_type
+	FROM demo.Shop_Variation_Temp V_T
+	LEFT JOIN demo.Shop_Variation V ON V_T.id_variation = V.id_variation
+	-- LEFT JOIN demo.Shop_Variation_Type VT ON V_T.id_type = VT.id_type
     LEFT JOIN tmp_Variation_Type t_VT ON V_T.id_type = t_VT.id_type
 	WHERE V_T.GUID = a_guid
 	;
@@ -12928,7 +12148,7 @@ BEGIN
 			, ' - '
 			, IFNULL(VT.name, '(No Name)')
 		) AS name_error
-	FROM partsltd_prod.Shop_Variation_Type VT
+	FROM demo.Shop_Variation_Type VT
     INNER JOIN tmp_Variation t_V 
 		ON VT.id_type = t_V.id_type
         AND t_V.has_type = 0
@@ -12947,7 +12167,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Variation_Type t_VT
-        INNER JOIN partsltd_prod.Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
+        INNER JOIN demo.Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
         WHERE 1=1
 			AND t_VT.id_type > 0
 			AND ISNULL(VT.id_type)
@@ -12966,7 +12186,7 @@ BEGIN
 				, GROUP_CONCAT(t_VT.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Variation_Type t_VT
-        INNER JOIN partsltd_prod.Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
+        INNER JOIN demo.Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
         WHERE 1=1
 			AND t_VT.id_type > 0
 			AND ISNULL(VT.id_type)
@@ -12977,7 +12197,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Variation t_V
-        INNER JOIN partsltd_prod.Shop_Variation V ON t_V.id_variation = V.id_variation
+        INNER JOIN demo.Shop_Variation V ON t_V.id_variation = V.id_variation
         WHERE 1=1
 			AND t_V.id_variation > 0
 			AND ISNULL(V.id_variation)
@@ -12996,7 +12216,7 @@ BEGIN
 				, GROUP_CONCAT(t_V.name_error SEPARATOR ', ')
 			) AS msg
         FROM tmp_Variation t_V
-        INNER JOIN partsltd_prod.Shop_Variation V ON t_V.id_variation = V.id_variation
+        INNER JOIN demo.Shop_Variation V ON t_V.id_variation = V.id_variation
         WHERE 1=1
 			AND t_V.id_variation > 0
 			AND ISNULL(V.id_variation)
@@ -13039,7 +12259,7 @@ BEGIN
 			, 0 -- a_debug
 		;
 		SELECT * 
-		FROM partsltd_prod.Shop_Calc_User_Temp
+		FROM demo.Shop_Calc_User_Temp
 		WHERE GUID = a_guid
 		;
 	END IF;
@@ -13055,10 +12275,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
+		SELECT * from demo.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
+	IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -13073,15 +12293,15 @@ BEGIN
 				'You do not have edit permissions for '
 				, GROUP_CONCAT(name SEPARATOR ', ') 
 			)
-		FROM partsltd_prod.Shop_Permission PERM
-		INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T 
+		FROM demo.Shop_Permission PERM
+		INNER JOIN demo.Shop_Calc_User_Temp UE_T 
 			ON PERM.id_permission = UE_T.id_permission
 			AND UE_T.GUID = a_guid
 			AND IFNULL(UE_T.can_view, 0) = 0
 		;
 	END IF;
 
-	CALL partsltd_prod.p_shop_clear_calc_user( 
+	CALL demo.p_shop_clear_calc_user( 
 		a_guid
 		, 0 -- a_debug 
 	);
@@ -13107,7 +12327,7 @@ BEGIN
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 		
-			INSERT INTO partsltd_prod.Shop_Variation_Type (
+			INSERT INTO demo.Shop_Variation_Type (
 				id_type_temp
 				, code
 				, name
@@ -13131,7 +12351,7 @@ BEGIN
 			;
 			
 			UPDATE tmp_Variation_Type t_VT
-			INNER JOIN partsltd_prod.Shop_Variation_Type VT ON t_VT.id_type_temp = VT.id_type_temp
+			INNER JOIN demo.Shop_Variation_Type VT ON t_VT.id_type_temp = VT.id_type_temp
 			SET 
 				t_VT.id_type = VT.id_type
 			WHERE t_VT.is_new = 1
@@ -13145,7 +12365,7 @@ BEGIN
 				t_V.id_type = t_VT.id_type
 			;
 			
-			INSERT INTO partsltd_prod.Shop_Variation (
+			INSERT INTO demo.Shop_Variation (
 				id_type
 				, code
 				, name
@@ -13166,7 +12386,7 @@ BEGIN
 			WHERE t_V.is_new = 1
 			;
 		
-			UPDATE partsltd_prod.Shop_Variation_Type VT
+			UPDATE demo.Shop_Variation_Type VT
 			INNER JOIN tmp_Variation_Type t_VT
 				ON VT.id_type = t_VT.id_type
 				AND t_VT.is_new = 0
@@ -13182,7 +12402,7 @@ BEGIN
                 , VT.id_change_set = v_id_change_set
 			;
 			
-			UPDATE partsltd_prod.Shop_Variation V
+			UPDATE demo.Shop_Variation V
 			INNER JOIN tmp_Variation t_V
 				ON V.id_variation = t_V.id_variation
 				AND t_V.is_new = 0
@@ -13202,11 +12422,11 @@ BEGIN
     START TRANSACTION;
 		
         DELETE VT_T
-		FROM partsltd_prod.Shop_Variation_Type_Temp VT_T
+		FROM demo.Shop_Variation_Type_Temp VT_T
 		WHERE VT_T.GUID = a_guid
 		;
 		DELETE V_T
-		FROM partsltd_prod.Shop_Variation_Temp V_T
+		FROM demo.Shop_Variation_Temp V_T
 		WHERE V_T.GUID = a_guid
 		;
 		
@@ -13215,7 +12435,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -13228,7 +12448,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
@@ -13236,8 +12456,190 @@ DELIMITER ;
 
 
 
--- File: 7219_p_shop_get_many_stock_item.sql
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS demo.p_shop_save_product_variation_test;
 
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_product_variation_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM demo.Shop_Variation_Type
+	;
+	SELECT *
+	FROM demo.Shop_Variation_Type_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Variation
+	;
+	SELECT *
+	FROM demo.Shop_Variation_Temp
+	;
+    
+	START TRANSACTION;
+    
+		DELETE FROM demo.Shop_Variation_Type_Temp;
+		DELETE FROM demo.Shop_Variation_Temp;
+
+		INSERT INTO demo.Shop_Variation_Type_Temp (
+			id_type
+            -- , id_type_temp
+            , code
+            , name
+            , name_plural
+            , display_order
+            , active
+            , GUID
+		)
+        /* Test 1 - Insert 
+        VALUES (
+			-1
+            -- , -1
+            , 'SIZE'
+            , 'Size'
+            , 'Sizes'
+            , 2
+            , 1
+            , v_guid
+        )
+        */
+        /* Test 2: Alter */
+        SELECT
+			id_type
+            -- , id_type AS id_type_temp
+            , code
+            , name
+            , name_plural
+            , display_order
+            , active
+            , v_guid AS GUID
+		FROM demo.Shop_Variation_Type
+        WHERE id_type = 1
+		;
+        
+		INSERT INTO demo.Shop_Variation_Temp (
+			id_variation
+            , id_type
+            , code
+            , name
+            , display_order
+            , active
+            , GUID
+		)
+        /* Test 1 - Insert 
+        VALUES (
+			-1 -- id_variation
+            , -1 -- id_type
+            , '300 mL' -- code
+            , '300 millilitres' -- name
+            , 1 -- display_order
+            , 1 -- active
+            , v_guid -- 
+        )
+        */
+        /* Test 3 - Insert 
+        VALUES (
+			-1 -- id_variation
+            , 1 -- id_type
+            , 'SILVER' -- code
+            , 'Silver' -- name
+            , 10 -- display_order
+            , 1 -- active
+            , 'NIPS' -- v_guid -- 
+        );
+        */
+        /* Test 2: Alter */
+        SELECT
+			id_variation
+            , id_type
+            , code
+            , name
+            , display_order
+            , active
+            , v_guid AS GUID
+		FROM demo.Shop_Variation
+        WHERE id_variation = 2
+        UNION
+        SELECT
+			-1 -- id_variation
+            , 1 -- id_type
+            , 'GREEN' -- code
+            , 'Green' -- name
+            , 3 -- display_order
+            , 1 -- active
+            , v_guid -- 
+        ;
+        
+	COMMIT;
+    
+	SELECT *
+	FROM demo.Shop_Variation_Type_Temp
+	WHERE GUID = v_guid
+    ;
+    
+	SELECT *
+	FROM demo.Shop_Variation_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL demo.p_shop_save_product_variation ( 
+		'Test save Variations - add + edit' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM demo.Shop_Variation_Type_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Variation_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Variation_Type
+	;
+	SELECT *
+	FROM demo.Shop_Variation
+	;
+    
+	CALL demo.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;
+
+/*
+CALL demo.p_shop_save_product_variation_test ();
+
+DELETE FROM demo.Shop_Variation_Type_Temp;
+DELETE FROM demo.Shop_Variation_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+
+delete from shop_variation_audit
+where id_variation = 3
+;
+delete from shop_variation_audit
+where id_variation = 3
+;
+delete from shop_variation_type_audit
+where id_type = -1
+;
+delete
+-- select *
+ from shop_variation_type
+where id_type = -1
+;
+
+Cannot add or update a child row: a foreign key constraint fails (`demo`.`shop_variation_type`, CONSTRAINT `FK_Shop_Variation_Type_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`))
+
+*/
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_stock_item;
@@ -13287,7 +12689,7 @@ BEGIN
 	DECLARE v_time_start TIMESTAMP(6);
     
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW');
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW');
     SET v_time_start := CURRENT_TIMESTAMP(6);
 
     
@@ -13413,7 +12815,7 @@ BEGIN
 
 	-- select v_has_filter_product, v_has_filter_permutation;
     
-    CALL partsltd_prod.p_shop_calc_product_permutation (
+    CALL demo.p_shop_calc_product_permutation (
 		a_id_user
 		, 1 -- a_get_all_product_category
 		, 0 -- a_get_inactive_product_category
@@ -13437,8 +12839,8 @@ BEGIN
 		SELECT 
 			PC.id_category
 			, PC.display_order
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
-		INNER JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+		FROM (SELECT * FROM demo.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
+		INNER JOIN demo.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
 		;
 		
 		INSERT INTO tmp_Product (
@@ -13450,8 +12852,8 @@ BEGIN
 			P.id_product
 			, P.id_category
 			, P.display_order
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Temp WHERE GUID = v_guid) P_T 
-		INNER JOIN partsltd_prod.Shop_Product P ON P.id_product = P_T.id_product
+		FROM (SELECT * FROM demo.Shop_Product_Temp WHERE GUID = v_guid) P_T 
+		INNER JOIN demo.Shop_Product P ON P.id_product = P_T.id_product
 		;
 		
 		INSERT INTO tmp_Permutation (
@@ -13467,12 +12869,12 @@ BEGIN
             , PP_T.can_view
             , PP_T.can_edit
             , PP_T.can_admin
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
-		INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
+		FROM (SELECT * FROM demo.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
+		INNER JOIN demo.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
 		;
     
     # Stock Items
-		CALL partsltd_prod.p_split(v_guid, a_ids_stock_item, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_stock_item, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -13483,21 +12885,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
+            LEFT JOIN demo.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(SI.id_stock)
@@ -13514,7 +12916,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive stock item IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
+			LEFT JOIN demo.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(SI.id_stock)
@@ -13532,7 +12934,7 @@ BEGIN
                 , t_PP.id_product
                 , SI.id_location_storage
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
+			RIGHT JOIN demo.Shop_Stock_Item SI ON t_S.as_int = SI.id_stock
             INNER JOIN tmp_Permutation t_PP ON SI.id_permutation = t_PP.id_permutation
 			WHERE 
 				(
@@ -13582,7 +12984,7 @@ BEGIN
     
 	-- Storage Regions
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_region_storage, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_region_storage, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -13593,21 +12995,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Region R ON t_S.as_int = R.id_region
+            LEFT JOIN demo.Shop_Region R ON t_S.as_int = R.id_region
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(R.id_region)
@@ -13624,7 +13026,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive region IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Region R ON t_S.as_int = R.id_region
+			LEFT JOIN demo.Shop_Region R ON t_S.as_int = R.id_region
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(R.id_region)
@@ -13638,7 +13040,7 @@ BEGIN
 					R.id_region AS id_region_parent,
 					NULL AS id_region_child
 				FROM tmp_Split t_S
-				RIGHT JOIN partsltd_prod.Shop_Region R 
+				RIGHT JOIN demo.Shop_Region R 
 					ON t_S.as_int = R.id_region
 					AND (
 						a_get_all_region_storage = 1
@@ -13653,15 +13055,15 @@ BEGIN
 						A.id_region
 					FROM tmp_Stock_Item t_SI
 					-- INNER JOIN tmp_Stock_Item t_SI ON SL.id_location = t_SI.id_location_storage
-					INNER JOIN partsltd_prod.Shop_Storage_Location SL ON t_SI.id_location_storage = SL.id_location
-					INNER JOIN partsltd_prod.Shop_Plant P ON SL.id_plant = P.id_plant
-					INNER JOIN partsltd_prod.Shop_Address A ON P.id_address = A.id_address
+					INNER JOIN demo.Shop_Storage_Location SL ON t_SI.id_location_storage = SL.id_location
+					INNER JOIN demo.Shop_Plant P ON SL.id_plant = P.id_plant
+					INNER JOIN demo.Shop_Address A ON P.id_address = A.id_address
 				) A_SI ON R.id_region = A_SI.id_region
 				UNION
 				SELECT 
 					RB.id_region_parent,
 					RB.id_region_child
-				FROM partsltd_prod.Shop_Region_Branch RB
+				FROM demo.Shop_Region_Branch RB
 				INNER JOIN Recursive_CTE_Region_Storage r_RS
 					ON RB.id_region_parent = r_RS.id_region_child
 					AND (
@@ -13671,7 +13073,7 @@ BEGIN
 			)
 			SELECT
 				DISTINCT R.id_region
-			FROM partsltd_prod.Shop_Region R
+			FROM demo.Shop_Region R
 			INNER JOIN Recursive_CTE_Region_Storage r_RS
 				ON R.id_region = r_RS.id_region_parent
 				OR R.id_region = r_RS.id_region_child
@@ -13690,14 +13092,14 @@ BEGIN
 		DISTINCT P.id_plant
         , A.id_region
 	FROM tmp_Stock_Item t_SI
-	INNER JOIN partsltd_prod.Shop_Storage_Location SL ON t_SI.id_location_storage = SL.id_location
-	INNER JOIN partsltd_prod.Shop_Plant P ON SL.id_plant = P.id_plant
-    INNER JOIN partsltd_prod.Shop_Address A ON P.id_address = A.id_address
+	INNER JOIN demo.Shop_Storage_Location SL ON t_SI.id_location_storage = SL.id_location
+	INNER JOIN demo.Shop_Plant P ON SL.id_plant = P.id_plant
+    INNER JOIN demo.Shop_Address A ON P.id_address = A.id_address
 	;
     
 	-- Storage Locations
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_location_storage, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_location_storage, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -13708,21 +13110,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Region R ON t_S.as_int = R.id_region
+            LEFT JOIN demo.Shop_Region R ON t_S.as_int = R.id_region
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(R.id_region)
@@ -13739,7 +13141,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive region IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Region R ON t_S.as_int = R.id_region
+			LEFT JOIN demo.Shop_Region R ON t_S.as_int = R.id_region
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(R.id_region)
@@ -13754,7 +13156,7 @@ BEGIN
 					SL.id_location AS id_location_parent,
 					NULL AS id_location_child
 				FROM tmp_Split t_S
-				RIGHT JOIN partsltd_prod.Shop_Storage_Location SL 
+				RIGHT JOIN demo.Shop_Storage_Location SL 
 					ON t_S.as_int = SL.id_location
 					AND (
 						a_get_all_location_storage = 1
@@ -13769,7 +13171,7 @@ BEGIN
 				SELECT 
 					SLB.id_location_parent,
 					SLB.id_location_child
-				FROM partsltd_prod.Shop_Storage_Location_Branch SLB
+				FROM demo.Shop_Storage_Location_Branch SLB
 				INNER JOIN Recursive_CTE_Location_Storage r_LS
 					ON SLB.id_location_parent = r_LS.id_location_child
 					AND (
@@ -13780,7 +13182,7 @@ BEGIN
 			SELECT
 				DISTINCT SL.id_location
 				, SL.id_plant
-			FROM partsltd_prod.Shop_Storage_Location SL
+			FROM demo.Shop_Storage_Location SL
 			INNER JOIN Recursive_CTE_Location_Storage r_LS
 				ON SL.id_location = r_LS.id_location_parent
 				OR SL.id_location = r_LS.id_location_child
@@ -13793,12 +13195,12 @@ BEGIN
     /*
     -- Permissions
     IF EXISTS (SELECT * FROM tmp_Stock_Item LIMIT 1) THEN
-        SET v_id_permission_product := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
+        SET v_id_permission_product := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
         SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Permutation WHERE NOT ISNULL(id_product));
         -- SET v_ids_permutation_permission := (SELECT GROUP_CONCAT(id_permutation SEPARATOR ',') FROM tmp_Shop_Product WHERE NOT ISNULL(id_permutation));
         
         -- SELECT v_guid, a_id_user, false, v_id_permission_product, v_id_access_level_view, v_ids_product_permission;
-        -- select * FROM partsltd_prod.Shop_Calc_User_Temp;
+        -- select * FROM demo.Shop_Calc_User_Temp;
         
         CALL p_shop_calc_user(
 			v_guid
@@ -13810,10 +13212,10 @@ BEGIN
             , 0 -- a_debug
 		);
         
-        -- select * FROM partsltd_prod.Shop_Calc_User_Temp;
+        -- select * FROM demo.Shop_Calc_User_Temp;
         
         UPDATE tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+        INNER JOIN demo.Shop_Calc_User_Temp UE_T
 			ON t_SI.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
         SET t_SI.can_view = UE_T.can_view,
@@ -13824,7 +13226,7 @@ BEGIN
         DELETE t_SI
 		FROM tmp_Stock_Item t_SI
         / *
-		LEFT JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+		LEFT JOIN demo.Shop_Calc_User_Temp UE_T
 			ON t_SI.id_product = UE_T.id_product
 			AND UE_T.GUID = v_guid
 		* /
@@ -13832,8 +13234,8 @@ BEGIN
 			/ *
 			FIND_IN_SET(t_SI.id_product, (
 				SELECT GROUP_CONCAT(UET.id_product SEPARATOR ',') 
-				FROM partsltd_prod.Shop_Calc_User_Temp UET)
-			) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM partsltd_prod.Shop_Calc_User_Temp), '%');
+				FROM demo.Shop_Calc_User_Temp UET)
+			) = 0 # id_product NOT LIKE CONCAT('%', (SELECT GROUP_CONCAT(id_product SEPARATOR '|') FROM demo.Shop_Calc_User_Temp), '%');
 			* /
             / *
 			ISNULL(UE_T.id_product)
@@ -13841,7 +13243,7 @@ BEGIN
             * /
             t_SI.id_product NOT IN (
 				SELECT id_product 
-                FROM partsltd_prod.Shop_Calc_User_Temp UE_T
+                FROM demo.Shop_Calc_User_Temp UE_T
                 WHERE
 					GUID = v_guid
 					AND IFNULL(can_view, 0) = 1
@@ -13850,14 +13252,14 @@ BEGIN
         
         # CALL p_shop_clear_calc_user(v_guid);
         # DROP TABLE IF EXISTS Shop_Calc_User_Temp;
-        DELETE FROM partsltd_prod.Shop_Calc_User_Temp
+        DELETE FROM demo.Shop_Calc_User_Temp
         WHERE GUID = v_guid
         ;
     END IF;
     */
     
     /*
-    select * FROM partsltd_prod.Shop_stock_item;
+    select * FROM demo.Shop_stock_item;
     select * from tmp_Stock_Item;
     select * from tmp_Permutation;
     select * from tmp_Location_Storage;
@@ -13904,16 +13306,16 @@ BEGIN
         t_PP.can_edit,
         t_PP.can_admin
     FROM tmp_Stock_Item t_SI
-    INNER JOIN partsltd_prod.Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
+    INNER JOIN demo.Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
 	INNER JOIN tmp_Permutation t_PP ON t_SI.id_permutation = t_PP.id_permutation
-    INNER JOIN partsltd_prod.Shop_Product P ON t_PP.id_product = P.id_product
+    INNER JOIN demo.Shop_Product P ON t_PP.id_product = P.id_product
 	INNER JOIN tmp_Location_Storage t_LS ON t_SI.id_location_storage = t_LS.id_location
 	INNER JOIN tmp_Plant_Storage t_PS ON t_LS.id_plant = t_PS.id_plant
-    INNER JOIN partsltd_prod.Shop_Plant PLANT ON t_PS.id_plant = PLANT.id_plant
-	INNER JOIN partsltd_prod.Shop_Address A ON PLANT.id_address = A.id_address
+    INNER JOIN demo.Shop_Plant PLANT ON t_PS.id_plant = PLANT.id_plant
+	INNER JOIN demo.Shop_Address A ON PLANT.id_address = A.id_address
 	INNER JOIN tmp_Region_Storage t_RS ON A.id_region = t_RS.id_region
-	INNER JOIN partsltd_prod.Shop_Storage_Location SL ON t_LS.id_location = SL.id_location
-    INNER JOIN partsltd_prod.Shop_Currency CURRENCY ON SI.id_currency_cost = CURRENCY.id_currency
+	INNER JOIN demo.Shop_Storage_Location SL ON t_LS.id_location = SL.id_location
+    INNER JOIN demo.Shop_Currency CURRENCY ON SI.id_currency_cost = CURRENCY.id_currency
 	WHERE
 		IFNULL(t_PP.can_view, 0) = 1
 	;
@@ -13928,7 +13330,7 @@ BEGIN
         MET.name,
         MET.description
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET
+    INNER JOIN demo.Shop_Msg_Error_Type MET
 		ON t_ME.id_type = MET.id_type
     -- WHERE guid = v_guid
     ;
@@ -13958,10 +13360,10 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
 	-- DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
     
-	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+	CALL demo.p_shop_clear_calc_product_permutation ( v_guid );
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -14000,8 +13402,8 @@ CALL p_shop_get_many_stock_item (
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-select * FROM partsltd_prod.Shop_Storage_Location;
-select * FROM partsltd_prod.Shop_product;
+select * FROM demo.Shop_Storage_Location;
+select * FROM demo.Shop_product;
 select * from TMP_MSG_ERROR;
 DROP TABLE TMP_MSG_ERROR;
 
@@ -14009,115 +13411,9 @@ insert into shop_product_change_set (comment)
     values ('set product not subscription - test bool output to python');
     update shop_product
     set is_subscription = 0,
-		id_change_set = (select id_change_set FROM partsltd_prod.Shop_product_change_set order by id_change_set desc limit 1)
+		id_change_set = (select id_change_set FROM demo.Shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
 */
-
-
--- File: 7220_p_shop_save_stock_item_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_stock_item_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_stock_item_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Stock_Item_Temp (
-			id_stock
-			-- id_category
-			, id_product
-			, id_permutation
-			, id_pairs_variations
-			-- , has_variations
-			, date_purchased
-			, date_received
-			, id_location_storage
-			, id_currency_cost
-			, cost_local_VAT_excl
-			, cost_local_VAT_incl
-			, is_sealed
-			, date_unsealed
-			, date_expiration
-			, is_consumed
-			, date_consumed
-			, active
-			, guid
-		)
-		VALUES (
-			-1 -- id_stock
-			-- 1 -- id_category
-			, 4 -- id_product
-            , NULL -- id_permutation
-            , NULL -- id_pairs_variations
-            -- , FALSE -- 0 -- has_variations
-			, '2025-09-05 00:00' -- date_purchased
-			, NULL -- date_received
-			, 1 -- id_location_storage
-			, 1 -- id_currency_cost
-			, 10 -- cost_local_VAT_excl
-			, 12  -- cost_local_VAT_incl
-			, 1 -- is_sealed
-			, NULL -- date_unsealed
-			, NULL -- date_expiration
-			, FALSE -- 0 -- is_consumed
-			, NULL -- date_consumed
-			, 1 -- active
-			, v_guid
-		);
-		
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_Stock_Item ( 
-		'Test save Stock_Item' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 0 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Stock_Item_Temp
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;
-
-/*
-CALL partsltd_prod.p_shop_save_stock_item_test ();
-
-DELETE FROM partsltd_prod.Shop_Stock_Item_Temp;
-
-update shop_product p set p.has_variations = 0 where id_product = 4
-DROP TABLE IF EXISTS tmp_Msg_Error;
-*/
-
--- File: 7220_p_shop_save_stock_item.sql
 
 
 -- Clear previous proc
@@ -14183,7 +13479,7 @@ BEGIN
     SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
     SET v_id_access_level_edit := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
-    CALL partsltd_prod.p_validate_guid ( a_guid );
+    CALL demo.p_validate_guid ( a_guid );
     
     DROP TEMPORARY TABLE IF EXISTS tmp_Stock_Item;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
@@ -14266,9 +13562,9 @@ BEGIN
         , IFNULL(IFNULL(SI_T.active, SI.active), 1) AS active
 		# , fn_shop_get_product_permutation_name(SI_T.id_permutation)
         , CASE WHEN IFNULL(SI_T.id_stock, 0) < 1 THEN 1 ELSE 0 END AS is_new
-	FROM partsltd_prod.Shop_Stock_Item_Temp SI_T
-    LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON SI_T.id_stock = SI.id_stock
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON SI_T.id_permutation = PP.id_permutation
+	FROM demo.Shop_Stock_Item_Temp SI_T
+    LEFT JOIN demo.Shop_Stock_Item SI ON SI_T.id_stock = SI.id_stock
+    LEFT JOIN demo.Shop_Product_Permutation PP ON SI_T.id_permutation = PP.id_permutation
 	-- LEFT JOIN Shop_Product P ON PP.id_product = P.id_product
     WHERE SI_T.guid = a_guid
     ;
@@ -14276,7 +13572,7 @@ BEGIN
     -- Missing Permutation IDs for setting new permutation for stock item 
     -- With variations
 	UPDATE tmp_Stock_Item t_SI
-	INNER JOIN partsltd_prod.Shop_Product P ON t_SI.id_product = P.id_product
+	INNER JOIN demo.Shop_Product P ON t_SI.id_product = P.id_product
 	SET t_SI.id_permutation = IFNULL(fn_shop_get_id_product_permutation_from_variation_csv_list ( t_SI.id_product, t_SI.id_pairs_variations ), 0)
     WHERE 1=1
 		AND t_SI.id_permutation = 0
@@ -14285,7 +13581,7 @@ BEGIN
     -- Without variations
 	UPDATE tmp_Stock_Item t_SI
 	-- INNER JOIN Shop_Product P ON t_SI.id_product = P.id_product
-    INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_product = PP.id_product
+    INNER JOIN demo.Shop_Product_Permutation PP ON t_SI.id_product = PP.id_product
 	SET t_SI.id_permutation = IFNULL(PP.id_permutation, 0)
     WHERE 1=1
 		AND t_SI.id_permutation = 0
@@ -14294,8 +13590,8 @@ BEGIN
     
     -- Add stock item error names
 	UPDATE tmp_Stock_Item t_SI
-	INNER JOIN partsltd_prod.Shop_Product P ON t_SI.id_product = P.id_product
-    INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
+	INNER JOIN demo.Shop_Product P ON t_SI.id_product = P.id_product
+    INNER JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
     -- INNER JOIN Shop_Product_Permutation PP ON t_SI.id_product = PP.id_product
 	SET t_SI.name_error = CONCAT(
 			PC.name,
@@ -14315,7 +13611,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Stock_Item t_SI 
-        LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
+        LEFT JOIN demo.Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
         WHERE 1=1
 			AND t_SI.id_stock > 0
 			AND ISNULL(SI.id_stock)
@@ -14340,7 +13636,7 @@ BEGIN
 				)
 			) AS msg
 		FROM tmp_Stock_Item t_SI
-        LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
+        LEFT JOIN demo.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
         WHERE 1=1
 			AND t_SI.id_stock > 0
 			AND ISNULL(SI.id_stock)
@@ -14365,7 +13661,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Stock_Item t_SI 
-        LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
+        LEFT JOIN demo.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
         WHERE 1=1
 			AND (
 				t_SI.id_permutation = 0
@@ -14383,7 +13679,7 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('A valid permutation could not be found for the variations selected for the following stock item(s): ', GROUP_CONCAT(IFNULL(t_SI.name_error, 'NULL') SEPARATOR ', ')) AS msg
 		FROM tmp_Stock_Item t_SI
-        LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
+        LEFT JOIN demo.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
         WHERE 1=1
 			AND (
 				t_SI.id_permutation = 0
@@ -14410,7 +13706,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Storage_Location SL 
+        INNER JOIN demo.Shop_Storage_Location SL 
 			ON t_SI.id_location_storage = SL.id_location
             AND SL.active = 1
         WHERE ISNULL(SL.id_location)
@@ -14426,7 +13722,7 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following stock item(s) do not have a valid storage location: ', GROUP_CONCAT(IFNULL(t_SI.name_error, 'NULL') SEPARATOR ', ')) AS msg
         FROM tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Storage_Location SL 
+        INNER JOIN demo.Shop_Storage_Location SL 
 			ON t_SI.id_location_storage = SL.id_location
             AND SL.active = 1
         WHERE ISNULL(SL.id_location)
@@ -14436,7 +13732,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Currency C
+        INNER JOIN demo.Shop_Currency C
 			ON t_SI.id_currency_cost = C.id_currency
             AND C.active = 1
         WHERE ISNULL(C.id_currency)
@@ -14452,7 +13748,7 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following stock item(s) do not have a valid cost currency: ', GROUP_CONCAT(IFNULL(t_SI.name_error, 'NULL') SEPARATOR ', ')) AS msg
         FROM tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Currency C
+        INNER JOIN demo.Shop_Currency C
 			ON t_SI.id_currency_cost = C.id_currency
             AND C.active = 1
         WHERE ISNULL(C.id_currency)
@@ -14649,8 +13945,8 @@ BEGIN
 				
 				SET v_id_change_set := LAST_INSERT_ID();
                 
-				-- select * from partsltd_prod.Shop_Stock_Item
-				UPDATE partsltd_prod.Shop_Stock_Item SI
+				-- select * from demo.Shop_Stock_Item
+				UPDATE demo.Shop_Stock_Item SI
 				INNER JOIN tmp_Stock_Item t_SI
 					ON SI.id_stock = t_SI.id_stock
 				SET 
@@ -14671,7 +13967,7 @@ BEGIN
 				;
 			END IF;
 			
-			INSERT INTO partsltd_prod.Shop_Stock_Item (
+			INSERT INTO demo.Shop_Stock_Item (
 				id_permutation
 				, date_purchased
 				, date_received
@@ -14715,7 +14011,7 @@ BEGIN
     
     START TRANSACTION;
 		
-		DELETE FROM partsltd_prod.Shop_Stock_Item_Temp
+		DELETE FROM demo.Shop_Stock_Item_Temp
 		WHERE GUID = a_guid;
 		
 	COMMIT;
@@ -14723,7 +14019,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -14734,7 +14030,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
@@ -14822,8 +14118,105 @@ WHERE id_permutation = 1;
 
 
 
--- File: 7221_p_get_many_shop_product_price_and_discount_and_delivery_option.sql
--- USE partsltd_prod;
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS demo.p_shop_save_stock_item_test;
+
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_stock_item_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM demo.Shop_Stock_Item
+	;
+	SELECT *
+	FROM demo.Shop_Stock_Item_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO demo.Shop_Stock_Item_Temp (
+			id_stock
+			-- id_category
+			, id_product
+			, id_permutation
+			, id_pairs_variations
+			-- , has_variations
+			, date_purchased
+			, date_received
+			, id_location_storage
+			, id_currency_cost
+			, cost_local_VAT_excl
+			, cost_local_VAT_incl
+			, is_sealed
+			, date_unsealed
+			, date_expiration
+			, is_consumed
+			, date_consumed
+			, active
+			, guid
+		)
+		VALUES (
+			-1 -- id_stock
+			-- 1 -- id_category
+			, 4 -- id_product
+            , NULL -- id_permutation
+            , NULL -- id_pairs_variations
+            -- , FALSE -- 0 -- has_variations
+			, '2025-09-05 00:00' -- date_purchased
+			, NULL -- date_received
+			, 1 -- id_location_storage
+			, 1 -- id_currency_cost
+			, 10 -- cost_local_VAT_excl
+			, 12  -- cost_local_VAT_incl
+			, 1 -- is_sealed
+			, NULL -- date_unsealed
+			, NULL -- date_expiration
+			, FALSE -- 0 -- is_consumed
+			, NULL -- date_consumed
+			, 1 -- active
+			, v_guid
+		);
+		
+	COMMIT;
+    
+	SELECT *
+	FROM demo.Shop_Stock_Item_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL demo.p_shop_save_Stock_Item ( 
+		'Test save Stock_Item' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 0 -- debug
+    );
+    
+	SELECT *
+	FROM demo.Shop_Stock_Item
+	;
+	SELECT *
+	FROM demo.Shop_Stock_Item_Temp
+	;
+    
+	CALL demo.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;
+
+/*
+CALL demo.p_shop_save_stock_item_test ();
+
+DELETE FROM demo.Shop_Stock_Item_Temp;
+
+update shop_product p set p.has_variations = 0 where id_product = 4
+DROP TABLE IF EXISTS tmp_Msg_Error;
+*/-- USE demo;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_price_and_discount_and_delivery_option;
@@ -15013,7 +14406,7 @@ BEGIN
 		;
     END IF;
     
-    CALL partsltd_prod.p_shop_calc_product_permutation (
+    CALL demo.p_shop_calc_product_permutation (
 		a_id_user
 		, 1 -- a_get_all_product_category
 		, 0 -- a_get_inactive_product_category
@@ -15037,8 +14430,8 @@ BEGIN
 		SELECT 
 			PC.id_category
 			, PC.display_order
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
-		INNER JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+		FROM (SELECT * FROM demo.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
+		INNER JOIN demo.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
 		;
 		
 		INSERT INTO tmp_Product (
@@ -15050,8 +14443,8 @@ BEGIN
 			P.id_product
 			, P.id_category
 			, P.display_order
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Temp WHERE GUID = v_guid) P_T 
-		INNER JOIN partsltd_prod.Shop_Product P ON P.id_product = P_T.id_product
+		FROM (SELECT * FROM demo.Shop_Product_Temp WHERE GUID = v_guid) P_T 
+		INNER JOIN demo.Shop_Product P ON P.id_product = P_T.id_product
 		;
 		
 		INSERT INTO tmp_Permutation (
@@ -15067,12 +14460,12 @@ BEGIN
             , PP_T.can_view
             , PP_T.can_edit
             , PP_T.can_admin
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
-		INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
+		FROM (SELECT * FROM demo.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
+		INNER JOIN demo.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
 		;
     
     # Product Prices
-		CALL partsltd_prod.p_split(v_guid, a_ids_product_price, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_product_price, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -15083,21 +14476,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+            LEFT JOIN demo.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PRICE.id_price)
@@ -15114,7 +14507,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive product price IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+			LEFT JOIN demo.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(PRICE.id_price)
@@ -15128,7 +14521,7 @@ BEGIN
 				PRICE.id_price
                 , PRICE.id_permutation
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+			RIGHT JOIN demo.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
             INNER JOIN tmp_Permutation t_PP ON SI.id_permutation = t_PP.id_permutation
 			WHERE 
 				(
@@ -15773,10 +15166,10 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     
     
-	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+	CALL demo.p_shop_clear_calc_product_permutation ( v_guid );
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -15784,7 +15177,7 @@ DELIMITER ;
 
 /*
 
-CALL partsltd_prod.p_shop_get_many_product_price_and_discount_and_delivery_option (
+CALL demo.p_shop_get_many_product_price_and_discount_and_delivery_option (
 	IN a_id_user INT,
     IN a_get_all_product_permutation BIT,
 	IN a_get_inactive_product_permutation BIT,
@@ -15829,9 +15222,6 @@ select distinct guid
 -- DELETE
 FROM Shop_Calc_User_Temp;
 */
-
-
--- File: 7223_p_shop_get_many_stripe_price_new.sql
 
 
 
@@ -16076,9 +15466,6 @@ CALL p_shop_get_many_stripe_price_new (
 
 */
 
-
--- File: 7312_p_shop_save_user.sql
-
  
 DROP PROCEDURE IF EXISTS p_shop_save_user;
 
@@ -16125,7 +15512,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE MET.code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -16192,7 +15579,7 @@ BEGIN
         , IFNULL(U_T.is_included_VAT_default, U.is_included_VAT_default) AS is_included_VAT_default
         , IFNULL(IFNULL(U_T.active, U.active), 1) AS active
         , IFNULL(U_T.display_order, PC.display_order) AS display_order
-	FROM partsltd_prod.Shop_User_Temp U_T
+	FROM demo.Shop_User_Temp U_T
     LEFT JOIN Shop_User U ON U_T.id_user = U.id_user
     WHERE U_T.guid = a_guid
     ;
@@ -16274,7 +15661,7 @@ BEGIN
 
     SET v_can_admin_user := (
         SELECT IFNULL(UE_T.can_edit, 0) = 1
-        FROM partsltd_prod.Shop_User_Eval_Temp UE_T 
+        FROM demo.Shop_User_Eval_Temp UE_T 
         WHERE
             UE_T.GUID = a_guid
             AND UE_T.id_user = a_id_user
@@ -16341,7 +15728,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -16352,14 +15739,11 @@ BEGIN
     DROP TABLE IF EXISTS tmp_User;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
 
-
-
--- File: 7313_p_get_many_user.sql
 
 
 -- Clear previous proc
@@ -16395,13 +15779,13 @@ BEGIN
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_admin := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'ADMIN' LIMIT 1);
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_id_permission_store_admin := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_ADMIN' LIMIT 1);
-    SET v_id_permission_user := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_USER' LIMIT 1);
-    SET v_id_permission_user_admin := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_USER_ADMIN' LIMIT 1);
-    SET v_code_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_error_bad_data LIMIT 1);
+    SET v_id_access_level_admin := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'ADMIN' LIMIT 1);
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_id_permission_store_admin := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_ADMIN' LIMIT 1);
+    SET v_id_permission_user := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_USER' LIMIT 1);
+    SET v_id_permission_user_admin := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_USER_ADMIN' LIMIT 1);
+    SET v_code_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_error_bad_data LIMIT 1);
     SET v_ids_permission_required := CONCAT(v_id_permission_user, ',', v_id_permission_user_admin, ',', v_id_permission_store_admin);
     SET v_is_new := FALSE;
     
@@ -16449,12 +15833,12 @@ BEGIN
 	);
     
     IF ISNULL(a_id_user) AND NOT ISNULL(a_id_user_auth0) THEN
-		SET a_id_user := (SELECT U.id_user FROM partsltd_prod.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1); -- LIKE CONCAT('%', a_id_user_auth0, '%') LIMIT 1);
+		SET a_id_user := (SELECT U.id_user FROM demo.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1); -- LIKE CONCAT('%', a_id_user_auth0, '%') LIMIT 1);
     END IF;
     
     IF ISNULL(a_id_user) THEN
 		IF NOT ISNULL(a_id_user_auth0) THEN
-			INSERT INTO partsltd_prod.Shop_User (
+			INSERT INTO demo.Shop_User (
 				id_user_auth0
 				, is_super_user
 				, active
@@ -16465,7 +15849,7 @@ BEGIN
 				, 1 -- active
 			)
 			;
-            SET a_id_user := (SELECT U.id_user FROM partsltd_prod.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1);
+            SET a_id_user := (SELECT U.id_user FROM demo.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1);
 			SET v_is_new := TRUE;
         ELSE
 			INSERT INTO tmp_Msg_Error (
@@ -16494,7 +15878,7 @@ BEGIN
     
     -- User IDs
     IF (NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) AND v_has_filter_user = 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_user, ',', FALSE);
+		CALL demo.p_split(v_guid, a_ids_user, ',', FALSE);
         
         DELETE FROM tmp_Split;
 		
@@ -16505,21 +15889,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF (NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) AND v_has_filter_user = 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+            LEFT JOIN demo.Shop_User U ON t_S.as_int = U.id_user
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(U.id_user)
@@ -16536,7 +15920,7 @@ BEGIN
 				v_code_error_bad_data, 
 				CONCAT('Invalid or inactive User IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+			LEFT JOIN demo.Shop_User U ON t_S.as_int = U.id_user
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(U.id_user)
@@ -16550,7 +15934,7 @@ BEGIN
 				U.id_user
                 , RANK() OVER (ORDER BY U.id_user DESC) AS rank_user
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+			RIGHT JOIN demo.Shop_User U ON t_S.as_int = U.id_user
 			WHERE 
 				(
 					a_get_all_user = 1
@@ -16569,7 +15953,7 @@ BEGIN
     
     -- Auth0 User IDs
     IF (NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) AND v_has_filter_user_auth0 = 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_user_auth0, ',', FALSE);
+		CALL demo.p_split(v_guid, a_ids_user_auth0, ',', FALSE);
         
         DELETE FROM tmp_Split;
 		
@@ -16578,21 +15962,21 @@ BEGIN
 		)
 		SELECT 
 			substring
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF (NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) AND v_has_filter_user_auth0 = 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_User U ON t_S.substring = U.id_user_auth0
+            LEFT JOIN demo.Shop_User U ON t_S.substring = U.id_user_auth0
 			WHERE 
 				ISNULL(t_S.substring) 
                 OR ISNULL(U.id_user_auth0)
@@ -16609,7 +15993,7 @@ BEGIN
 				v_code_error_bad_data, 
 				CONCAT('Invalid or inactive Auth0 User IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_User U ON t_S.substring = U.id_user_auth0
+			LEFT JOIN demo.Shop_User U ON t_S.substring = U.id_user_auth0
 			WHERE 
 				ISNULL(t_S.substring) 
 				OR ISNULL(U.id_user_auth0)
@@ -16625,7 +16009,7 @@ BEGIN
 				U.id_user
                 , v_rank_max + (RANK() OVER (ORDER BY U.id_user DESC)) AS rank_user
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_User U ON t_S.substring = U.id_user_auth0
+			RIGHT JOIN demo.Shop_User U ON t_S.substring = U.id_user_auth0
 			WHERE 
 				(
 					a_get_all_user = 1
@@ -16673,10 +16057,10 @@ BEGIN
 				, '' -- ids_product
 				, 0 -- a_debug
 			;
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+			SELECT * FROM demo.Shop_Calc_User_Temp;
         END IF;
         
-        CALL partsltd_prod.p_shop_calc_user(
+        CALL demo.p_shop_calc_user(
 			v_guid -- guid
             , a_id_user -- ids_user
             , FALSE -- get_inactive_user
@@ -16687,17 +16071,17 @@ BEGIN
 		);
         
         IF a_debug = 1 THEN
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = v_guid;
+			SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = v_guid;
         END IF;
         
         UPDATE tmp_User t_U
-        INNER JOIN partsltd_prod.Shop_Calc_User_Temp CUT 
+        INNER JOIN demo.Shop_Calc_User_Temp CUT 
 			ON CUT.GUID = v_guid
             AND t_U.id_user = CUT.id_user
         SET t_U.can_admin_store = CUT.can_admin
         ;
         
-		CALL partsltd_prod.p_shop_clear_calc_user( v_guid, FALSE );
+		CALL demo.p_shop_clear_calc_user( v_guid, FALSE );
 	END IF;
     
     -- Can admin user
@@ -16712,10 +16096,10 @@ BEGIN
 				, '' -- ids_product
 				, 0 -- a_debug
 			;
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+			SELECT * FROM demo.Shop_Calc_User_Temp;
         END IF;
         
-        CALL partsltd_prod.p_shop_calc_user(
+        CALL demo.p_shop_calc_user(
 			v_guid -- guid
             , a_id_user -- ids_user
             , FALSE -- get_inactive_user
@@ -16726,17 +16110,17 @@ BEGIN
 		);
         
         IF a_debug = 1 THEN
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = v_guid;
+			SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = v_guid;
         END IF;
         
         UPDATE tmp_User t_U
-        INNER JOIN partsltd_prod.Shop_Calc_User_Temp CUT 
+        INNER JOIN demo.Shop_Calc_User_Temp CUT 
 			ON CUT.GUID = v_guid
             AND t_U.id_user = CUT.id_user
         SET t_U.can_admin_user = CUT.can_admin
         ;
         
-		CALL partsltd_prod.p_shop_clear_calc_user( v_guid, FALSE );
+		CALL demo.p_shop_clear_calc_user( v_guid, FALSE );
 	END IF;
 
     -- Permissions
@@ -16751,10 +16135,10 @@ BEGIN
 				, '' -- ids_product
 				, 0 -- a_debug
 			;
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+			SELECT * FROM demo.Shop_Calc_User_Temp;
         END IF;
         
-        CALL partsltd_prod.p_shop_calc_user(
+        CALL demo.p_shop_calc_user(
 			v_guid -- guid
             , a_id_user -- ids_user
             , FALSE -- get_inactive_user
@@ -16765,12 +16149,12 @@ BEGIN
 		);
         
         IF a_debug = 1 THEN
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = v_guid;
+			SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = v_guid;
         END IF;
         
         IF NOT EXISTS (
 			SELECT can_view 
-            FROM partsltd_prod.Shop_Calc_User_Temp CUT 
+            FROM demo.Shop_Calc_User_Temp CUT 
             WHERE 1=1
 				AND CUT.GUID = v_guid
                 AND can_view = 1
@@ -16784,9 +16168,9 @@ BEGIN
 			VALUES (
                 v_id_type_error_bad_data,
 				v_code_error_bad_data, 
-                -- CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_user LIMIT 1))
- 				-- CONCAT('You do not have view permissions for ', (SELECT GROUP_CONCAT(name SEPARATOR ', ') FROM partsltd_prod.Shop_Permission WHERE FIND_IN_SET(v_id_permission_user, id_permission) > 0))
-				CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission P INNER JOIN partsltd_prod.Shop_Calc_User_Temp CUT ON P.id_permission = CUT.id_permission_required WHERE GUID = v_guid AND IFNULL(can_view, 0) = 0 LIMIT 1)) --  WHERE IFNULL(CUT.can_view, 0) = 0
+                -- CONCAT('You do not have view permissions for ', (SELECT name FROM demo.Shop_Permission WHERE id_permission = v_id_permission_user LIMIT 1))
+ 				-- CONCAT('You do not have view permissions for ', (SELECT GROUP_CONCAT(name SEPARATOR ', ') FROM demo.Shop_Permission WHERE FIND_IN_SET(v_id_permission_user, id_permission) > 0))
+				CONCAT('You do not have view permissions for ', (SELECT name FROM demo.Shop_Permission P INNER JOIN demo.Shop_Calc_User_Temp CUT ON P.id_permission = CUT.id_permission_required WHERE GUID = v_guid AND IFNULL(can_view, 0) = 0 LIMIT 1)) --  WHERE IFNULL(CUT.can_view, 0) = 0
 			)
 			;
 		ELSE
@@ -16794,7 +16178,7 @@ BEGIN
             SET a_debug := a_debug;
         END IF;
         
-		CALL partsltd_prod.p_shop_clear_calc_user( v_guid, FALSE );
+		CALL demo.p_shop_clear_calc_user( v_guid, FALSE );
 	END IF;
     
     
@@ -16822,7 +16206,7 @@ BEGIN
 		, t_U.can_admin_user
         , v_is_new AS is_new
 	FROM tmp_User t_U
-	INNER JOIN partsltd_prod.Shop_User U ON t_U.id_user = U.id_user
+	INNER JOIN demo.Shop_User U ON t_U.id_user = U.id_user
 	;
     
     # Errors
@@ -16833,7 +16217,7 @@ BEGIN
         MET.name,
         MET.description
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET
+    INNER JOIN demo.Shop_Msg_Error_Type MET
 		ON t_ME.id_type = MET.id_type
     ;
     
@@ -16847,12 +16231,12 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
 	
 	/*
-	DELETE FROM partsltd_prod.Shop_Calc_User_Temp
+	DELETE FROM demo.Shop_Calc_User_Temp
 	WHERE GUID = v_guid;
 	*/
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -16881,11 +16265,11 @@ CALL p_get_many_user (
 );*/
 
 /*
-select * FROM partsltd_prod.Shop_Calc_User_Temp;
-delete FROM partsltd_prod.Shop_Calc_User_Temp;
+select * FROM demo.Shop_Calc_User_Temp;
+delete FROM demo.Shop_Calc_User_Temp;
 
 SELECT * 
-FROM partsltd_prod.Shop_USER;
+FROM demo.Shop_USER;
 
 CALL p_get_many_user(
 	NULL -- :a_id_user, 
@@ -16898,9 +16282,6 @@ CALL p_get_many_user(
 );
 
 */
-
-
--- File: 7321_p_shop_save_user_basket.sql
 
 
 
@@ -17733,178 +17114,6 @@ CALL p_shop_edit_user_basket (
 */
 
 
--- File: 7400_p_shop_save_supplier_temp.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_supplier_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_supplier_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address_Temp
-	;
-
-	START TRANSACTION;
-		
-		INSERT INTO partsltd_prod.Shop_Supplier_Temp (
-			id_supplier
-			, id_currency
-			, name_company
-			, name_contact
-			, department_contact
-			, phone_number
-			, fax
-			, email
-			, website
-			, active
-			, guid
-		)
-        /* Test 1 - Insert 
-		VALUES (
-			-3
-            , 1
-            , 'Asda'
-            , ''
-            , NULL
-            , ''
-            , '123'
-            , 'test mail'
-            , 'test url'
-			, 1 -- active
-			, v_guid
-		)
-        */
-        /* Test 2 - Update */
-        SELECT
-			id_supplier
-			, id_currency
-			, name_company
-			, 'Nat' AS name_contact
-			, 'Butchery' AS department_contact
-			, phone_number
-			, fax
-			, email
-			, website
-			, active
-			, v_guid
-		FROM partsltd_prod.Shop_Supplier S
-        WHERE S.id_supplier = 2
-        ;
-		
-        /*
-		INSERT INTO partsltd_prod.Shop_Supplier_Address_Temp (
-			id_address
-            , id_supplier
-			, id_region
-			, postcode
-			, address_line_1
-			, address_line_2
-			, city
-			, county
-            , active
-            , GUID
-        )
-        / Test 1 - Insert 
-        VALUES (
-			-4
-			, -3
-            , 1
-            , 'test postcode'
-            , 'test'
-            , 'test'
-            , 'test'
-            , 'cunty'
-            , 1
-            , v_guid
-        )
-        /
-        / Test 2 - Update /
-        SELECT
-			id_address
-            , id_supplier
-			, id_region
-			, postcode
-			, address_line_1
-			, address_line_2
-			, city
-			, county
-            , active
-			, v_guid
-		FROM partsltd_prod.Shop_Supplier_Address SA
-        WHERE SA.id_supplier = 2
-        ;
-        */
-        
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Temp
-	WHERE GUID = v_guid
-    ;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_supplier ( 
-		'Test save Supplier' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Address
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;
-
-/*
-CALL partsltd_prod.p_shop_save_supplier_test ();
-
-DELETE FROM partsltd_prod.Shop_Supplier_Temp;
-DELETE FROM partsltd_prod.Shop_Supplier_Address_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier`, CONSTRAINT `FK_Shop_Supplier_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_sales_and_purchasing_change_set` (`id_change_set`))
-
-*/
-
--- File: 7400_p_shop_save_supplier.sql
-
-
 
 
 -- Clear previous proc
@@ -17953,7 +17162,7 @@ BEGIN
 			id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -17962,12 +17171,12 @@ BEGIN
     END;
 
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-	SET v_id_permission_supplier := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
-	SET v_id_access_level_EDIT := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+	SET v_id_permission_supplier := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
+	SET v_id_access_level_EDIT := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -18043,7 +17252,7 @@ BEGIN
 		, S_T.active
 		, IFNULL(S_T.name_company, IFNULL(S_T.email, IFNULL(S_T.website, IFNULL(S_T.name_contact, '(No Supplier)'))))
 		, IFNULL(S_T.id_supplier, 0) < 1
-	FROM partsltd_prod.Shop_Supplier_Temp S_T
+	FROM demo.Shop_Supplier_Temp S_T
 	WHERE GUID = a_guid
 	;
     
@@ -18072,7 +17281,7 @@ BEGIN
 		, SA_T.active
 		, IFNULL(SA_T.postcode, IFNULL(SA_T.city, IFNULL(SA_T.county, IFNULL(SA_T.address_line_1, IFNULL(SA_T.address_line_2, '(No Supplier)'))))) AS name_error
 		, IFNULL(SA_T.id_address, 0) < 1 AS is_new
-	FROM partsltd_prod.Shop_Supplier_Address_Temp SA_T
+	FROM demo.Shop_Supplier_Address_Temp SA_T
 	WHERE GUID = a_guid
 	;
     
@@ -18083,7 +17292,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier t_S 
-        LEFT JOIN partsltd_prod.Shop_Address A ON t_S.id_address = A.id_address 
+        LEFT JOIN demo.Shop_Address A ON t_S.id_address = A.id_address 
         WHERE 1=1
 			AND (
 				t_S.id_address = 0
@@ -18104,7 +17313,7 @@ BEGIN
 				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Address A ON t_S.id_address = A.id_address
+        LEFT JOIN demo.Shop_Address A ON t_S.id_address = A.id_address
         WHERE 1=1
 			AND (
 				t_S.id_address = 0
@@ -18117,7 +17326,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_S.id_currency = C.id_currency 
+        LEFT JOIN demo.Shop_Currency C ON t_S.id_currency = C.id_currency 
         WHERE 1=1
 			AND (
 				t_S.id_currency = 0
@@ -18138,7 +17347,7 @@ BEGIN
 				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_S.id_currency = C.id_currency 
+        LEFT JOIN demo.Shop_Currency C ON t_S.id_currency = C.id_currency 
         WHERE 1=1
 			AND (
 				t_S.id_currency = 0
@@ -18198,7 +17407,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier_Address t_SA
-        LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
+        LEFT JOIN demo.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
         WHERE 1=1
 			AND (
 				t_SA.id_supplier = 0
@@ -18219,7 +17428,7 @@ BEGIN
 				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
+        LEFT JOIN demo.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
         WHERE 1=1
 			AND (
 				t_SA.id_supplier = 0
@@ -18231,7 +17440,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier_Address t_SA
-        LEFT JOIN partsltd_prod.Shop_Region R ON t_SA.id_region = R.id_region
+        LEFT JOIN demo.Shop_Region R ON t_SA.id_region = R.id_region
         WHERE 1=1
 			AND (
 				t_SA.id_region = 0
@@ -18252,7 +17461,7 @@ BEGIN
 				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Region R ON t_SA.id_region = R.id_region
+        LEFT JOIN demo.Shop_Region R ON t_SA.id_region = R.id_region
         WHERE 1=1
 			AND (
 				t_SA.id_region = 0
@@ -18288,7 +17497,7 @@ BEGIN
 			, '' -- ids_product
 			, 0 -- a_debug
 		;
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * from demo.Shop_Calc_User_Temp;
 	END IF;
 	
 	CALL p_shop_calc_user(
@@ -18302,10 +17511,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
+		SELECT * from demo.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -18316,12 +17525,12 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM demo.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
 		)
 		;
 	END IF;
 
-	CALL partsltd_prod.p_shop_clear_calc_user( 
+	CALL demo.p_shop_clear_calc_user( 
 		a_guid
         , 0 -- a_debug
 	);
@@ -18334,7 +17543,7 @@ BEGIN
 	-- Transaction    
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN		
 		START TRANSACTION;
-			INSERT INTO partsltd_prod.Shop_User_Change_Set (
+			INSERT INTO demo.Shop_User_Change_Set (
 				comment
 				, updated_last_by
 				, updated_last_on
@@ -18347,7 +17556,7 @@ BEGIN
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 			
-			INSERT INTO partsltd_prod.Shop_Supplier (
+			INSERT INTO demo.Shop_Supplier (
 				id_supplier_temp
 				, id_currency
 				, name_company
@@ -18377,7 +17586,7 @@ BEGIN
 			;
 			
 			UPDATE tmp_Supplier t_S
-			INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier_temp = S.id_supplier_temp
+			INNER JOIN demo.Shop_Supplier S ON t_S.id_supplier_temp = S.id_supplier_temp
 			SET 
 				t_S.id_supplier = S.id_supplier
 			WHERE t_S.is_new = 1
@@ -18390,7 +17599,7 @@ BEGIN
 			WHERE t_S.is_new = 1
 			;
             
-			UPDATE partsltd_prod.Shop_Supplier S
+			UPDATE demo.Shop_Supplier S
 			INNER JOIN tmp_Supplier t_S 
 				ON S.id_supplier = t_S.id_supplier
 				AND t_S.is_new = 0
@@ -18420,7 +17629,7 @@ BEGIN
 				*/
 			;
             
-            INSERT INTO partsltd_prod.Shop_Supplier_Address (
+            INSERT INTO demo.Shop_Supplier_Address (
 				id_supplier
                 , id_region
                 , postcode
@@ -18445,7 +17654,7 @@ BEGIN
             WHERE t_SA.is_new = 1
             ;
             
-            UPDATE partsltd_prod.Shop_Supplier_Address SA
+            UPDATE demo.Shop_Supplier_Address SA
 			INNER JOIN tmp_Supplier_Address t_SA 
 				ON SA.id_address = t_SA.id_address
                 AND t_SA.is_new = 0
@@ -18464,16 +17673,16 @@ BEGIN
     END IF;
     
     START TRANSACTION;
-		DELETE FROM partsltd_prod.Shop_Supplier_Temp
+		DELETE FROM demo.Shop_Supplier_Temp
         WHERE GUID = a_guid;
-		DELETE FROM partsltd_prod.Shop_Supplier_Address_Temp
+		DELETE FROM demo.Shop_Supplier_Address_Temp
         WHERE GUID = a_guid;
     COMMIT;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -18487,7 +17696,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
@@ -18501,8 +17710,171 @@ delete from shop_supplier_address_audit where id_address = -4;
 delete from shop_supplier_address where id_address = -4;
 */
 
--- File: 7401_p_shop_get_many_supplier.sql
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS demo.p_shop_save_supplier_test;
 
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_supplier_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM demo.Shop_Supplier
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Address
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Address_Temp
+	;
+
+	START TRANSACTION;
+		
+		INSERT INTO demo.Shop_Supplier_Temp (
+			id_supplier
+			, id_currency
+			, name_company
+			, name_contact
+			, department_contact
+			, phone_number
+			, fax
+			, email
+			, website
+			, active
+			, guid
+		)
+        /* Test 1 - Insert 
+		VALUES (
+			-3
+            , 1
+            , 'Asda'
+            , ''
+            , NULL
+            , ''
+            , '123'
+            , 'test mail'
+            , 'test url'
+			, 1 -- active
+			, v_guid
+		)
+        */
+        /* Test 2 - Update */
+        SELECT
+			id_supplier
+			, id_currency
+			, name_company
+			, 'Nat' AS name_contact
+			, 'Butchery' AS department_contact
+			, phone_number
+			, fax
+			, email
+			, website
+			, active
+			, v_guid
+		FROM demo.Shop_Supplier S
+        WHERE S.id_supplier = 2
+        ;
+		
+        /*
+		INSERT INTO demo.Shop_Supplier_Address_Temp (
+			id_address
+            , id_supplier
+			, id_region
+			, postcode
+			, address_line_1
+			, address_line_2
+			, city
+			, county
+            , active
+            , GUID
+        )
+        / Test 1 - Insert 
+        VALUES (
+			-4
+			, -3
+            , 1
+            , 'test postcode'
+            , 'test'
+            , 'test'
+            , 'test'
+            , 'cunty'
+            , 1
+            , v_guid
+        )
+        /
+        / Test 2 - Update /
+        SELECT
+			id_address
+            , id_supplier
+			, id_region
+			, postcode
+			, address_line_1
+			, address_line_2
+			, city
+			, county
+            , active
+			, v_guid
+		FROM demo.Shop_Supplier_Address SA
+        WHERE SA.id_supplier = 2
+        ;
+        */
+        
+	COMMIT;
+    
+	SELECT *
+	FROM demo.Shop_Supplier_Temp
+	WHERE GUID = v_guid
+    ;
+    
+	SELECT *
+	FROM demo.Shop_Supplier_Address_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL demo.p_shop_save_supplier ( 
+		'Test save Supplier' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM demo.Shop_Supplier_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Address_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Supplier
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Address
+	;
+    
+	CALL demo.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;
+
+/*
+CALL demo.p_shop_save_supplier_test ();
+
+DELETE FROM demo.Shop_Supplier_Temp;
+DELETE FROM demo.Shop_Supplier_Address_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+Cannot add or update a child row: a foreign key constraint fails (`demo`.`shop_supplier`, CONSTRAINT `FK_Shop_Supplier_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_sales_and_purchasing_change_set` (`id_change_set`))
+
+*/
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_supplier;
 
@@ -18527,12 +17899,12 @@ BEGIN
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
-	SET v_id_permission_supplier := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
+	SET v_id_permission_supplier := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
     
 	SET a_get_all_supplier := IFNULL(a_get_all_supplier, 0);
 	SET a_get_inactive_supplier := IFNULL(a_get_inactive_supplier, 0);
@@ -18571,7 +17943,7 @@ BEGIN
 
     -- Suppliers
     IF v_has_filter_supplier = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_supplier, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_supplier, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -18580,21 +17952,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+            LEFT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(S.id_supplier)
@@ -18613,7 +17985,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive Supplier IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+			LEFT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(S.id_supplier)
@@ -18629,7 +18001,7 @@ BEGIN
 			SELECT 
 				S.id_supplier
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+			RIGHT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE (
 					a_get_all_supplier = 1
 					OR (
@@ -18711,8 +18083,8 @@ BEGIN
 		S.website,
 		S.active
     FROM tmp_Supplier t_S
-    INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
-    LEFT JOIN partsltd_prod.Shop_Currency C ON S.id_currency = C.id_currency
+    INNER JOIN demo.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
+    LEFT JOIN demo.Shop_Currency C ON S.id_currency = C.id_currency
 	;
     
     # Supplier Addresses
@@ -18728,15 +18100,15 @@ BEGIN
         , SA.county
         , SA.active
     FROM tmp_Supplier t_S
-    INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
-    INNER JOIN partsltd_prod.Shop_Supplier_Address SA ON S.id_supplier = SA.id_supplier
-    LEFT JOIN partsltd_prod.Shop_Region R ON SA.id_region = R.id_region
+    INNER JOIN demo.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
+    INNER JOIN demo.Shop_Supplier_Address SA ON S.id_supplier = SA.id_supplier
+    LEFT JOIN demo.Shop_Region R ON SA.id_region = R.id_region
 	;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     IF a_debug = 1 THEN
@@ -18765,166 +18137,6 @@ CALL p_shop_get_many_supplier (
 );
 
 */
-
--- File: 7403_p_shop_save_supplier_purchase_order_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_supplier_purchase_order_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_supplier_purchase_order_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
-	;
-    
-	START TRANSACTION;
-    
-		DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp;
-		DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp;
-
-		INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order_Temp (
-			id_order
-			, id_supplier_ordered
-			, id_currency_cost
-            , active
-            , GUID
-		)
-        /* Test 1 - Insert */
-        VALUES (
-			-1
-            , 1
-            , 1
-            , 1
-            , v_guid
-        )
-        /* Test 2 - Update
-        SELECT 
-			id_order
-			, id_supplier_ordered
-			, id_currency_cost
-            , active
-            , v_guid
-		FROM partsltd_prod.Shop_Supplier_Purchase_Order
-        WHERE id_order = 6
-        */
-		;
-		INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp (
-			id_link
-			, id_order
-			, id_permutation
-			, id_unit_quantity
-			, quantity_ordered
-			, quantity_received
-			, latency_delivery_days
-			, display_order
-			, active
-			, cost_total_local_VAT_excl
-			, cost_total_local_VAT_incl
-            , GUID
-		)
-        /* Test 1 - Insert */
-        VALUES (
-			-1
-            , -1
-            , 3
-            , 3
-            , 3
-            , 1
-            , 7
-            , 1
-            , 1
-            , 5
-            , 6
-            , v_guid
-        )
-        /* Test 2 - Update
-        SELECT
-			id_link
-			, id_order
-			, id_permutation
-			, id_unit_quantity
-			, 5 AS quantity_ordered
-			, quantity_received
-			, latency_delivery_days
-			, display_order
-			, active
-			, cost_total_local_VAT_excl
-			, cost_total_local_VAT_incl
-            , v_guid
-		FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
-        WHERE id_order = 6
-        */
-        ;
-        
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
-	WHERE GUID = v_guid
-    ;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_supplier_purchase_order ( 
-		'Test save Supplier Purchase Order' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;
-
-/*
-CALL partsltd_prod.p_shop_save_supplier_purchase_order_test ();
-
-DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp;
-DELETE FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_supplier_address`, CONSTRAINT `FK_Shop_Supplier_Address_id_supplier` FOREIGN KEY (`id_supplier`) REFERENCES `shop_supplier` (`id_supplier`) ON UPDATE RESTRICT)
-
-*/
-
--- File: 7403_p_shop_save_supplier_purchase_order.sql
-
 
 
 
@@ -18979,7 +18191,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -18988,14 +18200,14 @@ BEGIN
     END;
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-    SET v_code_type_error_warning := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
-    SET v_id_type_error_warning := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
-	SET v_id_permission_supplier_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_SUPPLIER', 'STORE_SUPPLIER_PURCHASE_ORDER', 'STORE_PRODUCT'));
-	SET v_id_access_level_edit := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+    SET v_code_type_error_warning := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
+    SET v_id_type_error_warning := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
+	SET v_id_permission_supplier_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM demo.Shop_Permission WHERE code IN ('STORE_SUPPLIER', 'STORE_SUPPLIER_PURCHASE_ORDER', 'STORE_PRODUCT'));
+	SET v_id_access_level_edit := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -19071,10 +18283,10 @@ BEGIN
             , ' '
             , IFNULL(IFNULL(SPO.cost_total_local_vat_excl, SPO.cost_total_local_vat_incl), '(No cost)')
 		) AS name_error
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Temp SPO_T
-	LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON SPO_T.id_order = SPO.id_order
-    LEFT JOIN partsltd_prod.Shop_Supplier S ON SPO_T.id_supplier_ordered = S.id_supplier
-    LEFT JOIN partsltd_prod.Shop_Currency C ON SPO_T.id_currency_cost = C.id_currency
+	FROM demo.Shop_Supplier_Purchase_Order_Temp SPO_T
+	LEFT JOIN demo.Shop_Supplier_Purchase_Order SPO ON SPO_T.id_order = SPO.id_order
+    LEFT JOIN demo.Shop_Supplier S ON SPO_T.id_supplier_ordered = S.id_supplier
+    LEFT JOIN demo.Shop_Currency C ON SPO_T.id_currency_cost = C.id_currency
 	WHERE SPO_T.GUID = a_guid
 	;
 
@@ -19104,7 +18316,7 @@ BEGIN
 				IFNULL(
 					SPOPL_T.id_permutation
                     , CASE WHEN NOT ISNULL(SPOPL_T.id_product) AND NOT ISNULL(SPOPL_T.csv_list_variations) THEN
-						partsltd_prod.fn_shop_get_id_product_permutation_from_variation_csv_list(SPOPL_T.id_product, SPOPL_T.csv_list_variations)
+						demo.fn_shop_get_id_product_permutation_from_variation_csv_list(SPOPL_T.id_product, SPOPL_T.csv_list_variations)
 					ELSE NULL END
 				)
                 , SPOPL.id_permutation
@@ -19126,20 +18338,20 @@ BEGIN
         , IFNULL(IFNULL(SPOPL_T.active, SPOPL.active), 1) AS active
 		, NOT ISNULL(t_SPO.id_order) AS has_order
 	    , IFNULL(SPOPL_T.id_link, 0) < 1 AS is_new
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
-	LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON SPOPL_T.id_link = SPOPL.id_link
+	FROM demo.Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T
+	LEFT JOIN demo.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON SPOPL_T.id_link = SPOPL.id_link
 	LEFT JOIN tmp_Supplier_Purchase_Order t_SPO ON SPOPL_T.id_order = t_SPO.id_order
 	WHERE SPOPL_T.GUID = a_guid
 	;
     
     UPDATE tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-	LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T 
+	LEFT JOIN demo.Shop_Supplier_Purchase_Order_Product_Link_Temp SPOPL_T 
 		ON t_SPOPL.id_link = SPOPL_T.id_link
         AND t_SPOPL.GUID = a_guid
-	LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPOPL.id_link = SPOPL.id_link
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SPOPL.id_permutation = PP.id_permutation
-    LEFT JOIN partsltd_prod.Shop_Product P ON SPOPL_T.id_product = P.id_product
-    LEFT JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
+	LEFT JOIN demo.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPOPL.id_link = SPOPL.id_link
+    LEFT JOIN demo.Shop_Product_Permutation PP ON t_SPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN demo.Shop_Product P ON SPOPL_T.id_product = P.id_product
+    LEFT JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
 	SET 
 		t_SPOPL.id_product = IFNULL(P.id_product, SPOPL_T.id_product)
 		, t_SPOPL.name_error = CONCAT(
@@ -19180,7 +18392,7 @@ BEGIN
 		, IFNULL(SPO.id_currency_cost, 0) AS id_currency_cost
         , SPO.active AS active
         , 0 AS is_new
-	FROM partsltd_prod.Shop_Supplier_Purchase_Order SPO
+	FROM demo.Shop_Supplier_Purchase_Order SPO
 	INNER JOIN tmp_Supplier_Purchase_Order_Product_Link t_SPOPL 
 		ON SPO.id_order = t_SPOPL.id_order
 		AND t_SPOPL.has_order = 0
@@ -19206,7 +18418,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier_Purchase_Order t_SPO
-        LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_SPO.id_order = SPO.id_order
+        LEFT JOIN demo.Shop_Supplier_Purchase_Order SPO ON t_SPO.id_order = SPO.id_order
         WHERE 1=1
 			AND t_SPO.id_order > 0
 			AND ISNULL(SPO.id_order)
@@ -19225,7 +18437,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(IFNULL(t_SPO.id_stock, '(No Supplier Purchase Order)')) SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier_Purchase_Order t_SPO
-        LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_SPO.id_order = SPO.id_order
+        LEFT JOIN demo.Shop_Supplier_Purchase_Order SPO ON t_SPO.id_order = SPO.id_order
         WHERE 1=1
 			AND t_SPO.id_stock > 0
 			AND ISNULL(SPO.id_stock)
@@ -19235,7 +18447,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier_Purchase_Order t_SPO
-        LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SPO.id_supplier_ordered = S.id_supplier
+        LEFT JOIN demo.Shop_Supplier S ON t_SPO.id_supplier_ordered = S.id_supplier
         WHERE 1=1
 			AND (
 				ISNULL(S.id_supplier)
@@ -19256,7 +18468,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(IFNULL(t_SPO.id_stock, '(No Supplier Purchase Order)'), ' - ', t_SPO.id_supplier_ordered) SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier_Purchase_Order t_SPO
-        LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SPO.id_supplier_ordered = S.id_supplier
+        LEFT JOIN demo.Shop_Supplier S ON t_SPO.id_supplier_ordered = S.id_supplier
         WHERE 1=1
 			AND (
 				ISNULL(S.id_supplier)
@@ -19268,7 +18480,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier_Purchase_Order t_SPO
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_SPO.id_currency_cost = C.id_currency
+        LEFT JOIN demo.Shop_Currency C ON t_SPO.id_currency_cost = C.id_currency
         WHERE 1=1
 			AND (
 				ISNULL(C.id_currency)
@@ -19289,7 +18501,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(IFNULL(t_SPO.id_stock, '(No Supplier Purchase Order)'), ' - ', t_SPO.id_currency_cost) SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier_Purchase_Order t_SPO
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_SPO.id_currency_cost = C.id_currency
+        LEFT JOIN demo.Shop_Currency C ON t_SPO.id_currency_cost = C.id_currency
         WHERE 1=1
 			AND (
 				ISNULL(C.id_currency)
@@ -19301,7 +18513,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_SPOPL.id_unit_quantity = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_SPOPL.id_unit_quantity = UM.id_unit_measurement
         WHERE 1=1
 			AND (
 				ISNULL(UM.id_unit_measurement)
@@ -19322,7 +18534,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(IFNULL(t_SPO.id_stock, '(No Supplier Purchase Order)'), ' - ', t_SPO.id_currency_cost) SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_SPOPL.id_unit_quantity = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_SPOPL.id_unit_quantity = UM.id_unit_measurement
         WHERE 1=1
 			AND (
 				ISNULL(UM.id_unit_measurement)
@@ -19469,7 +18681,7 @@ BEGIN
 		SELECT 
 			GROUP_CONCAT(DISTINCT PP.id_product SEPARATOR ',')
 		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-		INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SPOPL.id_permutation = PP.id_permutation
+		INNER JOIN demo.Shop_Product_Permutation PP ON t_SPOPL.id_permutation = PP.id_permutation
 	);
 	IF a_debug = 1 THEN
 		SELECT 
@@ -19481,7 +18693,7 @@ BEGIN
 			, v_ids_product_permission -- ids_product
 			, 0 -- a_debug
 		;
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * from demo.Shop_Calc_User_Temp;
 	END IF;
 	
 	CALL p_shop_calc_user(
@@ -19495,11 +18707,11 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
+		SELECT * from demo.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
     
     UPDATE tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-    INNER JOIN partsltd_prod.Shop_Calc_User_Temp CUT 
+    INNER JOIN demo.Shop_Calc_User_Temp CUT 
 		ON t_SPOPL.id_product = t_SPOPL.id_product
         AND CUT.GUID = a_guid
 	SET
@@ -19520,7 +18732,7 @@ BEGIN
 				, GROUP_CONCAT(P.name SEPARATOR ', ') 
 			) AS msg
 		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-        INNER JOIN partsltd_prod.Shop_Product P ON t_SPOPL.id_product = P.id_product
+        INNER JOIN demo.Shop_Product P ON t_SPOPL.id_product = P.id_product
         WHERE 
 			t_SPOPL.is_new = 0 
             AND t_SPOPL.can_view = 0
@@ -19544,15 +18756,15 @@ BEGIN
                 , ': '
 				, GROUP_CONCAT(PERM.name SEPARATOR ', ') 
 			) AS msg
-		FROM partsltd_prod.Shop_Access_Level AL
-        CROSS JOIN partsltd_prod.Shop_Calc_User_Temp CU_T 
+		FROM demo.Shop_Access_Level AL
+        CROSS JOIN demo.Shop_Calc_User_Temp CU_T 
 			ON CU_T.GUID = a_guid
             AND ISNULL(CU_T.id_product)
 			AND IFNULL(CU_T.can_edit, 0) = 0
 		;
 	END IF;
 
-	CALL partsltd_prod.p_shop_clear_calc_user( 
+	CALL demo.p_shop_clear_calc_user( 
 		a_guid
         , 0 -- a_debug
 	);
@@ -19560,8 +18772,8 @@ BEGIN
 	IF EXISTS (
 		SELECT *
 		FROM tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
-		INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPOPL.id_link = SPOPL.id_link
-		INNER JOIN partsltd_prod.Shop_Stock_Item SI ON SPOPL.id_permutation = SI.id_permutation
+		INNER JOIN demo.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPOPL.id_link = SPOPL.id_link
+		INNER JOIN demo.Shop_Stock_Item SI ON SPOPL.id_permutation = SI.id_permutation
 		WHERE 
 			t_SPOPL.is_new = 0
 			AND t_SPOPL.quantity_received <> SPOPL.quantity_received
@@ -19610,7 +18822,7 @@ BEGIN
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 		
-			INSERT INTO partsltd_prod.Shop_Supplier_Purchase_Order (
+			INSERT INTO demo.Shop_Supplier_Purchase_Order (
 				id_order_temp
 				, id_supplier_ordered
 				, id_currency_cost
@@ -19637,7 +18849,7 @@ BEGIN
             GROUP BY t_SPO.id_order
 			;
 		
-			UPDATE partsltd_prod.Shop_Supplier_Purchase_Order SPO
+			UPDATE demo.Shop_Supplier_Purchase_Order SPO
 			INNER JOIN tmp_Supplier_Purchase_Order t_SPO 
 				ON SPO.id_order = t_SPO.id_order
 				AND t_SPO.is_new = 0
@@ -19653,7 +18865,7 @@ BEGIN
             
 			
 			UPDATE tmp_Supplier_Purchase_Order t_SPO
-			INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO 
+			INNER JOIN demo.Shop_Supplier_Purchase_Order SPO 
 				ON t_SPO.id_order_temp = SPO.id_order_temp
                 AND SPO.id_change_set = v_id_change_set
 			SET 
@@ -19706,7 +18918,7 @@ BEGIN
 			WHERE t_SPOPL.is_new = 1
 			;
 			
-			UPDATE partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL
+			UPDATE demo.Shop_Supplier_Purchase_Order_Product_Link SPOPL
 			INNER JOIN tmp_Supplier_Purchase_Order_Product_Link t_SPOPL
 				ON SPOPL.id_link = t_SPOPL.id_link
 				AND t_SPOPL.is_new = 0
@@ -19745,7 +18957,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -19758,7 +18970,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
@@ -19826,8 +19038,159 @@ DELETE FROM Shop_Supplier_Purchase_Order;
 
 
 
--- File: 7404_p_shop_get_many_supplier_purchase_order.sql
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS demo.p_shop_save_supplier_purchase_order_test;
 
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_supplier_purchase_order_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order_Product_Link
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order_Product_Link_Temp
+	;
+    
+	START TRANSACTION;
+    
+		DELETE FROM demo.Shop_Supplier_Purchase_Order_Temp;
+		DELETE FROM demo.Shop_Supplier_Purchase_Order_Product_Link_Temp;
+
+		INSERT INTO demo.Shop_Supplier_Purchase_Order_Temp (
+			id_order
+			, id_supplier_ordered
+			, id_currency_cost
+            , active
+            , GUID
+		)
+        /* Test 1 - Insert */
+        VALUES (
+			-1
+            , 1
+            , 1
+            , 1
+            , v_guid
+        )
+        /* Test 2 - Update
+        SELECT 
+			id_order
+			, id_supplier_ordered
+			, id_currency_cost
+            , active
+            , v_guid
+		FROM demo.Shop_Supplier_Purchase_Order
+        WHERE id_order = 6
+        */
+		;
+		INSERT INTO demo.Shop_Supplier_Purchase_Order_Product_Link_Temp (
+			id_link
+			, id_order
+			, id_permutation
+			, id_unit_quantity
+			, quantity_ordered
+			, quantity_received
+			, latency_delivery_days
+			, display_order
+			, active
+			, cost_total_local_VAT_excl
+			, cost_total_local_VAT_incl
+            , GUID
+		)
+        /* Test 1 - Insert */
+        VALUES (
+			-1
+            , -1
+            , 3
+            , 3
+            , 3
+            , 1
+            , 7
+            , 1
+            , 1
+            , 5
+            , 6
+            , v_guid
+        )
+        /* Test 2 - Update
+        SELECT
+			id_link
+			, id_order
+			, id_permutation
+			, id_unit_quantity
+			, 5 AS quantity_ordered
+			, quantity_received
+			, latency_delivery_days
+			, display_order
+			, active
+			, cost_total_local_VAT_excl
+			, cost_total_local_VAT_incl
+            , v_guid
+		FROM demo.Shop_Supplier_Purchase_Order_Product_Link
+        WHERE id_order = 6
+        */
+        ;
+        
+	COMMIT;
+    
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order_Temp
+	WHERE GUID = v_guid
+    ;
+    
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order_Product_Link_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL demo.p_shop_save_supplier_purchase_order ( 
+		'Test save Supplier Purchase Order' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order_Product_Link_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order
+	;
+	SELECT *
+	FROM demo.Shop_Supplier_Purchase_Order_Product_Link
+	;
+    
+	CALL demo.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;
+
+/*
+CALL demo.p_shop_save_supplier_purchase_order_test ();
+
+DELETE FROM demo.Shop_Supplier_Purchase_Order_Temp;
+DELETE FROM demo.Shop_Supplier_Purchase_Order_Product_Link_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+Cannot add or update a child row: a foreign key constraint fails (`demo`.`shop_supplier_address`, CONSTRAINT `FK_Shop_Supplier_Address_id_supplier` FOREIGN KEY (`id_supplier`) REFERENCES `shop_supplier` (`id_supplier`) ON UPDATE RESTRICT)
+
+*/
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_supplier_purchase_order;
 
@@ -19862,12 +19225,12 @@ BEGIN
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-    SET v_ids_permission_supplier_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_SUPPLIER', 'STORE_SUPPLIER_PURCHASE_ORDER', 'STORE_PRODUCT'));
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+    SET v_ids_permission_supplier_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM demo.Shop_Permission WHERE code IN ('STORE_SUPPLIER', 'STORE_SUPPLIER_PURCHASE_ORDER', 'STORE_PRODUCT'));
 	
 	SET a_get_all_supplier := IFNULL(a_get_all_supplier, 1);
 	SET a_get_inactive_supplier := IFNULL(a_get_inactive_supplier, 0);
@@ -19930,7 +19293,7 @@ BEGIN
     
     -- Permutations
     IF v_has_filter_permutation = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_permutation, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_permutation, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -19939,21 +19302,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+            LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PP.id_permutation)
@@ -19969,7 +19332,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive permutation IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+			LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PP.id_permutation)
@@ -19982,7 +19345,7 @@ BEGIN
 			SELECT 
 				PP.id_permutation
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+			RIGHT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE (
 					v_has_filter_permutation = 0
 					OR NOT ISNULL(t_S.as_int)
@@ -19995,7 +19358,7 @@ BEGIN
     
     -- Suppliers
     IF v_has_filter_supplier = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_supplier, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_supplier, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -20004,21 +19367,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+            LEFT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(S.id_supplier)
@@ -20037,7 +19400,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive Supplier IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+			LEFT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(S.id_supplier)
@@ -20053,7 +19416,7 @@ BEGIN
 			SELECT 
 				S.id_supplier
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+			RIGHT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE (
 					a_get_all_supplier = 1
 					OR (
@@ -20073,7 +19436,7 @@ BEGIN
     
     -- Supplier Purchase Orders
     IF v_has_filter_order = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_order, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_order, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -20082,21 +19445,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
+            LEFT JOIN demo.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(SPO.id_order)
@@ -20115,7 +19478,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive Supplier Purchase Order IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
+			LEFT JOIN demo.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(SPO.id_order)
@@ -20131,9 +19494,9 @@ BEGIN
 			SELECT 
 				SPO.id_order
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
+			RIGHT JOIN demo.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
 			INNER JOIN tmp_Supplier t_SUPP ON SPO.id_supplier_ordered = t_SUPP.id_supplier
-			INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON SPO.id_order = SPOPL.id_order
+			INNER JOIN demo.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON SPO.id_order = SPOPL.id_order
 			INNER JOIN tmp_Permutation t_PP ON SPOPL.id_permutation = t_PP.id_permutation
 			WHERE (
 					a_get_all_order = 1
@@ -20180,7 +19543,7 @@ BEGIN
 			, '' -- ids_product
 			, 0 -- a_debug
 		;
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * from demo.Shop_Calc_User_Temp;
 	END IF;
 	
 	CALL p_shop_calc_user(
@@ -20194,10 +19557,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * from demo.Shop_Calc_User_Temp;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -20208,7 +19571,7 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_ids_permission_supplier_purchase_order LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM demo.Shop_Permission WHERE id_permission = v_ids_permission_supplier_purchase_order LIMIT 1))
 		)
 		;
 	END IF;
@@ -20234,7 +19597,7 @@ BEGIN
 		S.id_currency,
 		t_S.active
     FROM tmp_Supplier t_S
-    INNER JOIN partsltd_prod.Shop_Supplier S
+    INNER JOIN demo.Shop_Supplier S
 		ON t_S.id_supplier = S.id_supplier
 	;
     */
@@ -20257,9 +19620,9 @@ BEGIN
             , SPO.created_on
 		) AS name
     FROM tmp_Supplier_Purchase_Order t_SPO 
-	INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON SPO.id_order = t_SPO.id_order
-    LEFT JOIN partsltd_prod.Shop_Supplier S ON SPO.id_supplier_ordered = S.id_supplier
-    LEFT JOIN partsltd_prod.Shop_Currency C ON SPO.id_currency_cost = C.id_currency
+	INNER JOIN demo.Shop_Supplier_Purchase_Order SPO ON SPO.id_order = t_SPO.id_order
+    LEFT JOIN demo.Shop_Supplier S ON SPO.id_supplier_ordered = S.id_supplier
+    LEFT JOIN demo.Shop_Currency C ON SPO.id_currency_cost = C.id_currency
     ;
     
     # Supplier Purchase Order Product Link
@@ -20283,15 +19646,15 @@ BEGIN
 		, SPOPL.cost_unit_local_VAT_incl
         , SPOPL.active
     FROM tmp_Supplier_Purchase_Order t_SPO
-    INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPO.id_order = SPOPL.id_order
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON SPOPL.id_permutation = PP.id_permutation
-    LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
+    INNER JOIN demo.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPO.id_order = SPOPL.id_order
+    LEFT JOIN demo.Shop_Product_Permutation PP ON SPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN demo.Shop_Product P ON PP.id_product = P.id_product
     ;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     IF a_debug = 1 THEN
@@ -20331,161 +19694,6 @@ CALL p_shop_get_many_supplier_purchase_order (
 );
 
 */
-
-
--- File: 7415_p_shop_save_Manufacturing_purchase_order_test.sql
-
-
--- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_Manufacturing_purchase_order_test;
-
-
-DELIMITER //
-CREATE PROCEDURE p_shop_save_Manufacturing_purchase_order_test ()
-BEGIN
-	
-	DECLARE v_guid BINARY(36);
-	DECLARE v_time_start TIMESTAMP(6);
-    
-    SET v_time_start := CURRENT_TIMESTAMP(6);
-	SET v_guid := 'nips';
-
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
-	;
-    
-	START TRANSACTION;
-    
-		DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp;
-		DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
-
-		INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp (
-			id_order
-			, id_currency
-            , active
-            , GUID
-		)
-        /* Test 1 - Insert */
-        VALUES (
-			-1
-            , 1
-            , 1
-            , v_guid
-        )
-        /* Test 2: Alter
-        SELECT 
-			id_order
-			, id_currency
-            , active
-            , v_guid
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
-        WHERE id_order = 6
-        */
-		;-- SELECT * FROM partsltd_prod.Shop_Unit_Measurement;
-        
-		INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
-			id_link
-			, id_order
-			, id_permutation
-			, id_unit_quantity
-			, quantity_used
-			, quantity_produced
-			, id_unit_latency_manufacture
-            , latency_manufacture
-			, display_order
-			, active
-            , GUID
-		)
-        /* Test 1 - Insert */
-        VALUES (
-			-1 -- id_link
-            , -1 -- id_order
-            , 3 -- id_permutation
-            , 3 -- id_unit_quantity
-            , 3 -- quantity_used
-            , 0 -- quantity_produced
-            , 4 -- id_unit_latency_manufacture
-            , 4 -- latency_manufacture
-            , 1 -- display_order
-            , 1 -- active
-            , v_guid -- 
-        )
-        /* Test 2: Alter
-        SELECT
-			id_link
-			, id_order
-			, id_permutation
-			, id_unit_quantity
-			, quantity_used
-			, quantity_produced
-			, id_unit_latency_manufacture
-			, latency_manufacture
-			, display_order
-			, active
-            , v_guid
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
-        WHERE id_order = 6
-        */
-        ;
-        
-	COMMIT;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
-	WHERE GUID = v_guid
-    ;
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
-	WHERE GUID = v_guid
-    ;
-    
-    CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order ( 
-		'Test save Manufacturing Purchase Order' -- comment
-        , v_guid -- guid
-        , 1 -- id_user
-		, 1 -- debug
-    );
-    
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
-	;
-	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
-	;
-    
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
-END //
-DELIMITER ;
-
-/*
-CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order_test ();
-
-DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp;
-DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
-
-DROP TABLE IF EXISTS tmp_Msg_Error;
-
-select * from partsltd_prod.Shop_User;
-Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'partsltd_prod.t_MPOPL.name_error' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
-*/
-
--- File: 7415_p_shop_save_manufacturing_purchase_order.sql
 
 
 
@@ -20541,7 +19749,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -20550,14 +19758,14 @@ BEGIN
     END;
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-	SET v_code_type_error_warning := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
-    SET v_id_type_error_warning := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
-	SET v_ids_permission_manufacturing_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_MANUFACTURING_PURCHASE_ORDER', 'STORE_PRODUCT'));
-	SET v_id_access_level_edit := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+	SET v_code_type_error_warning := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
+    SET v_id_type_error_warning := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
+	SET v_ids_permission_manufacturing_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM demo.Shop_Permission WHERE code IN ('STORE_MANUFACTURING_PURCHASE_ORDER', 'STORE_PRODUCT'));
+	SET v_id_access_level_edit := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -20635,8 +19843,8 @@ BEGIN
 				, IFNULL(IFNULL(MPO_T.id_currency, MPO.id_currency), '(No Currency)')
 			)
 		END AS name_error
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp MPO_T
-	LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON MPO_T.id_order = MPO.id_order
+	FROM demo.Shop_Manufacturing_Purchase_Order_Temp MPO_T
+	LEFT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON MPO_T.id_order = MPO.id_order
 	WHERE MPO_T.GUID = a_guid
 	;
 
@@ -20668,7 +19876,7 @@ BEGIN
 				IFNULL(
 					MPOPL_T.id_permutation
                     , CASE WHEN NOT ISNULL(MPOPL_T.id_product) AND NOT ISNULL(MPOPL_T.csv_list_variations) THEN
-						partsltd_prod.fn_shop_get_id_product_permutation_from_variation_csv_list(MPOPL_T.id_product, MPOPL_T.csv_list_variations)
+						demo.fn_shop_get_id_product_permutation_from_variation_csv_list(MPOPL_T.id_product, MPOPL_T.csv_list_variations)
 					ELSE NULL END
 				)
                 , MPOPL.id_permutation
@@ -20690,18 +19898,18 @@ BEGIN
 		, IFNULL(MPOPL_T.price_unit_local_VAT_incl, MPOPL.price_unit_local_VAT_incl) AS price_unit_local_VAT_incl
 		, NOT ISNULL(t_MPO.id_order) AS has_order
 	    , IFNULL(MPOPL_T.id_link, 0) < 1 AS is_new
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
-	LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON MPOPL_T.id_link = MPOPL.id_link
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
+	LEFT JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON MPOPL_T.id_link = MPOPL.id_link
 	LEFT JOIN tmp_Manufacturing_Purchase_Order t_MPO ON MPOPL_T.id_order = t_MPO.id_order
-	LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
+	LEFT JOIN demo.Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
 	WHERE MPOPL_T.GUID = a_guid
 	;
 
     UPDATE tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-	-- INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T ON t_MPOPL.id_order = MPOPL_T.id_order
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_MPOPL.id_permutation = PP.id_permutation
-    LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
-    LEFT JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
+	-- INNER JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T ON t_MPOPL.id_order = MPOPL_T.id_order
+    LEFT JOIN demo.Shop_Product_Permutation PP ON t_MPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN demo.Shop_Product P ON PP.id_product = P.id_product
+    LEFT JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
 	SET 
 		name_error = CONCAT(
 			CASE WHEN ISNULL(t_MPOPL.id_permutation) THEN
@@ -20749,7 +19957,7 @@ BEGIN
 			, ' - '
 			, IFNULL(MPO.id_currency, '(No Currency)')
 		) AS name_error
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order MPO
+	FROM demo.Shop_Manufacturing_Purchase_Order MPO
 	INNER JOIN tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL 
 		ON MPO.id_order = t_MPOPL.id_order
 		AND t_MPOPL.has_order = 0
@@ -20779,7 +19987,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Manufacturing_Purchase_Order t_MPO
-        LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order = MPO.id_order
+        LEFT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order = MPO.id_order
         WHERE 1=1
 			AND t_MPO.id_order > 0
 			AND ISNULL(MPO.id_order)
@@ -20798,7 +20006,7 @@ BEGIN
 				, GROUP_CONCAT(t_MPO.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Manufacturing_Purchase_Order t_MPO
-        LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order = MPO.id_order
+        LEFT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order = MPO.id_order
         WHERE 1=1
 			AND t_MPO.id_order > 0
 			AND ISNULL(MPO.id_order)
@@ -20808,7 +20016,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Manufacturing_Purchase_Order t_MPO
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_MPO.id_currency = C.id_currency
+        LEFT JOIN demo.Shop_Currency C ON t_MPO.id_currency = C.id_currency
         WHERE 1=1
 			AND (
 				ISNULL(C.id_currency)
@@ -20829,7 +20037,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(t_MPO.name_error, ' - ', t_MPO.id_currency) SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Manufacturing_Purchase_Order t_MPO
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_MPO.id_currency = C.id_currency
+        LEFT JOIN demo.Shop_Currency C ON t_MPO.id_currency = C.id_currency
         WHERE 1=1
 			AND (
 				ISNULL(C.id_currency)
@@ -20841,7 +20049,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_quantity = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_quantity = UM.id_unit_measurement
         WHERE 1=1
 			AND (
 				ISNULL(UM.id_unit_measurement)
@@ -20862,7 +20070,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(t_MPOPL.name_error, ' - ', t_MPO.id_unit_quantity) SEPARATOR ', ')
 			) AS msg
         FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_quantity = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_quantity = UM.id_unit_measurement
         WHERE 1=1
 			AND (
 				ISNULL(UM.id_unit_measurement)
@@ -20922,7 +20130,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_latency_manufacture = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_latency_manufacture = UM.id_unit_measurement
         WHERE 
 			ISNULL(t_MPOPL.id_unit_latency_manufacture)
 			OR ISNULL(UM.id_unit_measurement)
@@ -20942,7 +20150,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(t_MPOPL.name_error, ' - ', t_MPOPL.id_unit_latency_manufacture) SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_latency_manufacture = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_latency_manufacture = UM.id_unit_measurement
         WHERE 
 			ISNULL(t_MPOPL.id_unit_latency_manufacture)
 			OR ISNULL(UM.id_unit_measurement)
@@ -21144,7 +20352,7 @@ BEGIN
 		SELECT 
 			GROUP_CONCAT(DISTINCT PP.id_product SEPARATOR ',')
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-		INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_MPOPL.id_permutation = PP.id_permutation
+		INNER JOIN demo.Shop_Product_Permutation PP ON t_MPOPL.id_permutation = PP.id_permutation
 	);
 	IF a_debug = 1 THEN
 		SELECT 
@@ -21157,7 +20365,7 @@ BEGIN
 			, 0 -- a_debug
 		;
 		SELECT * 
-		FROM partsltd_prod.Shop_Calc_User_Temp
+		FROM demo.Shop_Calc_User_Temp
 		WHERE GUID = a_guid
 		;
 	END IF;
@@ -21173,10 +20381,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
+		SELECT * from demo.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
+	IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -21191,15 +20399,15 @@ BEGIN
 				'You do not have edit permissions for '
 				, GROUP_CONCAT(name SEPARATOR ', ') 
 			)
-		FROM partsltd_prod.Shop_Permission PERM
-		INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T 
+		FROM demo.Shop_Permission PERM
+		INNER JOIN demo.Shop_Calc_User_Temp UE_T 
 			ON PERM.id_permission = UE_T.id_permission
 			AND UE_T.GUID = a_guid
 			AND IFNULL(UE_T.can_view, 0) = 0
 		;
 	END IF;
 
-	CALL partsltd_prod.p_shop_clear_calc_user( 
+	CALL demo.p_shop_clear_calc_user( 
 		a_guid
 		, 0 -- a_debug 
 	);
@@ -21208,8 +20416,8 @@ BEGIN
 	IF EXISTS (
 		SELECT *
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-		INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link
-		INNER JOIN partsltd_prod.Shop_Stock_Item SI ON MPOPL.id_permutation = SI.id_permutation
+		INNER JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link
+		INNER JOIN demo.Shop_Stock_Item SI ON MPOPL.id_permutation = SI.id_permutation
 		WHERE 
 			t_MPOPL.is_new = 0
 			AND t_MPOPL.quantity_used <> MPOPL.quantity_used
@@ -21240,8 +20448,8 @@ BEGIN
 	IF EXISTS (
 		SELECT *
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-		INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link
-		INNER JOIN partsltd_prod.Shop_Stock_Item SI ON MPOPL.id_permutation = SI.id_permutation
+		INNER JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link
+		INNER JOIN demo.Shop_Stock_Item SI ON MPOPL.id_permutation = SI.id_permutation
 		WHERE 
 			t_MPOPL.is_new = 0
 			AND t_MPOPL.quantity_produced <> MPOPL.quantity_produced
@@ -21290,7 +20498,7 @@ BEGIN
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 		
-			INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order (
+			INSERT INTO demo.Shop_Manufacturing_Purchase_Order (
 				id_order_temp
 				, id_currency
 				, cost_total_local_VAT_excl
@@ -21319,7 +20527,7 @@ BEGIN
 			;
 			
 			UPDATE tmp_Manufacturing_Purchase_Order t_MPO
-			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO 
+			INNER JOIN demo.Shop_Manufacturing_Purchase_Order MPO 
 				ON t_MPO.id_order_temp = MPO.id_order_temp
 				AND MPO.id_change_set = v_id_change_set
 			SET 
@@ -21373,7 +20581,7 @@ BEGIN
 			WHERE t_MPOPL.is_new = 1
 			;
 		
-			UPDATE partsltd_prod.Shop_Manufacturing_Purchase_Order MPO
+			UPDATE demo.Shop_Manufacturing_Purchase_Order MPO
 			INNER JOIN tmp_Manufacturing_Purchase_Order t_MPO 
 				ON MPO.id_order = t_MPO.id_order
 				AND t_MPO.is_new = 0
@@ -21388,7 +20596,7 @@ BEGIN
 				, MPO.id_change_set = v_id_change_set
 			;
 			
-			UPDATE partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL
+			UPDATE demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL
 			INNER JOIN tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
 				ON MPOPL.id_link = t_MPOPL.id_link
 				AND t_MPOPL.is_new = 0
@@ -21415,11 +20623,11 @@ BEGIN
     START TRANSACTION;
 	
 		DELETE MPO_T
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp MPO_T
+		FROM demo.Shop_Manufacturing_Purchase_Order_Temp MPO_T
 		WHERE MPO_T.GUID = a_guid
 		;
 		DELETE MPOPL_T
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
+		FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
 		WHERE MPOPL_T.GUID = a_guid
 		;
 		
@@ -21428,7 +20636,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -21441,7 +20649,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
@@ -21508,8 +20716,154 @@ DELETE FROM Shop_Manufacturing_Purchase_Order;
 
 
 
--- File: 7416_p_shop_get_many_manufacturing_purchase_order.sql
+-- Clear previous proc
+DROP PROCEDURE IF EXISTS demo.p_shop_save_Manufacturing_purchase_order_test;
 
+
+DELIMITER //
+CREATE PROCEDURE p_shop_save_Manufacturing_purchase_order_test ()
+BEGIN
+	
+	DECLARE v_guid BINARY(36);
+	DECLARE v_time_start TIMESTAMP(6);
+    
+    SET v_time_start := CURRENT_TIMESTAMP(6);
+	SET v_guid := 'nips';
+
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order
+	;
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link
+	;
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	;
+    
+	START TRANSACTION;
+    
+		DELETE FROM demo.Shop_Manufacturing_Purchase_Order_Temp;
+		DELETE FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
+
+		INSERT INTO demo.Shop_Manufacturing_Purchase_Order_Temp (
+			id_order
+			, id_currency
+            , active
+            , GUID
+		)
+        /* Test 1 - Insert */
+        VALUES (
+			-1
+            , 1
+            , 1
+            , v_guid
+        )
+        /* Test 2: Alter
+        SELECT 
+			id_order
+			, id_currency
+            , active
+            , v_guid
+		FROM demo.Shop_Manufacturing_Purchase_Order
+        WHERE id_order = 6
+        */
+		;-- SELECT * FROM demo.Shop_Unit_Measurement;
+        
+		INSERT INTO demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
+			id_link
+			, id_order
+			, id_permutation
+			, id_unit_quantity
+			, quantity_used
+			, quantity_produced
+			, id_unit_latency_manufacture
+            , latency_manufacture
+			, display_order
+			, active
+            , GUID
+		)
+        /* Test 1 - Insert */
+        VALUES (
+			-1 -- id_link
+            , -1 -- id_order
+            , 3 -- id_permutation
+            , 3 -- id_unit_quantity
+            , 3 -- quantity_used
+            , 0 -- quantity_produced
+            , 4 -- id_unit_latency_manufacture
+            , 4 -- latency_manufacture
+            , 1 -- display_order
+            , 1 -- active
+            , v_guid -- 
+        )
+        /* Test 2: Alter
+        SELECT
+			id_link
+			, id_order
+			, id_permutation
+			, id_unit_quantity
+			, quantity_used
+			, quantity_produced
+			, id_unit_latency_manufacture
+			, latency_manufacture
+			, display_order
+			, active
+            , v_guid
+		FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link
+        WHERE id_order = 6
+        */
+        ;
+        
+	COMMIT;
+    
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order_Temp
+	WHERE GUID = v_guid
+    ;
+    
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	WHERE GUID = v_guid
+    ;
+    
+    CALL demo.p_shop_save_Manufacturing_purchase_order ( 
+		'Test save Manufacturing Purchase Order' -- comment
+        , v_guid -- guid
+        , 1 -- id_user
+		, 1 -- debug
+    );
+    
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	;
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order
+	;
+	SELECT *
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link
+	;
+    
+	CALL demo.p_debug_timing_reporting ( v_time_start );
+END //
+DELIMITER ;
+
+/*
+CALL demo.p_shop_save_Manufacturing_purchase_order_test ();
+
+DELETE FROM demo.Shop_Manufacturing_Purchase_Order_Temp;
+DELETE FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
+
+DROP TABLE IF EXISTS tmp_Msg_Error;
+
+select * from demo.Shop_User;
+Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'demo.t_MPOPL.name_error' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+*/
 
 DROP PROCEDURE IF EXISTS p_shop_get_many_manufacturing_purchase_order;
 
@@ -21540,12 +20894,12 @@ BEGIN
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
-    SET v_ids_permission_manufacturing_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_MANUFACTURING_PURCHASE_ORDER', 'STORE_PRODUCT'));
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
+    SET v_ids_permission_manufacturing_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM demo.Shop_Permission WHERE code IN ('STORE_MANUFACTURING_PURCHASE_ORDER', 'STORE_PRODUCT'));
 	
 	SET a_get_all_order := IFNULL(a_get_all_order, 1);
 	SET a_get_inactive_order := IFNULL(a_get_inactive_order, 0);
@@ -21598,7 +20952,7 @@ BEGIN
     
     -- Permutations
     IF v_has_filter_permutation = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_permutation, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_permutation, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -21607,21 +20961,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+            LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PP.id_permutation)
@@ -21637,7 +20991,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive permutation IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+			LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PP.id_permutation)
@@ -21650,7 +21004,7 @@ BEGIN
 			SELECT 
 				PP.id_permutation
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+			RIGHT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE (
 					v_has_filter_permutation = 0
 					OR NOT ISNULL(t_S.as_int)
@@ -21663,7 +21017,7 @@ BEGIN
     
     -- Manufacturing Purchase Orders
     IF v_has_filter_order = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_order, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_order, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -21672,21 +21026,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
+            LEFT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(MPO.id_order)
@@ -21705,7 +21059,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive Manufacturing Purchase Order IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
+			LEFT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(MPO.id_order)
@@ -21721,8 +21075,8 @@ BEGIN
 			SELECT 
 				MPO.id_order
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
-			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON MPO.id_order = MPOPL.id_order
+			RIGHT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON t_S.as_int = MPO.id_order
+			INNER JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON MPO.id_order = MPOPL.id_order
 			INNER JOIN tmp_Permutation t_PP ON MPOPL.id_permutation = t_PP.id_permutation
 			WHERE (
 					a_get_all_order = 1
@@ -21765,7 +21119,7 @@ BEGIN
 			, '' -- ids_product
 			, 0 -- a_debug
 		;
-		SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * FROM demo.Shop_Calc_User_Temp;
 	END IF;
 	
 	CALL p_shop_calc_user(
@@ -21779,10 +21133,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * FROM demo.Shop_Calc_User_Temp;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -21793,7 +21147,7 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', IFNULL((SELECT IFNULL(name, '(No Permission Name)') FROM partsltd_prod.Shop_Permission WHERE FIND_IN_SET(id_permission, v_ids_permission_manufacturing_purchase_order) > 0 LIMIT 1), '(No Permissions Found)'))
+			, CONCAT('You do not have view permissions for ', IFNULL((SELECT IFNULL(name, '(No Permission Name)') FROM demo.Shop_Permission WHERE FIND_IN_SET(id_permission, v_ids_permission_manufacturing_purchase_order) > 0 LIMIT 1), '(No Permissions Found)'))
 		)
 		;
 	END IF;
@@ -21819,7 +21173,7 @@ BEGIN
 		S.id_currency,
 		t_S.active
     FROM tmp_Manufacturing t_S
-    INNER JOIN partsltd_prod.Shop_Manufacturing S
+    INNER JOIN demo.Shop_Manufacturing S
 		ON t_S.id_manufacturing = S.id_manufacturing
 	;
     */
@@ -21842,8 +21196,8 @@ BEGIN
             , MPO.created_on
 		) AS name
     FROM tmp_Manufacturing_Purchase_Order t_MPO 
-	INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON MPO.id_order = t_MPO.id_order
-    LEFT JOIN partsltd_prod.Shop_Currency C ON MPO.id_currency = C.id_currency
+	INNER JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON MPO.id_order = t_MPO.id_order
+    LEFT JOIN demo.Shop_Currency C ON MPO.id_currency = C.id_currency
     ;
     
     # Manufacturing Purchase Order Product Link
@@ -21867,15 +21221,15 @@ BEGIN
         , MPOPL.price_unit_local_VAT_incl
         , MPOPL.active
     FROM tmp_Manufacturing_Purchase_Order t_MPO
-	INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPO.id_order = MPOPL.id_order
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
-    LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
+	INNER JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPO.id_order = MPOPL.id_order
+    LEFT JOIN demo.Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN demo.Shop_Product P ON PP.id_product = P.id_product
     ;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     IF a_debug = 1 THEN
@@ -21911,15 +21265,12 @@ CALL p_shop_get_many_manufacturing_purchase_order (
 
 
 select *
-from partsltd_prod.shop_manufacturing_purchase_order
+from demo.shop_manufacturing_purchase_order
 ;
 select *
-from partsltd_prod.shop_manufacturing_purchase_order_product_link
+from demo.shop_manufacturing_purchase_order_product_link
 ;
 */
-
-
--- File: 7421_p_shop_save_customer.sql
 
 
 
@@ -22222,9 +21573,6 @@ DELETE FROM Shop_Customer
 */
 
 
--- File: 7422_p_shop_get_many_customer.sql
-
-
 
 /*
 
@@ -22494,9 +21842,6 @@ SELECT *
 FROM Shop_Customer;
 
 */
-
-
--- File: 7424_p_shop_save_customer_sales_order.sql
 
 
 
@@ -23054,9 +22399,6 @@ DELETE FROM Shop_Customer_Sales_Order;
 
 */
 
-
-
--- File: 7425_p_shop_get_many_customer_sales_order.sql
 
 
 
@@ -23835,9 +23177,6 @@ insert into shop_product_change_set (comment)
 */
 
 
--- File: 9000_populate.sql
-
-
 
 /*
 
@@ -24469,12 +23808,12 @@ VALUES
 	, (71, 2, '197g', '197 grams', 4, 197)
 ;
 
-INSERT INTO partsltd_prod.Shop_Product_Change_Set (
+INSERT INTO demo.Shop_Product_Change_Set (
 	comment
 )
 VALUES ( 'Update Variation Display Orders' )
 ;
-UPDATE partsltd_prod.Shop_Variation V
+UPDATE demo.Shop_Variation V
 INNER JOIN (
     SELECT 
         V.id_variation,
@@ -24499,8 +23838,8 @@ INNER JOIN (
                 , IFNULL(IFNULL(UM.symbol, UM.name_singular), '(No Unit of Measurement)')
             )
         ) as new_order
-    FROM partsltd_prod.Shop_Variation V
-    INNER JOIN partsltd_prod.Shop_Unit_Measurement UM 
+    FROM demo.Shop_Variation V
+    INNER JOIN demo.Shop_Unit_Measurement UM 
         ON V.id_unit_measurement = UM.id_unit_measurement
         AND UM.active = 1
     WHERE 
@@ -24508,7 +23847,7 @@ INNER JOIN (
 ) AS RANKED ON V.id_variation = RANKED.id_variation
 JOIN (
     SELECT CS.id_change_set
-    FROM partsltd_prod.Shop_Product_Change_Set CS
+    FROM demo.Shop_Product_Change_Set CS
     ORDER BY CS.id_change_set DESC
     LIMIT 1
 ) AS CS
@@ -24754,7 +24093,8 @@ INSERT INTO Shop_User_Role_Link (
 	id_user, id_role
 )
 VALUES 
-	(1, 1)
+	(1, 1),
+	(4, 1)
 ;
 
 # User Addresses
@@ -24982,9 +24322,6 @@ CALL p_populate_database();
 DROP PROCEDURE IF EXISTS p_populate_database;
 */
 
--- File: 9001_view.sql
-
-
 
 # Product Change Sets
 SELECT * FROM Shop_Product_Change_Set;
@@ -25192,9 +24529,6 @@ SELECT * FROM Shop_Customer_Sales_Order_Product_Link_Audit;
 
 
 
--- File: 9010_anal.sql
-
-
 /*
 
 SELECT TABLE_NAME
@@ -25222,6 +24556,4 @@ WHERE
 ;
 
 */
-
-
 

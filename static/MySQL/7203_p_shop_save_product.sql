@@ -52,7 +52,7 @@ BEGIN
         
         SELECT *
         FROM tmp_Msg_Error t_ME
-        INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+        INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
         ;
         
         DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
@@ -128,8 +128,8 @@ BEGIN
         , IFNULL(P_T.display_order, P.display_order) AS display_order
         , IFNULL(P_T.name, IFNULL(P.name, IFNULL(P_T.id_product, '(No Product)'))) AS name_error
         , CASE WHEN IFNULL(P_T.id_product, 0) < 1 THEN 1 ELSE 0 END AS is_new
-	FROM partsltd_prod.Shop_Product_Temp P_T
-    LEFT JOIN partsltd_prod.Shop_Product P ON P_T.id_product = P.id_product
+	FROM demo.Shop_Product_Temp P_T
+    LEFT JOIN demo.Shop_Product P ON P_T.id_product = P.id_product
     ;
     
     -- Validation
@@ -220,7 +220,7 @@ BEGIN
 
 	SET v_id_permission_product = (SELECT id_permission FROM Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
 	
-	CALL partsltd_prod.p_shop_calc_user(
+	CALL demo.p_shop_calc_user(
 		a_guid
 		, a_id_user
 		, FALSE -- get_inactive_users
@@ -231,7 +231,7 @@ BEGIN
 	);
 	
 	UPDATE tmp_Product t_P
-	INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+	INNER JOIN demo.Shop_Calc_User_Temp UE_T
 		ON t_P.id_product = UE_T.id_product
 		AND UE_T.GUID = a_guid
 	SET 
@@ -257,7 +257,7 @@ BEGIN
 		;
     END IF;
     
-    IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
+    IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
 		DELETE t_ME
         FROM tmp_Msg_Error t_ME
         WHERE t_ME.id_type <> v_id_type_error_no_permission
@@ -275,7 +275,7 @@ BEGIN
 		;
     END IF;
 	
-	CALL partsltd_prod.p_shop_clear_calc_user(
+	CALL demo.p_shop_clear_calc_user(
 		a_guid
 		, 0 -- debug
 	);
@@ -283,13 +283,13 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
 	
-			INSERT INTO partsltd_prod.Shop_Product_Change_Set ( comment )
+			INSERT INTO demo.Shop_Product_Change_Set ( comment )
 			VALUES ( a_comment )
 			;
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 			
-			UPDATE partsltd_prod.Shop_Product P
+			UPDATE demo.Shop_Product P
 			INNER JOIN tmp_Product t_P ON P.id_product = t_P.id_product
 			SET 
 				P.id_category = t_P.id_category
@@ -301,7 +301,7 @@ BEGIN
 				, P.id_change_set = v_id_change_set
 			;
             
-            INSERT INTO partsltd_prod.Shop_Product (
+            INSERT INTO demo.Shop_Product (
                 id_category
                 , name
                 , has_variations
@@ -327,21 +327,21 @@ BEGIN
         
 	START TRANSACTION;
 
-		DELETE FROM partsltd_prod.Shop_Product_Temp
+		DELETE FROM demo.Shop_Product_Temp
 		WHERE GUID = a_guid;
 
 	COMMIT;
     
     SELECT * 
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;

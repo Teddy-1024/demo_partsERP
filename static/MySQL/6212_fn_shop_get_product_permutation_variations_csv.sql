@@ -23,11 +23,11 @@ BEGIN
 					SEPARATOR ','
 				)
 			END 
-		FROM partsltd_prod.Shop_Product_Permutation PP
-		LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
-		LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
-		LEFT JOIN partsltd_prod.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
-		LEFT JOIN partsltd_prod.Shop_Variation_Type PVT ON PV.id_type = PVT.id_type
+		FROM demo.Shop_Product_Permutation PP
+		LEFT JOIN demo.Shop_Product P ON PP.id_product = P.id_product
+		LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+		LEFT JOIN demo.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
+		LEFT JOIN demo.Shop_Variation_Type PVT ON PV.id_type = PVT.id_type
         WHERE PP.id_permutation = id_product_permutation
         GROUP BY P.id_product, P.has_variations, PVT.display_order, PVT.name, PV.display_order, PV.name
         LIMIT 1

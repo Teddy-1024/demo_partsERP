@@ -48,7 +48,7 @@ BEGIN
 			id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -57,12 +57,12 @@ BEGIN
     END;
 
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-	SET v_id_permission_supplier := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
-	SET v_id_access_level_EDIT := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+	SET v_id_permission_supplier := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
+	SET v_id_access_level_EDIT := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -138,7 +138,7 @@ BEGIN
 		, S_T.active
 		, IFNULL(S_T.name_company, IFNULL(S_T.email, IFNULL(S_T.website, IFNULL(S_T.name_contact, '(No Supplier)'))))
 		, IFNULL(S_T.id_supplier, 0) < 1
-	FROM partsltd_prod.Shop_Supplier_Temp S_T
+	FROM demo.Shop_Supplier_Temp S_T
 	WHERE GUID = a_guid
 	;
     
@@ -167,7 +167,7 @@ BEGIN
 		, SA_T.active
 		, IFNULL(SA_T.postcode, IFNULL(SA_T.city, IFNULL(SA_T.county, IFNULL(SA_T.address_line_1, IFNULL(SA_T.address_line_2, '(No Supplier)'))))) AS name_error
 		, IFNULL(SA_T.id_address, 0) < 1 AS is_new
-	FROM partsltd_prod.Shop_Supplier_Address_Temp SA_T
+	FROM demo.Shop_Supplier_Address_Temp SA_T
 	WHERE GUID = a_guid
 	;
     
@@ -178,7 +178,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier t_S 
-        LEFT JOIN partsltd_prod.Shop_Address A ON t_S.id_address = A.id_address 
+        LEFT JOIN demo.Shop_Address A ON t_S.id_address = A.id_address 
         WHERE 1=1
 			AND (
 				t_S.id_address = 0
@@ -199,7 +199,7 @@ BEGIN
 				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Address A ON t_S.id_address = A.id_address
+        LEFT JOIN demo.Shop_Address A ON t_S.id_address = A.id_address
         WHERE 1=1
 			AND (
 				t_S.id_address = 0
@@ -212,7 +212,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_S.id_currency = C.id_currency 
+        LEFT JOIN demo.Shop_Currency C ON t_S.id_currency = C.id_currency 
         WHERE 1=1
 			AND (
 				t_S.id_currency = 0
@@ -233,7 +233,7 @@ BEGIN
 				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_S.id_currency = C.id_currency 
+        LEFT JOIN demo.Shop_Currency C ON t_S.id_currency = C.id_currency 
         WHERE 1=1
 			AND (
 				t_S.id_currency = 0
@@ -293,7 +293,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier_Address t_SA
-        LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
+        LEFT JOIN demo.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
         WHERE 1=1
 			AND (
 				t_SA.id_supplier = 0
@@ -314,7 +314,7 @@ BEGIN
 				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
+        LEFT JOIN demo.Shop_Supplier S ON t_SA.id_supplier = S.id_supplier
         WHERE 1=1
 			AND (
 				t_SA.id_supplier = 0
@@ -326,7 +326,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Supplier_Address t_SA
-        LEFT JOIN partsltd_prod.Shop_Region R ON t_SA.id_region = R.id_region
+        LEFT JOIN demo.Shop_Region R ON t_SA.id_region = R.id_region
         WHERE 1=1
 			AND (
 				t_SA.id_region = 0
@@ -347,7 +347,7 @@ BEGIN
 				, GROUP_CONCAT(t_S.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Supplier t_S
-        LEFT JOIN partsltd_prod.Shop_Region R ON t_SA.id_region = R.id_region
+        LEFT JOIN demo.Shop_Region R ON t_SA.id_region = R.id_region
         WHERE 1=1
 			AND (
 				t_SA.id_region = 0
@@ -383,7 +383,7 @@ BEGIN
 			, '' -- ids_product
 			, 0 -- a_debug
 		;
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * from demo.Shop_Calc_User_Temp;
 	END IF;
 	
 	CALL p_shop_calc_user(
@@ -397,10 +397,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
+		SELECT * from demo.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -411,12 +411,12 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM demo.Shop_Permission WHERE id_permission = v_id_permission_supplier LIMIT 1))
 		)
 		;
 	END IF;
 
-	CALL partsltd_prod.p_shop_clear_calc_user( 
+	CALL demo.p_shop_clear_calc_user( 
 		a_guid
         , 0 -- a_debug
 	);
@@ -429,7 +429,7 @@ BEGIN
 	-- Transaction    
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error) THEN		
 		START TRANSACTION;
-			INSERT INTO partsltd_prod.Shop_User_Change_Set (
+			INSERT INTO demo.Shop_User_Change_Set (
 				comment
 				, updated_last_by
 				, updated_last_on
@@ -442,7 +442,7 @@ BEGIN
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 			
-			INSERT INTO partsltd_prod.Shop_Supplier (
+			INSERT INTO demo.Shop_Supplier (
 				id_supplier_temp
 				, id_currency
 				, name_company
@@ -472,7 +472,7 @@ BEGIN
 			;
 			
 			UPDATE tmp_Supplier t_S
-			INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier_temp = S.id_supplier_temp
+			INNER JOIN demo.Shop_Supplier S ON t_S.id_supplier_temp = S.id_supplier_temp
 			SET 
 				t_S.id_supplier = S.id_supplier
 			WHERE t_S.is_new = 1
@@ -485,7 +485,7 @@ BEGIN
 			WHERE t_S.is_new = 1
 			;
             
-			UPDATE partsltd_prod.Shop_Supplier S
+			UPDATE demo.Shop_Supplier S
 			INNER JOIN tmp_Supplier t_S 
 				ON S.id_supplier = t_S.id_supplier
 				AND t_S.is_new = 0
@@ -515,7 +515,7 @@ BEGIN
 				*/
 			;
             
-            INSERT INTO partsltd_prod.Shop_Supplier_Address (
+            INSERT INTO demo.Shop_Supplier_Address (
 				id_supplier
                 , id_region
                 , postcode
@@ -540,7 +540,7 @@ BEGIN
             WHERE t_SA.is_new = 1
             ;
             
-            UPDATE partsltd_prod.Shop_Supplier_Address SA
+            UPDATE demo.Shop_Supplier_Address SA
 			INNER JOIN tmp_Supplier_Address t_SA 
 				ON SA.id_address = t_SA.id_address
                 AND t_SA.is_new = 0
@@ -559,16 +559,16 @@ BEGIN
     END IF;
     
     START TRANSACTION;
-		DELETE FROM partsltd_prod.Shop_Supplier_Temp
+		DELETE FROM demo.Shop_Supplier_Temp
         WHERE GUID = a_guid;
-		DELETE FROM partsltd_prod.Shop_Supplier_Address_Temp
+		DELETE FROM demo.Shop_Supplier_Address_Temp
         WHERE GUID = a_guid;
     COMMIT;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -582,7 +582,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;

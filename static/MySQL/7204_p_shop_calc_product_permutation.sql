@@ -1,4 +1,4 @@
--- USE partsltd_prod;
+-- USE demo;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_calc_product_permutation;
@@ -24,7 +24,7 @@ BEGIN
 	PROCEDURE p_shop_calc_product_permutation
 	Shared filtering for product permutations
     
-    select * FROM partsltd_prod.Shop_msg_error_type;
+    select * FROM demo.Shop_msg_error_type;
 */
     DECLARE v_has_filter_product_category BIT;
     DECLARE v_has_filter_product BIT;
@@ -40,7 +40,7 @@ BEGIN
     DECLARE v_code_type_error_bad_data VARCHAR(50);
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW');
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW');
     
     SELECT 
 		MET.id_type
@@ -48,7 +48,7 @@ BEGIN
 	INTO
 		v_id_type_error_bad_data
 		, v_code_type_error_bad_data
-	FROM partsltd_prod.Shop_Msg_Error_Type MET
+	FROM demo.Shop_Msg_Error_Type MET
 	WHERE MET.code = 'BAD_DATA'
 	;
     
@@ -139,7 +139,7 @@ BEGIN
     
     -- Categories
     IF TRUE THEN -- NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_product_category, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_product_category, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -148,21 +148,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = a_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Category PC ON t_S.as_int = PC.id_category 
+            LEFT JOIN demo.Shop_Product_Category PC ON t_S.as_int = PC.id_category 
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PC.id_category)
@@ -183,7 +183,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive category IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Category PC ON t_S.as_int = PC.id_category
+			LEFT JOIN demo.Shop_Product_Category PC ON t_S.as_int = PC.id_category
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(PC.id_category)
@@ -199,7 +199,7 @@ BEGIN
 			SELECT 
 				PC.id_category
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Category PC ON t_S.as_int = PC.id_category
+			RIGHT JOIN demo.Shop_Product_Category PC ON t_S.as_int = PC.id_category
 			WHERE (
 					a_get_all_product_category = 1
 					OR (
@@ -219,7 +219,7 @@ BEGIN
     
     -- Products
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_product, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -228,21 +228,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = a_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product
+            LEFT JOIN demo.Shop_Product P ON t_S.as_int = P.id_product
 			WHERE 
 				ISNULL(t_S.as_int)
                 OR ISNULL(P.id_product)
@@ -263,7 +263,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive product IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product
+			LEFT JOIN demo.Shop_Product P ON t_S.as_int = P.id_product
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(P.id_product)
@@ -281,7 +281,7 @@ BEGIN
 				P.id_category
 				, P.id_product
 			FROM tmp_Split t_S
-            RIGHT JOIN partsltd_prod.Shop_Product P ON t_S.as_int = P.id_product
+            RIGHT JOIN demo.Shop_Product P ON t_S.as_int = P.id_product
 			INNER JOIN tmp_Category_calc t_C ON P.id_category = t_C.id_category
 			WHERE (
 					a_get_all_product = 1
@@ -302,7 +302,7 @@ BEGIN
         
 	-- Permutations
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
-		CALL partsltd_prod.p_split(a_guid, a_ids_product, ',', a_debug);
+		CALL demo.p_split(a_guid, a_ids_product, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -311,21 +311,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = a_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( a_guid );
+		CALL demo.p_clear_split_temp( a_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+            LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int)
                 OR ISNULL(PP.id_permutation)
@@ -342,7 +342,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive permutation IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+			LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(PP.id_permutation)
@@ -362,7 +362,7 @@ BEGIN
 				-- P.id_category,
 				, PP.id_product
 			FROM tmp_Split t_S 
-            RIGHT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+            RIGHT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			INNER JOIN tmp_Product_calc t_P ON PP.id_product = t_P.id_product
 			WHERE 1=1
 				AND (
@@ -389,7 +389,7 @@ BEGIN
 	-- Permissions
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (SELECT * FROM tmp_Product_calc LIMIT 1) THEN
-			SET v_id_permission_product := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
+			SET v_id_permission_product := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_PRODUCT' LIMIT 1);
 			SET v_ids_product_permission := (SELECT GROUP_CONCAT(id_product SEPARATOR ',') FROM tmp_Product_calc WHERE NOT ISNULL(id_product));
 			
 			IF a_debug = 1 THEN
@@ -415,7 +415,7 @@ BEGIN
 			
 			
 			UPDATE tmp_Product_calc t_P
-			INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+			INNER JOIN demo.Shop_Calc_User_Temp UE_T
 				ON t_P.id_product = UE_T.id_product
 				AND UE_T.GUID = a_guid
 			SET t_P.can_view = UE_T.can_view,
@@ -425,7 +425,7 @@ BEGIN
 			
 			IF a_debug = 1 THEN
 				SELECT * 
-                FROM partsltd_prod.Shop_Calc_User_Temp
+                FROM demo.Shop_Calc_User_Temp
                 WHERE GUID = a_guid
                 ;
 			END IF;
@@ -506,7 +506,7 @@ BEGIN
 				, MIN(IFNULL(t_P.can_admin, 0)) AS can_admin
 				, a_guid
 			FROM tmp_Category_calc t_C
-			INNER JOIN partsltd_prod.Shop_Product_Category PC ON t_C.id_category = PC.id_category
+			INNER JOIN demo.Shop_Product_Category PC ON t_C.id_category = PC.id_category
 			LEFT JOIN tmp_Product_calc t_P ON t_C.id_category = t_P.id_product
 			GROUP BY PC.id_category
 			;
@@ -538,9 +538,9 @@ BEGIN
 				, t_P.can_admin
 				, a_guid
 			FROM tmp_Product_calc t_P
-			INNER JOIN partsltd_prod.Shop_Product P ON t_P.id_product = P.id_product
+			INNER JOIN demo.Shop_Product P ON t_P.id_product = P.id_product
 			INNER JOIN tmp_Category_calc t_C ON t_P.id_category = t_C.id_category
-			INNER JOIN partsltd_prod.Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
+			INNER JOIN demo.Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
 			GROUP BY P.id_product, t_P.can_view, t_P.can_edit, t_P.can_admin
 			;
 			
@@ -599,15 +599,15 @@ BEGIN
 				, IFNULL(t_P.can_admin, 0) AS can_admin
 				, a_guid
 			FROM tmp_Permutation_calc t_PP
-			INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
+			INNER JOIN demo.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
 			INNER JOIN tmp_Product_calc t_P ON t_PP.id_product = t_P.id_product
-			INNER JOIN partsltd_prod.Shop_Product P ON t_PP.id_product = P.id_product
-			INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
-			LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
-			LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
-			LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
-			LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
-			INNER JOIN partsltd_prod.Shop_Currency C ON PP.id_currency_cost = C.id_currency
+			INNER JOIN demo.Shop_Product P ON t_PP.id_product = P.id_product
+			INNER JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
+			LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+			LEFT JOIN demo.Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
+			LEFT JOIN demo.Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
+			LEFT JOIN demo.Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
+			INNER JOIN demo.Shop_Currency C ON PP.id_currency_cost = C.id_currency
 			GROUP BY PP.id_permutation, t_P.can_view, t_P.can_edit, t_P.can_admin
 			;
 			
@@ -625,7 +625,7 @@ BEGIN
         MET.name,
         MET.description
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET
+    INNER JOIN demo.Shop_Msg_Error_Type MET
 		ON t_ME.id_type = MET.id_type
     WHERE guid = a_guid
     ;
@@ -637,15 +637,15 @@ BEGIN
         ;
         
         SELECT *
-        FROM partsltd_prod.Shop_Product_Category_Temp
+        FROM demo.Shop_Product_Category_Temp
         WHERE GUID = a_guid
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Temp
+        FROM demo.Shop_Product_Temp
         WHERE GUID = a_guid
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Permutation_Temp
+        FROM demo.Shop_Product_Permutation_Temp
         WHERE GUID = a_guid
         ;
         
@@ -659,7 +659,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Category_calc;
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -667,7 +667,7 @@ DELIMITER ;
 
 /*
 
-CALL partsltd_prod.p_shop_calc_product_permutation (
+CALL demo.p_shop_calc_product_permutation (
 	1 #'auth0|6582b95c895d09a70ba10fef', # a_id_user
     , 1 # a_get_all_product_category
 	, 0 # a_get_inactive_product_category
@@ -685,30 +685,30 @@ CALL partsltd_prod.p_shop_calc_product_permutation (
 
 
         SELECT *
-        FROM partsltd_prod.Shop_Product_Category_Temp
+        FROM demo.Shop_Product_Category_Temp
         WHERE GUID = 'NIPS                                '
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Temp
+        FROM demo.Shop_Product_Temp
         WHERE GUID = 'NIPS                                '
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Permutation_Temp
+        FROM demo.Shop_Product_Permutation_Temp
         WHERE GUID = 'NIPS                                '
         ;
         
         CALL p_shop_clear_calc_product_permutation ( 'NIPS                                ' );
         
         SELECT *
-        FROM partsltd_prod.Shop_Product_Category_Temp
+        FROM demo.Shop_Product_Category_Temp
         WHERE GUID = 'NIPS                                '
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Temp
+        FROM demo.Shop_Product_Temp
         WHERE GUID = 'NIPS                                '
         ;
         SELECT *
-        FROM partsltd_prod.Shop_Product_Permutation_Temp
+        FROM demo.Shop_Product_Permutation_Temp
         WHERE GUID = 'NIPS                                '
         ;
         

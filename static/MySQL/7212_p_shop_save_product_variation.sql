@@ -52,7 +52,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE code = 'MYSQL_ERROR'
         LIMIT 1
 		;
@@ -62,14 +62,14 @@ BEGIN
     END;
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-	SET v_code_type_error_warning := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
-    SET v_id_type_error_warning := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
-	SET v_ids_permission_product_variation := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_PRODUCT'));
-	SET v_id_access_level_edit := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+	SET v_code_type_error_warning := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
+    SET v_id_type_error_warning := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
+	SET v_ids_permission_product_variation := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM demo.Shop_Permission WHERE code IN ('STORE_PRODUCT'));
+	SET v_id_access_level_edit := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -157,8 +157,8 @@ BEGIN
                 , IFNULL(VT_T.name, '(No Name)')
 			)
 		END AS name_error
-	FROM partsltd_prod.Shop_Variation_Type_Temp VT_T
-	LEFT JOIN partsltd_prod.Shop_Variation_Type VT ON VT_T.id_type = VT.id_type
+	FROM demo.Shop_Variation_Type_Temp VT_T
+	LEFT JOIN demo.Shop_Variation_Type VT ON VT_T.id_type = VT.id_type
 	WHERE VT_T.GUID = a_guid
 	;
 
@@ -204,9 +204,9 @@ BEGIN
                 , IFNULL(V_T.name, '(No Name)')
 			)
 		END AS name_error
-	FROM partsltd_prod.Shop_Variation_Temp V_T
-	LEFT JOIN partsltd_prod.Shop_Variation V ON V_T.id_variation = V.id_variation
-	-- LEFT JOIN partsltd_prod.Shop_Variation_Type VT ON V_T.id_type = VT.id_type
+	FROM demo.Shop_Variation_Temp V_T
+	LEFT JOIN demo.Shop_Variation V ON V_T.id_variation = V.id_variation
+	-- LEFT JOIN demo.Shop_Variation_Type VT ON V_T.id_type = VT.id_type
     LEFT JOIN tmp_Variation_Type t_VT ON V_T.id_type = t_VT.id_type
 	WHERE V_T.GUID = a_guid
 	;
@@ -243,7 +243,7 @@ BEGIN
 			, ' - '
 			, IFNULL(VT.name, '(No Name)')
 		) AS name_error
-	FROM partsltd_prod.Shop_Variation_Type VT
+	FROM demo.Shop_Variation_Type VT
     INNER JOIN tmp_Variation t_V 
 		ON VT.id_type = t_V.id_type
         AND t_V.has_type = 0
@@ -262,7 +262,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Variation_Type t_VT
-        INNER JOIN partsltd_prod.Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
+        INNER JOIN demo.Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
         WHERE 1=1
 			AND t_VT.id_type > 0
 			AND ISNULL(VT.id_type)
@@ -281,7 +281,7 @@ BEGIN
 				, GROUP_CONCAT(t_VT.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Variation_Type t_VT
-        INNER JOIN partsltd_prod.Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
+        INNER JOIN demo.Shop_Variation_Type VT ON t_VT.id_type = VT.id_type
         WHERE 1=1
 			AND t_VT.id_type > 0
 			AND ISNULL(VT.id_type)
@@ -292,7 +292,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Variation t_V
-        INNER JOIN partsltd_prod.Shop_Variation V ON t_V.id_variation = V.id_variation
+        INNER JOIN demo.Shop_Variation V ON t_V.id_variation = V.id_variation
         WHERE 1=1
 			AND t_V.id_variation > 0
 			AND ISNULL(V.id_variation)
@@ -311,7 +311,7 @@ BEGIN
 				, GROUP_CONCAT(t_V.name_error SEPARATOR ', ')
 			) AS msg
         FROM tmp_Variation t_V
-        INNER JOIN partsltd_prod.Shop_Variation V ON t_V.id_variation = V.id_variation
+        INNER JOIN demo.Shop_Variation V ON t_V.id_variation = V.id_variation
         WHERE 1=1
 			AND t_V.id_variation > 0
 			AND ISNULL(V.id_variation)
@@ -354,7 +354,7 @@ BEGIN
 			, 0 -- a_debug
 		;
 		SELECT * 
-		FROM partsltd_prod.Shop_Calc_User_Temp
+		FROM demo.Shop_Calc_User_Temp
 		WHERE GUID = a_guid
 		;
 	END IF;
@@ -370,10 +370,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
+		SELECT * from demo.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
+	IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -388,15 +388,15 @@ BEGIN
 				'You do not have edit permissions for '
 				, GROUP_CONCAT(name SEPARATOR ', ') 
 			)
-		FROM partsltd_prod.Shop_Permission PERM
-		INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T 
+		FROM demo.Shop_Permission PERM
+		INNER JOIN demo.Shop_Calc_User_Temp UE_T 
 			ON PERM.id_permission = UE_T.id_permission
 			AND UE_T.GUID = a_guid
 			AND IFNULL(UE_T.can_view, 0) = 0
 		;
 	END IF;
 
-	CALL partsltd_prod.p_shop_clear_calc_user( 
+	CALL demo.p_shop_clear_calc_user( 
 		a_guid
 		, 0 -- a_debug 
 	);
@@ -422,7 +422,7 @@ BEGIN
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 		
-			INSERT INTO partsltd_prod.Shop_Variation_Type (
+			INSERT INTO demo.Shop_Variation_Type (
 				id_type_temp
 				, code
 				, name
@@ -446,7 +446,7 @@ BEGIN
 			;
 			
 			UPDATE tmp_Variation_Type t_VT
-			INNER JOIN partsltd_prod.Shop_Variation_Type VT ON t_VT.id_type_temp = VT.id_type_temp
+			INNER JOIN demo.Shop_Variation_Type VT ON t_VT.id_type_temp = VT.id_type_temp
 			SET 
 				t_VT.id_type = VT.id_type
 			WHERE t_VT.is_new = 1
@@ -460,7 +460,7 @@ BEGIN
 				t_V.id_type = t_VT.id_type
 			;
 			
-			INSERT INTO partsltd_prod.Shop_Variation (
+			INSERT INTO demo.Shop_Variation (
 				id_type
 				, code
 				, name
@@ -481,7 +481,7 @@ BEGIN
 			WHERE t_V.is_new = 1
 			;
 		
-			UPDATE partsltd_prod.Shop_Variation_Type VT
+			UPDATE demo.Shop_Variation_Type VT
 			INNER JOIN tmp_Variation_Type t_VT
 				ON VT.id_type = t_VT.id_type
 				AND t_VT.is_new = 0
@@ -497,7 +497,7 @@ BEGIN
                 , VT.id_change_set = v_id_change_set
 			;
 			
-			UPDATE partsltd_prod.Shop_Variation V
+			UPDATE demo.Shop_Variation V
 			INNER JOIN tmp_Variation t_V
 				ON V.id_variation = t_V.id_variation
 				AND t_V.is_new = 0
@@ -517,11 +517,11 @@ BEGIN
     START TRANSACTION;
 		
         DELETE VT_T
-		FROM partsltd_prod.Shop_Variation_Type_Temp VT_T
+		FROM demo.Shop_Variation_Type_Temp VT_T
 		WHERE VT_T.GUID = a_guid
 		;
 		DELETE V_T
-		FROM partsltd_prod.Shop_Variation_Temp V_T
+		FROM demo.Shop_Variation_Temp V_T
 		WHERE V_T.GUID = a_guid
 		;
 		
@@ -530,7 +530,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -543,7 +543,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;

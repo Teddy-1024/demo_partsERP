@@ -1,8 +1,4 @@
 
-#formFilters {
-    width: 50vh;
-}
-
 #formFilters .container-input.filter.active {
     width: 8vh;
 }

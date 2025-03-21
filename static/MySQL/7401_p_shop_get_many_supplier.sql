@@ -23,12 +23,12 @@ BEGIN
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
-	SET v_id_permission_supplier := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION');
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission);
+	SET v_id_permission_supplier := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_SUPPLIER' LIMIT 1);
     
 	SET a_get_all_supplier := IFNULL(a_get_all_supplier, 0);
 	SET a_get_inactive_supplier := IFNULL(a_get_inactive_supplier, 0);
@@ -67,7 +67,7 @@ BEGIN
 
     -- Suppliers
     IF v_has_filter_supplier = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_supplier, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_supplier, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -76,21 +76,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+            LEFT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(S.id_supplier)
@@ -109,7 +109,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive Supplier IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+			LEFT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(S.id_supplier)
@@ -125,7 +125,7 @@ BEGIN
 			SELECT 
 				S.id_supplier
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+			RIGHT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE (
 					a_get_all_supplier = 1
 					OR (
@@ -207,8 +207,8 @@ BEGIN
 		S.website,
 		S.active
     FROM tmp_Supplier t_S
-    INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
-    LEFT JOIN partsltd_prod.Shop_Currency C ON S.id_currency = C.id_currency
+    INNER JOIN demo.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
+    LEFT JOIN demo.Shop_Currency C ON S.id_currency = C.id_currency
 	;
     
     # Supplier Addresses
@@ -224,15 +224,15 @@ BEGIN
         , SA.county
         , SA.active
     FROM tmp_Supplier t_S
-    INNER JOIN partsltd_prod.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
-    INNER JOIN partsltd_prod.Shop_Supplier_Address SA ON S.id_supplier = SA.id_supplier
-    LEFT JOIN partsltd_prod.Shop_Region R ON SA.id_region = R.id_region
+    INNER JOIN demo.Shop_Supplier S ON t_S.id_supplier = S.id_supplier
+    INNER JOIN demo.Shop_Supplier_Address SA ON S.id_supplier = SA.id_supplier
+    LEFT JOIN demo.Shop_Region R ON SA.id_region = R.id_region
 	;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     IF a_debug = 1 THEN

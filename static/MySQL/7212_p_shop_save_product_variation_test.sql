@@ -1,7 +1,7 @@
 
 
 -- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_variation_test;
+DROP PROCEDURE IF EXISTS demo.p_shop_save_product_variation_test;
 
 
 DELIMITER //
@@ -15,24 +15,24 @@ BEGIN
 	SET v_guid := 'nips';
 
 	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type
+	FROM demo.Shop_Variation_Type
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
+	FROM demo.Shop_Variation_Type_Temp
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Variation
+	FROM demo.Shop_Variation
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
+	FROM demo.Shop_Variation_Temp
 	;
     
 	START TRANSACTION;
     
-		DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
-		DELETE FROM partsltd_prod.Shop_Variation_Temp;
+		DELETE FROM demo.Shop_Variation_Type_Temp;
+		DELETE FROM demo.Shop_Variation_Temp;
 
-		INSERT INTO partsltd_prod.Shop_Variation_Type_Temp (
+		INSERT INTO demo.Shop_Variation_Type_Temp (
 			id_type
             -- , id_type_temp
             , code
@@ -64,11 +64,11 @@ BEGIN
             , display_order
             , active
             , v_guid AS GUID
-		FROM partsltd_prod.Shop_Variation_Type
+		FROM demo.Shop_Variation_Type
         WHERE id_type = 1
 		;
         
-		INSERT INTO partsltd_prod.Shop_Variation_Temp (
+		INSERT INTO demo.Shop_Variation_Temp (
 			id_variation
             , id_type
             , code
@@ -108,7 +108,7 @@ BEGIN
             , display_order
             , active
             , v_guid AS GUID
-		FROM partsltd_prod.Shop_Variation
+		FROM demo.Shop_Variation
         WHERE id_variation = 2
         UNION
         SELECT
@@ -124,16 +124,16 @@ BEGIN
 	COMMIT;
     
 	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
+	FROM demo.Shop_Variation_Type_Temp
 	WHERE GUID = v_guid
     ;
     
 	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
+	FROM demo.Shop_Variation_Temp
 	WHERE GUID = v_guid
     ;
     
-    CALL partsltd_prod.p_shop_save_product_variation ( 
+    CALL demo.p_shop_save_product_variation ( 
 		'Test save Variations - add + edit' -- comment
         , v_guid -- guid
         , 1 -- id_user
@@ -141,27 +141,27 @@ BEGIN
     );
     
 	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type_Temp
+	FROM demo.Shop_Variation_Type_Temp
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Variation_Temp
+	FROM demo.Shop_Variation_Temp
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Variation_Type
+	FROM demo.Shop_Variation_Type
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Variation
+	FROM demo.Shop_Variation
 	;
     
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+	CALL demo.p_debug_timing_reporting ( v_time_start );
 END //
 DELIMITER ;
 
 /*
-CALL partsltd_prod.p_shop_save_product_variation_test ();
+CALL demo.p_shop_save_product_variation_test ();
 
-DELETE FROM partsltd_prod.Shop_Variation_Type_Temp;
-DELETE FROM partsltd_prod.Shop_Variation_Temp;
+DELETE FROM demo.Shop_Variation_Type_Temp;
+DELETE FROM demo.Shop_Variation_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
@@ -181,6 +181,6 @@ delete
 where id_type = -1
 ;
 
-Cannot add or update a child row: a foreign key constraint fails (`partsltd_prod`.`shop_variation_type`, CONSTRAINT `FK_Shop_Variation_Type_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`))
+Cannot add or update a child row: a foreign key constraint fails (`demo`.`shop_variation_type`, CONSTRAINT `FK_Shop_Variation_Type_id_change_set` FOREIGN KEY (`id_change_set`) REFERENCES `shop_product_change_set` (`id_change_set`))
 
 */

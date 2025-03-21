@@ -63,7 +63,7 @@ BEGIN
     SET v_id_type_error_bad_data := (SELECT id_type FROM Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
     SET v_id_access_level_edit := (SELECT id_access_level FROM Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
-    CALL partsltd_prod.p_validate_guid ( a_guid );
+    CALL demo.p_validate_guid ( a_guid );
     
     DROP TEMPORARY TABLE IF EXISTS tmp_Stock_Item;
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
@@ -146,9 +146,9 @@ BEGIN
         , IFNULL(IFNULL(SI_T.active, SI.active), 1) AS active
 		# , fn_shop_get_product_permutation_name(SI_T.id_permutation)
         , CASE WHEN IFNULL(SI_T.id_stock, 0) < 1 THEN 1 ELSE 0 END AS is_new
-	FROM partsltd_prod.Shop_Stock_Item_Temp SI_T
-    LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON SI_T.id_stock = SI.id_stock
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON SI_T.id_permutation = PP.id_permutation
+	FROM demo.Shop_Stock_Item_Temp SI_T
+    LEFT JOIN demo.Shop_Stock_Item SI ON SI_T.id_stock = SI.id_stock
+    LEFT JOIN demo.Shop_Product_Permutation PP ON SI_T.id_permutation = PP.id_permutation
 	-- LEFT JOIN Shop_Product P ON PP.id_product = P.id_product
     WHERE SI_T.guid = a_guid
     ;
@@ -156,7 +156,7 @@ BEGIN
     -- Missing Permutation IDs for setting new permutation for stock item 
     -- With variations
 	UPDATE tmp_Stock_Item t_SI
-	INNER JOIN partsltd_prod.Shop_Product P ON t_SI.id_product = P.id_product
+	INNER JOIN demo.Shop_Product P ON t_SI.id_product = P.id_product
 	SET t_SI.id_permutation = IFNULL(fn_shop_get_id_product_permutation_from_variation_csv_list ( t_SI.id_product, t_SI.id_pairs_variations ), 0)
     WHERE 1=1
 		AND t_SI.id_permutation = 0
@@ -165,7 +165,7 @@ BEGIN
     -- Without variations
 	UPDATE tmp_Stock_Item t_SI
 	-- INNER JOIN Shop_Product P ON t_SI.id_product = P.id_product
-    INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_product = PP.id_product
+    INNER JOIN demo.Shop_Product_Permutation PP ON t_SI.id_product = PP.id_product
 	SET t_SI.id_permutation = IFNULL(PP.id_permutation, 0)
     WHERE 1=1
 		AND t_SI.id_permutation = 0
@@ -174,8 +174,8 @@ BEGIN
     
     -- Add stock item error names
 	UPDATE tmp_Stock_Item t_SI
-	INNER JOIN partsltd_prod.Shop_Product P ON t_SI.id_product = P.id_product
-    INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
+	INNER JOIN demo.Shop_Product P ON t_SI.id_product = P.id_product
+    INNER JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
     -- INNER JOIN Shop_Product_Permutation PP ON t_SI.id_product = PP.id_product
 	SET t_SI.name_error = CONCAT(
 			PC.name,
@@ -195,7 +195,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Stock_Item t_SI 
-        LEFT JOIN partsltd_prod.Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
+        LEFT JOIN demo.Shop_Stock_Item SI ON t_SI.id_stock = SI.id_stock
         WHERE 1=1
 			AND t_SI.id_stock > 0
 			AND ISNULL(SI.id_stock)
@@ -220,7 +220,7 @@ BEGIN
 				)
 			) AS msg
 		FROM tmp_Stock_Item t_SI
-        LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
+        LEFT JOIN demo.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
         WHERE 1=1
 			AND t_SI.id_stock > 0
 			AND ISNULL(SI.id_stock)
@@ -245,7 +245,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Stock_Item t_SI 
-        LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
+        LEFT JOIN demo.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
         WHERE 1=1
 			AND (
 				t_SI.id_permutation = 0
@@ -263,7 +263,7 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('A valid permutation could not be found for the variations selected for the following stock item(s): ', GROUP_CONCAT(IFNULL(t_SI.name_error, 'NULL') SEPARATOR ', ')) AS msg
 		FROM tmp_Stock_Item t_SI
-        LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
+        LEFT JOIN demo.Shop_Product_Permutation PP ON t_SI.id_permutation = PP.id_permutation 
         WHERE 1=1
 			AND (
 				t_SI.id_permutation = 0
@@ -290,7 +290,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Storage_Location SL 
+        INNER JOIN demo.Shop_Storage_Location SL 
 			ON t_SI.id_location_storage = SL.id_location
             AND SL.active = 1
         WHERE ISNULL(SL.id_location)
@@ -306,7 +306,7 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following stock item(s) do not have a valid storage location: ', GROUP_CONCAT(IFNULL(t_SI.name_error, 'NULL') SEPARATOR ', ')) AS msg
         FROM tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Storage_Location SL 
+        INNER JOIN demo.Shop_Storage_Location SL 
 			ON t_SI.id_location_storage = SL.id_location
             AND SL.active = 1
         WHERE ISNULL(SL.id_location)
@@ -316,7 +316,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Currency C
+        INNER JOIN demo.Shop_Currency C
 			ON t_SI.id_currency_cost = C.id_currency
             AND C.active = 1
         WHERE ISNULL(C.id_currency)
@@ -332,7 +332,7 @@ BEGIN
 			, v_code_type_error_bad_data
 			, CONCAT('The following stock item(s) do not have a valid cost currency: ', GROUP_CONCAT(IFNULL(t_SI.name_error, 'NULL') SEPARATOR ', ')) AS msg
         FROM tmp_Stock_Item t_SI
-        INNER JOIN partsltd_prod.Shop_Currency C
+        INNER JOIN demo.Shop_Currency C
 			ON t_SI.id_currency_cost = C.id_currency
             AND C.active = 1
         WHERE ISNULL(C.id_currency)
@@ -529,8 +529,8 @@ BEGIN
 				
 				SET v_id_change_set := LAST_INSERT_ID();
                 
-				-- select * from partsltd_prod.Shop_Stock_Item
-				UPDATE partsltd_prod.Shop_Stock_Item SI
+				-- select * from demo.Shop_Stock_Item
+				UPDATE demo.Shop_Stock_Item SI
 				INNER JOIN tmp_Stock_Item t_SI
 					ON SI.id_stock = t_SI.id_stock
 				SET 
@@ -551,7 +551,7 @@ BEGIN
 				;
 			END IF;
 			
-			INSERT INTO partsltd_prod.Shop_Stock_Item (
+			INSERT INTO demo.Shop_Stock_Item (
 				id_permutation
 				, date_purchased
 				, date_received
@@ -595,7 +595,7 @@ BEGIN
     
     START TRANSACTION;
 		
-		DELETE FROM partsltd_prod.Shop_Stock_Item_Temp
+		DELETE FROM demo.Shop_Stock_Item_Temp
 		WHERE GUID = a_guid;
 		
 	COMMIT;
@@ -603,7 +603,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -614,7 +614,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;

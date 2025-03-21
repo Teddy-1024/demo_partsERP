@@ -33,13 +33,13 @@ BEGIN
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_admin := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'ADMIN' LIMIT 1);
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_id_permission_store_admin := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_ADMIN' LIMIT 1);
-    SET v_id_permission_user := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_USER' LIMIT 1);
-    SET v_id_permission_user_admin := (SELECT id_permission FROM partsltd_prod.Shop_Permission WHERE code = 'STORE_USER_ADMIN' LIMIT 1);
-    SET v_code_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_error_bad_data LIMIT 1);
+    SET v_id_access_level_admin := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'ADMIN' LIMIT 1);
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_id_permission_store_admin := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_ADMIN' LIMIT 1);
+    SET v_id_permission_user := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_USER' LIMIT 1);
+    SET v_id_permission_user_admin := (SELECT id_permission FROM demo.Shop_Permission WHERE code = 'STORE_USER_ADMIN' LIMIT 1);
+    SET v_code_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_error_bad_data LIMIT 1);
     SET v_ids_permission_required := CONCAT(v_id_permission_user, ',', v_id_permission_user_admin, ',', v_id_permission_store_admin);
     SET v_is_new := FALSE;
     
@@ -87,12 +87,12 @@ BEGIN
 	);
     
     IF ISNULL(a_id_user) AND NOT ISNULL(a_id_user_auth0) THEN
-		SET a_id_user := (SELECT U.id_user FROM partsltd_prod.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1); -- LIKE CONCAT('%', a_id_user_auth0, '%') LIMIT 1);
+		SET a_id_user := (SELECT U.id_user FROM demo.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1); -- LIKE CONCAT('%', a_id_user_auth0, '%') LIMIT 1);
     END IF;
     
     IF ISNULL(a_id_user) THEN
 		IF NOT ISNULL(a_id_user_auth0) THEN
-			INSERT INTO partsltd_prod.Shop_User (
+			INSERT INTO demo.Shop_User (
 				id_user_auth0
 				, is_super_user
 				, active
@@ -103,7 +103,7 @@ BEGIN
 				, 1 -- active
 			)
 			;
-            SET a_id_user := (SELECT U.id_user FROM partsltd_prod.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1);
+            SET a_id_user := (SELECT U.id_user FROM demo.Shop_User U WHERE U.id_user_auth0 = a_id_user_auth0 LIMIT 1);
 			SET v_is_new := TRUE;
         ELSE
 			INSERT INTO tmp_Msg_Error (
@@ -132,7 +132,7 @@ BEGIN
     
     -- User IDs
     IF (NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) AND v_has_filter_user = 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_user, ',', FALSE);
+		CALL demo.p_split(v_guid, a_ids_user, ',', FALSE);
         
         DELETE FROM tmp_Split;
 		
@@ -143,21 +143,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF (NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) AND v_has_filter_user = 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+            LEFT JOIN demo.Shop_User U ON t_S.as_int = U.id_user
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(U.id_user)
@@ -174,7 +174,7 @@ BEGIN
 				v_code_error_bad_data, 
 				CONCAT('Invalid or inactive User IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+			LEFT JOIN demo.Shop_User U ON t_S.as_int = U.id_user
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(U.id_user)
@@ -188,7 +188,7 @@ BEGIN
 				U.id_user
                 , RANK() OVER (ORDER BY U.id_user DESC) AS rank_user
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_User U ON t_S.as_int = U.id_user
+			RIGHT JOIN demo.Shop_User U ON t_S.as_int = U.id_user
 			WHERE 
 				(
 					a_get_all_user = 1
@@ -207,7 +207,7 @@ BEGIN
     
     -- Auth0 User IDs
     IF (NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) AND v_has_filter_user_auth0 = 1) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_user_auth0, ',', FALSE);
+		CALL demo.p_split(v_guid, a_ids_user_auth0, ',', FALSE);
         
         DELETE FROM tmp_Split;
 		
@@ -216,21 +216,21 @@ BEGIN
 		)
 		SELECT 
 			substring
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF (NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) AND v_has_filter_user_auth0 = 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_User U ON t_S.substring = U.id_user_auth0
+            LEFT JOIN demo.Shop_User U ON t_S.substring = U.id_user_auth0
 			WHERE 
 				ISNULL(t_S.substring) 
                 OR ISNULL(U.id_user_auth0)
@@ -247,7 +247,7 @@ BEGIN
 				v_code_error_bad_data, 
 				CONCAT('Invalid or inactive Auth0 User IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_User U ON t_S.substring = U.id_user_auth0
+			LEFT JOIN demo.Shop_User U ON t_S.substring = U.id_user_auth0
 			WHERE 
 				ISNULL(t_S.substring) 
 				OR ISNULL(U.id_user_auth0)
@@ -263,7 +263,7 @@ BEGIN
 				U.id_user
                 , v_rank_max + (RANK() OVER (ORDER BY U.id_user DESC)) AS rank_user
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_User U ON t_S.substring = U.id_user_auth0
+			RIGHT JOIN demo.Shop_User U ON t_S.substring = U.id_user_auth0
 			WHERE 
 				(
 					a_get_all_user = 1
@@ -311,10 +311,10 @@ BEGIN
 				, '' -- ids_product
 				, 0 -- a_debug
 			;
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+			SELECT * FROM demo.Shop_Calc_User_Temp;
         END IF;
         
-        CALL partsltd_prod.p_shop_calc_user(
+        CALL demo.p_shop_calc_user(
 			v_guid -- guid
             , a_id_user -- ids_user
             , FALSE -- get_inactive_user
@@ -325,17 +325,17 @@ BEGIN
 		);
         
         IF a_debug = 1 THEN
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = v_guid;
+			SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = v_guid;
         END IF;
         
         UPDATE tmp_User t_U
-        INNER JOIN partsltd_prod.Shop_Calc_User_Temp CUT 
+        INNER JOIN demo.Shop_Calc_User_Temp CUT 
 			ON CUT.GUID = v_guid
             AND t_U.id_user = CUT.id_user
         SET t_U.can_admin_store = CUT.can_admin
         ;
         
-		CALL partsltd_prod.p_shop_clear_calc_user( v_guid, FALSE );
+		CALL demo.p_shop_clear_calc_user( v_guid, FALSE );
 	END IF;
     
     -- Can admin user
@@ -350,10 +350,10 @@ BEGIN
 				, '' -- ids_product
 				, 0 -- a_debug
 			;
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+			SELECT * FROM demo.Shop_Calc_User_Temp;
         END IF;
         
-        CALL partsltd_prod.p_shop_calc_user(
+        CALL demo.p_shop_calc_user(
 			v_guid -- guid
             , a_id_user -- ids_user
             , FALSE -- get_inactive_user
@@ -364,17 +364,17 @@ BEGIN
 		);
         
         IF a_debug = 1 THEN
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = v_guid;
+			SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = v_guid;
         END IF;
         
         UPDATE tmp_User t_U
-        INNER JOIN partsltd_prod.Shop_Calc_User_Temp CUT 
+        INNER JOIN demo.Shop_Calc_User_Temp CUT 
 			ON CUT.GUID = v_guid
             AND t_U.id_user = CUT.id_user
         SET t_U.can_admin_user = CUT.can_admin
         ;
         
-		CALL partsltd_prod.p_shop_clear_calc_user( v_guid, FALSE );
+		CALL demo.p_shop_clear_calc_user( v_guid, FALSE );
 	END IF;
 
     -- Permissions
@@ -389,10 +389,10 @@ BEGIN
 				, '' -- ids_product
 				, 0 -- a_debug
 			;
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp;
+			SELECT * FROM demo.Shop_Calc_User_Temp;
         END IF;
         
-        CALL partsltd_prod.p_shop_calc_user(
+        CALL demo.p_shop_calc_user(
 			v_guid -- guid
             , a_id_user -- ids_user
             , FALSE -- get_inactive_user
@@ -403,12 +403,12 @@ BEGIN
 		);
         
         IF a_debug = 1 THEN
-			SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE GUID = v_guid;
+			SELECT * FROM demo.Shop_Calc_User_Temp WHERE GUID = v_guid;
         END IF;
         
         IF NOT EXISTS (
 			SELECT can_view 
-            FROM partsltd_prod.Shop_Calc_User_Temp CUT 
+            FROM demo.Shop_Calc_User_Temp CUT 
             WHERE 1=1
 				AND CUT.GUID = v_guid
                 AND can_view = 1
@@ -422,9 +422,9 @@ BEGIN
 			VALUES (
                 v_id_type_error_bad_data,
 				v_code_error_bad_data, 
-                -- CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_id_permission_user LIMIT 1))
- 				-- CONCAT('You do not have view permissions for ', (SELECT GROUP_CONCAT(name SEPARATOR ', ') FROM partsltd_prod.Shop_Permission WHERE FIND_IN_SET(v_id_permission_user, id_permission) > 0))
-				CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission P INNER JOIN partsltd_prod.Shop_Calc_User_Temp CUT ON P.id_permission = CUT.id_permission_required WHERE GUID = v_guid AND IFNULL(can_view, 0) = 0 LIMIT 1)) --  WHERE IFNULL(CUT.can_view, 0) = 0
+                -- CONCAT('You do not have view permissions for ', (SELECT name FROM demo.Shop_Permission WHERE id_permission = v_id_permission_user LIMIT 1))
+ 				-- CONCAT('You do not have view permissions for ', (SELECT GROUP_CONCAT(name SEPARATOR ', ') FROM demo.Shop_Permission WHERE FIND_IN_SET(v_id_permission_user, id_permission) > 0))
+				CONCAT('You do not have view permissions for ', (SELECT name FROM demo.Shop_Permission P INNER JOIN demo.Shop_Calc_User_Temp CUT ON P.id_permission = CUT.id_permission_required WHERE GUID = v_guid AND IFNULL(can_view, 0) = 0 LIMIT 1)) --  WHERE IFNULL(CUT.can_view, 0) = 0
 			)
 			;
 		ELSE
@@ -432,7 +432,7 @@ BEGIN
             SET a_debug := a_debug;
         END IF;
         
-		CALL partsltd_prod.p_shop_clear_calc_user( v_guid, FALSE );
+		CALL demo.p_shop_clear_calc_user( v_guid, FALSE );
 	END IF;
     
     
@@ -460,7 +460,7 @@ BEGIN
 		, t_U.can_admin_user
         , v_is_new AS is_new
 	FROM tmp_User t_U
-	INNER JOIN partsltd_prod.Shop_User U ON t_U.id_user = U.id_user
+	INNER JOIN demo.Shop_User U ON t_U.id_user = U.id_user
 	;
     
     # Errors
@@ -471,7 +471,7 @@ BEGIN
         MET.name,
         MET.description
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET
+    INNER JOIN demo.Shop_Msg_Error_Type MET
 		ON t_ME.id_type = MET.id_type
     ;
     
@@ -485,12 +485,12 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Msg_Error;
 	
 	/*
-	DELETE FROM partsltd_prod.Shop_Calc_User_Temp
+	DELETE FROM demo.Shop_Calc_User_Temp
 	WHERE GUID = v_guid;
 	*/
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -519,11 +519,11 @@ CALL p_get_many_user (
 );*/
 
 /*
-select * FROM partsltd_prod.Shop_Calc_User_Temp;
-delete FROM partsltd_prod.Shop_Calc_User_Temp;
+select * FROM demo.Shop_Calc_User_Temp;
+delete FROM demo.Shop_Calc_User_Temp;
 
 SELECT * 
-FROM partsltd_prod.Shop_USER;
+FROM demo.Shop_USER;
 
 CALL p_get_many_user(
 	NULL -- :a_id_user, 

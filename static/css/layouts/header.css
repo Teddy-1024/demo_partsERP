@@ -68,6 +68,9 @@
 }
 
 /* Page Filters */
+#formFilters {
+    width: fit-content;
+}
 #formFilters * {
     font-size: 12px;
 }

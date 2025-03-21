@@ -47,7 +47,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE MET.code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -109,8 +109,8 @@ BEGIN
         , IFNULL(PC_T.display_order, PC.display_order) AS display_order
         , IFNULL(PC_T.name, IFNULL(PC.name, IFNULL(PC_T.code, IFNULL(PC.code, IFNULL(PC_T.id_category, '(No Product Category)'))))) AS name_error
         , CASE WHEN IFNULL(PC_T.id_category, 0) < 1 THEN 1 ELSE 0 END AS is_new
-	FROM partsltd_prod.Shop_Product_Category_Temp PC_T
-    LEFT JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+	FROM demo.Shop_Product_Category_Temp PC_T
+    LEFT JOIN demo.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
     WHERE PC_T.guid = a_guid
     ;
     
@@ -165,7 +165,7 @@ BEGIN
     -- Permissions
 	SET v_ids_product_permission := (
 		SELECT GROUP_CONCAT(P.id_product SEPARATOR ',') 
-		FROM partsltd_prod.Shop_Product P 
+		FROM demo.Shop_Product P 
 		INNER JOIN tmp_Category t_C
 			ON P.id_category = t_C.id_category 
 			AND t_C.is_new = 0
@@ -185,7 +185,7 @@ BEGIN
         ;
     END IF;
     
-	CALL partsltd_prod.p_shop_calc_user(
+	CALL demo.p_shop_calc_user(
 		a_guid
         , a_id_user
         , FALSE -- a_get_inactive_user
@@ -196,8 +196,8 @@ BEGIN
     );
 	
 	UPDATE tmp_Category t_C
-	INNER JOIN partsltd_prod.Shop_Product P ON t_C.id_category = P.id_product
-	INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T
+	INNER JOIN demo.Shop_Product P ON t_C.id_category = P.id_product
+	INNER JOIN demo.Shop_Calc_User_Temp UE_T
 		ON P.id_product = UE_T.id_product
 		AND UE_T.GUID = a_guid
 	SET 
@@ -223,7 +223,7 @@ BEGIN
 		;
     END IF;
     
-    IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0 LIMIT 1) THEN
+    IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0 LIMIT 1) THEN
 		DELETE t_ME
         FROM tmp_Msg_Error t_ME
         WHERE t_ME.id_type <> v_id_type_error_no_permission
@@ -241,7 +241,7 @@ BEGIN
         ;
     END IF;
 	
-	CALL partsltd_prod.p_shop_clear_calc_user(
+	CALL demo.p_shop_clear_calc_user(
 		a_guid
         , 0 -- a_debug
 	);
@@ -249,13 +249,13 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		START TRANSACTION;
 		
-			INSERT INTO partsltd_prod.Shop_Product_Change_Set ( comment )
+			INSERT INTO demo.Shop_Product_Change_Set ( comment )
 			VALUES ( a_comment )
 			;
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 			
-			UPDATE partsltd_prod.Shop_Product_Category PC
+			UPDATE demo.Shop_Product_Category PC
 			INNER JOIN tmp_Category t_C 
 				ON PC.id_category = t_C.id_category
 				AND t_C.is_new = 0
@@ -270,7 +270,7 @@ BEGIN
 				, PC.id_change_set = v_id_change_set
 			;
 			
-			INSERT INTO partsltd_prod.Shop_Product_Category (
+			INSERT INTO demo.Shop_Product_Category (
 				code
 				, name
 				, description
@@ -301,7 +301,7 @@ BEGIN
 	
 	START TRANSACTION;
 
-		DELETE FROM partsltd_prod.Shop_Product_Category_Temp
+		DELETE FROM demo.Shop_Product_Category_Temp
 		WHERE GUID = a_guid;
 		
 	COMMIT;
@@ -309,7 +309,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -320,7 +320,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;
@@ -330,13 +330,13 @@ select
 	*
     -- COUNT(*)
 -- delete
-from partsltd_prod.Shop_Product_Category_Temp
+from demo.Shop_Product_Category_Temp
 ;
 
 
-CALL partsltd_prod.p_shop_save_product_category (
+CALL demo.p_shop_save_product_category (
 	'nipples'
-    , (SELECT GUID FROM partsltd_prod.Shop_Product_Category_Temp ORDER BY id_temp DESC LIMIT 1)
+    , (SELECT GUID FROM demo.Shop_Product_Category_Temp ORDER BY id_temp DESC LIMIT 1)
     , 1
     , 1
 );
@@ -345,7 +345,7 @@ select
 	*
     -- COUNT(*)
 -- delete
-from partsltd_prod.Shop_Product_Category_Temp
+from demo.Shop_Product_Category_Temp
 ;
 
 */

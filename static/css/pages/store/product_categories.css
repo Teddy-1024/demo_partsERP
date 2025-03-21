@@ -1,8 +1,4 @@
 
-#formFilters {
-    width: 50vh;
-}
-
 #formFilters .container {
     max-width: fit-content;
 }
@@ -15,16 +11,6 @@
     width: 8vh;
 }
 
-#tableMain {
-    max-width: min(calc(1vh * 79), calc(1vw * 90));
-}
-
-/*
-#tableMain thead tr th, #tableMain tbody tr td {
-    margin-left: 1vh;
-    margin-right: 1vh;
-}
-*/
 
 #tableMain tbody tr td.display_order, #tableMain thead tr th.display_order {
     width: 5vh;

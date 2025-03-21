@@ -25,9 +25,9 @@ $output = New-Object System.Text.StringBuilder
 
 $output.AppendLine("-- Combined SQL files")
 $output.AppendLine()
-$output.AppendLine("DROP DATABASE IF EXISTS partsltd_prod;")
-$output.AppendLine("CREATE DATABASE partsltd_prod;")
-$output.AppendLine("USE partsltd_prod;")
+$output.AppendLine("DROP DATABASE IF EXISTS demo;")
+$output.AppendLine("CREATE DATABASE demo;")
+$output.AppendLine("USE demo;")
 $output.AppendLine()
 
 # Process each file

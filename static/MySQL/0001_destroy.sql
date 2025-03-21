@@ -1,4 +1,12 @@
 
+
+CREATE DATABASE IF NOT EXISTS demo;
+
+GRANT ALL PRIVILEGES ON demo.* TO 'teddy'@'%';
+FLUSH PRIVILEGES;
+
+USE demo;
+
 /* Clear Store DataBase */
 
 

@@ -3,7 +3,7 @@
     overflow-x: auto;
     padding: 1vh;
     max-width: 95vw; /* min(calc(1vh * 80), calc(1vw * 90)); */
-    width: fit-content;
+    width: min-content;
     margin: 1vh 2vh;
     align-items: normal;
     justify-content: normal;

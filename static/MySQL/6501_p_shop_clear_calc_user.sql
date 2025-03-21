@@ -25,7 +25,7 @@ BEGIN
 	COMMIT;
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting( v_time_start );
+		CALL demo.p_debug_timing_reporting( v_time_start );
     END IF;
 END //
 DELIMITER ;

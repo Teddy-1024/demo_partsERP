@@ -22,7 +22,7 @@ class Config:
     is_production = False
 
     DB_HOST = os.getenv('DB_HOST')
-    DB_NAME = os.getenv('partsltd_prod')
+    DB_NAME = os.getenv('demo')
     DB_PASSWORD = os.getenv('DB_PASSWORD')
     DB_USER = os.getenv('DB_USER')
     DEBUG = False

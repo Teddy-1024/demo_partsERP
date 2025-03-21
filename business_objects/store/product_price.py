@@ -27,13 +27,6 @@ class Product_Price(db.Model, Store_Base):
     id_permutation = db.Column(db.Integer)
     id_product = db.Column(db.Integer)
     id_category = db.Column(db.Integer)
-    """
-    id_currency = db.Column(db.Integer)
-    code_currency = db.Column(db.String(50))
-    name_currency = db.Column(db.String(255))
-    symbol_currency = db.Column(db.String(50))
-    """
-    # id_region = db.Column(db.Integer)
     value_local_VAT_incl = db.Column(db.Float)
     value_local_VAT_excl = db.Column(db.Float)
     display_order = db.Column(db.Float)
@@ -45,20 +38,12 @@ class Product_Price(db.Model, Store_Base):
         self.delivery_region = None
     @classmethod
     def from_DB_get_many_product_catalogue(cls, query_row):
-        # _m = 'Product_Price.from_DB_get_many_product_catalogue'
         price = cls()
         price.id_price = query_row[0]
         price.id_permutation = query_row[1]
         price.id_product = query_row[2]
         price.id_category = query_row[3]
         price.currency = Currency.from_DB_get_many_product_price_and_discount_and_delivery_region(query_row)
-        """
-        price.id_currency = query_row[4]
-        price.code_currency = query_row[5]
-        price.name_currency = query_row[6]
-        price.symbol_currency = query_row[7]
-        """
-        # price.id_region = query_row[8]
         price.value_local_VAT_incl = query_row[9]
         price.value_local_VAT_excl = query_row[10]
         price.display_order = query_row[11]
@@ -85,7 +70,6 @@ class Product_Price(db.Model, Store_Base):
             self.ATTR_ID_PRODUCT: self.id_product,
             self.ATTR_ID_PRODUCT_CATEGORY: self.id_category,
             self.FLAG_CURRENCY: self.currency.to_json(),
-            # Region.ATTR_ID_REGION_DELIVERY: self.id_region,
             self.FLAG_VALUE_LOCAL_VAT_INCL: self.value_local_VAT_incl,
             self.FLAG_VALUE_LOCAL_VAT_EXCL: self.value_local_VAT_excl,
             self.FLAG_DISPLAY_ORDER: self.display_order
@@ -99,7 +83,6 @@ class Product_Price(db.Model, Store_Base):
         price.id_product = json[cls.ATTR_ID_PRODUCT]
         price.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
         price.currency = Currency.from_json(json)
-        # price.id_region = json[Region.ATTR_ID_REGION_DELIVERY]
         price.value_local_VAT_incl = json[cls.FLAG_VALUE_LOCAL_VAT_INCL]
         price.value_local_VAT_excl = json[cls.FLAG_VALUE_LOCAL_VAT_EXCL]
         price.display_order = json[cls.FLAG_DISPLAY_ORDER]

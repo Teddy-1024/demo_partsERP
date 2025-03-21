@@ -15,7 +15,6 @@ import lib.argument_validation as av
 from lib import data_types
 from forms.forms import Form_Basket_Add, Form_Basket_Edit
 from business_objects.currency import Currency
-from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.discount import Discount
 from business_objects.store.image import Image
 from business_objects.store.product_price import Product_Price
@@ -68,16 +67,7 @@ class Product_Permutation(db.Model, Store_Base):
     id_product = db.Column(db.Integer)
     id_category = db.Column(db.Integer)
     csv_id_pairs_variation = db.Column(db.String(4000))
-    # name = db.Column(db.String(255))
     description = db.Column(db.String(4000))
-    # price_GBP_full = db.Column(db.Float)
-    # price_GBP_min = db.Column(db.Float)
-    """
-    id_currency_cost = db.Column(db.Integer)
-    code_currency_cost = db.Column(db.String(3))
-    symbol_currency_cost = db.Column(db.String(3))
-    """
-    # currency_cost: Currency
     cost_local_VAT_excl = db.Column(db.Float)
     cost_local_VAT_incl = db.Column(db.Float)
     profit_local_min = db.Column(db.Float)
@@ -109,15 +99,9 @@ class Product_Permutation(db.Model, Store_Base):
     count_interval_expiration_unsealed = db.Column(db.Integer)
     has_variations = db.Column(db.Boolean)
     active = db.Column(db.Boolean)
-    # display_order = db.Column(db.Integer)
     can_view = db.Column(db.Boolean)
     can_edit = db.Column(db.Boolean)
     can_admin = db.Column(db.Boolean)
-    # form_basket_add: Form_Basket_Add
-    # form_basket_edit: Form_Basket_Edit
-    # is_unavailable_in_currency_or_region: bool
-    # is_available: bool
-    # variation_tree
 
     def __init__(self):
         self.prices = []
@@ -136,9 +120,7 @@ class Product_Permutation(db.Model, Store_Base):
         self.form_basket_add = Form_Basket_Add()
         self.form_basket_edit = Form_Basket_Edit()
         self.is_unavailable_in_currency_or_region = False
-        # self.is_available = False
         self.variation_tree = None
-        # self.variations = []
     @classmethod
     def from_DB_get_many_product_catalogue(cls, query_row):
         _m = f'{cls.__name__}.from_DB_get_many_product_catalogue'
@@ -180,7 +162,6 @@ class Product_Permutation(db.Model, Store_Base):
         permutation.count_interval_expiration_unsealed = query_row[34]
         permutation.has_variations = av.input_bool(query_row[35], cls.FLAG_HAS_VARIATIONS, _m, v_arg_type=v_arg_type)
         permutation.active = av.input_bool(query_row[36], cls.FLAG_ACTIVE, _m, v_arg_type=v_arg_type)
-        # permutation.display_order = query_row[27]
         permutation.can_view = av.input_bool(query_row[37], "can_view", _m, v_arg_type=v_arg_type)
         permutation.can_edit = av.input_bool(query_row[38], "can_edit", _m, v_arg_type=v_arg_type)
         permutation.can_admin = av.input_bool(query_row[39], "can_admin", _m, v_arg_type=v_arg_type)
@@ -191,7 +172,6 @@ class Product_Permutation(db.Model, Store_Base):
         v_arg_type = 'class attribute'
         permutation = Product_Permutation()
         permutation.id_product = query_row[0]
-        # permutation.name = query_row[1]
         permutation.description = query_row[2]
         return permutation
 
@@ -200,21 +180,11 @@ class Product_Permutation(db.Model, Store_Base):
         v_arg_type = 'class attribute'
         permutation = Product_Permutation()
         permutation.id_product = query_row[0]
-        # permutation.price_GBP_full = query_row[1]
         permutation.id_stripe_product = query_row[2]
         permutation.is_subscription = av.input_bool(query_row[3], "is_subscription", _m, v_arg_type=v_arg_type)
         permutation.name_singular_unit_measurement_interval_recurrence = query_row[4]
         permutation.count_interval_recurrence = query_row[5]
         return permutation
-    """
-    def from_json(json_basket_item, key_id_product, key_id_permutation):
-        _m = 'Product_Permutation.from_json'
-        v_arg_type = 'class attribute'
-        permutation = Product_Permutation()
-        permutation.id_product = json_basket_item[key_id_product]
-        permutation.id_permutation = json_basket_item[key_id_permutation]
-        return permutation
-    """
     @classmethod
     def from_json(cls, json):
         _m = f'{cls.__name__}.from_json'
@@ -257,11 +227,6 @@ class Product_Permutation(db.Model, Store_Base):
         if permutation.has_variations:
             permutation.csv_id_pairs_variation = json[cls.FLAG_PRODUCT_VARIATIONS]
             permutation.variation_tree = Product_Variation_Tree.from_json_str(permutation.csv_id_pairs_variation)
-            """
-            for jsonProductVariation in json[cls.FLAG_PRODUCT_VARIATIONS]:
-                variation = Product_Variation.from_json(jsonProductVariation)
-                permutation.add_product_variation(variation)
-            """
         return permutation
     def to_json(self):
         return {
@@ -327,29 +292,6 @@ class Product_Permutation(db.Model, Store_Base):
     def output_delivery_date(self):
         return (datetime.now() + timedelta(days=self.latency_manufacture)).strftime('%A, %d %B %Y')
     
-    """
-    def output_lead_time(self):
-        return '1 day' if self.latency_manufacture == 1 else f'{self.latency_manufacture} days'
-    
-    def output_price(self, is_included_VAT):
-        if self.is_unavailable_in_currency_or_region:
-            return 'Not available in currency and region'
-        if not self.is_available:
-            return 'Not available'
-        price = self.get_price()
-        locale.setlocale(locale.LC_ALL, '')
-        if is_included_VAT:
-            return f'{price.symbol_currency} {locale.format_string("%d", price.value_local_VAT_incl, grouping=True)}'
-        else:
-            return f'{price.symbol_currency} {locale.format_string("%d", price.value_local_VAT_excl, grouping=True)}'
-    def output_variations(self):
-        if not self.has_variations: return ''
-        return '\n'.join([f'{variation.name_variation_type}: {variation.name_variation}' for variation in self.variations])
-    def output_variations_jsonify(self):
-        if not self.has_variations: return ''
-        return ','.join([f'{variation.id_type}: {variation.id_variation}' for variation in self.variations])
-    """
-    
     def __repr__(self):
         return f'''Product_Permutation
             id_permutation: {self.id_permutation}
@@ -394,27 +336,7 @@ class Product_Permutation(db.Model, Store_Base):
             delivery_options: {self.delivery_options}
             prices: {self.prices}
             '''
-        """
-            price_GBP_full: {self.price_GBP_full}
-            price_GBP_min: {self.price_GBP_min}
-        """
-    """
-    def add_product_variation(self, variation):
-        _m = 'Product_Permutation.add_product_variation'
-        ""
-        av.val_instance(variation, 'variation', _m, Product_Variation)
-        try:
-            self.variation_index[variation.id_variation]
-            raise ValueError(f"{av.error_msg_str(variation, 'variation', _m, Product_Variation)}\nProduct_Variation already in product.")
-        except KeyError:
-            self.variation_index[variation.id_variation] = len(self.variations)
-            self.variations.append(variation)
-        ""
-        if self.variation_tree is None:
-            self.variation_tree = Product_Variation_Tree.from_product_variation(variation)
-        else:
-            self.variation_tree.add_product_variation(variation)
-    """
+    
     def add_product_variation_type(self, variation_type):
         _m = 'Product_Permutation.add_product_variation_type'
         if self.variation_tree is None:
@@ -487,23 +409,6 @@ class Product_Permutation(db.Model, Store_Base):
         return a
 
 
-"""
-class Permutation_Product_Variation_Link(db.Model):
-    id_permutation = db.Column(db.Integer)
-    id_product = db.Column(db.Integer)
-    id_category = db.Column(db.Integer)
-    id_variation = db.Column(db.Integer)
-
-    def from_DB_get_many_product_catalogue(query_row):
-        _m = 'Permutation_Product_Variation_Link.from_DB_get_many_product_catalogue'
-        v_arg_type = 'class attribute'
-        link = Permutation_Product_Variation_Link()
-        link.id_permutation = query_row[0]
-        link.id_product = query_row[1]
-        link.id_category = query_row[2]
-        link.id_variation = query_row[3]
-        return link
-"""
 
 class Product_Permutation_Temp(db.Model, Store_Base):
     __tablename__: ClassVar[str] = 'Shop_Product_Permutation_Temp'
@@ -588,30 +493,4 @@ class Product_Permutation_Temp(db.Model, Store_Base):
             active: {self.active}
             guid: {self.guid}
             '''
-    """
-    def to_json(self):
-        return {
-            self.ATTR_ID_PRODUCT_PERMUTATION: int(self.id_permutation),
-            self.ATTR_ID_PRODUCT: int(self.id_product),
-            self.FLAG_DESCRIPTION: self.description,
-            Product_Permutation.FLAG_COST_LOCAL: float(self.cost_local),
-            Product_Permutation.FLAG_CURRENCY_COST: int(self.id_currency_cost),
-            Product_Permutation.FLAG_PROFIT_LOCAL_MIN: float(self.profit_local_min),
-            Product_Permutation.FLAG_LATENCY_MANUFACTURE: int(self.latency_manufacture),
-            Product_Permutation.FLAG_UNIT_MEASUREMENT_QUANTITY: int(self.id_unit_measurement_quantity),
-            Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_PER_QUANTITY_STEP: float(self.count_unit_measurement_per_quantity_step),
-            self.FLAG_QUANTITY_MIN: float(self.quantity_min),
-            self.FLAG_QUANTITY_MAX: float(self.quantity_max),
-            Product_Permutation.FLAG_QUANTITY_STOCK: float(self.quantity_stock),
-            Product_Permutation.FLAG_IS_SUBSCRIPTION: bool(self.is_subscription),
-            Product_Permutation.FLAG_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: int(self.id_unit_measurement_interval_recurrence) if self.id_unit_measurement_interval_recurrence != '' else None,
-            Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_RECURRENCE: float(self.count_interval_recurrence) if self.count_interval_recurrence != '' else None,
-            Product_Permutation.FLAG_ID_STRIPE_PRODUCT: self.id_stripe_product,
-            Product_Permutation.FLAG_DOES_EXPIRE_FASTER_ONCE_UNSEALED: bool(self.does_expire_faster_once_unsealed),
-            Product_Permutation.FLAG_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: int(self.id_unit_measurement_interval_expiration_unsealed) if self.id_unit_measurement_interval_expiration_unsealed != '' else None,
-            Product_Permutation.FLAG_COUNT_UNIT_MEASUREMENT_INTERVAL_EXPIRATION_UNSEALED: float(self.count_interval_expiration_unsealed) if self.count_interval_expiration_unsealed != '' else None,
-            self.FLAG_ACTIVE: bool(self.active),
-            self.FLAG_GUID: self.guid
-        }
-    """
     

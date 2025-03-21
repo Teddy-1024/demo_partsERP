@@ -1,7 +1,7 @@
 
 
 -- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_Manufacturing_purchase_order_test;
+DROP PROCEDURE IF EXISTS demo.p_shop_save_Manufacturing_purchase_order_test;
 
 
 DELIMITER //
@@ -15,24 +15,24 @@ BEGIN
 	SET v_guid := 'nips';
 
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
+	FROM demo.Shop_Manufacturing_Purchase_Order
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
+	FROM demo.Shop_Manufacturing_Purchase_Order_Temp
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
 	;
     
 	START TRANSACTION;
     
-		DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp;
-		DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
+		DELETE FROM demo.Shop_Manufacturing_Purchase_Order_Temp;
+		DELETE FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
 
-		INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp (
+		INSERT INTO demo.Shop_Manufacturing_Purchase_Order_Temp (
 			id_order
 			, id_currency
             , active
@@ -51,12 +51,12 @@ BEGIN
 			, id_currency
             , active
             , v_guid
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
+		FROM demo.Shop_Manufacturing_Purchase_Order
         WHERE id_order = 6
         */
-		;-- SELECT * FROM partsltd_prod.Shop_Unit_Measurement;
+		;-- SELECT * FROM demo.Shop_Unit_Measurement;
         
-		INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
+		INSERT INTO demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp (
 			id_link
 			, id_order
 			, id_permutation
@@ -96,7 +96,7 @@ BEGIN
 			, display_order
 			, active
             , v_guid
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
+		FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link
         WHERE id_order = 6
         */
         ;
@@ -104,16 +104,16 @@ BEGIN
 	COMMIT;
     
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
+	FROM demo.Shop_Manufacturing_Purchase_Order_Temp
 	WHERE GUID = v_guid
     ;
     
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
 	WHERE GUID = v_guid
     ;
     
-    CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order ( 
+    CALL demo.p_shop_save_Manufacturing_purchase_order ( 
 		'Test save Manufacturing Purchase Order' -- comment
         , v_guid -- guid
         , 1 -- id_user
@@ -121,30 +121,30 @@ BEGIN
     );
     
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp
+	FROM demo.Shop_Manufacturing_Purchase_Order_Temp
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order
+	FROM demo.Shop_Manufacturing_Purchase_Order
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link
 	;
     
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+	CALL demo.p_debug_timing_reporting ( v_time_start );
 END //
 DELIMITER ;
 
 /*
-CALL partsltd_prod.p_shop_save_Manufacturing_purchase_order_test ();
+CALL demo.p_shop_save_Manufacturing_purchase_order_test ();
 
-DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp;
-DELETE FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
+DELETE FROM demo.Shop_Manufacturing_Purchase_Order_Temp;
+DELETE FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-select * from partsltd_prod.Shop_User;
-Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'partsltd_prod.t_MPOPL.name_error' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+select * from demo.Shop_User;
+Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'demo.t_MPOPL.name_error' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
 */

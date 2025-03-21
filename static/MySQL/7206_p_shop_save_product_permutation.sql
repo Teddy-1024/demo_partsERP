@@ -51,7 +51,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE MET.code = 'MYSQL_ERROR'
         LIMIT 1
 		;
@@ -178,7 +178,7 @@ BEGIN
     ;
     
     SELECT
-		partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
+		demo.fn_shop_get_product_variations_from_id_csv_list(
 			t_PP.id_permutation -- a_id_permutation
 			, t_PP.csv_id_pairs_variation -- a_variation_csv
 			, a_guid -- a_guid
@@ -202,8 +202,8 @@ BEGIN
         , PPVL_T.display_order
         , NOT ISNULL(PPVL_T.id_link) AS active
         , IFNULL(PPVL_T.id_link, 0) < 1 AS is_new
-    FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp PPVL_T
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PPVL_T.id_link = PPVL.id_variation
+    FROM demo.Shop_Product_Permutation_Variation_Link_Temp PPVL_T
+    LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON PPVL_T.id_link = PPVL.id_variation
     LEFT JOIN tmp_Permutation t_PP ON PPVL_T.id_permutation = t_PP.id_permutation
     WHERE PPVL_T.GUID = a_guid
     ;
@@ -432,7 +432,7 @@ BEGIN
 	
     IF a_debug = 1 THEN
 		SELECT *
-        FROM partsltd_prod.Shop_Calc_User_Temp
+        FROM demo.Shop_Calc_User_Temp
         WHERE GUID = a_guid
         ;
         SELECT *
@@ -457,7 +457,7 @@ BEGIN
 		;
 	END IF;
 
-	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
+	IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp WHERE ISNULL(id_product) AND GUID = a_guid AND can_edit = 0) THEN
 		DELETE FROM tmp_Msg_Error
         WHERE id_type <> v_id_type_error_no_permission
         ;
@@ -482,7 +482,7 @@ BEGIN
 	
 	IF a_debug = 1 THEN
 		SELECT *
-		FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+		FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 		WHERE GUID = a_guid
 		;
 	END IF;
@@ -582,7 +582,7 @@ BEGIN
 			;
             
             UPDATE tmp_Permutation t_PP
-            INNER JOIN partsltd_prod.Shop_Product_Permutation PP 
+            INNER JOIN demo.Shop_Product_Permutation PP 
 				ON t_PP.id_permutation_temp = PP.id_permutation_temp
                 AND PP.id_change_set = v_id_change_set
             SET
@@ -594,7 +594,7 @@ BEGIN
 				t_PPVL.id_permutation = t_PP.id_permutation
 			;
             
-            INSERT INTO partsltd_prod.Shop_Product_Permutation_Variation_Link (
+            INSERT INTO demo.Shop_Product_Permutation_Variation_Link (
 				id_permutation
                 , id_variation
                 , display_order
@@ -611,7 +611,7 @@ BEGIN
                 AND t_PPVL.active = 1
             ;
             
-            UPDATE partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL
+            UPDATE demo.Shop_Product_Permutation_Variation_Link PPVL
             INNER JOIN tmp_Permutation_Variation_Link t_PPVL 
 				ON PPVL.id_link = t_PPVL.id_link
                 AND t_PPVL.is_new = 1
@@ -632,7 +632,7 @@ BEGIN
 		WHERE GUID = a_guid
         ;
         
-		DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+		DELETE FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 		WHERE GUID = a_guid
         ;
 	
@@ -641,7 +641,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -654,7 +654,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;

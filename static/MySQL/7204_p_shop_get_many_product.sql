@@ -1,5 +1,5 @@
 -- 
-USE partsltd_prod;
+USE demo;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product;
@@ -44,7 +44,7 @@ BEGIN
     
     SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW');
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW');
     
     
 	-- Argument validation + default values
@@ -146,7 +146,7 @@ BEGIN
 
 	-- select v_has_filter_product, v_has_filter_permutation;
     
-    CALL partsltd_prod.p_shop_calc_product_permutation (
+    CALL demo.p_shop_calc_product_permutation (
 		a_id_user
 		, a_get_all_product_category
 		, a_get_inactive_product_category
@@ -175,8 +175,8 @@ BEGIN
         PC.active,
 		*/
         , PC.display_order
-	FROM (SELECT * FROM partsltd_prod.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
-    INNER JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+	FROM (SELECT * FROM demo.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
+    INNER JOIN demo.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
     ;
     
 	INSERT INTO tmp_Product (
@@ -192,8 +192,8 @@ BEGIN
 		, P.id_category
         -- P.active,
         , P.display_order
-	FROM (SELECT * FROM partsltd_prod.Shop_Product_Temp WHERE GUID = v_guid) P_T 
-    INNER JOIN partsltd_prod.Shop_Product P ON P.id_product = P_T.id_product
+	FROM (SELECT * FROM demo.Shop_Product_Temp WHERE GUID = v_guid) P_T 
+    INNER JOIN demo.Shop_Product P ON P.id_product = P_T.id_product
     ;
     
 	INSERT INTO tmp_Permutation (
@@ -209,13 +209,13 @@ BEGIN
 		, PP.id_product
         -- , PP.active
         -- , RANK() OVER (ORDER BY VT.display_order, V.display_order)
-	FROM (SELECT * FROM partsltd_prod.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
-    INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
+	FROM (SELECT * FROM demo.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
+    INNER JOIN demo.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
     ;
     
     # Product Images
     IF (v_has_filter_image = 1 AND NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1)) THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_image, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_image, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -224,21 +224,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Image I ON t_S.as_int = I.id_image
+            LEFT JOIN demo.Shop_Product_Image I ON t_S.as_int = I.id_image
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(I.id_image)
@@ -255,7 +255,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive image IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Image I ON t_S.as_int = I.id_image
+			LEFT JOIN demo.Shop_Product_Image I ON t_S.as_int = I.id_image
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(I.id_image)
@@ -270,7 +270,7 @@ BEGIN
 				I.id_image
                 , I.id_permutation
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Image I ON t_S.as_int = I.id_image
+			RIGHT JOIN demo.Shop_Product_Image I ON t_S.as_int = I.id_image
             INNER JOIN tmp_Permutation t_PP ON I.id_permutation = t_PP.id_permutation
 			WHERE 
 				(
@@ -303,9 +303,9 @@ BEGIN
         , MIN(t_P.can_edit) AS can_edit
         , MIN(t_P.can_admin) AS can_admin
     FROM tmp_Category t_C
-    INNER JOIN partsltd_prod.Shop_Product_Category PC ON t_C.id_category = PC.id_category
+    INNER JOIN demo.Shop_Product_Category PC ON t_C.id_category = PC.id_category
     LEFT JOIN tmp_Product t_P ON t_C.id_category = t_P.id_product
-    INNER JOIN partsltd_prod.Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
+    INNER JOIN demo.Shop_Access_Level AL ON PC.id_access_level_required = AL.id_access_level
 	GROUP BY t_C.id_category -- , t_P.id_product
 	ORDER BY PC.display_order
 	;
@@ -324,9 +324,9 @@ BEGIN
         t_P.can_edit,
         t_P.can_admin
     FROM tmp_Product t_P
-    INNER JOIN partsltd_prod.Shop_Product P ON t_P.id_product = P.id_product
+    INNER JOIN demo.Shop_Product P ON t_P.id_product = P.id_product
     INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
-    INNER JOIN partsltd_prod.Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
+    INNER JOIN demo.Shop_Access_Level AL ON P.id_access_level_required = AL.id_access_level
     GROUP BY t_P.id_category, t_C.display_order, t_P.id_product, t_P.can_view, t_P.can_edit, t_P.can_admin
 	ORDER BY t_C.display_order, P.display_order
 	;
@@ -375,15 +375,15 @@ BEGIN
         IFNULL(t_P.can_edit, 0) AS can_edit,
         IFNULL(t_P.can_admin, 0) AS can_admin
     FROM tmp_Permutation t_PP
-    INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
+    INNER JOIN demo.Shop_Product_Permutation PP ON t_PP.id_permutation = PP.id_permutation
     INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
-    INNER JOIN partsltd_prod.Shop_Product P ON t_PP.id_product = P.id_product
-    INNER JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
-	LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
-	LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
-	LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
-    INNER JOIN partsltd_prod.Shop_Currency C ON PP.id_currency_cost = C.id_currency
+    INNER JOIN demo.Shop_Product P ON t_PP.id_product = P.id_product
+    INNER JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
+    LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON PP.id_permutation = PPVL.id_permutation
+	LEFT JOIN demo.Shop_Unit_Measurement UM_Q ON PP.id_unit_measurement_quantity = UM_Q.id_unit_measurement
+	LEFT JOIN demo.Shop_Unit_Measurement UM_R ON PP.id_unit_measurement_interval_recurrence = UM_R.id_unit_measurement
+	LEFT JOIN demo.Shop_Unit_Measurement UM_X ON PP.id_unit_measurement_interval_expiration_unsealed = UM_X.id_unit_measurement
+    INNER JOIN demo.Shop_Currency C ON PP.id_currency_cost = C.id_currency
     GROUP BY PC.id_category, P.id_product, PP.id_permutation, t_P.can_view, t_P.can_edit, t_P.can_admin
 	ORDER BY PC.display_order, P.display_order -- , t_PP.display_order
 	;
@@ -404,9 +404,9 @@ BEGIN
         , t_P.id_product
         , t_PP.id_permutation
         , t_C.id_category
-    FROM partsltd_prod.Shop_Variation V
-	INNER JOIN partsltd_prod.Shop_Variation_Type VT ON V.id_type = VT.id_type
-    INNER JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON V.id_variation = PPVL.id_variation
+    FROM demo.Shop_Variation V
+	INNER JOIN demo.Shop_Variation_Type VT ON V.id_type = VT.id_type
+    INNER JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON V.id_variation = PPVL.id_variation
 	INNER JOIN tmp_Permutation t_PP ON PPVL.id_permutation = t_PP.id_permutation
 	INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
 	INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
@@ -425,7 +425,7 @@ BEGIN
         I.active,
         I.display_order
     FROM tmp_Image t_I
-    INNER JOIN partsltd_prod.Shop_Product_Image I ON t_I.id_image = I.id_image
+    INNER JOIN demo.Shop_Product_Image I ON t_I.id_image = I.id_image
 	INNER JOIN tmp_Permutation t_PP ON t_I.id_permutation = t_PP.id_permutation
     INNER JOIN tmp_Product t_P ON t_PP.id_product = t_P.id_product
     INNER JOIN tmp_Category t_C ON t_P.id_category = t_C.id_category
@@ -444,7 +444,7 @@ BEGIN
         MET.description
 	*/
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     -- WHERE guid = v_guid
     ;
     
@@ -461,10 +461,10 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Permutation;
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     
-	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+	CALL demo.p_shop_clear_calc_product_permutation ( v_guid );
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -472,7 +472,7 @@ DELIMITER ;
 
 /*
 
-CALL partsltd_prod.p_shop_get_many_product (
+CALL demo.p_shop_get_many_product (
 	1 #'auth0|6582b95c895d09a70ba10fef', # a_id_user
     , 1 # a_get_all_product_category
 	, 0 # a_get_inactive_product_category
@@ -490,21 +490,21 @@ CALL partsltd_prod.p_shop_get_many_product (
     , 0 # a_debug
 );
 
-select * FROM partsltd_prod.Shop_Calc_User_Temp;
+select * FROM demo.Shop_Calc_User_Temp;
 
-select * FROM partsltd_prod.Shop_Product_Category;
-select * FROM partsltd_prod.Shop_Product_Permutation;
-select * FROM partsltd_prod.Shop_product_change_set;
+select * FROM demo.Shop_Product_Category;
+select * FROM demo.Shop_Product_Permutation;
+select * FROM demo.Shop_product_change_set;
 insert into shop_product_change_set ( comment ) values ('set stock quantities below minimum for testing');
 update shop_product_permutation
 set quantity_stock = 0,
-	id_change_set = (select id_change_set FROM partsltd_prod.Shop_product_change_set order by id_change_set desc limit 1)
+	id_change_set = (select id_change_set FROM demo.Shop_product_change_set order by id_change_set desc limit 1)
 where id_permutation < 5
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
-select * FROM partsltd_prod.Shop_image;
-select * FROM partsltd_prod.Shop_product;
+select * FROM demo.Shop_image;
+select * FROM demo.Shop_product;
 select * from TMP_MSG_ERROR;
 DROP TABLE TMP_MSG_ERROR;
 
@@ -512,11 +512,11 @@ insert into shop_product_change_set (comment)
     values ('set product not subscription - test bool output to python');
     update shop_product
     set is_subscription = 0,
-		id_change_set = (select id_change_set FROM partsltd_prod.Shop_product_change_set order by id_change_set desc limit 1)
+		id_change_set = (select id_change_set FROM demo.Shop_product_change_set order by id_change_set desc limit 1)
     where id_product = 1
 
-select * FROM partsltd_prod.Shop_Calc_User_Temp;
+select * FROM demo.Shop_Calc_User_Temp;
 select distinct guid 
 -- DELETE
-FROM partsltd_prod.Shop_Calc_User_Temp;
+FROM demo.Shop_Calc_User_Temp;
 */

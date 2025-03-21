@@ -1,7 +1,7 @@
 
 
 -- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_permutation_test;
+DROP PROCEDURE IF EXISTS demo.p_shop_save_product_permutation_test;
 
 
 DELIMITER //
@@ -15,18 +15,18 @@ BEGIN
 	SET v_guid := 'nips';
 
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation
+	FROM demo.Shop_Product_Permutation
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
+	FROM demo.Shop_Product_Permutation_Variation_Link
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
+	FROM demo.Shop_Product_Permutation_Temp
 	;
 
 	START TRANSACTION;
 		
-		INSERT INTO partsltd_prod.Shop_Product_Permutation_Temp (
+		INSERT INTO demo.Shop_Product_Permutation_Temp (
 			id_permutation
 			, id_product
             , csv_id_pairs_variation
@@ -122,11 +122,11 @@ BEGIN
 	COMMIT;
     
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
+	FROM demo.Shop_Product_Permutation_Temp
 	WHERE GUID = v_guid
     ;
     
-    CALL partsltd_prod.p_shop_save_product_permutation ( 
+    CALL demo.p_shop_save_product_permutation ( 
 		'Test save product' -- comment
         , v_guid -- guid
         , 1 -- id_user
@@ -134,38 +134,38 @@ BEGIN
     );
     
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation
+	FROM demo.Shop_Product_Permutation
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
+	FROM demo.Shop_Product_Permutation_Variation_Link
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Temp
+	FROM demo.Shop_Product_Permutation_Temp
 	;
     
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+	CALL demo.p_debug_timing_reporting ( v_time_start );
 END //
 DELIMITER ;
 
 /*
-CALL partsltd_prod.p_shop_save_product_permutation_test ();
+CALL demo.p_shop_save_product_permutation_test ();
 
-DELETE FROM partsltd_prod.Shop_Product_Permutation_Temp;
+DELETE FROM demo.Shop_Product_Permutation_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 
 
-DELETE FROM partsltd_prod.Shop_Product_Permutation_Variation_Link
+DELETE FROM demo.Shop_Product_Permutation_Variation_Link
 WHERE id_link >= 3
 ;
-DELETE FROM partsltd_prod.Shop_Product_Permutation
+DELETE FROM demo.Shop_Product_Permutation
 WHERE id_permutation >= 7
 ;
 
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+	FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Variation
+	FROM demo.Shop_Variation
 	;
 */

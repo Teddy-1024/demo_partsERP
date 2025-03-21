@@ -17,7 +17,6 @@ from business_objects.store.product import Product, Product_Permutation, Product
 # from business_objects.store.product_variation import Product_Variation
 from business_objects.store.product_variation_type import Product_Variation_Type
 from business_objects.store.image import Image
-from business_objects.store.delivery_option import Delivery_Option
 from business_objects.store.discount import Discount
 from business_objects.store.stock_item import Stock_Item
 from business_objects.store.store_base import Store_Base
@@ -48,11 +47,6 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
     created_on = db.Column(db.DateTime)
     created_by = db.Column(db.Integer)
 
-    """
-    products: list = None # []
-    product_index: dict = None # {}
-    """
-
     def __init__(self):
         self.products = []
         self.product_index = {}
@@ -74,13 +68,6 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         category.can_edit = av.input_bool(query_row[9], cls.FLAG_CAN_EDIT, f'{cls.__name__}.from_DB_get_many_product_catalogue')
         category.can_admin = av.input_bool(query_row[10], cls.FLAG_CAN_ADMIN, f'{cls.__name__}.from_DB_get_many_product_catalogue')
         return category
-    """
-    def key_product_index_from_ids_product_permutation(id_product, id_permutation):
-        return f'{id_product},{"" if id_permutation is None else id_permutation}'
-    def key_product_index_from_product(product):
-        av.val_instance(product, 'product', 'Category.key_product_index_from_product', Product)
-        return f'{product.id_product},{"" if product.id_permutation is None else product.id_permutation}'
-    """
     def get_index_product(self, product):
         return self.get_index_product_from_id(product.id_product)
     def get_index_product_from_id(self, id_product):
@@ -99,8 +86,6 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
     def add_product(self, product):
         _m = 'Category.add_product'
         av.val_instance(product, 'product', _m, Product)
-        # self.product_index.append(len(self.products))
-        # self.product_index[Category.key_product_index_from_ids_product_permutation(product.id_product, product.id_permutation)] = len(self.products)
         try:
             self.get_index_product(product)
             Helper_App.console_log(f'category: {self}')
@@ -111,17 +96,8 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
     def add_product_permutation(self, permutation):
         _m = 'Category.add_product_permutation'
         av.val_instance(permutation, 'permutation', _m, Product_Permutation)
-        # self.product_index.append(len(self.products))
-        # self.product_index[Category.key_product_index_from_ids_product_permutation(product.id_product, product.id_permutation)] = len(self.products)
         index_product = self.get_index_product_from_id(permutation.id_product)
-        # index_product = self.product_index[permutation.id_product]
         self.products[index_product].add_product_permutation(permutation)
-    """
-    def add_product_variation(self, variation):
-        av.val_instance(variation, 'variation', 'Category.add_product_variation', Product_Variation)
-        index_product = self.get_index_product_from_id(variation.id_product)
-        self.products[index_product].add_product_variation(variation)
-    """ 
     def add_product_variation_type(self, variation_type):
         av.val_instance(variation_type, 'variation_type', 'Category.add_product_variation_type', Product_Variation_Type)
         variation = variation_type.variations[0]
@@ -152,16 +128,6 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
             if product.has_variations:
                 Helper_App.console_log(f'product with id:{product.id_product} has variations')
                 product.get_variation_trees()
-    """
-    def index_product_from_ids_product_permutation(self, id_product, id_permutation):
-        key = Category.key_product_index_from_ids_product_permutation(id_product, id_permutation)
-        Helper_App.console_log(f'product_index: {self.product_index}')
-        Helper_App.console_log(f'Key Error: {key}')
-        try:
-            return self.product_index[key]
-        except KeyError:
-            pass
-    """
     def __repr__(self):
         return f'''
             id: {self.id_category[0] if isinstance(self.id_category, tuple) else self.id_category}
@@ -173,12 +139,6 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
             active: {self.active}
             products: {self.products}
             '''
-    """
-    def get_permutation_first(self):
-        if not (len(self.products) == 0):
-            Helper_App.console_log(f'getting first permutation from product')
-        return None if len(self.products) == 0 else self.products[0].get_permutation_selected()
-    """
     def is_available(self):
         if len(self.products) == 0:
             return False
@@ -227,22 +187,6 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         category.can_edit = json.get(cls.FLAG_CAN_EDIT, False)
         category.can_admin = json.get(cls.FLAG_CAN_ADMIN, False)
         return category
-    """
-    def to_json_str(self):
-        return {
-            self.ATTR_ID_PRODUCT_CATEGORY: self.id_category[0] if isinstance(self.id_category, tuple) else self.id_category,
-            self.FLAG_CODE: self.code[0] if isinstance(self.code, tuple) else self.code,
-            self.FLAG_NAME: self.name[0] if isinstance(self.name, tuple) else self.name,
-            self.FLAG_DESCRIPTION: self.description[0] if isinstance(self.description, tuple) else self.description,
-            self.ATTR_ID_ACCESS_LEVEL: self.id_access_level_required[0] if isinstance(self.id_access_level_required, tuple) else self.id_access_level_required,
-            self.FLAG_ACCESS_LEVEL_REQUIRED: self.name_access_level_required[0] if isinstance(self.name_access_level_required, tuple) else self.name_access_level_required,
-            self.FLAG_DISPLAY_ORDER: self.display_order,
-            self.FLAG_ACTIVE: self.output_bool(self.active),
-            self.FLAG_CAN_VIEW: self.output_bool(self.can_view),
-            self.FLAG_CAN_EDIT: self.output_bool(self.can_edit),
-            self.FLAG_CAN_ADMIN: self.output_bool(self.can_admin)
-        }
-    """
     @staticmethod
     def output_bool(value):
         return av.input_bool(value, 'Product_Category bool attribute', 'Product_Category.output_bool')
@@ -256,78 +200,7 @@ class Product_Category(SQLAlchemy_ABC, Store_Base):
         for product in self.products:
             list_ids += product.get_csv_ids_permutation()
         return list_ids
-"""
-class Filters_Product_Category(BaseModel, Store_Base):
-    ids_product_category: str
-    ids_product: str
-    ""
-    def __new__(cls, product_ids, product_categories):
-        _m = 'Parameters_Product.__new__'
-        v_arg_type = 'class attribute'
-        # av.val_list_instances(product_ids, 'product_ids', _m, str, v_arg_type=v_arg_type)
-        # av.val_list_instances(product_categories, 'product_categories', _m, Product_Category_Enum, v_arg_type=v_arg_type)
-        av.val_str(product_ids, 'product_ids', _m, v_arg_type=v_arg_type)
-        av.val_str(product_categories, 'product_categories', _m, v_arg_type=v_arg_type)
-        return super(Parameters_Product_Category, cls).__new__(cls)
-    ""
-    def __init__(self, ids_product, ids_product_category):
-        super().__init__(ids_product=ids_product, ids_product_category=ids_product_category)
-        ""
-        # Constructor
-        self.ids = product_ids
-        self.categories = product_categories
-        ""
-    @classmethod
-    def get_default(cls):
-        return Filters_Product_Category(
-            ids_product_category = '',
-            ids_product = ''
-        )
-        def to_json(self):
-        return {
-            **self.get_shared_json_attributes(self),
-            'a_ids_product_category': self.ids_product_category,
-            'a_ids_product': self.ids_product
-        }
-    @classmethod
-    def from_json(cls, json):
-        filters = cls()
-        filters.ids_product_category = json['a_ids_product_category'],
-        filters.ids_product = json['a_ids_product']
-
-
-class Filters_Product_Category(Get_Many_Parameters_Base):
-    FLAG_IS_NOT_EMPTY: ClassVar[str] = 'is_not_empty'
-    is_not_empty: bool
-    active: bool
-    def __init__(self, is_not_empty, active):
-        super().__init__(is_not_empty=is_not_empty, active=active)
-    @classmethod
-    def get_default(cls):
-        return cls(
-            is_not_empty = False,
-            active = True
-        )
-        def to_json(self):
-        return {
-            **self.get_shared_json_attributes(self),
-            self.FLAG_IS_NOT_EMPTY: self.is_not_empty,
-            self.FLAG_ACTIVE: av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json')
-        }
-    @classmethod
-    def from_json(cls, json):
-        return cls(
-            is_not_empty = json['is_not_empty'],
-            active = json['active']
-        )
-    @classmethod
-    def from_form(cls, form):
-        return cls(
-            is_not_empty = av.input_bool(form.is_not_empty.data, 'is_not_empty', 'Filters_Product_Category.from_form'),
-            active = av.input_bool(form.active.data, 'active', 'Filters_Product_Category.from_form')
-        )
-"""
-
+    
 class Product_Category_Container(Store_Base):
     NAME_ATTR_OPTION_TEXT: ClassVar[str] = ''
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.FLAG_ROWS
@@ -360,12 +233,6 @@ class Product_Category_Container(Store_Base):
         av.val_instance(permutation, 'permutation', 'Container_Product_Categories.add_product_permutation', Product_Permutation)
         index_category = self.get_index_category_from_id(permutation.id_category)
         self.categories[index_category].add_product_permutation(permutation)
-    """
-    def add_product_variation(self, variation):
-        av.val_instance(variation, 'variation', 'Container_Product_Categories.add_product_variation', Product_Variation)
-        index_category = self.get_index_category_from_id(variation.id_category)
-        self.categories[index_category].add_product_variation(variation)
-    """
     def add_product_variation_type(self, variation_type):
         av.val_instance(variation_type, 'variation_type', 'Container_Product_Categories.add_product_variation_type', Product_Variation_Type)
         variation = variation_type.variations[0]
@@ -396,13 +263,6 @@ class Product_Category_Container(Store_Base):
             category.get_all_product_variation_trees()
     def __repr__(self):
         return f'categories: {self.categories}'
-    """
-    def get_permutation_first(self):
-        Helper_App.console_log(f'getting first permutation from category list')
-        if not (len(self.categories) == 0):
-            Helper_App.console_log(f'getting first permutation from category')
-        return None if len(self.categories) == 0 else self.categories[0].get_permutation_first()
-    """
     def get_category_count(self):
         return len(self.categories)
     def to_permutation_row_list(self):
@@ -418,11 +278,6 @@ class Product_Category_Container(Store_Base):
     def get_list_products(self):
         list_products = []
         for category in self.categories:
-            # list_products.append(category.to_product_option_list())
-            """
-            for product in category.products:
-                list_products.append({'value': product.id_product, 'text': product.name, Product.ATTR_ID_PRODUCT_CATEGORY: product.id_category})
-            """
             list_products += category.products
         return list_products
     def to_product_option_list(self):
@@ -438,12 +293,6 @@ class Product_Category_Container(Store_Base):
             **self.get_shared_json_attributes(self),
             f'{self.FLAG_ROWS}': [category.to_json() for category in self.categories]
         }
-    """
-    def to_json_str(self):
-        return {
-            f'{self.FLAG_ROWS}': [category.to_json_str() for category in self.categories]
-        }
-    """
     @classmethod
     def from_json(cls, json):
         return None
@@ -479,7 +328,7 @@ class Product_Category_Temp(db.Model, Store_Base):
     def __init__(self):
         super().__init__()
         self.id_temp = None
-        
+
     @classmethod
     def from_product_category(cls, product_category):
         row = cls()

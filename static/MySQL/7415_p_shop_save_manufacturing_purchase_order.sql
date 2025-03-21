@@ -53,7 +53,7 @@ BEGIN
 			MET.id_type
             , @errno
             , @text
-		FROM partsltd_prod.Shop_Msg_Error_Type MET
+		FROM demo.Shop_Msg_Error_Type MET
         WHERE code = 'MYSQL_ERROR'
 		;
         SELECT *
@@ -62,14 +62,14 @@ BEGIN
     END;
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-	SET v_code_type_error_warning := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
-    SET v_id_type_error_warning := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
-	SET v_ids_permission_manufacturing_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_MANUFACTURING_PURCHASE_ORDER', 'STORE_PRODUCT'));
-	SET v_id_access_level_edit := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+	SET v_code_type_error_warning := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'WARNING' LIMIT 1);
+    SET v_id_type_error_warning := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_warning LIMIT 1);
+	SET v_ids_permission_manufacturing_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM demo.Shop_Permission WHERE code IN ('STORE_MANUFACTURING_PURCHASE_ORDER', 'STORE_PRODUCT'));
+	SET v_id_access_level_edit := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'EDIT' LIMIT 1);
     
 	CALL p_validate_guid ( a_guid );
 	SET a_comment := TRIM(IFNULL(a_comment, ''));
@@ -147,8 +147,8 @@ BEGIN
 				, IFNULL(IFNULL(MPO_T.id_currency, MPO.id_currency), '(No Currency)')
 			)
 		END AS name_error
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp MPO_T
-	LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON MPO_T.id_order = MPO.id_order
+	FROM demo.Shop_Manufacturing_Purchase_Order_Temp MPO_T
+	LEFT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON MPO_T.id_order = MPO.id_order
 	WHERE MPO_T.GUID = a_guid
 	;
 
@@ -180,7 +180,7 @@ BEGIN
 				IFNULL(
 					MPOPL_T.id_permutation
                     , CASE WHEN NOT ISNULL(MPOPL_T.id_product) AND NOT ISNULL(MPOPL_T.csv_list_variations) THEN
-						partsltd_prod.fn_shop_get_id_product_permutation_from_variation_csv_list(MPOPL_T.id_product, MPOPL_T.csv_list_variations)
+						demo.fn_shop_get_id_product_permutation_from_variation_csv_list(MPOPL_T.id_product, MPOPL_T.csv_list_variations)
 					ELSE NULL END
 				)
                 , MPOPL.id_permutation
@@ -202,18 +202,18 @@ BEGIN
 		, IFNULL(MPOPL_T.price_unit_local_VAT_incl, MPOPL.price_unit_local_VAT_incl) AS price_unit_local_VAT_incl
 		, NOT ISNULL(t_MPO.id_order) AS has_order
 	    , IFNULL(MPOPL_T.id_link, 0) < 1 AS is_new
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
-	LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON MPOPL_T.id_link = MPOPL.id_link
+	FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
+	LEFT JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON MPOPL_T.id_link = MPOPL.id_link
 	LEFT JOIN tmp_Manufacturing_Purchase_Order t_MPO ON MPOPL_T.id_order = t_MPO.id_order
-	LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
+	LEFT JOIN demo.Shop_Product_Permutation PP ON MPOPL.id_permutation = PP.id_permutation
 	WHERE MPOPL_T.GUID = a_guid
 	;
 
     UPDATE tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-	-- INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T ON t_MPOPL.id_order = MPOPL_T.id_order
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_MPOPL.id_permutation = PP.id_permutation
-    LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
-    LEFT JOIN partsltd_prod.Shop_Product_Category PC ON P.id_category = PC.id_category
+	-- INNER JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T ON t_MPOPL.id_order = MPOPL_T.id_order
+    LEFT JOIN demo.Shop_Product_Permutation PP ON t_MPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN demo.Shop_Product P ON PP.id_product = P.id_product
+    LEFT JOIN demo.Shop_Product_Category PC ON P.id_category = PC.id_category
 	SET 
 		name_error = CONCAT(
 			CASE WHEN ISNULL(t_MPOPL.id_permutation) THEN
@@ -261,7 +261,7 @@ BEGIN
 			, ' - '
 			, IFNULL(MPO.id_currency, '(No Currency)')
 		) AS name_error
-	FROM partsltd_prod.Shop_Manufacturing_Purchase_Order MPO
+	FROM demo.Shop_Manufacturing_Purchase_Order MPO
 	INNER JOIN tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL 
 		ON MPO.id_order = t_MPOPL.id_order
 		AND t_MPOPL.has_order = 0
@@ -291,7 +291,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Manufacturing_Purchase_Order t_MPO
-        LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order = MPO.id_order
+        LEFT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order = MPO.id_order
         WHERE 1=1
 			AND t_MPO.id_order > 0
 			AND ISNULL(MPO.id_order)
@@ -310,7 +310,7 @@ BEGIN
 				, GROUP_CONCAT(t_MPO.name_error SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Manufacturing_Purchase_Order t_MPO
-        LEFT JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order = MPO.id_order
+        LEFT JOIN demo.Shop_Manufacturing_Purchase_Order MPO ON t_MPO.id_order = MPO.id_order
         WHERE 1=1
 			AND t_MPO.id_order > 0
 			AND ISNULL(MPO.id_order)
@@ -320,7 +320,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Manufacturing_Purchase_Order t_MPO
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_MPO.id_currency = C.id_currency
+        LEFT JOIN demo.Shop_Currency C ON t_MPO.id_currency = C.id_currency
         WHERE 1=1
 			AND (
 				ISNULL(C.id_currency)
@@ -341,7 +341,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(t_MPO.name_error, ' - ', t_MPO.id_currency) SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Manufacturing_Purchase_Order t_MPO
-        LEFT JOIN partsltd_prod.Shop_Currency C ON t_MPO.id_currency = C.id_currency
+        LEFT JOIN demo.Shop_Currency C ON t_MPO.id_currency = C.id_currency
         WHERE 1=1
 			AND (
 				ISNULL(C.id_currency)
@@ -353,7 +353,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_quantity = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_quantity = UM.id_unit_measurement
         WHERE 1=1
 			AND (
 				ISNULL(UM.id_unit_measurement)
@@ -374,7 +374,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(t_MPOPL.name_error, ' - ', t_MPO.id_unit_quantity) SEPARATOR ', ')
 			) AS msg
         FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_quantity = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_quantity = UM.id_unit_measurement
         WHERE 1=1
 			AND (
 				ISNULL(UM.id_unit_measurement)
@@ -434,7 +434,7 @@ BEGIN
     IF EXISTS (
 		SELECT * 
         FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_latency_manufacture = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_latency_manufacture = UM.id_unit_measurement
         WHERE 
 			ISNULL(t_MPOPL.id_unit_latency_manufacture)
 			OR ISNULL(UM.id_unit_measurement)
@@ -454,7 +454,7 @@ BEGIN
 				, GROUP_CONCAT(CONCAT(t_MPOPL.name_error, ' - ', t_MPOPL.id_unit_latency_manufacture) SEPARATOR ', ')
 			) AS msg
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-        LEFT JOIN partsltd_prod.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_latency_manufacture = UM.id_unit_measurement
+        LEFT JOIN demo.Shop_Unit_Measurement UM ON t_MPOPL.id_unit_latency_manufacture = UM.id_unit_measurement
         WHERE 
 			ISNULL(t_MPOPL.id_unit_latency_manufacture)
 			OR ISNULL(UM.id_unit_measurement)
@@ -656,7 +656,7 @@ BEGIN
 		SELECT 
 			GROUP_CONCAT(DISTINCT PP.id_product SEPARATOR ',')
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-		INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON t_MPOPL.id_permutation = PP.id_permutation
+		INNER JOIN demo.Shop_Product_Permutation PP ON t_MPOPL.id_permutation = PP.id_permutation
 	);
 	IF a_debug = 1 THEN
 		SELECT 
@@ -669,7 +669,7 @@ BEGIN
 			, 0 -- a_debug
 		;
 		SELECT * 
-		FROM partsltd_prod.Shop_Calc_User_Temp
+		FROM demo.Shop_Calc_User_Temp
 		WHERE GUID = a_guid
 		;
 	END IF;
@@ -685,10 +685,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp WHERE GUID = a_guid;
+		SELECT * from demo.Shop_Calc_User_Temp WHERE GUID = a_guid;
 	END IF;
 	
-	IF EXISTS (SELECT * FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
+	IF EXISTS (SELECT * FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = a_guid AND IFNULL(UE_T.can_view, 0) = 0) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -703,15 +703,15 @@ BEGIN
 				'You do not have edit permissions for '
 				, GROUP_CONCAT(name SEPARATOR ', ') 
 			)
-		FROM partsltd_prod.Shop_Permission PERM
-		INNER JOIN partsltd_prod.Shop_Calc_User_Temp UE_T 
+		FROM demo.Shop_Permission PERM
+		INNER JOIN demo.Shop_Calc_User_Temp UE_T 
 			ON PERM.id_permission = UE_T.id_permission
 			AND UE_T.GUID = a_guid
 			AND IFNULL(UE_T.can_view, 0) = 0
 		;
 	END IF;
 
-	CALL partsltd_prod.p_shop_clear_calc_user( 
+	CALL demo.p_shop_clear_calc_user( 
 		a_guid
 		, 0 -- a_debug 
 	);
@@ -720,8 +720,8 @@ BEGIN
 	IF EXISTS (
 		SELECT *
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-		INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link
-		INNER JOIN partsltd_prod.Shop_Stock_Item SI ON MPOPL.id_permutation = SI.id_permutation
+		INNER JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link
+		INNER JOIN demo.Shop_Stock_Item SI ON MPOPL.id_permutation = SI.id_permutation
 		WHERE 
 			t_MPOPL.is_new = 0
 			AND t_MPOPL.quantity_used <> MPOPL.quantity_used
@@ -752,8 +752,8 @@ BEGIN
 	IF EXISTS (
 		SELECT *
 		FROM tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
-		INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link
-		INNER JOIN partsltd_prod.Shop_Stock_Item SI ON MPOPL.id_permutation = SI.id_permutation
+		INNER JOIN demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL ON t_MPOPL.id_link = MPOPL.id_link
+		INNER JOIN demo.Shop_Stock_Item SI ON MPOPL.id_permutation = SI.id_permutation
 		WHERE 
 			t_MPOPL.is_new = 0
 			AND t_MPOPL.quantity_produced <> MPOPL.quantity_produced
@@ -802,7 +802,7 @@ BEGIN
 			
 			SET v_id_change_set := LAST_INSERT_ID();
 		
-			INSERT INTO partsltd_prod.Shop_Manufacturing_Purchase_Order (
+			INSERT INTO demo.Shop_Manufacturing_Purchase_Order (
 				id_order_temp
 				, id_currency
 				, cost_total_local_VAT_excl
@@ -831,7 +831,7 @@ BEGIN
 			;
 			
 			UPDATE tmp_Manufacturing_Purchase_Order t_MPO
-			INNER JOIN partsltd_prod.Shop_Manufacturing_Purchase_Order MPO 
+			INNER JOIN demo.Shop_Manufacturing_Purchase_Order MPO 
 				ON t_MPO.id_order_temp = MPO.id_order_temp
 				AND MPO.id_change_set = v_id_change_set
 			SET 
@@ -885,7 +885,7 @@ BEGIN
 			WHERE t_MPOPL.is_new = 1
 			;
 		
-			UPDATE partsltd_prod.Shop_Manufacturing_Purchase_Order MPO
+			UPDATE demo.Shop_Manufacturing_Purchase_Order MPO
 			INNER JOIN tmp_Manufacturing_Purchase_Order t_MPO 
 				ON MPO.id_order = t_MPO.id_order
 				AND t_MPO.is_new = 0
@@ -900,7 +900,7 @@ BEGIN
 				, MPO.id_change_set = v_id_change_set
 			;
 			
-			UPDATE partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL
+			UPDATE demo.Shop_Manufacturing_Purchase_Order_Product_Link MPOPL
 			INNER JOIN tmp_Manufacturing_Purchase_Order_Product_Link t_MPOPL
 				ON MPOPL.id_link = t_MPOPL.id_link
 				AND t_MPOPL.is_new = 0
@@ -927,11 +927,11 @@ BEGIN
     START TRANSACTION;
 	
 		DELETE MPO_T
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Temp MPO_T
+		FROM demo.Shop_Manufacturing_Purchase_Order_Temp MPO_T
 		WHERE MPO_T.GUID = a_guid
 		;
 		DELETE MPOPL_T
-		FROM partsltd_prod.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
+		FROM demo.Shop_Manufacturing_Purchase_Order_Product_Link_Temp MPOPL_T
 		WHERE MPOPL_T.GUID = a_guid
 		;
 		
@@ -940,7 +940,7 @@ BEGIN
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-	INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+	INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
 	;
     
 	IF a_debug = 1 THEN
@@ -953,7 +953,7 @@ BEGIN
     DROP TEMPORARY TABLE tmp_Msg_Error;
     
 	IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
 	END IF;
 END //
 DELIMITER ;

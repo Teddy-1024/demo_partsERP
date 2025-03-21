@@ -33,12 +33,12 @@ BEGIN
     
 	SET v_time_start := CURRENT_TIMESTAMP(6);
     SET v_guid := UUID();
-    SET v_id_access_level_view := (SELECT id_access_level FROM partsltd_prod.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
-    SET v_code_type_error_bad_data := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
-    SET v_id_type_error_bad_data := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
-    SET v_code_type_error_no_permission := (SELECT code FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
-    SET v_id_type_error_no_permission := (SELECT id_type FROM partsltd_prod.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
-    SET v_ids_permission_supplier_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM partsltd_prod.Shop_Permission WHERE code IN ('STORE_SUPPLIER', 'STORE_SUPPLIER_PURCHASE_ORDER', 'STORE_PRODUCT'));
+    SET v_id_access_level_view := (SELECT id_access_level FROM demo.Shop_Access_Level WHERE code = 'VIEW' LIMIT 1);
+    SET v_code_type_error_bad_data := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'BAD_DATA' LIMIT 1);
+    SET v_id_type_error_bad_data := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_bad_data LIMIT 1);
+    SET v_code_type_error_no_permission := (SELECT code FROM demo.Shop_Msg_Error_Type WHERE code = 'NO_PERMISSION' LIMIT 1);
+    SET v_id_type_error_no_permission := (SELECT id_type FROM demo.Shop_Msg_Error_Type WHERE code = v_code_type_error_no_permission LIMIT 1);
+    SET v_ids_permission_supplier_purchase_order := (SELECT GROUP_CONCAT(id_permission SEPARATOR ',') FROM demo.Shop_Permission WHERE code IN ('STORE_SUPPLIER', 'STORE_SUPPLIER_PURCHASE_ORDER', 'STORE_PRODUCT'));
 	
 	SET a_get_all_supplier := IFNULL(a_get_all_supplier, 1);
 	SET a_get_inactive_supplier := IFNULL(a_get_inactive_supplier, 0);
@@ -101,7 +101,7 @@ BEGIN
     
     -- Permutations
     IF v_has_filter_permutation = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_permutation, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_permutation, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -110,21 +110,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+            LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PP.id_permutation)
@@ -140,7 +140,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive permutation IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+			LEFT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PP.id_permutation)
@@ -153,7 +153,7 @@ BEGIN
 			SELECT 
 				PP.id_permutation
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
+			RIGHT JOIN demo.Shop_Product_Permutation PP ON t_S.as_int = PP.id_permutation
 			WHERE (
 					v_has_filter_permutation = 0
 					OR NOT ISNULL(t_S.as_int)
@@ -166,7 +166,7 @@ BEGIN
     
     -- Suppliers
     IF v_has_filter_supplier = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_supplier, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_supplier, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -175,21 +175,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+            LEFT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(S.id_supplier)
@@ -208,7 +208,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive Supplier IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+			LEFT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(S.id_supplier)
@@ -224,7 +224,7 @@ BEGIN
 			SELECT 
 				S.id_supplier
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Supplier S ON t_S.as_int = S.id_supplier
+			RIGHT JOIN demo.Shop_Supplier S ON t_S.as_int = S.id_supplier
 			WHERE (
 					a_get_all_supplier = 1
 					OR (
@@ -244,7 +244,7 @@ BEGIN
     
     -- Supplier Purchase Orders
     IF v_has_filter_order = 1 THEN
-		CALL partsltd_prod.p_split(v_guid, a_ids_order, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_order, ',', a_debug);
 		
 		INSERT INTO tmp_Split (
 			substring
@@ -253,21 +253,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
+            LEFT JOIN demo.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(SPO.id_order)
@@ -286,7 +286,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive Supplier Purchase Order IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
+			LEFT JOIN demo.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(SPO.id_order)
@@ -302,9 +302,9 @@ BEGIN
 			SELECT 
 				SPO.id_order
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
+			RIGHT JOIN demo.Shop_Supplier_Purchase_Order SPO ON t_S.as_int = SPO.id_order
 			INNER JOIN tmp_Supplier t_SUPP ON SPO.id_supplier_ordered = t_SUPP.id_supplier
-			INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON SPO.id_order = SPOPL.id_order
+			INNER JOIN demo.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON SPO.id_order = SPOPL.id_order
 			INNER JOIN tmp_Permutation t_PP ON SPOPL.id_permutation = t_PP.id_permutation
 			WHERE (
 					a_get_all_order = 1
@@ -351,7 +351,7 @@ BEGIN
 			, '' -- ids_product
 			, 0 -- a_debug
 		;
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * from demo.Shop_Calc_User_Temp;
 	END IF;
 	
 	CALL p_shop_calc_user(
@@ -365,10 +365,10 @@ BEGIN
 	);
 	
 	IF a_debug = 1 THEN
-		SELECT * from partsltd_prod.Shop_Calc_User_Temp;
+		SELECT * from demo.Shop_Calc_User_Temp;
 	END IF;
 	
-	IF NOT EXISTS (SELECT can_view FROM partsltd_prod.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
+	IF NOT EXISTS (SELECT can_view FROM demo.Shop_Calc_User_Temp UE_T WHERE UE_T.GUID = v_guid) THEN
 		DELETE FROM tmp_Msg_Error;
 
 		INSERT INTO tmp_Msg_Error (
@@ -379,7 +379,7 @@ BEGIN
 		VALUES (
 			v_id_type_error_no_permission
 			, v_code_type_error_no_permission
-			, CONCAT('You do not have view permissions for ', (SELECT name FROM partsltd_prod.Shop_Permission WHERE id_permission = v_ids_permission_supplier_purchase_order LIMIT 1))
+			, CONCAT('You do not have view permissions for ', (SELECT name FROM demo.Shop_Permission WHERE id_permission = v_ids_permission_supplier_purchase_order LIMIT 1))
 		)
 		;
 	END IF;
@@ -405,7 +405,7 @@ BEGIN
 		S.id_currency,
 		t_S.active
     FROM tmp_Supplier t_S
-    INNER JOIN partsltd_prod.Shop_Supplier S
+    INNER JOIN demo.Shop_Supplier S
 		ON t_S.id_supplier = S.id_supplier
 	;
     */
@@ -428,9 +428,9 @@ BEGIN
             , SPO.created_on
 		) AS name
     FROM tmp_Supplier_Purchase_Order t_SPO 
-	INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order SPO ON SPO.id_order = t_SPO.id_order
-    LEFT JOIN partsltd_prod.Shop_Supplier S ON SPO.id_supplier_ordered = S.id_supplier
-    LEFT JOIN partsltd_prod.Shop_Currency C ON SPO.id_currency_cost = C.id_currency
+	INNER JOIN demo.Shop_Supplier_Purchase_Order SPO ON SPO.id_order = t_SPO.id_order
+    LEFT JOIN demo.Shop_Supplier S ON SPO.id_supplier_ordered = S.id_supplier
+    LEFT JOIN demo.Shop_Currency C ON SPO.id_currency_cost = C.id_currency
     ;
     
     # Supplier Purchase Order Product Link
@@ -454,15 +454,15 @@ BEGIN
 		, SPOPL.cost_unit_local_VAT_incl
         , SPOPL.active
     FROM tmp_Supplier_Purchase_Order t_SPO
-    INNER JOIN partsltd_prod.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPO.id_order = SPOPL.id_order
-    LEFT JOIN partsltd_prod.Shop_Product_Permutation PP ON SPOPL.id_permutation = PP.id_permutation
-    LEFT JOIN partsltd_prod.Shop_Product P ON PP.id_product = P.id_product
+    INNER JOIN demo.Shop_Supplier_Purchase_Order_Product_Link SPOPL ON t_SPO.id_order = SPOPL.id_order
+    LEFT JOIN demo.Shop_Product_Permutation PP ON SPOPL.id_permutation = PP.id_permutation
+    LEFT JOIN demo.Shop_Product P ON PP.id_product = P.id_product
     ;
     
     # Errors
     SELECT *
     FROM tmp_Msg_Error t_ME
-    INNER JOIN partsltd_prod.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
+    INNER JOIN demo.Shop_Msg_Error_Type MET ON t_ME.id_type = MET.id_type
     ;
     
     IF a_debug = 1 THEN

@@ -631,12 +631,12 @@ VALUES
 	, (71, 2, '197g', '197 grams', 4, 197)
 ;
 
-INSERT INTO partsltd_prod.Shop_Product_Change_Set (
+INSERT INTO demo.Shop_Product_Change_Set (
 	comment
 )
 VALUES ( 'Update Variation Display Orders' )
 ;
-UPDATE partsltd_prod.Shop_Variation V
+UPDATE demo.Shop_Variation V
 INNER JOIN (
     SELECT 
         V.id_variation,
@@ -661,8 +661,8 @@ INNER JOIN (
                 , IFNULL(IFNULL(UM.symbol, UM.name_singular), '(No Unit of Measurement)')
             )
         ) as new_order
-    FROM partsltd_prod.Shop_Variation V
-    INNER JOIN partsltd_prod.Shop_Unit_Measurement UM 
+    FROM demo.Shop_Variation V
+    INNER JOIN demo.Shop_Unit_Measurement UM 
         ON V.id_unit_measurement = UM.id_unit_measurement
         AND UM.active = 1
     WHERE 
@@ -670,7 +670,7 @@ INNER JOIN (
 ) AS RANKED ON V.id_variation = RANKED.id_variation
 JOIN (
     SELECT CS.id_change_set
-    FROM partsltd_prod.Shop_Product_Change_Set CS
+    FROM demo.Shop_Product_Change_Set CS
     ORDER BY CS.id_change_set DESC
     LIMIT 1
 ) AS CS

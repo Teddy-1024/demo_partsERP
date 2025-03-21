@@ -1,7 +1,7 @@
 
 # Variation Types Temp
 
--- DROP TABLE partsltd_prod.Shop_Variation_Type_Temp;
+-- DROP TABLE demo.Shop_Variation_Type_Temp;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Variation_Type_Temp';
 

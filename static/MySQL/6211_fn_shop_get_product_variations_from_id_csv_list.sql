@@ -55,7 +55,7 @@ BEGIN
         END IF;
     END WHILE;
     
-	INSERT INTO partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp (
+	INSERT INTO demo.Shop_Product_Permutation_Variation_Link_Temp (
 		id_link
 		, id_permutation
 		, id_variation
@@ -71,7 +71,7 @@ BEGIN
         , 1 AS active
 		, a_guid
 	FROM tmp_Get_Variation_From_Csv_Variations t_V
-	LEFT JOIN partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL ON t_V.id_variation = PPVL.id_variation
+	LEFT JOIN demo.Shop_Product_Permutation_Variation_Link PPVL ON t_V.id_variation = PPVL.id_variation
 	;
 	
     DROP TEMPORARY TABLE tmp_Get_Variation_From_Csv_Variations;
@@ -85,18 +85,18 @@ DELIMITER ;
 /*
 
 SELECT 
-	partsltd_prod.fn_shop_get_product_variations_from_id_csv_list(
+	demo.fn_shop_get_product_variations_from_id_csv_list(
 		1 -- a_id_permutation
         , '1:1' -- a_variation_csv
         , 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE' -- a_guid
 	)
 ;
 SELECT *
-FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 WHERE GUID = 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE'
 ;
 DELETE
-FROM partsltd_prod.Shop_Product_Permutation_Variation_Link_Temp
+FROM demo.Shop_Product_Permutation_Variation_Link_Temp
 WHERE GUID = 'NIPPLENIPPLENIPPLENIPPLENIPPLENIPPLE'
 ;
 */

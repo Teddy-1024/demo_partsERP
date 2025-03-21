@@ -1,4 +1,4 @@
--- USE partsltd_prod;
+-- USE demo;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_debug_timing_reporting;
@@ -37,7 +37,7 @@ END //
 DELIMITER ;
 
 /*
-CALL partsltd_prod.p_debug_timing_reporting (
+CALL demo.p_debug_timing_reporting (
 	CURRENT_TIMESTAMP(6)
 );
 */

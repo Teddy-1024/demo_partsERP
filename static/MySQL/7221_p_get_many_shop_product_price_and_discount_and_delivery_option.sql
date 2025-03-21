@@ -1,4 +1,4 @@
--- USE partsltd_prod;
+-- USE demo;
 
 -- Clear previous proc
 DROP PROCEDURE IF EXISTS p_shop_get_many_product_price_and_discount_and_delivery_option;
@@ -188,7 +188,7 @@ BEGIN
 		;
     END IF;
     
-    CALL partsltd_prod.p_shop_calc_product_permutation (
+    CALL demo.p_shop_calc_product_permutation (
 		a_id_user
 		, 1 -- a_get_all_product_category
 		, 0 -- a_get_inactive_product_category
@@ -212,8 +212,8 @@ BEGIN
 		SELECT 
 			PC.id_category
 			, PC.display_order
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
-		INNER JOIN partsltd_prod.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
+		FROM (SELECT * FROM demo.Shop_Product_Category_Temp WHERE GUID = v_guid) PC_T 
+		INNER JOIN demo.Shop_Product_Category PC ON PC_T.id_category = PC.id_category
 		;
 		
 		INSERT INTO tmp_Product (
@@ -225,8 +225,8 @@ BEGIN
 			P.id_product
 			, P.id_category
 			, P.display_order
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Temp WHERE GUID = v_guid) P_T 
-		INNER JOIN partsltd_prod.Shop_Product P ON P.id_product = P_T.id_product
+		FROM (SELECT * FROM demo.Shop_Product_Temp WHERE GUID = v_guid) P_T 
+		INNER JOIN demo.Shop_Product P ON P.id_product = P_T.id_product
 		;
 		
 		INSERT INTO tmp_Permutation (
@@ -242,12 +242,12 @@ BEGIN
             , PP_T.can_view
             , PP_T.can_edit
             , PP_T.can_admin
-		FROM (SELECT * FROM partsltd_prod.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
-		INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
+		FROM (SELECT * FROM demo.Shop_Product_Permutation_Temp WHERE GUID = v_guid) PP_T
+		INNER JOIN demo.Shop_Product_Permutation PP ON PP_T.id_permutation = PP.id_permutation
 		;
     
     # Product Prices
-		CALL partsltd_prod.p_split(v_guid, a_ids_product_price, ',', a_debug);
+		CALL demo.p_split(v_guid, a_ids_product_price, ',', a_debug);
         
         DELETE FROM tmp_Split;
 		
@@ -258,21 +258,21 @@ BEGIN
 		SELECT 
 			substring
 			, CONVERT(substring, DECIMAL(10,0)) AS as_int
-		FROM partsltd_prod.Split_Temp
+		FROM demo.Split_Temp
 		WHERE 1=1
 			AND GUID = v_guid
 			AND NOT ISNULL(substring)
 			AND substring != ''
 		;
 		
-		CALL partsltd_prod.p_clear_split_temp( v_guid );
+		CALL demo.p_clear_split_temp( v_guid );
 	END IF;
     
     IF NOT EXISTS (SELECT * FROM tmp_Msg_Error LIMIT 1) THEN
 		IF EXISTS (
 			SELECT * 
             FROM tmp_Split t_S 
-            LEFT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+            LEFT JOIN demo.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
 			WHERE 
 				ISNULL(t_S.as_int) 
                 OR ISNULL(PRICE.id_price)
@@ -289,7 +289,7 @@ BEGIN
 				v_code_type_error_bad_data, 
 				CONCAT('Invalid or inactive product price IDs: ', IFNULL(GROUP_CONCAT(t_S.substring SEPARATOR ', '), 'NULL'))
 			FROM tmp_Split t_S
-			LEFT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+			LEFT JOIN demo.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
 			WHERE 
 				ISNULL(t_S.as_int) 
 				OR ISNULL(PRICE.id_price)
@@ -303,7 +303,7 @@ BEGIN
 				PRICE.id_price
                 , PRICE.id_permutation
 			FROM tmp_Split t_S
-			RIGHT JOIN partsltd_prod.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
+			RIGHT JOIN demo.Shop_Product_Price PRICE ON t_S.as_int = PRICE.id_price
             INNER JOIN tmp_Permutation t_PP ON SI.id_permutation = t_PP.id_permutation
 			WHERE 
 				(
@@ -948,10 +948,10 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
     
     
-	CALL partsltd_prod.p_shop_clear_calc_product_permutation ( v_guid );
+	CALL demo.p_shop_clear_calc_product_permutation ( v_guid );
     
     IF a_debug = 1 THEN
-		CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+		CALL demo.p_debug_timing_reporting ( v_time_start );
     END IF;
 END //
 DELIMITER ;
@@ -959,7 +959,7 @@ DELIMITER ;
 
 /*
 
-CALL partsltd_prod.p_shop_get_many_product_price_and_discount_and_delivery_option (
+CALL demo.p_shop_get_many_product_price_and_discount_and_delivery_option (
 	IN a_id_user INT,
     IN a_get_all_product_permutation BIT,
 	IN a_get_inactive_product_permutation BIT,

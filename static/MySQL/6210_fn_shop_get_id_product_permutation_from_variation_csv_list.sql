@@ -46,9 +46,9 @@ BEGIN
         IF v_id_permutation IS NULL THEN
             -- First iteration: find initial v_id_permutations
             SELECT PPVL.id_permutation INTO v_id_permutation
-            FROM partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL
-            INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PPVL.id_permutation = PP.id_permutation
-            INNER JOIN partsltd_prod.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
+            FROM demo.Shop_Product_Permutation_Variation_Link PPVL
+            INNER JOIN demo.Shop_Product_Permutation PP ON PPVL.id_permutation = PP.id_permutation
+            INNER JOIN demo.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
             WHERE 1=1
 				AND PP.id_product = a_id_product
 				AND PPVL.id_variation = v_id_variation
@@ -57,9 +57,9 @@ BEGIN
         ELSE
             -- Subsequent iterations: narrow down the v_id_permutation
             SELECT PPVL.id_permutation INTO v_id_permutation_tmp
-            FROM partsltd_prod.Shop_Product_Permutation_Variation_Link PPVL
-            INNER JOIN partsltd_prod.Shop_Product_Permutation PP ON PPVL.id_permutation = PP.id_permutation
-            INNER JOIN partsltd_prod.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
+            FROM demo.Shop_Product_Permutation_Variation_Link PPVL
+            INNER JOIN demo.Shop_Product_Permutation PP ON PPVL.id_permutation = PP.id_permutation
+            INNER JOIN demo.Shop_Variation PV ON PPVL.id_variation = PV.id_variation
             WHERE 1=1
 				AND PP.id_product = a_id_product
 				AND PPVL.v_id_permutation = v_id_permutation
@@ -98,7 +98,7 @@ WHERE v_id_permutation IS NULL;
 */
 
 /*
-select * from partsltd_prod.Shop_Variation
+select * from demo.Shop_Variation
 
 DROP PROCEDURE IF EXISTS p_shop_get_id_product_permutation_from_variation_csv_list;
 

@@ -1,6 +1,6 @@
 
 # Split Key Value Pair CSV Staging
--- USE partsltd_prod;
+-- USE demo;
 -- DROP TABLE IF EXISTS Split_Temp;
 
 SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Split_Key_Value_Pair_Csv_Temp';

@@ -1,7 +1,7 @@
 
 
 -- Clear previous proc
-DROP PROCEDURE IF EXISTS partsltd_prod.p_shop_save_product_test;
+DROP PROCEDURE IF EXISTS demo.p_shop_save_product_test;
 
 
 DELIMITER //
@@ -15,15 +15,15 @@ BEGIN
 	SET v_guid := 'nips';
 
 	SELECT *
-	FROM partsltd_prod.Shop_Product
+	FROM demo.Shop_Product
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
+	FROM demo.Shop_Product_Temp
 	;
 
 	START TRANSACTION;
 		
-		INSERT INTO partsltd_prod.Shop_Product_Temp (
+		INSERT INTO demo.Shop_Product_Temp (
 			id_product
 			, id_category
 			, name
@@ -62,11 +62,11 @@ BEGIN
 	COMMIT;
     
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
+	FROM demo.Shop_Product_Temp
 	WHERE GUID = v_guid
     ;
     
-    CALL partsltd_prod.p_shop_save_product ( 
+    CALL demo.p_shop_save_product ( 
 		'Test save product' -- comment
         , v_guid -- guid
         , 1 -- id_user
@@ -74,20 +74,20 @@ BEGIN
     );
     
 	SELECT *
-	FROM partsltd_prod.Shop_Product
+	FROM demo.Shop_Product
 	;
 	SELECT *
-	FROM partsltd_prod.Shop_Product_Temp
+	FROM demo.Shop_Product_Temp
 	;
     
-	CALL partsltd_prod.p_debug_timing_reporting ( v_time_start );
+	CALL demo.p_debug_timing_reporting ( v_time_start );
 END //
 DELIMITER ;
 
 /*
-CALL partsltd_prod.p_shop_save_product_test ();
+CALL demo.p_shop_save_product_test ();
 
-DELETE FROM partsltd_prod.Shop_Product_Temp;
+DELETE FROM demo.Shop_Product_Temp;
 
 DROP TABLE IF EXISTS tmp_Msg_Error;
 */

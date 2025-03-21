@@ -1007,14 +1007,6 @@ var BasePage = /*#__PURE__*/function () {
   }, {
     key: "hookupNavigation",
     value: function hookupNavigation() {
-      /* Can be removed: */
-      var overlayHamburger = document.querySelector(idOverlayHamburger);
-      var hamburgerOptions = overlayHamburger.querySelectorAll('div.' + flagRow);
-      var countOptions = hamburgerOptions.length;
-      // console.log('count nav options: ', countOptions);
-      // overlayHamburger.css('height', (countOptions * 27) + 'px');
-      /* end of can be removed */
-
       this.hookupEventHandler("click", idButtonHamburger, function (event, element) {
         var overlayHamburger = document.querySelector(idOverlayHamburger);
         if (overlayHamburger.classList.contains(flagCollapsed)) {
@@ -1024,7 +1016,6 @@ var BasePage = /*#__PURE__*/function () {
           overlayHamburger.classList.remove(flagExpanded);
           overlayHamburger.classList.add(flagCollapsed);
         }
-        // overlayHamburger.classList.add(flagInitialised);
       });
       this.hookupButtonsNavHome();
       this.hookupButtonsNavServices();
@@ -1092,7 +1083,6 @@ var BasePage = /*#__PURE__*/function () {
         _this2.leave();
         api_API.loginUser().then(function (response) {
           if (response.Success) {
-            // this.router.navigateToUrl(response[flagCallback], null, false); // window.app.
             window.location.href = response[flagCallback];
           } else {
             DOM.alertError("Error", response.Message);
@@ -1188,7 +1178,6 @@ var BasePage = /*#__PURE__*/function () {
           }
           OverlayConfirm.show();
         });
-        // button.classList.add(flagCollapsed);
       });
     }
   }, {
@@ -1222,7 +1211,6 @@ var BasePage = /*#__PURE__*/function () {
   }, {
     key: "toggleShowButtonsSaveCancel",
     value: function toggleShowButtonsSaveCancel(show) {
-      // , buttonSave = null, buttonCancel = null
       var buttonSave = document.querySelector('form.' + flagFilter + ' button.' + flagSave);
       var buttonCancel = document.querySelector('form.' + flagFilter + ' button.' + flagCancel);
       if (show) {
