@@ -22,11 +22,9 @@ import locale
 from flask_sqlalchemy import SQLAlchemy
 
 
-# VARIABLE INSTANTIATION
 db = SQLAlchemy()
 
 
-# CLASSES
 class SQL_Error(db.Model):
     display_order = db.Column(db.Integer, primary_key=True)
     id_type = db.Column(db.Integer)
@@ -34,22 +32,6 @@ class SQL_Error(db.Model):
     msg = db.Column(db.String(4000))
     name = db.Column(db.String(500))
     description = db.Column(db.String(4000))
-
-    """
-    def __new__(cls, display_order, code, msg):
-        _m = 'SQL_Error.__new__'
-        v_arg_type = 'class attribute'
-        av.val_int(display_order, 'display_order', _m)
-        av.val_str(code, 'code', _m, max_len=50, v_arg_type=v_arg_type)
-        av.val_str(msg, 'msg', _m, max_len=4000, v_arg_type=v_arg_type)
-        return super(SQL_Error, cls).__new__(cls)
-    
-    def __init__(self, display_order, code, msg):
-        self.display_order = display_order
-        self.code = code
-        self.msg = msg
-        super().__init__()
-    """
 
     def from_DB_record(record):
         error = SQL_Error()

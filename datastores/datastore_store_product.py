@@ -21,65 +21,7 @@ from helpers.helper_db_mysql import Helper_DB_MySQL
 from extensions import db
 # external
 # from abc import ABC, abstractmethod, abstractproperty
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
-import stripe
-import os
-from flask import Flask, session, current_app
-from pydantic import BaseModel, ConfigDict
-from typing import ClassVar
-from datetime import datetime
 
-# db = SQLAlchemy()
-
-"""
-class Table_Shop_Product_Category(db.Model):
-    __tablename__ = 'Shop_Product_Category'
-    id_category: int = db.Column(db.Integer, primary_key=True)
-    code: str = db.Column(db.String(50))
-    name: str = db.Column(db.String(255))
-    description: str = db.Column(db.String(4000))
-    active: bool = db.Column(db.Boolean)
-    display_order: int = db.Column(db.Integer)
-    created_on: datetime = db.Column(db.DateTime)
-    created_by: int = db.Column(db.Integer)
-    id_change_set: int = db.Column(db.Integer)
-"""
-"""
-class Row_Shop_Product_Temp(db.Model):
-    __tablename__ = 'Shop_Product_Temp'
-    __table_args__ = { 'extend_existing': True }
-    id_product: int = db.Column(db.Integer, primary_key=True)
-    id_category: int = db.Column(db.Integer)
-    name: str = db.Column(db.String(50))
-    has_variations: str = db.Column(db.String(255))
-    id_access_level_required: int = db.Column(db.Integer)
-    active: bool = db.Column(db.Boolean)
-    display_order: int = db.Column(db.Integer)
-    guid: str = db.Column(db.BINARY(36))
-
-    @classmethod
-    def from_product(cls, product):
-        row = cls()
-        row.id_product = product.id_product[0] if isinstance(product.id_product, tuple) else product.id_product
-        row.id_category = product.id_category[0] if isinstance(product.id_category, tuple) else product.id_category
-        row.name = product.name[0] if isinstance(product.name, tuple) else product.name
-        row.id_access_level_required = product.id_access_level_required[0] if isinstance(product.id_access_level_required, tuple) else product.id_access_level_required
-        row.active = product.active
-        row.display_order = product.display_order
-        return row
-    def to_json(self):
-        return {
-            'id_product': self.id_product,
-            'id_category': self.id_category,
-            'name': self.name,
-            'has_variations': self.has_variations,
-            'id_access_level_required': self.id_access_level_required,
-            'active': av.input_bool(self.active, self.FLAG_ACTIVE, f'{self.__class__.__name__}.to_json'),
-            'display_order': self.display_order,
-            'guid': self.guid,
-        }
-"""
 
 class DataStore_Store_Product(DataStore_Store_Base):
     def __init__(self):
@@ -115,16 +57,15 @@ class DataStore_Store_Product(DataStore_Store_Base):
         }
         save_result = cls.db_procedure_execute('p_shop_save_product', argument_dict_list)
         
-        cursor = save_result # .cursor
+        cursor = save_result
         Helper_App.console_log('data received')
         
         # Errors
-        # cursor.nextset()
         result_set_e = cursor.fetchall()
         Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
-            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] 
             for error in errors:
                 Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         try:

@@ -59,18 +59,15 @@ def contact_post():
     try:
         form = Form_Contact()
         if form.validate_on_submit():
-            # Handle form submission
             email = form.email.data
-            CC = form.CC.data # not in use
+            # CC = form.CC.data # not in use
             name = form.name.data
             message = form.message.data
-            # send email
             mailItem = Message("PARTS Website Contact Us Message", recipients=[current_app.config['MAIL_CONTACT_PUBLIC']])
             mailItem.body = f"Dear Lord Edward Middleton-Smith,\n\n{message}\n\nKind regards,\n{name}\n{email}"
             mail.send(mailItem)
             return "Submitted."
         return "Invalid. Failed to submit."
-        # html_body = render_template('pages/core/_contact.html', model = model)
     except Exception as e:
         return jsonify(error=str(e)), 403
 
@@ -88,7 +85,6 @@ def admin_home():
     try:
         model = Model_View_Admin_Home()
         if not model.is_user_logged_in:
-            # return redirect(url_for('routes_user.login', callback = Model_View_Admin_Home.HASH_PAGE_ADMIN_HOME))
             return redirect(url_for('routes_core.home'))
         if not (model.user.can_admin_store or model.user.can_admin_user):
             return redirect(url_for('routes_core.home'))

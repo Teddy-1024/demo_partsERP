@@ -10,11 +10,6 @@ Description:
 Initializes the Flask application, sets the configuration based on the environment, and defines two routes (/ and /about) that render templates with the specified titles.
 """
 
-# IMPORTS
-# VARIABLE INSTANTIATION
-# METHODS
-
-# IMPORTS
 # internal
 from config import app_config, Config
 from controllers.core import routes_core
@@ -33,7 +28,6 @@ from extensions import db, csrf, mail, oauth
 from helpers.helper_app import Helper_App
 # external
 from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
-# from flask_appconfig import AppConfig
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
@@ -46,17 +40,13 @@ from logging.handlers import RotatingFileHandler
 import traceback
 import logging
 
-sys.path.insert(0, os.path.dirname(__file__)) # Todo: why?
-
+sys.path.insert(0, os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-# AppConfig(app)
-app.config.from_object(app_config) # for db init with required keys
+app.config.from_object(app_config)
 app.app_config = app_config
-# app.config["config"] = app_config()
 
-# logging
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
 handler.setLevel(logging.DEBUG)
 app.logger.addHandler(handler)
@@ -82,6 +72,8 @@ def make_session_permanent():
     session.permanent = True
 
 csrf = CSRFProtect()
+csrf.init_app(app)
+
 cors = CORS(app, resources={
     r"/static/*": {
         "origins": [app.config["URL_HOST"]],
@@ -89,15 +81,15 @@ cors = CORS(app, resources={
         "max_age": 3600
     }
 })
-
-csrf.init_app(app)
 cors.init_app(app)
+
 db.init_app(app)
-mail.init_app(app)
+
 oauth.init_app(app)
 
+mail.init_app(app)
+
 with app.app_context():
-    # config = app.config["config"]
     db.create_all()
     db.engine.url = app.config['SQLALCHEMY_DATABASE_URI']
 
@@ -113,7 +105,6 @@ with app.app_context():
         authorize_url = f'https://{app.config["DOMAIN_AUTH0"]}/authorize',
         access_token_url = f'https://{app.config["DOMAIN_AUTH0"]}/oauth/token',
     )
-
 
 app.register_blueprint(routes_core)
 app.register_blueprint(routes_legal)
@@ -138,9 +129,7 @@ def console_log(value):
 @app.after_request
 def add_cache_headers(response):
     if request.path.startswith('/static/'):
-        # Cache static assets
         response.headers['Cache-Control'] = 'public, max-age=31536000'
     else:
-        # No caching for dynamic content
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     return response

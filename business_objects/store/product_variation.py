@@ -145,38 +145,6 @@ class Parameters_Product_Variation(Get_Many_Parameters_Base):
         parameters.a_get_inactive_variation = get_inactive
         return parameters
 
-"""
-class Product_Variation_Container(BaseModel):
-    variation_types: list = []
-    variations: list = []
-
-    def add_product_variation_type(self, variation_type):
-        av.val_instance(variation_type, 'variation_type', 'Product_Variation_Container.add_product_variation_type', Product_Variation_Type)
-        self.variations.append(variation_type)
-    def add_product_variation(self, variation):
-        av.val_instance(variation, 'variation', 'Product_Variation_Container.add_product_variation', Product_Variation)
-        if variation.variation_type is None:
-            variation_type = next(filterfalse(lambda x: x.id_type != variation.id_type, self.variation_types), None)
-            if variation_type is not None:
-                variation.variation_type = variation_type
-        self.variations.append(variation)
-
-    def __repr__(self):
-        return f'Product_Variation_Container:\nvariations_types: {self.variation_types}\nvariations: {self.variations}'
-    
-    def to_list_variation_options(self):
-        list_variations = []
-        for variation in self.variations:
-            list_variations.append(variation.to_json_option())
-        Helper_App.console_log(f'list_variations: {list_variations}')
-        return list_variations
-    def to_list_variation_type_options(self):
-        list_variation_types = []
-        for variation_type in self.variation_types:
-            list_variation_types.append(variation_type.to_json_option())
-        return list_variation_types
-"""
-
 class Product_Variation_Temp(db.Model, Store_Base):
     __tablename__ = 'Shop_Variation_Temp'
     __table_args__ = { 'extend_existing': True }

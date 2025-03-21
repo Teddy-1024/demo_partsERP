@@ -37,8 +37,6 @@ class Address(db.Model, Base):
     county = db.Column(db.String(256))
     active = db.Column(db.Boolean)
 
-    # region = None
-    
     def __init__(self):
         super().__init__()
         Base.__init__(self)

@@ -14,16 +14,6 @@ Datastore for Store
 # from routes import bp_home
 import lib.argument_validation as av
 from business_objects.store.access_level import Access_Level
-"""
-from business_objects.store.basket import Basket, Basket_Item
-from business_objects.store.product_category import Product_Category_Container, Product_Category
-from business_objects.store.currency import Currency
-from business_objects.store.image import Image
-from business_objects.store.delivery_option import Delivery_Option
-from business_objects.store.discount import Discount
-from business_objects.store.order import Order
-from business_objects.store.product import Product, Product_Permutation, Product_Price, Parameters_Product # Permutation_Variation_Link
-"""
 from business_objects.region import Region
 from business_objects.sql_error import SQL_Error
 from business_objects.store.stock_item import Stock_Item
@@ -48,29 +38,11 @@ from datetime import datetime
 import time
 from sqlalchemy.exc import OperationalError
 
-# db = SQLAlchemy()
-
 
 class DataStore_Base(BaseModel):
-    # Global constants
-    # Attributes
-    """
-    app: Flask = None
-    db: SQLAlchemy = None
-    session: object = None
-    """
-
-    # model_config = ConfigDict(arbitrary_types_allowed=True)
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Constructor
-        """
-        self.db = db
-        self.app = current_app    
-        with self.app.app_context():
-            self.session = session
-        """
+    
     @staticmethod
     def db_procedure_execute(proc_name, argument_dict_list = None):
         # Argument validation
@@ -78,9 +50,7 @@ class DataStore_Base(BaseModel):
         av.val_str(proc_name, 'proc_name', _m)
         has_arguments = not str(type(argument_dict_list)) == "<class 'NoneType'>"
         if has_arguments:
-            # av.val_list_instances(argument_dict_list, 'argument_dict_list', _m, dict)
             pass
-        # Methods
         proc_string = f'CALL {proc_name}('
         if has_arguments:
             arg_keys = list(argument_dict_list.keys())
@@ -90,15 +60,12 @@ class DataStore_Base(BaseModel):
         proc_string = text(proc_string)
         Helper_App.console_log(f'{_m}\nproc_string: {proc_string}\nargs: {argument_dict_list}')
 
-        # with self.db.session.begin() as session:
-        # conn = Helper_DB_MySQL(self.app).get_db_connection()
-
         if has_arguments:
             result = db.session.execute(proc_string, argument_dict_list)
         else:
             result = db.session.execute(proc_string)
         Helper_App.console_log(f'result: {result}')
-        # conn.session.remove()
+        
         return result
         cursor = result.cursor
         result_set_1 = cursor.fetchall()
@@ -200,7 +167,7 @@ class DataStore_Base(BaseModel):
         Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
-            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e]
             for error in errors:
                 Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         
@@ -217,7 +184,6 @@ class DataStore_Base(BaseModel):
         if db.session.dirty or db.session.new or db.session.deleted:
             Helper_App.console_log("Session is not clean")
             return
-        # Assuming `permanent_table_name` is a string representing the table name
         table_object = db.metadata.tables.get(permanent_table_name)
         if table_object is None:
             Helper_App.console_log(f"Table {permanent_table_name} not found in metadata.")
@@ -225,30 +191,7 @@ class DataStore_Base(BaseModel):
         else:
             expected_columns = set(column.name for column in db.inspect(table_object).columns)
             Helper_App.console_log(f'expected_columns: {expected_columns}')
-        """ v1, v2
-        try:
-            for i in range(0, len(records), batch_size):
-                "" v1
-                batch = records[i:i+batch_size]
-                Helper_App.console_log(f'batch: {batch}')
-                db.session.bulk_save_objects(batch)
-                ""
-                ""
-                data = [object.to_json() for object in batch]
-                Helper_App.console_log(f'data: {data}')
-                for row in data:
-                    row_keys = set(row.keys())
-                    if row_keys != expected_columns:
-                        Helper_App.console_log(f"Column mismatch in row: {row}")
-                        Helper_App.console_log(f'missing columns: {expected_columns - row_keys}')
-                        Helper_App.console_log(f'extra columns: {row_keys - expected_columns}')
-                # db.session.bulk_insert_mappings(permanent_table_name, data)
-                ""    
-        except Exception as e:
-            Helper_App.console_log(f'{_m}\n{e}')
-            db.session.rollback()
-            raise e
-        """
+
         max_retries = 3
         initial_backoff = 1
         for i in range(0, len(records), batch_size):
@@ -269,7 +212,6 @@ class DataStore_Base(BaseModel):
                         time.sleep(wait_time)
                         retries += 1
                         
-                        # Ensure the session is clean for the retry
                         db.session.rollback()
             except Exception as e:
                 db.session.rollback()
@@ -282,8 +224,6 @@ class DataStore_Base(BaseModel):
             filters = Filters_Access_Level()
         av.val_instance(filters, 'filters', _m, Filters_Access_Level) 
         argument_dict = filters.to_json()
-        # user = cls.get_user_session()
-        # argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
         Helper_App.console_log(f'argument_dict: {argument_dict}')
         Helper_App.console_log('executing p_shop_get_many_access_level')
         result = cls.db_procedure_execute('p_shop_get_many_access_level', argument_dict)
@@ -304,7 +244,7 @@ class DataStore_Base(BaseModel):
         Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
-            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e]
             for error in errors:
                 Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         
@@ -319,8 +259,6 @@ class DataStore_Base(BaseModel):
             filters = Filters_Unit_Measurement()
         av.val_instance(filters, 'filters', _m, Filters_Unit_Measurement) 
         argument_dict = filters.to_json()
-        # user = cls.get_user_session()
-        # argument_dict['a_id_user'] = 1 # 'auth0|6582b95c895d09a70ba10fef' # id_user
         Helper_App.console_log(f'argument_dict: {argument_dict}')
         Helper_App.console_log('executing p_shop_get_many_unit_measurement')
         result = cls.db_procedure_execute('p_shop_get_many_unit_measurement', argument_dict)
@@ -341,7 +279,7 @@ class DataStore_Base(BaseModel):
         Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
-            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] 
             for error in errors:
                 Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         
@@ -364,7 +302,6 @@ class DataStore_Base(BaseModel):
         cursor = result.cursor
         Helper_App.console_log('data received')
 
-        # cursor.nextset()
         result_set_1 = cursor.fetchall()
         regions = []
         for row in result_set_1:

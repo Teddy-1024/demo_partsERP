@@ -32,28 +32,7 @@ from helpers.helper_app import Helper_App
 # external
 from dataclasses import dataclass
 from typing import ClassVar, List
-"""
-class Enum_Status_Stock(Enum):
-    OUT = 0
-    LOW = 1
-    IN = 99
 
-    def text(self):
-        return Enum_Status_Stock.Enum_Status_Stock_Text(self)
-    
-    def Enum_Status_Stock_Text(status):
-        av.val_instance(status, 'category', 'Enum_Status_Stock_Text', Enum_Status_Stock)
-        if status == Enum_Status_Stock.OUT:
-            return 'Out of stock'
-        elif status == Enum_Status_Stock.LOW:
-            return 'Low on stock'
-        else:
-            return 'Fully stocked'
-    
-    def get_member_by_text(text):
-        return data_types.get_enum_member_by_text(Enum_Status_Stock, text.upper())
-        
-"""
 class Product(SQLAlchemy_ABC, Store_Base):
     NAME_ATTR_OPTION_VALUE: ClassVar[str] = Store_Base.ATTR_ID_PRODUCT
     NAME_ATTR_OPTION_TEXT = Store_Base.FLAG_NAME
@@ -70,16 +49,6 @@ class Product(SQLAlchemy_ABC, Store_Base):
     can_view = db.Column(db.Boolean)
     can_edit = db.Column(db.Boolean)
     can_admin = db.Column(db.Boolean)
-    # form_basket_add: Form_Basket_Add
-    # form_basket_edit: Form_Basket_Edit
-    # has_variations: bool
-    # index_permutation_selected: int
-
-    """
-    permutations: list = None
-    permutation_index: dict = None
-    variation_trees: list = None
-    """
 
     def __init__(self):
         self.permutations = []
@@ -109,24 +78,6 @@ class Product(SQLAlchemy_ABC, Store_Base):
         product.can_edit = av.input_bool(query_row[9], "can_edit", _m, v_arg_type=v_arg_type)
         product.can_admin = av.input_bool(query_row[10], "can_admin", _m, v_arg_type=v_arg_type)
         return product
-    """
-    def from_permutation(permutation, has_variations = False):
-        _m = 'Product.from_permutation'
-        v_arg_type = 'class attribute'
-        av.val_instance(permutation, 'permutation', _m, Product_Permutation, v_arg_type=v_arg_type)
-        product = Product()
-        product.has_variations = has_variations
-        product.index_permutation_selected = 0
-        product.id_product = permutation.id_product
-        product.id_category = permutation.id_category
-        product.display_order = permutation.display_order
-        product.can_view = permutation.can_view
-        product.can_edit = permutation.can_edit
-        product.can_admin = permutation.can_admin
-        product.permutations.append(permutation)
-        # product.get_variation_trees()
-        return product
-    """
     def add_product_permutation(self, permutation):
         _m = 'Product.add_product_permutation'
         av.val_instance(permutation, 'permutation', _m, Product_Permutation)
@@ -136,36 +87,9 @@ class Product(SQLAlchemy_ABC, Store_Base):
         except KeyError:
             self.permutation_index[permutation.id_permutation] = len(self.permutations)
             self.permutations.append(permutation)
-            """
-            if self.has_variations:
-                self.has_variations = False
-            """
         if self.index_permutation_selected is None:
             self.index_permutation_selected = self.permutation_index[permutation.id_permutation]
-            Helper_App.console_log(f'setting selected permutation for product {self.id_product} to {self.index_permutation_selected}') # :\n{self.permutations[self.index_permutation_selected]}
-    """
-    def from_permutations(permutations):
-        _m = 'Product.from_permutations'
-        v_arg_type = 'class attribute'
-        if len(permutations) == 0:
-            raise ValueError(av.error_msg_str(permutations, 'permutations', _m, list, v_arg_type=v_arg_type))
-        product = Product()
-        product.has_variations = True
-        product.index_permutation_selected = 0
-        product.id_product = permutations[0].id_product
-        product.id_category = permutations[0].id_category
-        product.display_order = permutations[0].display_order
-        product.can_view = True
-        product.can_edit = True
-        product.can_admin = True
-        for permutation in permutations:
-            product.can_view &= permutation.can_view
-            product.can_edit &= permutation.can_edit
-            product.can_admin &= permutation.can_admin
-        product.permutations.append(permutations)
-        product.get_variation_trees()
-        return product
-    """
+            Helper_App.console_log(f'setting selected permutation for product {self.id_product} to {self.index_permutation_selected}') 
     def get_variation_trees(self):
         self.variation_trees = []
         for index_permutation in range(len(self.permutations)):
@@ -186,12 +110,6 @@ class Product(SQLAlchemy_ABC, Store_Base):
         permutation = Product_Permutation.from_DB_Stripe_price(query_row)
         product = Product.from_permutation(permutation)
         return product
-    """
-    def from_json(json_basket_item, key_id_product, key_id_permutation):
-        permutation = Product_Permutation.from_json(json_basket_item, key_id_product, key_id_permutation)
-        product = Product.from_permutation(permutation)
-        return product
-    """
     @classmethod
     def from_json(cls, json):
         product = cls()
@@ -242,13 +160,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
         return self.get_permutation_selected().description
     def output_currency(self):
         return self.get_permutation_selected().get_price().symbol_currency
-    """
-    def add_form_basket_add(self):
-        self.form_basket_add = None
-
-    def add_form_basket_edit(self):
-        self.form_basket_edit = None
-    """
+    
     def __repr__(self):
         return f'''Product
             id_product: {self.id_product}
@@ -263,23 +175,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
             variation trees: {self.variation_trees}
             active: {self.active}
             '''
-    """
-    def get_index_permutation_from_id(self, id_permutation):
-        if id_permutation is None and not self.has_variations:
-            return 0
-        for index_permutation in range(len(self.permutations)):
-            permutation = self.permutations[index_permutation]
-            if permutation.id_permutation == id_permutation:
-                return index_permutation
-        raise ValueError(f"{av.error_msg_str(id_permutation, 'id_permutation', 'Product.get_index_permutation_from_id', int)}\nPermutation ID not found.")
-    """
-    """
-    def add_product_variation(self, variation):
-        av.val_instance(variation, 'variation', 'Product.add_product_variation', Product_Variation)
-        # Helper_App.console_log(f'variation: {variation}')
-        index_permutation = self.permutation_index[variation.id_permutation] # self.get_index_permutation_from_id(variation.id_permutation)
-        self.permutations[index_permutation].add_product_variation(variation)
-    """
+    
     def add_product_variation_type(self, variation_type):
         variation = variation_type.variations[0]
         index_permutation = self.permutation_index[variation.id_permutation]
@@ -318,27 +214,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
         for permutation in self.permutations:
             list_rows.append(permutation.to_row_permutation())
         return list_rows
-    """
-    @classmethod
-    def from_json(cls, json):
-        product = cls()
-        product.id_product = json[cls.ATTR_ID_PRODUCT]
-        product.id_category = json[cls.ATTR_ID_PRODUCT_CATEGORY]
-        product.name = json[cls.FLAG_NAME]
-        product.display_order = json[cls.FLAG_DISPLAY_ORDER]
-        product.can_view = json[cls.FLAG_CAN_VIEW]
-        product.can_edit = json[cls.FLAG_CAN_EDIT]
-        product.can_admin = json[cls.FLAG_CAN_ADMIN]
-        product.has_variations = json[cls.FLAG_HAS_VARIATIONS]
-        product.index_permutation_selected = json[cls.FLAG_INDEX_PERMUTATION_SELECTED]
-        product.permutations = []
-        for json_permutation in json[cls.ATTR_ID_PRODUCT_PERMUTATION]:
-            product.permutations.append(Product_Permutation.from_json(json_permutation))
-        product.variation_trees = []
-        for json_tree in json[cls.FLAG_PRODUCT_VARIATION_TREES]:
-            product.variation_trees.append(Product_Variation_Tree.from_json(json_tree))
-        return product
-    """
+    
     def to_json(self):
         return {
             **self.get_shared_json_attributes(self),
@@ -366,22 +242,7 @@ class Product(SQLAlchemy_ABC, Store_Base):
                 if type not in list_types:
                     list_types.append(type)
         return list_types
-    """
-    def get_json_str_types_variation_trees(self):
-        json_str = ''
-        for tree in self.variation_trees:
-            if json_str != '':
-                json_str += '\n'
-            json_str += tree.get_json_str_types()
-        return json_str
-    def get_text_input_variation_types(self):
-        text_input = ''
-        for tree in self.variation_trees:
-            if text_input != '':
-                text_input += '\n'
-            text_input += tree.get_text_input_types()
-        return text_input
-    """
+    
     def get_csv_ids_permutation(self):
         csv = ''
         for permutation in self.permutations:
@@ -392,36 +253,18 @@ class Product(SQLAlchemy_ABC, Store_Base):
 
 
 class Parameters_Product(Get_Many_Parameters_Base):
-    # id_user: str
     get_all_product_category: bool
     get_inactive_product_category: bool
-    # get_first_product_category_only: bool
     ids_product_category: str
     get_all_product: bool
     get_inactive_product: bool
-    # get_first_product_only: bool
     ids_product: str
     get_all_permutation: bool
     get_inactive_permutation: bool
-    # get_first_permutation_only: bool
     ids_permutation: str
     get_all_image: bool
     get_inactive_image: bool
-    # get_first_image_only: bool
     ids_image: str
-    """
-    get_all_region: bool
-    get_inactive_region: bool
-    get_first_region_only: bool
-    ids_region: str
-    get_all_currency: bool
-    get_inactive_currency: bool
-    get_first_currency_only: bool
-    ids_currency: str
-    get_all_discount: bool
-    get_inactive_discount: bool
-    ids_discount: str
-    """
     get_products_quantity_stock_below_min: bool
 
     def to_json(self):
@@ -429,37 +272,21 @@ class Parameters_Product(Get_Many_Parameters_Base):
             # 'a_id_user': None,
             'a_get_all_product_category': self.get_all_product_category,
             'a_get_inactive_product_category': self.get_inactive_product_category,
-            # 'a_get_first_product_category_only': self.get_first_product_category_only,
             'a_ids_product_category': self.ids_product_category,
             'a_get_all_product': self.get_all_product,
             'a_get_inactive_product': self.get_inactive_product,
-            # 'a_get_first_product_only': self.get_first_product_only,
             'a_ids_product': self.ids_product,
             'a_get_all_permutation': self.get_all_permutation,
             'a_get_inactive_permutation': self.get_inactive_permutation,
-            # 'a_get_first_permutation_only': self.get_first_permutation_only,
             'a_ids_permutation': self.ids_permutation,
             'a_get_all_image': self.get_all_image,
             'a_get_inactive_image': self.get_inactive_image,
-            # 'a_get_first_image_only': self.get_first_image_only,
             'a_ids_image': self.ids_image,
-            # 'a_get_all_delivery_region': self.get_all_region,
-            # 'a_get_inactive_delivery_region': self.get_inactive_region,
-            # 'a_get_first_delivery_region_only': self.get_first_region_only,
-            # 'a_ids_delivery_region': self.ids_region,
-            # 'a_get_all_currency': self.get_all_currency,
-            # 'a_get_inactive_currency': self.get_inactive_currency,
-            # 'a_get_first_currency_only': self.get_first_currency_only,
-            # 'a_ids_currency': self.ids_currency,
-            # 'a_get_all_discount': self.get_all_discount,
-            # 'a_get_inactive_discount': self.get_inactive_discount,
-            # 'a_ids_discount': self.ids_discount,
             'a_get_products_quantity_stock_below_min': self.get_products_quantity_stock_below_min
         }
     
     @staticmethod
     def from_form_filters_product(form):
-        # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
         av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product)
         has_filter_category = not (form.id_category.data == '0' or form.id_category.data == '' or form.id_category.data is None)
         is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Parameters_Product.from_form_filters_product")
@@ -467,37 +294,20 @@ class Parameters_Product(Get_Many_Parameters_Base):
         return Parameters_Product(
             get_all_product_category = not has_filter_category,
             get_inactive_product_category = not active,
-            # get_first_product_category_only = False,
             ids_product_category = form.id_category.data if form.id_category.data is not None else '',
             get_all_product = True,
             get_inactive_product = not active,
-            # get_first_product_only = False,
             ids_product = '',
             get_all_permutation = True,
             get_inactive_permutation = not active,
-            # get_first_permutation_only = False,
             ids_permutation = '',
             get_all_image = False,
             get_inactive_image = False,
-            # get_first_image_only = False,
             ids_image = '',
-            # get_all_region = False,
-            # get_inactive_region = False,
-            # get_first_region_only = False,
-            # ids_region = '',
-            # get_all_currency = False,
-            # get_inactive_currency = False,
-            # get_first_currency_only = False,
-            # ids_currency = '',
-            # get_all_discount = False,
-            # get_inactive_discount = False,
-            # ids_discount = '',
             get_products_quantity_stock_below_min = False
         )
     @staticmethod
     def from_form_filters_product_permutation(form):
-        # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        # av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product_Permutation)
         has_category_filter = not (form.id_category.data == '0' or form.id_category.data == '' or form.id_category.data is None)
         has_product_filter = not (form.id_product.data == '0' or form.id_product.data == '' or form.id_product.data is None)
         get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form_filters_product_permutation")
@@ -506,31 +316,16 @@ class Parameters_Product(Get_Many_Parameters_Base):
         return Parameters_Product(
             get_all_product_category = not has_category_filter,
             get_inactive_product_category = get_inactive,
-            # get_first_product_category_only = False,
             ids_product_category = form.id_category.data if form.id_category.data is not None else '',
             get_all_product = not has_product_filter,
             get_inactive_product = get_inactive,
-            # get_first_product_only = False,
             ids_product = form.id_product.data if form.id_product.data is not None else '',
             get_all_permutation = not get_permutations_stock_below_min,
             get_inactive_permutation = get_inactive,
-            # get_first_permutation_only = False,
             ids_permutation = '',
             get_all_image = False,
             get_inactive_image = False,
-            # get_first_image_only = False,
             ids_image = '',
-            # get_all_region = False,
-            # get_inactive_region = False,
-            # get_first_region_only = False,
-            # ids_region = '',
-            # get_all_currency = False,
-            # get_inactive_currency = False,
-            # get_first_currency_only = False,
-            # ids_currency = '',
-            # get_all_discount = False,
-            # get_inactive_discount = False,
-            # ids_discount = '',
             get_products_quantity_stock_below_min = get_permutations_stock_below_min
         )
     
@@ -539,31 +334,16 @@ class Parameters_Product(Get_Many_Parameters_Base):
         return Parameters_Product(
             get_all_product_category = True,
             get_inactive_product_category = False,
-            # get_first_product_category_only = False,
             ids_product_category = '',
             get_all_product = True,
             get_inactive_product = False,
-            # get_first_product_only = False,
             ids_product = '',
             get_all_permutation = True,
             get_inactive_permutation = False,
-            # get_first_permutation_only = False,
             ids_permutation = '',
             get_all_image = True,
             get_inactive_image = False,
-            # get_first_image_only = False,
             ids_image = '',
-            # get_all_region = True,
-            # et_inactive_region = False,
-            # get_first_region_only = False,
-            # ids_region = '',
-            # get_all_currency = True,
-            # get_inactive_currency = False,
-            # get_first_currency_only = False,
-            # ids_currency = '',
-            # get_all_discount = True,
-            # get_inactive_discount = False,
-            # ids_discount = '',
             get_products_quantity_stock_below_min = True
         )
     
@@ -572,31 +352,16 @@ class Parameters_Product(Get_Many_Parameters_Base):
         return cls(
             get_all_product_category = json.get('a_get_all_product_category', False),
             get_inactive_product_category = json.get('a_get_inactive_product_category', False),
-            # get_first_product_category_only = json.get('a_get_first_product_category_only', False),
             ids_product_category = json.get('a_ids_product_category', ''),
             get_all_product = json.get('a_get_all_product', False),
             get_inactive_product = json.get('a_get_inactive_product', False),
-            # get_first_product_only = json.get('a_get_first_product_only', False),
             ids_product = json.get('a_ids_product', ''),
             get_all_permutation = json.get('a_get_all_permutation', False),
             get_inactive_permutation = json.get('a_get_inactive_permutation', False),
-            # get_first_permutation_only = json.get('a_get_first_permutation_only', False),
             ids_permutation = json.get('a_ids_permutation', ''),
             get_all_image = json.get('a_get_all_image', False),
             get_inactive_image = json.get('a_get_inactive_image', False),
-            # get_first_image_only = json.get('a_get_first_image_only', False),
             ids_image = json.get('a_ids_image', ''),
-            # get_all_region = json.get('a_get_all_region', False),
-            # get_inactive_region = json.get('a_get_inactive_region', False),
-            # get_first_region_only = json.get('a_get_first_region_only', False),
-            # ids_region = json.get('a_ids_region', ''),
-            # get_all_currency = json.get('a_get_all_currency', False),
-            # get_inactive_currency = json.get('a_get_inactive_currency', False),
-            # get_first_currency_only = json.get('a_get_first_currency_only', False),
-            # ids_currency = json.get('a_ids_currency', ''),
-            # get_all_discount = json.get('a_get_all_discount', False),
-            # get_inactive_discount = json.get('a_get_inactive_discount', False),
-            # ids_discount = json.get('a_ids_discount', ''),
             get_products_quantity_stock_below_min = json.get('a_get_products_quantity_stock_below_min', False)
         )
     
@@ -621,242 +386,6 @@ class Parameters_Product(Get_Many_Parameters_Base):
     def from_filters_stock_item(cls, filters_stock_item):
         return cls.from_form_filters_product_permutation(filters_stock_item)
     
-"""
-class Parameters_Product(Get_Many_Parameters_Base):
-    # id_user: str
-    get_all_product_category: bool
-    get_inactive_product_category: bool
-    # get_first_product_category_only: bool
-    ids_product_category: str
-    get_all_product: bool
-    get_inactive_product: bool
-    # get_first_product_only: bool
-    ids_product: str
-    get_all_permutation: bool
-    get_inactive_permutation: bool
-    # get_first_permutation_only: bool
-    ids_permutation: str
-    get_all_image: bool
-    get_inactive_image: bool
-    # get_first_image_only: bool
-    ids_image: str
-    ""
-    get_all_region: bool
-    get_inactive_region: bool
-    get_first_region_only: bool
-    ids_region: str
-    get_all_currency: bool
-    get_inactive_currency: bool
-    get_first_currency_only: bool
-    ids_currency: str
-    get_all_discount: bool
-    get_inactive_discount: bool
-    ids_discount: str
-    ""
-    get_products_quantity_stock_below_min: bool
-
-    def __init__(self, a_id_user, **kwargs):
-        super().__init__(a_id_user, **kwargs)
-
-    def to_json(self):
-        return {
-            'a_id_user': self.a_id_user,
-            'a_get_all_product_category': self.get_all_product_category,
-            'a_get_inactive_product_category': self.get_inactive_product_category,
-            # 'a_get_first_product_category_only': self.get_first_product_category_only,
-            'a_ids_product_category': self.ids_product_category,
-            'a_get_all_product': self.get_all_product,
-            'a_get_inactive_product': self.get_inactive_product,
-            # 'a_get_first_product_only': self.get_first_product_only,
-            'a_ids_product': self.ids_product,
-            'a_get_all_permutation': self.get_all_permutation,
-            'a_get_inactive_permutation': self.get_inactive_permutation,
-            # 'a_get_first_permutation_only': self.get_first_permutation_only,
-            'a_ids_permutation': self.ids_permutation,
-            'a_get_all_image': self.get_all_image,
-            'a_get_inactive_image': self.get_inactive_image,
-            # 'a_get_first_image_only': self.get_first_image_only,
-            'a_ids_image': self.ids_image,
-            # 'a_get_all_delivery_region': self.get_all_region,
-            # 'a_get_inactive_delivery_region': self.get_inactive_region,
-            # 'a_get_first_delivery_region_only': self.get_first_region_only,
-            # 'a_ids_delivery_region': self.ids_region,
-            # 'a_get_all_currency': self.get_all_currency,
-            # 'a_get_inactive_currency': self.get_inactive_currency,
-            # 'a_get_first_currency_only': self.get_first_currency_only,
-            # 'a_ids_currency': self.ids_currency,
-            # 'a_get_all_discount': self.get_all_discount,
-            # 'a_get_inactive_discount': self.get_inactive_discount,
-            # 'a_ids_discount': self.ids_discount,
-            'a_get_products_quantity_stock_below_min': self.get_products_quantity_stock_below_min
-        }
-    
-    @staticmethod
-    def from_form_filters_product(form, id_user):
-        # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        av.val_instance(form, 'form', 'Parameters_Product.from_form', Filters_Product)
-        has_filter_category = not (form.id_category.data == '0' or form.id_category.data == '')
-        is_not_empty = av.input_bool(form.is_not_empty.data, "is_not_empty", "Parameters_Product.from_form_filters_product")
-        active = av.input_bool(form.active.data, "active", "Parameters_Product.from_form_filters_product")
-        return Parameters_Product(
-            a_id_user = id_user,
-            get_all_product_category = not has_filter_category,
-            get_inactive_product_category = not active,
-            # get_first_product_category_only = False,
-            ids_product_category = str(form.id_category.data),
-            get_all_product = True,
-            get_inactive_product = not active,
-            # get_first_product_only = False,
-            ids_product = '',
-            get_all_permutation = True,
-            get_inactive_permutation = not active,
-            # get_first_permutation_only = False,
-            ids_permutation = '',
-            get_all_image = False,
-            get_inactive_image = False,
-            # get_first_image_only = False,
-            ids_image = '',
-            # get_all_region = False,
-            # get_inactive_region = False,
-            # get_first_region_only = False,
-            # ids_region = '',
-            # get_all_currency = False,
-            # get_inactive_currency = False,
-            # get_first_currency_only = False,
-            # ids_currency = '',
-            # get_all_discount = False,
-            # get_inactive_discount = False,
-            # ids_discount = '',
-            get_products_quantity_stock_below_min = False
-        )
-    @staticmethod 
-    def from_form_filters_product_permutation(form):
-        # if not (form is Filters_Product_Permutation): raise ValueError(f'Invalid form type: {type(form)}')
-        # av.val_instance(form, 'form', 'Parameters_Product.from_form', Form_Base)
-        has_category_filter = not (form.id_category.data is None or form.id_category.data == '0' or form.id_category.data == '')
-        has_product_filter = not (form.id_product.data is None or form.id_product.data == '0' or form.id_product.data == '')
-        get_permutations_stock_below_min = av.input_bool(form.is_out_of_stock.data, "is_out_of_stock", "Parameters_Product.from_form")
-        Helper_App.console_log(f'form question: {type(form.is_out_of_stock)}\nbool interpretted: {get_permutations_stock_below_min}\type form: {type(form)}')
-        return Parameters_Product(
-            get_all_product_category = not has_category_filter,
-            get_inactive_product_category = False,
-            # get_first_product_category_only = False,
-            ids_product_category = str(form.id_category.data) if has_category_filter else '',
-            get_all_product = not has_product_filter,
-            get_inactive_product = False,
-            # get_first_product_only = False,
-            ids_product = str(form.id_product.data) if has_product_filter else '',
-            get_all_permutation = not get_permutations_stock_below_min,
-            get_inactive_permutation = False,
-            # get_first_permutation_only = False,
-            ids_permutation = '',
-            get_all_image = False,
-            get_inactive_image = False,
-            # get_first_image_only = False,
-            ids_image = '',
-            # get_all_region = False,
-            # get_inactive_region = False,
-            # get_first_region_only = False,
-            # ids_region = '',
-            # get_all_currency = False,
-            # get_inactive_currency = False,
-            # get_first_currency_only = False,
-            # ids_currency = '',
-            # get_all_discount = False,
-            # get_inactive_discount = False,
-            # ids_discount = '',
-            get_products_quantity_stock_below_min = get_permutations_stock_below_min
-        )
-    
-    @classmethod
-    def get_default(cls, id_user):
-        return cls(
-            a_id_user = id_user,
-            get_all_product_category = True,
-            get_inactive_product_category = False,
-            # get_first_product_category_only = False,
-            ids_product_category = '',
-            get_all_product = True,
-            get_inactive_product = False,
-            # get_first_product_only = False,
-            ids_product = '',
-            get_all_permutation = True,
-            get_inactive_permutation = False,
-            # get_first_permutation_only = False,
-            ids_permutation = '',
-            get_all_image = True,
-            get_inactive_image = False,
-            # get_first_image_only = False,
-            ids_image = '',
-            # get_all_region = True,
-            # et_inactive_region = False,
-            # get_first_region_only = False,
-            # ids_region = '',
-            # get_all_currency = True,
-            # get_inactive_currency = False,
-            # get_first_currency_only = False,
-            # ids_currency = '',
-            # get_all_discount = True,
-            # get_inactive_discount = False,
-            # ids_discount = '',
-            get_products_quantity_stock_below_min = True
-        )
-    
-    @classmethod
-    def from_json(cls, json):
-        return cls(
-            get_all_product_category = json.get('a_get_all_product_category', False),
-            get_inactive_product_category = json.get('a_get_inactive_product_category', False),
-            # get_first_product_category_only = json.get('a_get_first_product_category_only', False),
-            ids_product_category = json.get('a_ids_product_category', ''),
-            get_all_product = json.get('a_get_all_product', False),
-            get_inactive_product = json.get('a_get_inactive_product', False),
-            # get_first_product_only = json.get('a_get_first_product_only', False),
-            ids_product = json.get('a_ids_product', ''),
-            get_all_permutation = json.get('a_get_all_permutation', False),
-            get_inactive_permutation = json.get('a_get_inactive_permutation', False),
-            # get_first_permutation_only = json.get('a_get_first_permutation_only', False),
-            ids_permutation = json.get('a_ids_permutation', ''),
-            get_all_image = json.get('a_get_all_image', False),
-            get_inactive_image = json.get('a_get_inactive_image', False),
-            # get_first_image_only = json.get('a_get_first_image_only', False),
-            ids_image = json.get('a_ids_image', ''),
-            # get_all_region = json.get('a_get_all_region', False),
-            # get_inactive_region = json.get('a_get_inactive_region', False),
-            # get_first_region_only = json.get('a_get_first_region_only', False),
-            # ids_region = json.get('a_ids_region', ''),
-            # get_all_currency = json.get('a_get_all_currency', False),
-            # get_inactive_currency = json.get('a_get_inactive_currency', False),
-            # get_first_currency_only = json.get('a_get_first_currency_only', False),
-            # ids_currency = json.get('a_ids_currency', ''),
-            # get_all_discount = json.get('a_get_all_discount', False),
-            # get_inactive_discount = json.get('a_get_inactive_discount', False),
-            # ids_discount = json.get('a_ids_discount', ''),
-            get_products_quantity_stock_below_min = json.get('a_get_products_quantity_stock_below_min', False)
-        )
-    
-    @classmethod
-    def from_filters_product_category(cls, filters_category):
-        return cls(
-            get_all_product_category = True,
-            get_inactive_product_category = filters_category.active.data,
-            ids_product_category = '',
-            get_all_product = True,
-            get_inactive_product = False,
-            ids_product = '',
-            get_all_permutation = True,
-            get_inactive_permutation = False,
-            ids_permutation = '',
-            get_all_image = False,
-            get_inactive_image = False,
-            ids_image = '',
-            get_products_quantity_stock_below_min = False
-        )
-    @classmethod
-    def from_filters_stock_item(cls, filters_stock_item):
-        return cls.from_form_filters_product_permutation(filters_stock_item)
-"""
-
 class Product_Temp(db.Model, Store_Base):
     __tablename__ = 'Shop_Product_Temp'
     __table_args__ = { 'extend_existing': True }
@@ -883,11 +412,6 @@ class Product_Temp(db.Model, Store_Base):
         row.id_access_level_required = product.id_access_level_required[0] if isinstance(product.id_access_level_required, tuple) else product.id_access_level_required
         row.active = product.active
         row.display_order = product.display_order
-        """
-        row.guid = product.guid
-        row.created_on = product.created_on
-        row.created_by = product.created_by
-        """
         return row
     def to_json(self):
         return {
@@ -900,10 +424,6 @@ class Product_Temp(db.Model, Store_Base):
             'display_order': self.display_order,
             'guid': self.guid,
         }
-        """
-        'created_on': self.created_on,
-        'created_by': self.created_by
-        """
     def __repr__(self):
         return f'''Product_Temp
             id_product: {self.id_product}

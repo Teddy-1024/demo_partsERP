@@ -18,43 +18,6 @@ import lib.argument_validation as av
 # external
 from typing import ClassVar
 
-"""
-class I_Store_Base():
-    @abstractmethod
-    def __repr__(self):
-        pass
-    @classmethod
-    @abstractmethod
-    def from_json(cls, json):
-        pass
-    @abstractmethod
-    def to_json(self):
-        pass
-    @abstractmethod
-    def to_json_option(self):
-        pass
-    @abstractmethod
-    def test_69 (self):
-        pass
-    ""
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        for name, value in vars(Store_Base).items():
-            if getattr(value, "__isabstractmethod__", False):
-                if name not in cls.__dict__:
-                    raise TypeError(f"Can't instantiate class {cls.__name__} "
-                                    f"without implementation of abstract method {name}")
-                subclass_value = cls.__dict__[name]
-                if (isinstance(value, (staticmethod, classmethod)) and 
-                    not isinstance(subclass_value, type(value))):
-                    raise TypeError(f"Abstract {type(value).__name__} {name} in {cls.__name__} "
-                                    f"must be implemented as a {type(value).__name__}")
-    def __new__(cls, *args, **kwargs):
-        if cls is Store_Base:
-            raise TypeError("Can't instantiate abstract class Store_Base directly")
-        return super().__new__(cls)
-    ""
-"""
 
 class Store_Base(Base):
     # ATTR_ID_CURRENCY_COST: ClassVar[str] = 'id_currency_cost'
@@ -124,6 +87,10 @@ class Store_Base(Base):
     FLAG_UNIT_MEASUREMENT_LATENCY_MANUFACTURE: ClassVar[str] = 'unit_measurement_latency_manufacture'
     FLAG_UNIT_MEASUREMENT_QUANTITY: ClassVar[str] = 'unit_measurement_quantity'
     FLAG_VALUE_TEXT: ClassVar[str] = 'value_text'
-    
+    KEY_BASKET: ClassVar[str] = 'basket'
+    KEY_IS_INCLUDED_VAT: ClassVar[str] = 'is-included_vat'
+    KEY_ID_CURRENCY: ClassVar[str] = 'currency' 
+    KEY_ID_REGION_DELIVERY: ClassVar[str] = 'id-region-delivery'
+
     def __repr__(self):
         return str(self.__dict__)

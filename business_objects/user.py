@@ -185,48 +185,6 @@ class Parameters_User(Get_Many_Parameters_Base):
             ids_user = '',
             ids_user_auth0 = ''
         )
-""" User_Eval
-@dataclass
-class User_Filters():
-    ids_user: str
-    get_inactive_users: bool
-    ids_permission: str
-    ids_access_level: str
-    ids_product: str
-
-        def to_json(self):
-        return {
-            **self.get_shared_json_attributes(self),
-            'a_ids_user': self.ids_user,
-            'a_get_inactive_users': self.get_inactive_users,
-            'a_ids_permission': self.ids_permission,
-            'a_ids_access_level': self.ids_access_level,
-            'a_ids_product': self.ids_product,
-        }
-    
-    @staticmethod
-    def from_form(form):
-        av.val_instance(form, 'form', 'User_Filters.from_form', Form_Filters_User)
-        get_inactive = av.input_bool(form.active.data, "active", "User_Filters.from_form")
-        return User_Filters(
-            ids_user = form.id_user.data,
-            get_inactive_users = get_inactive,
-            ids_permission = form.ids_permission.data,
-            ids_access_level = form.ids_access_level.data,
-            ids_product = form.ids_product.data,
-        )
-    
-    @staticmethod
-    def get_default(datastore_store):
-        is_user_logged_in, id_user = datastore_store.get_login_user()
-        return User_Filters(
-            ids_user = id_user,
-            get_inactive_users = False,
-            ids_permission = '',
-            ids_access_level = '',
-            ids_product = '',
-        )
-"""
 
 class User_Permission_Evaluation(db.Model):
     id_evaluation = db.Column(db.Integer, primary_key=True)

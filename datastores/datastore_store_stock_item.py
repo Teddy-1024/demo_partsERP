@@ -31,19 +31,12 @@ from pydantic import BaseModel, ConfigDict
 from typing import ClassVar
 from datetime import datetime
 
-# db = SQLAlchemy()
-
 
 class DataStore_Store_Stock_Item(DataStore_Store_Base):
-    # Global constants
-    # Attributes
-
     def __init__(self):
         super().__init__()
 
-    # Stock Items
     def get_many_stock_item(self, parameters_stock_item, category_list):
-        # redundant argument validation? 
         _m = 'DataStore_Store_Stock_Item.get_many_stock_item'
         av.val_instance(parameters_stock_item, 'parameters_stock_item', _m, Parameters_Stock_Item)
         argument_dict = parameters_stock_item.to_json()
@@ -73,7 +66,7 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         Helper_App.console_log(f'raw categories: {result_set_1}')
         for row in result_set_1:
             new_stock_item = Stock_Item.from_DB_stock_item(row)
-            category_list.add_stock_item(new_stock_item) # , row)
+            category_list.add_stock_item(new_stock_item) 
         
         # Errors
         cursor.nextset()
@@ -81,27 +74,11 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
-            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e]
             for error in errors:
                 Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
-        """
-        if len(errors) > 0:
-            for error in errors:
-                if error.code == 'PRODUCT_AVAILABILITY':
-                    ids_permutation_unavailable = DataStore_Store_Stock_Item.get_ids_permutation_from_error_availability(error.msg)
-                    for id_permutation in ids_permutation_unavailable:
-                        index_category = category_list.get_index_category_from_id_permutation(id_permutation)
-                        category = category_list.categories[index_category]
-                        index_product = category.get_index_product_from_id_permutation(id_permutation)
-                        product = category.products[index_product]
-                        index_permutation = product.get_index_permutation_from_id(id_permutation)
-                        permutation = product.permutations[index_permutation]
-                        permutation.is_available = False
-                        if 'region' in error.msg or 'currency' in error.msg:
-                            permutation.is_unavailable_in_currency_or_region = True
-        """
         DataStore_Store_Stock_Item.db_cursor_clear(cursor)
-        return category_list, errors # categories, category_index
+        return category_list, errors 
     
     @classmethod
     def save_stock_items(cls, comment, stock_items):
@@ -113,7 +90,6 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         user = cls.get_user_session()
         rows = []
         for stock_item in stock_items:
-            # row = permutation.to_temporary_record()
             row = Stock_Item_Temp.from_stock_item(stock_item)
             row.guid = guid
             rows.append(row)
@@ -139,7 +115,7 @@ class DataStore_Store_Stock_Item(DataStore_Store_Base):
         Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
-            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] 
             for error in errors:
                 Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         DataStore_Store_Stock_Item.db_cursor_clear(cursor)

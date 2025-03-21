@@ -67,10 +67,6 @@ class Base():
     FLAG_VALUE_LOCAL_VAT_EXCL: ClassVar[str] = 'value_local_vat_excl'
     FLAG_VALUE_LOCAL_VAT_INCL: ClassVar[str] = 'value_local_vat_incl'
     FLAG_WEBSITE: ClassVar[str] = 'website'
-    """
-    NAME_ATTR_OPTION_TEXT: ClassVar[str] = 'name-attribute-option-text'
-    NAME_ATTR_OPTION_VALUE: ClassVar[str] = 'name-attribute-option-value'
-    """
     def __repr__(self):
         attrs = '\n'.join(f'{k}={v!r}' for k, v in self.__dict__.items())
         return f'<{self.__class__.__name__}(\n{attrs}\n)>'

@@ -107,18 +107,6 @@ class Product_Variation_Type(db.Model, Store_Base):
             'value': self.id_type,
             'text': self.name_singular
         }
-    """
-    def get_preview_variations(self):
-        preview = ''
-        if len(self.variations) > 0:
-            # preview = '\n'.join([variation.name for variation in self.variations])
-            preview = '<p>' + '</p><p>'.join([variation.name for variation in self.variations]) + '</p>'
-        return preview
-    def get_str_list_ids_variation(self):
-        if self.variations is None or len(self.variations) == 0:
-            return ''
-        return ','.join([str(variation.id_variation) for variation in self.variations])
-    """
 
 class Product_Variation_Type_Temp(db.Model, Store_Base):
     __tablename__ = 'Shop_Variation_Type_Temp'

@@ -42,58 +42,17 @@ class DataStore_Store_Product_Permutation(DataStore_Store_Base):
     def save_permutations(cls, comment, permutations):
         _m = 'DataStore_Store_Product_Permutation.save_permutations'
         av.val_str(comment, 'comment', _m)
-        # av.val_list(permutations, 'list_permutations', _m, Product_Permutation, 1)
 
         guid = Helper_DB_MySQL.create_guid_str()
         now = datetime.now()
         user = cls.get_user_session()
         rows = []
         for permutation in permutations:
-            # row = permutation.to_temporary_record()
             row = Product_Permutation_Temp.from_product_permutation(permutation)
             row.guid = guid
             rows.append(row)
-        
-        Helper_App.console_log(f'rows: {rows}')
-        
-        """
-        cursor = db.cursor()
-        Helper_App.console_log('cursor created')
-        cursor.executemany(
-            '''INSERT INTO Shop_Product_Permutation_Temp (
-                id_permutation, 
-                id_product, 
-                description, 
-                cost_local, 
-                id_currency_cost, 
-                profit_local_min, 
-                latency_manufacture,
-                id_unit_measurement_quantity,
-                count_unit_measurement_quantity,
-                quantity_min, 
-                quantity_max, 
-                quantity_stock, 
-                is_subscription, 
-                id_unit_measurement_interval_recurrence, 
-                count_interval_recurrence, 
-                id_stripe_product,
-                does_expire_faster_once_unsealed,
-                id_unit_measurement_interval_expiration_unsealed,
-                count_interval_expiration_unsealed,
-                active,
-                guid
-            ) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
-            rows
-        )
-        Helper_App.console_log('cursor executed')
-        db.commit()
-        Helper_App.console_log('cursor committed')
-        cursor.close()
-        Helper_App.console_log('cursor closed')
-        """
+
         DataStore_Store_Base.upload_bulk(Product_Permutation_Temp.__tablename__, rows, 1000)
-        Helper_App.console_log('bulk uploaded')
 
         argument_dict_list = {
             'a_comment': comment,
@@ -103,4 +62,3 @@ class DataStore_Store_Product_Permutation(DataStore_Store_Base):
         }
         results = cls.db_procedure_execute('p_shop_save_product_permutation', argument_dict_list)
         DataStore_Store_Base.db_cursor_clear(results.cursor)
-        Helper_App.console_log('saved product permutations')

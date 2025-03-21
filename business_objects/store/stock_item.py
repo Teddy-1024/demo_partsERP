@@ -56,12 +56,6 @@ class Stock_Item(db.Model, Store_Base):
     is_consumed = db.Column(db.Boolean)
     date_consumed = db.Column(db.DateTime)
     active = db.Column(db.Boolean)
-    """
-    can_view = db.Column(db.Boolean)
-    can_edit = db.Column(db.Boolean)
-    can_admin = db.Column(db.Boolean)
-    """
-    # variation_tree: Product_Variation_Tree = None
 
     def __init__(self):
         super().__init__()
@@ -93,11 +87,6 @@ class Stock_Item(db.Model, Store_Base):
         stock_item.is_consumed = av.input_bool(query_row[22], "is_consumed", _m, v_arg_type=v_arg_type)
         stock_item.date_consumed = query_row[23]
         stock_item.active = av.input_bool(query_row[24], "active", _m, v_arg_type=v_arg_type)
-        """
-        stock_item.can_view = av.input_bool(query_row[24], "can_view", _m, v_arg_type=v_arg_type)
-        stock_item.can_edit = av.input_bool(query_row[25], "can_edit", _m, v_arg_type=v_arg_type)
-        stock_item.can_admin = av.input_bool(query_row[26], "can_admin", _m, v_arg_type=v_arg_type)
-        """
         return stock_item
     
     @classmethod
@@ -163,18 +152,6 @@ class Stock_Item(db.Model, Store_Base):
             if permutation.is_available():
                 return True
         return False
-    """
-    def to_permutation_row_list(self):
-        list_rows = []
-        for permutation in self.permutations:
-            list_rows.append(permutation.to_row_permutation())
-        return list_rows
-    def to_json_option(self):
-        return {
-            'value': self.id_stock_item,
-            'text': self.id_stock_item
-        }
-    """
 
 class Parameters_Stock_Item(Get_Many_Parameters_Base):
     a_get_all_product_permutation: bool

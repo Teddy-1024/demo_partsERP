@@ -123,18 +123,6 @@ class Product_Variation_Tree():
             at_leaf_node = node.is_leaf()
         types.append(node.variation_type)
         return types
-    """
-    def get_product_variations(self):
-        variations = []
-        node = self.node_root
-        at_leaf_node = node.is_leaf()
-        variations.append(node.variation)
-        while not at_leaf_node:
-            node = node.nodes_child[0]
-            at_leaf_node = node.is_leaf()
-            variations.append(node.variation)
-        return variations
-    """
     def to_preview_str(self):
         Helper_App.console_log(f'Product_Variation_Tree.to_preview_str')
         variation_types = self.get_product_variation_types()

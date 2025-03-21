@@ -59,25 +59,7 @@ class Image(db.Model, Store_Base):
     url = db.Column(db.String(255))
     active = db.Column(db.Boolean)
     display_order = db.Column(db.Integer)
-    """
-    def __new__(cls, id, id_product, id_category, url, display_order):
-        _m = 'Image.__new__'
-        v_arg_type = 'class attribute'
-        av.val_int(id, 'id', _m, 0, v_arg_type=v_arg_type)
-        av.val_int(id_product, 'id_product', _m, 0, v_arg_type=v_arg_type)
-        av.val_int(id_category, 'id_category', _m, 0, v_arg_type=v_arg_type)
-        av.val_str(url, 'url', _m, max_len=254, v_arg_type=v_arg_type)
-        av.val_int(display_order, 'display_order', _m, v_arg_type=v_arg_type)
-        return super(Image, cls).__new__(cls)
     
-    def __init__(self, id, id_product, id_category, url, display_order):
-        self.id_image = id
-        self.id_product = id_product
-        self.id_category = id_category
-        self.url = url
-        self.display_order = display_order
-        super().__init__()
-"""
     def from_DB_get_many_product_catalogue(query_row):
         _m = 'Image.from_DB_get_many_product_catalogue'
         # Helper_App.console_log(f'image: {query_row}')

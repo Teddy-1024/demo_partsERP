@@ -302,12 +302,6 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
     id_unit_latency_manufacture = db.Column(db.Integer)
     latency_manufacture: int = db.Column(db.Integer)
     display_order: int = db.Column(db.Integer)
-    """
-    cost_unit_local_VAT_excl: float = db.Column(db.Float)
-    cost_unit_local_VAT_incl: float = db.Column(db.Float)
-    price_unit_local_VAT_excl: float = db.Column(db.Float)
-    price_unit_local_VAT_incl: float = db.Column(db.Float)
-    """
     active: bool = db.Column(db.Boolean)
     guid: str = db.Column(db.String(36))
     def __init__(self):
@@ -328,12 +322,6 @@ class Manufacturing_Purchase_Order_Product_Link_Temp(db.Model, Store_Base):
         row.id_unit_latency_manufacture = manufacturing_purchase_order_product_link.id_unit_latency_manufacture
         row.latency_manufacture = manufacturing_purchase_order_product_link.latency_manufacture
         row.display_order = manufacturing_purchase_order_product_link.display_order
-        """
-        row.cost_unit_local_VAT_excl = manufacturing_purchase_order_product_link.cost_unit_local_VAT_excl
-        row.cost_unit_local_VAT_incl = manufacturing_purchase_order_product_link.cost_unit_local_VAT_incl
-        row.price_unit_local_VAT_excl = manufacturing_purchase_order_product_link.price_unit_local_VAT_excl
-        row.price_unit_local_VAT_incl = manufacturing_purchase_order_product_link.price_unit_local_VAT_incl
-        """
         row.active = 1 if manufacturing_purchase_order_product_link.active else 0
         return row
     def __repr__(self):

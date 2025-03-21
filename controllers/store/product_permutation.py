@@ -34,7 +34,6 @@ routes_store_product_permutation = Blueprint('routes_store_product_permutation',
 def permutations():
     Helper_App.console_log('permutations')
     data = request.args
-    # Helper_App.console_log(f'data={data}\nrequest.args={request.args}\nrequest.form={request.form}\nrequest.data={request.data}\nrequest.values={request.values}\nrequest.headers={request.headers}')
     try:
         form_filters = Filters_Product_Permutation.from_json(data)
     except Exception as e:
@@ -43,7 +42,6 @@ def permutations():
     Helper_App.console_log(f'form_filters={form_filters}')
     model = Model_View_Store_Product_Permutation(form_filters)
     if not model.is_user_logged_in:
-        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Permutation.FLAG_CALLBACK: Model_View_Store_Product_Permutation.HASH_PAGE_STORE_PRODUCT_PERMUTATIONS })))
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_permutations.html', model = model)
 
@@ -58,7 +56,6 @@ def save_permutation():
                 Model_View_Store_Product_Permutation.FLAG_STATUS: Model_View_Store_Product_Permutation.FLAG_FAILURE, 
                 Model_View_Store_Product_Permutation.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'
             })
-        # filters_form = Filters_Product_Permutation.from_form(form_filters)
         Helper_App.console_log(f'form_filters: {form_filters}')
 
         permutations = data[Model_View_Store_Product_Permutation.FLAG_PRODUCT_PERMUTATION]
@@ -70,7 +67,6 @@ def save_permutation():
         objsPermutation = []
         for permutation in permutations:
             objsPermutation.append(Product_Permutation.from_json(permutation))
-        # model_save = Model_View_Store_Product_Permutation() # filters_product=filters_form)
         Helper_App.console_log(f'objsPermutation={objsPermutation}')
         Model_View_Store_Product_Permutation.save_permutations(data.get('comment', 'No comment'), objsPermutation)
 

@@ -12,7 +12,6 @@ Feature:    App Helper
 # external
 from pydantic import BaseModel, ConfigDict
 from flask import current_app
-# from flask_sqlalchemy import SQLAlchemy
 
 
 class Helper_App(BaseModel):

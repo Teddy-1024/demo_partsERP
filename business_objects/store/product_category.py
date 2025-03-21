@@ -463,19 +463,6 @@ class Product_Category_Container(Store_Base):
         return ','.join(list_ids)
     
     
-"""
-class Table_Shop_Product_Category(db.Model):
-    __tablename__ = 'Shop_Product_Category'
-    id_category: int = db.Column(db.Integer, primary_key=True)
-    code: str = db.Column(db.String(50))
-    name: str = db.Column(db.String(255))
-    description: str = db.Column(db.String(4000))
-    active: bool = db.Column(db.Boolean)
-    display_order: int = db.Column(db.Integer)
-    created_on: datetime = db.Column(db.DateTime)
-    created_by: int = db.Column(db.Integer)
-    id_change_set: int = db.Column(db.Integer)
-"""
 class Product_Category_Temp(db.Model, Store_Base):
     __tablename__ = 'Shop_Product_Category_Temp'
     __table_args__ = { 'extend_existing': True }
@@ -488,11 +475,11 @@ class Product_Category_Temp(db.Model, Store_Base):
     active: bool = db.Column(db.Boolean)
     display_order: int = db.Column(db.Integer)
     guid: str = db.Column(db.String(36))
-    # created_on: datetime = db.Column(db.DateTime)
-    # created_by: int = db.Column(db.Integer)
+    
     def __init__(self):
         super().__init__()
         self.id_temp = None
+        
     @classmethod
     def from_product_category(cls, product_category):
         row = cls()
@@ -503,12 +490,8 @@ class Product_Category_Temp(db.Model, Store_Base):
         row.id_access_level_required = product_category.id_access_level_required[0] if isinstance(product_category.id_access_level_required, tuple) else product_category.id_access_level_required
         row.active = product_category.active
         row.display_order = product_category.display_order
-        """
-        row.guid = product_category.guid
-        row.created_on = product_category.created_on
-        row.created_by = product_category.created_by
-        """
         return row
+    
     def to_json(self):
         return {
             'id_category': self.id_category,
@@ -520,10 +503,6 @@ class Product_Category_Temp(db.Model, Store_Base):
             'display_order': self.display_order,
             'guid': self.guid,
         }
-        """
-        'created_on': self.created_on,
-        'created_by': self.created_by
-        """
-
+    
     def __repr__(self):
         return str(self.__dict__)

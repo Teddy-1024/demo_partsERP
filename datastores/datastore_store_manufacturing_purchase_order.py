@@ -78,7 +78,7 @@ class DataStore_Store_Manufacturing_Purchase_Order(DataStore_Store_Base):
         Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
-            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e]
             for error in errors:
                 Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         

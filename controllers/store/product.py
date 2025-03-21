@@ -39,7 +39,6 @@ def products():
     Helper_App.console_log(f'form_filters={form_filters}')
     model = Model_View_Store_Product(form_filters)
     if not model.is_user_logged_in:
-        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product.FLAG_CALLBACK: Model_View_Store_Product.HASH_PAGE_STORE_PRODUCTS })))
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_products.html', model = model)
 
@@ -54,7 +53,6 @@ def save_product():
                 Model_View_Store_Product.FLAG_STATUS: Model_View_Store_Product.FLAG_FAILURE, 
                 Model_View_Store_Product.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'
             })
-        # filters_form = Filters_Product.from_form(form_filters)
         Helper_App.console_log(f'form_filters: {form_filters}')
 
         products = data[Model_View_Store_Product.FLAG_PRODUCT]
@@ -66,7 +64,6 @@ def save_product():
         objsProduct = []
         for product in products:
             objsProduct.append(Product.from_json(product))
-        # model_save = Model_View_Store_Product() # filters_product=filters_form)
         Helper_App.console_log(f'objsProduct={objsProduct}')
         save_errors = Model_View_Store_Product.save_products(data.get('comment', 'No comment'), objsProduct)
 

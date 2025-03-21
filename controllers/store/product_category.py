@@ -31,31 +31,14 @@ routes_store_product_category = Blueprint('routes_store_product_category', __nam
 @routes_store_product_category.route(Model_View_Store_Product_Category.HASH_PAGE_STORE_PRODUCT_CATEGORIES, methods=['GET'])
 def categories():
     Helper_App.console_log('categories')
-    # data = Helper_App.get_request_data(request)
     try:
         form_filters = Filters_Product_Category.from_json(request.args)
     except Exception as e:
         Helper_App.console_log(f'Error: {e}')
         form_filters = Filters_Product_Category()
     Helper_App.console_log(f'form_filters={form_filters}')
-    """
-    filters = Filters_Product_Category.get_default()
-    have_changed_filters = False
-    arg_filter_is_not_empty = request.args.get(Model_View_Store_Product_Category.FLAG_IS_NOT_EMPTY, None)
-    have_changed_filters = have_changed_filters or arg_filter_is_not_empty is None
-    Helper_App.console_log(f'arg_filter_is_not_empty={arg_filter_is_not_empty}')
-    filters.is_not_empty = filters.is_not_empty if arg_filter_is_not_empty is None else av.input_bool(arg_filter_is_not_empty, 'is_not_empty', 'filter_category')
-    arg_filter_active = request.args.get(Model_View_Store_Product_Category.FLAG_ACTIVE, None)
-    have_changed_filters = have_changed_filters or arg_filter_active is None
-    Helper_App.console_log(f'arg_filter_active={arg_filter_active}')
-    filters.active = filters.active if arg_filter_active is None else av.input_bool(arg_filter_active, 'active', 'filter_category')
-    if have_changed_filters:
-        Helper_App.console_log('redirecting')
-        return redirect(url_for('routes_store_product_category.categories', **filters.to_json()))
-    """
     model = Model_View_Store_Product_Category(form_filters)
     if not model.is_user_logged_in:
-        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Product_Category.FLAG_CALLBACK: Model_View_Store_Product_Category.HASH_PAGE_STORE_PRODUCT_CATEGORIES })))
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_product_categories.html', model = model)
 
@@ -69,7 +52,6 @@ def save_category():
                 Model_View_Store_Product_Category.FLAG_STATUS: Model_View_Store_Product_Category.FLAG_FAILURE, 
                 Model_View_Store_Product_Category.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'
             })
-        # filters_form = Filters_Product_Category.from_form(form_filters)
         
         categories = data[Model_View_Store_Product_Category.FLAG_PRODUCT_CATEGORY]
         if len(categories) == 0:
@@ -80,7 +62,6 @@ def save_category():
         objsCategory = []
         for category in categories:
             objsCategory.append(Product_Category.from_json(category))
-        # model_save = Model_View_Store_Product_Category() # filters_product=filters_form)
         Helper_App.console_log(f'objsCategory={objsCategory}')
         errors = Model_View_Store_Product_Category.save_categories(data.get('comment', 'No comment'), objsCategory)
 

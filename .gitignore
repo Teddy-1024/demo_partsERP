@@ -11,6 +11,7 @@ __pycache__/
 
 # Ignore logs and databases
 *.log
+*.log.*
 
 # Ignore logs and databases
 # *.sql
@@ -58,13 +59,13 @@ TODO.md
 tmp/
 
 # Ignore all .txt files in the doc/ directory
-doc/*.txt
+static/docs/*.txt
 
 # But don't ignore doc/important.txt, even though we're ignoring .txt files above
-!doc/important.txt
+!static/docs/important.txt
 
 # Ignore all .pdf files in the doc/ directory and any of its subdirectories
-doc/**/*.pdf
+static/docs/**/*.pdf
 
 # Ignore deprecated files
 DEPRECATED/

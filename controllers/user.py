@@ -116,7 +116,7 @@ def login():
         return jsonify({'status': 'error', 'message': str(e)}), 400
     
 
-@routes_user.route("/login_callback") # <path:subpath>/<code>
+@routes_user.route("/login_callback")
 @handle_db_disconnect
 def login_callback():
     Helper_App.console_log('login_callback')
@@ -128,25 +128,13 @@ def login_callback():
             error_text = f'Error: {error_state}: {error_description}'
             Helper_App.console_log(error_text)
             return login()
-        # Helper_App.console_log(f'code: {code}')
         token = None
         try:
             token = oauth.auth0.authorize_access_token()
         except Exception as e:
-            # Log the error for debugging
             Helper_App.console_log(f"Error: {str(e)}")
         session[current_app.config['ID_TOKEN_USER']] = token
-        # import user id
-        """
-        Helper_App.console_log(f'str(type(token)) = {str(type(token))}')
-        Helper_App.console_log(f'token = {token}')
-        userinfo = token.get('userinfo')
-        Helper_App.console_log(f'user info: {userinfo}')
-        # id_user = token.get('sub')
-        id_user = userinfo.get('sub')
-        Helper_App.console_log(f'user ID: {id_user}')
-        """
-        user = User.from_json_auth0(token) # datastore_user.get_user_auth0()
+        user = User.from_json_auth0(token)
         Helper_App.console_log(f'user: {user}')
         filters = Parameters_User.from_user(user)
         datastore_user = DataStore_User()
@@ -168,13 +156,10 @@ def login_callback():
                 Helper_App.console_log('hash is none')
                 state = request.args.get('state')
                 Helper_App.console_log(f'state: {state}')
-                hash_callback = state # .get('hash_callback')
+                hash_callback = state 
             Helper_App.console_log(f'hash_callback: {hash_callback}')
         except:
             Helper_App.console_log("get hash callback failed")
-        # id_user = get_id_user()
-        # add user to database
-        # DataStore_Store().add_new_user(id_user) # this is part of get basket - should occur on page load
 
         Helper_App.console_log(f'user session: {session[Model_View_Base.FLAG_USER]}')
         return redirect(f"{current_app.config['URL_HOST']}{hash_callback}")
@@ -188,38 +173,15 @@ def logout():
         {
             "returnTo": url_for("routes_user.logout_callback", _external=True),
             "client_id": current_app.config['ID_AUTH0_CLIENT'],
-        }# ,
-        # quote_via=quote_plus,
+        }
     )
     Helper_App.console_log(f"Redirecting to {url_logout}")
     return redirect(url_logout)
 
-@routes_user.route("/logout_callback") # <path:subpath>/<code>
+@routes_user.route("/logout_callback")
 @handle_db_disconnect
 def logout_callback():
     return redirect(url_for('routes_core.home'))
-    try:
-        session[current_app.ID_TOKEN_USER] = None
-        user = User()
-        try:
-            hash_callback = token.get('hash_callback')
-            if hash_callback is None:
-                Helper_App.console_log('hash is none')
-                state = request.args.get('state')
-                Helper_App.console_log(f'state: {state}')
-                hash_callback = state # .get('hash_callback')
-            Helper_App.console_log(f'hash_callback: {hash_callback}')
-        except:
-            Helper_App.console_log("get hash callback failed")
-        # id_user = get_id_user()
-        # add user to database
-        # DataStore_Store().add_new_user(id_user) # this is part of get basket - should occur on page load
-
-        Helper_App.console_log(f'user session: {session[Model_View_Base.FLAG_USER]}')
-        return redirect(f'{current_app.URL_HOST}{hash_callback}')
-    except Exception as e:
-        return jsonify({Model_View_Base.FLAG_STATUS: Model_View_Base.FLAG_FAILURE, Model_View_Base.FLAG_MESSAGE: f'Controller error.\n{e}'})
-
 
 @routes_user.route("/user")
 def user():
@@ -235,7 +197,6 @@ def user():
                 break
         model.users = [model.user]
         if not model.is_user_logged_in:
-            # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_User.FLAG_CALLBACK: Model_View_User.HASH_PAGE_USER_ACCOUNT })))
             return redirect(url_for('routes_core.home'))
         html_body = render_template('pages/user/_user.html', model = model)
     except Exception as e:

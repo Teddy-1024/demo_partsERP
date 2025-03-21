@@ -40,43 +40,24 @@ class Form_Register(FlaskForm):
     submit = SubmitField('Submit')
 
 
-"""
-class Form_Product(FlaskForm): # for basket, product tiles, product add
-    # PositiveIntegerField with validation constraints
+class Form_Basket_Add(FlaskForm):
     quantity = IntegerField(
         'Quantity',
-        validators=[
-            # InputRequired(message='Quantity'),
+        validators = [
             NumberRange(min=1, message='Please enter a positive integer')
         ],
-        default=1
-    )
-"""
-
-class Form_Basket_Add(FlaskForm): # for basket, product tiles, product add
-    # PositiveIntegerField with validation constraints
-    quantity = IntegerField(
-        'Quantity',
-        validators=[
-            # InputRequired(message='Quantity'),
-            NumberRange(min=1, message='Please enter a positive integer')
-        ],
-        default=1
-        # render_kw={'id-product': ''} # {Model_View_Store.attr_id_product: ''}
+        default = 1
     )
     submit = SubmitField('Add')
     form_type = 'Form_Basket_Add'
 
-class Form_Basket_Edit(FlaskForm): # for basket, product tiles, product add
-    # PositiveIntegerField with validation constraints
+class Form_Basket_Edit(FlaskForm):
     quantity = IntegerField(
         'Quantity',
-        validators=[
-            # InputRequired(message='Quantity'),
+        validators = [
             NumberRange(min=1, message='Please enter a positive integer')
         ],
-        default=1
-        # render_kw={'id-product': ''} # {Model_View_Store.attr_id_product: ''}
+        default = 1
     )
     submit = SubmitField('Update')
     form_type = 'Form_Basket_Edit'
@@ -109,7 +90,6 @@ class Form_Currency(FlaskForm):
     id_currency = SelectField('Currency', id='id_currency')
 
 
-# Store
 class Form_Supplier(FlaskForm):
     id_id_supplier = 'id_supplier'
     id_supplier = SelectField('Supplier', id='id_supplier')
@@ -124,11 +104,8 @@ class Form_Supplier(FlaskForm):
     id_currency = SelectField('Currency ID')
     is_active = BooleanField('Active', default = True)
 
-# class Form_Supplier_Purchase_Order(FlaskForm):
 
 
-
-# User 
 class Form_Filters_User(FlaskForm):
     active = BooleanField('Active only?', default = True)
     id_user = SelectField('User ID', validators=[Optional()], choices=[])

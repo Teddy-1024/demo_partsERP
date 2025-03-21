@@ -40,8 +40,6 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
         _m = 'DataStore_Store_Product_Category.save_categories'
         Helper_App.console_log(f'{_m}\nstarting...')
         Helper_App.console_log(f'comment: {comment}\ncategories: {categories}')
-        # av.val_str(comment, 'comment', _m)
-        # av.val_list_instances(categories, 'categories', _m, Product_Category, 1)
 
         guid = Helper_DB_MySQL.create_guid()
         now = datetime.now()
@@ -50,32 +48,15 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
         id_category_new = 0
         for category in categories:
             row = Product_Category_Temp.from_product_category(category)
-            # row = category.to_temporary_record()
-            # id_tmp = 
             if row.id_category == '':
                 id_category_new -= 1
                 row.id_category = id_category_new
             else:
                 Helper_App.console_log(f'row.id_category: {row.id_category}')
             row.guid = guid
-            # row.created_on = now
-            # row.created_by = user.id_user
             rows.append(row)
         
         Helper_App.console_log(f'rows: {rows}')
-        """
-        cursor = db.cursor()
-        Helper_App.console_log('cursor created') 
-        cursor.executemany(
-            'INSERT INTO Shop_Product_Category_Temp (id_category, code, name, description, active, display_order, guid, created_on, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-            categories
-        )
-        Helper_App.console_log('bulk upload executed')
-        db.commit()
-        Helper_App.console_log('bulk upload committed')
-        cursor.close()
-        Helper_App.console_log('cursor closed')
-        """
         DataStore_Store_Base.upload_bulk(Product_Category_Temp.__tablename__, rows, 1000)
 
         argument_dict_list = {
@@ -92,7 +73,7 @@ class DataStore_Store_Product_Category(DataStore_Store_Base):
         Helper_App.console_log(f'raw errors: {result_set_e}')
         errors = []
         if len(result_set_e) > 0:
-            errors = [SQL_Error.from_DB_record(row) for row in result_set_e] # (row[0], row[1])
+            errors = [SQL_Error.from_DB_record(row) for row in result_set_e]
             for error in errors:
                 Helper_App.console_log(f"Error [{error.code}]: {error.msg}")
         

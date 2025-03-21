@@ -13,7 +13,7 @@ Notes: This architecture does not work with Flask-SQLAlchemy - db connection mus
 
 # external
 from pydantic import BaseModel, ConfigDict
-from flask import Flask, render_template, jsonify, request,  render_template_string, send_from_directory, redirect, url_for, session
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import uuid
 
@@ -24,7 +24,6 @@ class Helper_DB_MySQL(BaseModel):
 
     def __init__(self, app):
         super().__init__(app=app)
-        # self.app = app
 
     def get_db_connection(self):
         db = SQLAlchemy()

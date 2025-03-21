@@ -32,18 +32,7 @@ class Filters_Product_Permutation(Form_Base):
     active = BooleanField('Active only?', default=True)
     quantity_min = FloatField('Min stock')
     quantity_max = FloatField('Max stock')
-    # submit = SubmitField('Submit')
-    """
-    @classmethod
-    def from_filters(cls, filters):
-        form = Filters_Product_Permutation()
-        form.id_category.choices = Store_Base.convert_list_objects_to_list_options(filters.categories)
-        form.id_product.choices = Store_Base.convert_list_objects_to_list_options(filters.products)
-        form.is_out_of_stock.data = filters.is_out_of_stock
-        form.quantity_min.data = filters.quantity_min
-        form.quantity_max.data = filters.quantity_max
-        return form
-    """
+    
     def __repr__(self):
         return f'''
             Filters_Product_Permutation(

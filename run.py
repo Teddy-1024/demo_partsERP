@@ -11,7 +11,11 @@ Runs project.
 """
 
 from app import app
+import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=(os.getenv('FLASK_ENV') == 'development'))
     # app.run(debug=True, host="0.0.0.0", port=5000)

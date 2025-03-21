@@ -27,8 +27,6 @@ class Region(db.Model, Base):
     code = db.Column(db.String(50))
     name = db.Column(db.String(200))
     active = db.Column(db.Boolean)
-
-    # region = None
     
     def __init__(self):
         super().__init__()

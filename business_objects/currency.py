@@ -17,29 +17,6 @@ from lib import argument_validation as av
 # external
 from typing import ClassVar
 
-# CLASSES
-"""
-class Currency_Enum(Enum):
-    GBP = 1
-
-    def text(self):
-        return Currency_Enum.Currency_Enum_Text(self)
-    
-    def Currency_Enum_Text(currency):
-        av.val_instance(currency, 'currency', 'Currency_Enum_Text', Currency_Enum)
-        if currency == Currency_Enum.GBP:
-            return 'GBP'
-        else:
-            # return 'Unknown'
-            raise ValueError("Unknown Currency Enum.")
-    
-    def get_member_by_text(text):
-        for member in Resolution_Level_Enum.__members__.values():
-            if member.name == text:
-                return member
-        raise ValueError("Unknown Currency Enum.")
-        # return Resolution_Level_Enum.HIGH
-"""
 
 class Currency(db.Model, Store_Base):
     FLAG_FACTOR_FROM_GBP: ClassVar[str] = 'factor-from-GBP'

@@ -55,7 +55,6 @@ def save_product_variation():
                 Model_View_Store_Product_Variation.FLAG_STATUS: Model_View_Store_Product_Variation.FLAG_FAILURE, 
                 Model_View_Store_Product_Variation.FLAG_MESSAGE: f'Filters form invalid.\n{form_filters.errors}'
             })
-        # filters_form = Filters_Product_Variation.from_form(form_filters)
         Helper_App.console_log(f'form_filters: {form_filters}')
 
         product_variation_types = data[Model_View_Store_Product_Variation.FLAG_PRODUCT_VARIATION_TYPE]
@@ -67,7 +66,6 @@ def save_product_variation():
         objs_product_variation_type = []
         for product_variation_type in product_variation_types:
             objs_product_variation_type.append(Product_Variation_Type.from_json(product_variation_type))
-        # model_save = Model_View_Store_Product_Variation() # filters_product_variation=filters_form)
         Helper_App.console_log(f'objs_product_variation_type={objs_product_variation_type}')
         save_errors = Model_View_Store_Product_Variation.save_product_variations(data.get('comment', 'No comment'), objs_product_variation_type)
 

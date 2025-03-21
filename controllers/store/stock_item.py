@@ -39,8 +39,6 @@ def stock_items():
     Helper_App.console_log(f'form_filters={form_filters}')
     model = Model_View_Store_Stock_Item(form_filters)
     if not model.is_user_logged_in:
-        # return redirect(url_for('routes_user.login', data = jsonify({ Model_View_Store_Stock_Item.FLAG_CALLBACK: Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS })))
-        # return requests.post(f"{current_app.config['URL_HOST']}{url_for('routes_user.login')}", json={ Model_View_Store_Stock_Item.FLAG_CALLBACK: Model_View_Store_Stock_Item.HASH_PAGE_STORE_STOCK_ITEMS })
         return redirect(url_for('routes_core.home'))
     return render_template('pages/store/_stock_items.html', model = model, datetime = datetime)
 
@@ -50,28 +48,6 @@ def save_stock_item():
     data = Helper_App.get_request_data(request)
     try:
         form_filters = Filters_Stock_Item.from_json(data[Model_View_Store_Stock_Item.FLAG_FORM_FILTERS])
-        """
-        if not form_filters.validate_on_submit():
-            error_keys = list(form_filters.errors.keys())
-            try:
-                error_keys.remove(Stock_Item.ATTR_ID_PRODUCT_CATEGORY)
-                ""
-                if not av.val_int(form_filters.id_product_category.data):
-                    form_filters.errors[Stock_Item.ATTR_ID_PRODUCT_CATEGORY] = ['Invalid category.']
-                ""
-            except:
-                pass
-            try:
-                error_keys.remove(Stock_Item.ATTR_ID_PRODUCT)
-            except:
-                pass
-            if error_keys:
-                return jsonify({
-                    Model_View_Store_Stock_Item.FLAG_STATUS: Model_View_Store_Stock_Item.FLAG_FAILURE, 
-                    Model_View_Store_Stock_Item.FLAG_MESSAGE: f'Form invalid.\n{form_filters.errors}'
-                })
-        """
-        # filters_form = Filters_Stock_Item.from_form(form_filters)
         Helper_App.console_log(f'form_filters: {form_filters}')
 
         stock_items = data[Model_View_Store_Stock_Item.FLAG_STOCK_ITEM]
@@ -84,7 +60,6 @@ def save_stock_item():
         objs_stock_item = []
         for stock_item in stock_items:
             objs_stock_item.append(Stock_Item.from_json(stock_item))
-        # model_save = Model_View_Store_Stock_Item() # filters_product=filters_form)
         Helper_App.console_log(f'objs_stock_item={objs_stock_item}')
         save_errors = Model_View_Store_Stock_Item.save_stock_items(data.get('comment', 'No comment'), objs_stock_item)
         if len(save_errors) > 0:
