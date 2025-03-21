@@ -43,7 +43,7 @@ class Model_View_Store_Supplier_Purchase_Order(Model_View_Store):
         _m = 'Model_View_Store_Supplier.__init__'
         Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current = hash_page_current, form_filters_old = form_filters_old)
-        self.form_filters = form_filters_old # Filters_Supplier_Purchase_Order.from_json(form_filters_old.to_json())
+        self.form_filters = form_filters_old
         parameters_supplier_purchase_order = Parameters_Supplier_Purchase_Order.from_filters_supplier_purchase_order(self.form_filters)
         datastore_supplier_purchase_order = DataStore_Store_Supplier_Purchase_Order()
         self.supplier_purchase_orders, errors = datastore_supplier_purchase_order.get_many_supplier_purchase_order(parameters_supplier_purchase_order)

@@ -26,6 +26,5 @@ class Model_View_Services(Model_View_Base):
         return 'Services'
     
     def __init__(self, hash_page_current=Model_View_Base.HASH_PAGE_SERVICES):
-        # Constructor
         super().__init__(hash_page_current=hash_page_current)
     

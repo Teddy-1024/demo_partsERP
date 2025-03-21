@@ -24,7 +24,6 @@ class Model_View_User(Model_View_Store):
     FLAG_FIRSTNAME: ClassVar[str] = 'firstname'
     FLAG_SURNAME: ClassVar[str] = 'surname'
     FLAG_STATE_OAUTH: ClassVar[str] = 'state'
-    # Attributes
     currencies: list = None
     regions: list = None
     users: list = None
@@ -33,7 +32,6 @@ class Model_View_User(Model_View_Store):
         return 'User'
     
     def __init__(self, hash_page_current=Model_View_Store.HASH_PAGE_USER_ACCOUNT):
-        # Constructor
         super().__init__(hash_page_current=hash_page_current, form_filters_old = None)
         datastore_user = DataStore_User()
         self.currencies = datastore_user.get_many_currency()

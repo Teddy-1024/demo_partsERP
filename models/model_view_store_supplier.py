@@ -42,15 +42,10 @@ class Model_View_Store_Supplier(Model_View_Store):
         _m = 'Model_View_Store_Supplier.__init__'
         Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current = hash_page_current, form_filters_old = form_filters_old)
-        self.form_filters = form_filters_old # Filters_Supplier.from_json(form_filters_old.to_json())
+        self.form_filters = form_filters_old
         parameters_supplier = Parameters_Supplier.from_filters_supplier(self.form_filters)
         datastore_supplier = DataStore_Store_Supplier()
         self.suppliers, errors = datastore_supplier.get_many_supplier(parameters_supplier)
-        
-        """
-        self.units_measurement = self.get_many_unit_measurement()
-        self.units_measurement_time = [unit_measurement for unit_measurement in self.units_measurement if unit_measurement.is_unit_of_time]
-        """
         self.currencies = self.get_many_currency()
         self.currency_options = [currency.to_json_option() for currency in self.currencies]
         self.supplier_addresses = {}

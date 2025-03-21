@@ -4,7 +4,6 @@ dir_parent = os.path.abspath(__file__ + '/../..')
 dir_sql = os.path.abspath(dir_parent + '/sql')
 
 
-# METHODS
 for entry in os.scandir(dir_sql):
     if entry.is_file():
         if '_tbl_' in entry.name:
@@ -17,5 +16,3 @@ for entry in os.scandir(dir_sql):
             os.rename(entry.path, dir_sql + '/' + new_name)
     if entry.is_dir():
         pass
-
-# SELECT CONCAT('WARNING: Table ', TABLE_NAME, ' already exists.') AS msg_warning FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shop_Msg_Error_Type';

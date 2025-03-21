@@ -48,42 +48,23 @@ class Model_View_Store_Stock_Item(Model_View_Store):
         _m = 'Model_View_Store_Stock_Item.__init__'
         Helper_App.console_log(f'{_m}\nstarting...')
         super().__init__(hash_page_current=hash_page_current, form_filters_old=form_filters_old)
-        # BaseModel.__init__(self, app=app, form_filters_old=form_filters_old, **kwargs)
-        self.form_filters = form_filters_old # Filters_Stock_Item.from_json(form_filters_old.to_json()) # .from_form_stock_item(form_filters_old)
+        self.form_filters = form_filters_old
         datastore_store = DataStore_Store_Stock_Item()
         tmp_category_list_stock_item, errors = datastore_store.get_many_product(Parameters_Product.from_filters_stock_item(self.form_filters))
         self.category_list, errors = datastore_store.get_many_stock_item(Parameters_Stock_Item.from_form_stock_item(self.form_filters), tmp_category_list_stock_item) 
         self.category_list_filters, errors_filters = datastore_store.get_many_product(Parameters_Product.get_default())
-        """
-        Parameters_Stock_Item(
-            # self.info_user['sub'], 
-            True, False, False, '', # get_all_category, get_inactive_category, get_first_category_only, ids_category
-            True, False, False, '', # get_all_product, get_inactive_product, get_first_product_only, ids_product
-            True, False, False, '', # get_all_permutation, get_inactive_permutation, get_first_permutation_only, ids_permutation
-            False, False, False, '', # get_all_stock_item, get_inactive_stock_item, get_first_stock_item_only, ids_stock_item
-            False, False, False, '', # get_all_region_storage, get_inactive_region_storage, get_first_region_storage_only, ids_region_storage
-            False, False, False, '', # get_all_plant_storage, get_inactive_plant_storage, get_first_plant_storage_only, ids_plant_storage
-            False, False, False, '', # get_all_location_storage, get_inactive_location_storage, get_first_location_storage_only, ids_location_storage
-            None, # date_received_to
-            False, False, # get_sealed_stock_item_only, get_unsealed_stock_item_only
-            False, False, # get_expired_stock_item_only, get_nonexpired_stock_item_only
-            False, False # get_consumed_stock_item_only, get_nonconsumed_stock_item_only
-        )
-        """
         
         Helper_App.console_log(f'category_list_filters: {self.category_list_filters.categories}')
-        self.form_filters.id_category.choices += [(str(category.id_category), category.name) for category in self.category_list_filters.categories] # [Filters_Stock_Item.get_choice_all()] +
+        self.form_filters.id_category.choices += [(str(category.id_category), category.name) for category in self.category_list_filters.categories]
         Helper_App.console_log(f'category options: {self.form_filters.id_category.choices}')
         product_list = self.category_list_filters.to_product_option_list()
         filtered_product_list = []
         if product_list is not None:
             for product in product_list:
-                # Helper_App.console_log(f'product: {product}\n{product[Stock_Item.ATTR_ID_PRODUCT_CATEGORY]}\n{self.form_filters.id_category.data}\n{str(type(product[Stock_Item.ATTR_ID_PRODUCT_CATEGORY]))}\n{str(type(self.form_filters.id_category.data))}')
                 if (self.form_filters.id_category.data == '' or str(product[Stock_Item.ATTR_ID_PRODUCT_CATEGORY]) == self.form_filters.id_category.data):
                     filtered_product_list.append(product)
         Helper_App.console_log(f'product_list: {product_list}\nfiltered_product_list: {filtered_product_list}')
-        self.form_filters.id_product.choices += [(str(product['value']), product['text']) for product in filtered_product_list] #  [Filters_Stock_Item.get_choice_all()] +
-        # self.form_filters.import_values(form_filters_old)
+        self.form_filters.id_product.choices += [(str(product['value']), product['text']) for product in filtered_product_list] 
         self.variation_types, self.variations, errors = self.get_many_product_variation()
         self.units_measurement = self.get_many_unit_measurement()
         self.units_measurement_time = [unit_measurement for unit_measurement in self.units_measurement if unit_measurement.is_unit_of_time]

@@ -10,11 +10,6 @@ Description:
 Data model for store product view
 """
 
-# IMPORTS
-# VARIABLE INSTANTIATION
-# METHODS
-
-# IMPORTS
 # internal
 from business_objects.store.product_variation import Product_Variation, Parameters_Product_Variation
 from business_objects.store.product_category import Product_Category_Container
@@ -23,7 +18,6 @@ from forms.access_level import Filters_Access_Level
 from forms.store.product_variation import Filters_Product_Variation
 from helpers.helper_app import Helper_App
 from models.model_view_store import Model_View_Store
-# from routes import bp_home
 import lib.argument_validation as av
 # external
 from typing import ClassVar
